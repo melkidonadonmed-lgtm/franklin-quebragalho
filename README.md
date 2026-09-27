@@ -16,6 +16,7 @@ long-term-memory/
 ## Objetivo
 
 Neste repositório, `skills` significa capacidades ou habilidades registradas para orientar o agente.
+Os nomes das pastas foram mantidos em inglês para deixar a estrutura curta e consistente, enquanto as descrições continuam em português.
 
 - `agents/`: definição do agente principal
 - `user-skills/`: skills e preferências declaradas pelo usuário
