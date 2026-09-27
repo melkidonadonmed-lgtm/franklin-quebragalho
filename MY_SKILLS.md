@@ -25,12 +25,16 @@ Este repositório é a incubadora central de skills do **Franklin Quebra-Galho**
 | **`organizar-local`** | `v1.0.0` | 🧪 Em Teste | Rotinas de organização em pastas locais do Windows 11 (Downloads, Desktop, dev, Obsidian) via PowerShell. | [.agents/skills/organizar-local/](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/.agents/skills/organizar-local/SKILL.md) |
 | **`gerar-docs-pdf`** | `v1.0.0` | 🧪 Em Teste | Criação de documentos Markdown formatados e conversão automatizada para PDF de alta fidelidade visual. | [.agents/skills/gerar-docs-pdf/](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/.agents/skills/gerar-docs-pdf/SKILL.md) |
 | **`organizador-fluxo-arvore-arquivos`** | `v1.0.0` | 🧪 Em Teste | Converte ideias brutas em fluxos visuais Mermaid, árvores de arquivos comentadas e planos de execução enxutos. | [.agents/skills/organizador-fluxo-arvore-arquivos/](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/.agents/skills/organizador-fluxo-arvore-arquivos/SKILL.md) |
+| **`arquiteto-conteudo-solucoes`** | `v1.0.0` | 🧪 Em Teste | Arquiteto autônomo para engenharia de prompts, planos estruturados, roadmaps, código e skills modulares. | [.agents/skills/arquiteto-conteudo-solucoes/](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/.agents/skills/arquiteto-conteudo-solucoes/SKILL.md) |
 | **`evoluir-skills`** | `v1.0.0` | ✅ Validada | Protocolo de engenharia de skills: como conceber, codificar `SKILL.md`, testar, versionar e refinar. | [.agents/skills/evoluir-skills/](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/.agents/skills/evoluir-skills/SKILL.md) |
 | **`_template`** | `v1.0.0` | 🚀 Produção | Modelo base oficial para criação imediata de novas skills do Antigravity. | [.agents/skills/_template/](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/.agents/skills/_template/SKILL.md) |
 
 ---
 
 ## 📜 Histórico de Versões e Contexto (Changelog)
+
+### [2026-09-27] - Inclusão da Skill `arquiteto-conteudo-solucoes` (v1.0.0)
+- **Nova Habilidade Registrada**: Adicionada a skill `arquiteto-conteudo-solucoes` com suporte a 4 modos de operação (Execução Direta, Refinamento Colaborativo, Planejamento Estruturado e Auto-Reflexão Pré-Entrega), além das referências técnicas complementares em `references/diretrizes_especializadas.md` e `references/checklist_validacao.md`.
 
 ### [2026-09-27] - Inclusão da Skill `organizador-fluxo-arvore-arquivos` (v1.0.0)
 - **Nova Habilidade Registrada**: Adicionada a skill `organizador-fluxo-arvore-arquivos` para traduzir ideias de software e processos em diagramas Mermaid intuitivos e árvores ASCII comentadas de arquivos, com controle de versão semântico e preservação integral do pedido original.
