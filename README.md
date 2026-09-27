@@ -6,18 +6,18 @@ Estrutura mínima para um agente de organização do Google Drive.
 
 ```text
 agents/
-my-skills/
-agents-skills/
+user-skills/
+agent-skills/
 rules/
-contexto/
-memoria-longo-prazo/
+context/
+long-term-memory/
 ```
 
 ## Objetivo
 
 - `agents/`: definição do agente principal
-- `my-skills/`: skills e preferências declaradas pelo usuário
-- `agents-skills/`: capacidades operacionais do agente
+- `user-skills/`: skills e preferências declaradas pelo usuário
+- `agent-skills/`: capacidades operacionais do agente
 - `rules/`: regras de organização
-- `contexto/`: contexto operacional do agente
-- `memoria-longo-prazo/`: memória persistente de decisões e preferências
+- `context/`: contexto operacional do agente
+- `long-term-memory/`: memória persistente de decisões e preferências

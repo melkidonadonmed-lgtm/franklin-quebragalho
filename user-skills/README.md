@@ -1,4 +1,4 @@
-# My Skills
+# User Skills
 
 - preferências de organização do usuário
 - categorias mais usadas
