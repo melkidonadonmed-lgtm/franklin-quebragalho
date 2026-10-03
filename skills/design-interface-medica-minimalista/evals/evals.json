@@ -1,0 +1,7 @@
+[
+  {
+    "eval_id": "eval-001-prontuario-card",
+    "prompt": "Crie um card de identificação de paciente para prontuário clínico.",
+    "expected_behavior": "Gera card limpo com Tailwind, sem emojis, borda sutil slate-200/80 e rótulos uppercase reduzidos."
+  }
+]

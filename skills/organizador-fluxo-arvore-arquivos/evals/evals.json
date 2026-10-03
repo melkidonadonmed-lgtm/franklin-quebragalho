@@ -1,0 +1,33 @@
+[
+  {
+    "eval_id": "TC-01-PRESERVACAO-PEDIDO-ORIGINAL",
+    "description": "Garante que o pedido do usuario seja inserido literalmente sem alteracoes",
+    "input": "Quero um app simples de cronometro pomodoro para Windows.",
+    "expected_behavior": {
+      "pedido_original_literal": "Quero um app simples de cronometro pomodoro para Windows.",
+      "contem_diagrama_mermaid": true,
+      "contem_arvore_arquivos": true,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-02-OPCAO-EXPORTACAO-MD-PDF",
+    "description": "Verifica se a skill apresenta a opcao de salvar em arquivo unico MD ou gerar PDF ao final",
+    "input": "Estruture o fluxo e pastas para um script de backup em PowerShell.",
+    "expected_behavior": {
+      "oferece_opcao_markdown": true,
+      "oferece_opcao_pdf": true,
+      "secao_exportacao_presente": true,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-03-EXPORTACAO-DIRETA-SOLICITADA",
+    "description": "Verifica se ao solicitar explicitamente em PDF, o agente gera o arquivo ou aciona o pipeline",
+    "input": "Crie o fluxo do meu app e gere em PDF formatado direto.",
+    "expected_behavior": {
+      "aciona_conversao_pdf": true,
+      "status_esperado": "[PASS]"
+    }
+  }
+]

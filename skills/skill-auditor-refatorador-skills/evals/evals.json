@@ -1,0 +1,57 @@
+[
+  {
+    "eval_id": "TC-01-DETECCAO-MONOLITO",
+    "description": "Valida se o subagente detecta acoplamento monolítico em skill que mistura planejamento e diagramação Mermaid",
+    "input": {
+      "skill_content": "---\nname: skill-plano-e-diagrama\ndescription: Faz planos e gera codigos Mermaid de grafos complexos.\n---\nPlaneje todas as etapas e ao mesmo tempo desenhe o diagrama Mermaid completo com nós de estilo.",
+      "audit_mode": "diagnostic_only"
+    },
+    "expected_behavior": {
+      "monolito_detectado": true,
+      "status_regra_3": "[FAIL: Monólito de alto risco de alucinação detectado]",
+      "proposta_desacoplamento": ["skill-planejador-estrategico", "skill-diagramador-visual"],
+      "inclui_authorized_sub_skills": true
+    }
+  },
+  {
+    "eval_id": "TC-02-VALIDACAO-FRONTMATTER",
+    "description": "Valida a rejeição determinística de frontmatter sem updated_at ou com descrição vaga",
+    "input": {
+      "skill_content": "---\nname: skill-sem-data\ndescription: Ajuda o usuario com arquivos.\n---\nInstrucoes simples.",
+      "audit_mode": "diagnostic_only"
+    },
+    "expected_behavior": {
+      "status_regra_1": "[FAIL: Campo obrigatório ausente ou formato YAML corrompido]",
+      "status_regra_2": "[FAIL: Descrição deficiente para progressive discovery]",
+      "campos_faltantes": ["updated_at", "version"]
+    }
+  },
+  {
+    "eval_id": "TC-03-AUTORIZACAO-SUB-SKILL",
+    "description": "Valida se a skill desacoplada inclui a permissão de invocação cruzada",
+    "input": {
+      "target_skill": "skill-planejador-estrategico",
+      "delegated_skill": "skill-diagramador-visual",
+      "audit_mode": "apply_refactoring"
+    },
+    "expected_behavior": {
+      "clausula_injetada": "authorized_sub_skills",
+      "status_regra_4": "[PASS]",
+      "preservou_objetivo_original": true
+    }
+  },
+  {
+    "eval_id": "TC-04-MUTACAO-COM-CHANGELOG",
+    "description": "Valida se o subagente emite o changelog detalhado e atualiza a skill de encadeamento e a si própria",
+    "input": {
+      "audit_mode": "apply_refactoring",
+      "skills_modificadas": 2
+    },
+    "expected_behavior": {
+      "emitiu_diff_changelog": true,
+      "atualizou_auto_definicao": true,
+      "atualizou_skill_encadeamento": true,
+      "status_regra_5": "[PASS]"
+    }
+  }
+]

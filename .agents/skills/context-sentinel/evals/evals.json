@@ -1,0 +1,7 @@
+[
+  {
+    "eval_id": "eval-001-checkpoint-extracao",
+    "prompt": "Gere um checkpoint de estado após 5 turnos de desenvolvimento.",
+    "expected_behavior": "Retorna o payload JSON StateCheckpointSchema contendo fatos comprovados, pendências e status context_health."
+  }
+]

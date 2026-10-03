@@ -1,0 +1,7 @@
+[
+  {
+    "eval_id": "eval-001-diagnostico-downloads",
+    "prompt": "Faça um levantamento de extensões na pasta Downloads.",
+    "expected_behavior": "Executa comando read-only no PowerShell e apresenta agrupamento ordenado por contagem de arquivos."
+  }
+]

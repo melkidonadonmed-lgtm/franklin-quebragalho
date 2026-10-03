@@ -21,17 +21,52 @@ Este repositório é a incubadora central de skills do **Franklin Quebra-Galho**
 
 | Skill | Versão | Status | Descrição Curta | Localização |
 | :--- | :---: | :---: | :--- | :--- |
-| **`organizar-gdrive`** | `v1.0.0` | 🧪 Em Teste | Varredura, categorização, higienização e organização de arquivos no Google Drive (`G:\Meu Drive` e MCP). | [.agents/skills/organizar-gdrive/](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/.agents/skills/organizar-gdrive/SKILL.md) |
-| **`organizar-local`** | `v1.0.0` | 🧪 Em Teste | Rotinas de organização em pastas locais do Windows 11 (Downloads, Desktop, dev, Obsidian) via PowerShell. | [.agents/skills/organizar-local/](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/.agents/skills/organizar-local/SKILL.md) |
-| **`gerar-docs-pdf`** | `v1.0.0` | 🧪 Em Teste | Criação de documentos Markdown formatados e conversão automatizada para PDF de alta fidelidade visual. | [.agents/skills/gerar-docs-pdf/](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/.agents/skills/gerar-docs-pdf/SKILL.md) |
-| **`organizador-fluxo-arvore-arquivos`** | `v1.0.0` | 🧪 Em Teste | Converte ideias brutas em fluxos visuais Mermaid, árvores de arquivos comentadas e planos de execução enxutos. | [.agents/skills/organizador-fluxo-arvore-arquivos/](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/.agents/skills/organizador-fluxo-arvore-arquivos/SKILL.md) |
-| **`arquiteto-conteudo-solucoes`** | `v1.0.0` | 🧪 Em Teste | Arquiteto autônomo para engenharia de prompts, planos estruturados, roadmaps, código e skills modulares. | [.agents/skills/arquiteto-conteudo-solucoes/](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/.agents/skills/arquiteto-conteudo-solucoes/SKILL.md) |
-| **`evoluir-skills`** | `v1.0.0` | ✅ Validada | Protocolo de engenharia de skills: como conceber, codificar `SKILL.md`, testar, versionar e refinar. | [.agents/skills/evoluir-skills/](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/.agents/skills/evoluir-skills/SKILL.md) |
-| **`_template`** | `v1.0.0` | 🚀 Produção | Modelo base oficial para criação imediata de novas skills do Antigravity. | [.agents/skills/_template/](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/.agents/skills/_template/SKILL.md) |
+| **`organizar-gdrive`** | `v1.0.0` | ✅ Validada | Varredura, categorização, higienização e organização de arquivos no Google Drive (`G:\Meu Drive` e MCP). | [.agents/skills/organizar-gdrive/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/organizar-gdrive/SKILL.md) |
+| **`organizar-local`** | `v1.0.0` | ✅ Validada | Rotinas de organização em pastas locais do Windows 11 (Downloads, Desktop, dev, Obsidian) via PowerShell. | [.agents/skills/organizar-local/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/organizar-local/SKILL.md) |
+| **`gerar-docs-pdf`** | `v1.0.0` | ✅ Validada | Criação de documentos Markdown formatados e conversão automatizada para PDF de alta fidelidade visual. | [.agents/skills/gerar-docs-pdf/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/gerar-docs-pdf/SKILL.md) |
+| **`organizador-fluxo-arvore-arquivos`** | `v1.1.0` | ✅ Validada | Converte ideias brutas em diagramas Mermaid, árvores de arquivos e planos de execução, com exportação direta em MD ou PDF. | [.agents/skills/organizador-fluxo-arvore-arquivos/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/organizador-fluxo-arvore-arquivos/SKILL.md) |
+| **`arquiteto-conteudo-solucoes`** | `v2.2.0` | ✅ Validada | Arquiteto autônomo para engenharia de prompts, planos estruturados, roadmaps, código tipado e skills modulares anti-alucinação. | [.agents/skills/arquiteto-conteudo-solucoes/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/arquiteto-conteudo-solucoes/SKILL.md) |
+| **`evoluir-skills`** | `v1.1.0` | ✅ Validada | Protocolo de engenharia de skills: padrões de 2026, divulgação progressiva, regras determinísticas e evals reais. | [.agents/skills/evoluir-skills/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/evoluir-skills/SKILL.md) |
+| **`aprimoramento-expansibilidade-agentes-skills`** | `v1.0.0` | ✅ Validada | Diagnóstico, otimização de contexto, modularização e expansão de capacidade de Agentes de IA e arquivos SKILL.md. | [.agents/skills/aprimoramento-expansibilidade-agentes-skills/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/aprimoramento-expansibilidade-agentes-skills/SKILL.md) |
+| **`arquitetura-design-implementacao-sistema`** | `v1.0.0` | ✅ Validada | Diagnóstico, design de navegabilidade/UX, especificação funcional e roadmap de implementação técnica para software. | [.agents/skills/arquitetura-design-implementacao-sistema/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/arquitetura-design-implementacao-sistema/SKILL.md) |
+| **`auditoria-projetos-sistema`** | `v2.0.0` | ✅ Validada | Auditoria de integridade física de repositórios, higiene Git, coerência de UI/UX e esteira visual automatizada via MCP. | [.agents/skills/auditoria-projetos-sistema/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/auditoria-projetos-sistema/SKILL.md) |
+| **`context-sentinel`** | `v1.0.0` | ✅ Validada | Auditoria de integridade da janela de contexto, mitigação de context rot e snapshots determinísticos estruturados. | [.agents/skills/context-sentinel/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/context-sentinel/SKILL.md) |
+| **`design-interface-medica-minimalista`** | `v1.0.0` | ✅ Validada | Padrão executivo de UI/UX para aplicações médicas, prontuários, calculadoras clínicas e SaaS de saúde. | [.agents/skills/design-interface-medica-minimalista/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/design-interface-medica-minimalista/SKILL.md) |
+| **`skill-auditor-refatorador-skills`** | `v1.0.0` | ✅ Validada | Subagente auditor e refatorador de habilidades: desacoplamento de monólitos, schemas e progressive disclosure. | [.agents/skills/skill-auditor-refatorador-skills/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/skill-auditor-refatorador-skills/SKILL.md) |
+| **`skill-orquestrador-planos-encadeados`** | `v1.0.0` | ✅ Validada | Orquestrador de planos multifásicos: encadeamento de skills especialistas e controle de transição de estado. | [.agents/skills/skill-orquestrador-planos-encadeados/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/skill-orquestrador-planos-encadeados/SKILL.md) |
+| **`_template`** | `v1.1.0` | 🚀 Produção | Modelo base oficial com suporte a rules/, evals/, references/ e scripts/ para o Antigravity. | [.agents/skills/_template/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/_template/SKILL.md) |
 
 ---
 
 ## 📜 Histórico de Versões e Contexto (Changelog)
+
+### [2026-10-03] - Auditoria e Refatoração Canônica das 14 Skills do Catálogo (100% PASS)
+- **Refatoração Estrutural Completa**: Padronizadas as 5 seções canônicas obrigatórias (Gatilhos, Entradas, Processamento, Saídas e Limites/Exceções) em todas as skills.
+- **Implementação Universal de Rules e Evals**: Criados `rules/criterios_auditoria.md` (com marcadores booleanos determinísticos `[PASS]` e `[FAIL]`) e `evals/evals.json` em todas as skills pendentes (`_template`, `context-sentinel`, `design-interface-medica-minimalista`, `evoluir-skills`, `gerar-docs-pdf`, `organizar-gdrive` e `organizar-local`).
+- **Validação Automatizada Determinística**: O script `scripts/validate_skills.py` agora aprova 14/14 skills com 100% de conformidade contratual.
+- **Espelhamento Paritário em `skills/`**: Sincronizadas as 14 skills completas entre `.agents/skills/` e a pasta raiz `skills/`.
+- **Registro de Novas Skills**: Inclusão formal de `auditoria-projetos-sistema`, `skill-auditor-refatorador-skills` e `skill-orquestrador-planos-encadeados` no catálogo oficial.
+
+### [2026-10-01] - Saneamento de Catálogo, Espelhamento e Integração Global
+- **Saneamento de Caminhos e Links**: Eliminadas todas as referências residuais ao diretório obsoleto `wonderful-franklin`, unificando links com prefixo `c:/Users/melki/dev/franklin-quebragalho/`.
+- **Espelhamento Paritário em `skills/`**: Concluída a replicação das 4 novas skills (`aprimoramento-expansibilidade-agentes-skills`, `arquitetura-design-implementacao-sistema`, `context-sentinel` e `design-interface-medica-minimalista`) de `.agents/skills/` para a pasta raiz `skills/`, garantindo consistência total entre o agente nativo e a raiz do projeto.
+- **Integração com Governança Global 2026**: Vinculação formal às diretrizes `00-unified-governance.md` e `02-layout-shielding.md`, inclusão das 11 skills no catálogo de ciclo de vida e ativação dos checkpoints de contexto.
+
+### [2026-09-27] - Evolução da Skill `organizador-fluxo-arvore-arquivos` (v1.1.0)
+- **Opção de Exportação Direta (MD/PDF)**: Adicionada a seção `### 6. Opção de Exportação (Arquivo Único / PDF)` ao final da entrega para oferecer geração direta em arquivo Markdown único ou PDF formatado, eliminando quebras de layout e diagramas ao copiar e colar.
+- **Governança Determinística**: Criado `rules/criterios_auditoria.md` com validações booleanas e `evals/evals.json` com testes de preservação literal do prompt e oferta de exportação.
+- **Espelhamento e Status**: Promovida para status `✅ Validada` e sincronizada em `.agents/skills/` e `skills/`.
+
+### [2026-09-27] - Evolução da Engenharia de Skills e Atualização do Arquiteto (v2.2.0 / v1.1.0)
+- **Skill `arquiteto-conteudo-solucoes` (v2.2.0)**:
+  - Implementada a taxonomia canônica de 4 modos de operação (Modo A: Execução Direta, Modo B: Refinamento Colaborativo com máximo 2 perguntas, Modo C: Planejamento Estruturado com Fase 0 obrigatória, Modo D: Auto-Reflexão Pré-Entrega).
+  - Criado o arquivo `rules/criterios_auditoria.md` estabelecendo critérios determinísticos falsificáveis (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) e eliminando validações vazias e auditorias inventadas.
+  - Criado o conjunto de testes empíricos em `evals/evals.json` para validação de comportamento real.
+  - Sincronização e espelhamento estrito entre `.agents/skills/` e `skills/`.
+- **Skill `evoluir-skills` (v1.1.0)**:
+  - Atualizada com as diretrizes consolidadas de 2026: divulgação progressiva, proibição de simulações sintéticas no chat e exigência de âncoras documentais falsificáveis.
+- **Skill `_template` (v1.1.0)**:
+  - Atualizado para incluir o catálogo completo de subpastas recomendadas (`rules/`, `evals/`, `references/`, `scripts/`) e seções de limites/exclusão.
 
 ### [2026-09-27] - Inclusão da Skill `arquiteto-conteudo-solucoes` (v1.0.0)
 - **Nova Habilidade Registrada**: Adicionada a skill `arquiteto-conteudo-solucoes` com suporte a 4 modos de operação (Execução Direta, Refinamento Colaborativo, Planejamento Estruturado e Auto-Reflexão Pré-Entrega), além das referências técnicas complementares em `references/diretrizes_especializadas.md` e `references/checklist_validacao.md`.

@@ -2,6 +2,7 @@
 name: organizar-gdrive
 description: >-
   Use esta skill sempre que o usuário solicitar organização, varredura, limpeza, triagem ou classificação de pastas e arquivos no Google Drive (unidade G:\Meu Drive ou via MCP google-drive).
+version: 1.0.0
 ---
 
 # Organizar Google Drive ☁️
@@ -15,6 +16,20 @@ Procedimento estruturado para inspeção, auditoria, triagem e categorização d
 - A raiz de `G:\Meu Drive` possui arquivos soltos sem categoria.
 - O usuário quer encontrar arquivos duplicados, pesados ou antigos para arquivamento.
 - Criação de estruturas de pastas padronizadas no Google Drive.
+
+---
+
+## 🚫 Limites, Exceções e Quando NÃO Usar
+- ⚠️ **NUNCA** execute exclusão permanente no Google Drive (`Remove-Item -Recurse -Force`).
+- Não utilize para operações em discos locais fora do Google Drive.
+- Caso o usuário deseje descartar arquivos, mova-os para uma subpasta `_Quarentena_Descarte/` com aviso explícito.
+
+---
+
+## 📥 Entradas Obrigatórias e Pré-requisitos
+1. **Caminho Alvo no Google Drive**: Ex.: `G:\Meu Drive\` ou pasta específica.
+2. **Critério de Organização**: Por data, extensão, tipo documental ou taxonomia temática.
+3. **Pré-requisito**: Google Drive montado em `G:\Meu Drive` ou MCP `google-drive` ativo.
 
 ---
 
@@ -65,6 +80,9 @@ if (-not (Test-Path $pastaDestino)) {
 Move-Item -Path $origem -Destination $pastaDestino
 ```
 
-### 5. Regras Críticas de Segurança
-- ⚠️ **NUNCA** execute exclusão permanente no Google Drive.
-- Caso o usuário deseje descartar arquivos, mova-os para uma subpasta `_Quarentena_Descarte/` com aviso explícito.
+---
+
+## 📤 Saídas e Entregáveis (Modelo de Saída)
+1. Tabela de Simulação (Dry-Run) antes da execução física.
+2. Relatório de Movimentação com contagem de arquivos processados.
+3. Links clicáveis de conferência (`file:///G:/Meu Drive/...`).

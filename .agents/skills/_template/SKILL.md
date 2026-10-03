@@ -1,53 +1,71 @@
 ---
 name: template-skill
 description: >-
-  Modelo padrão para criação de novas skills no Antigravity. Use este template como base ao criar uma nova habilidade ou procedimento para o Franklin Quebra-Galho.
+  Modelo padrao oficial para criacao de novas skills no Antigravity e no workspace Franklin Quebra-Galho, estruturado sob divulgacao progressiva, regras deterministicas e cenarios de avaliacao real.
+version: 1.1.0
+updated_at: 2026-09-27
 ---
 
-# Template de Skill
+# Template de Skill (Padrao 2026)
 
-Breve parágrafo explicando o objetivo principal desta habilidade e o contexto em que ela resolve problemas para o usuário.
+Breve paragrafo explicando o objetivo principal desta habilidade e o contexto em que ela resolve problemas para o usuario com confiabilidade e sem alucinacao.
 
 ---
 
 ## 🎯 Quando Usar
-- Liste gatilhos e cenários específicos em que o modelo ou o usuário deve acionar esta skill.
-- Cenário A: Quando o usuário pedir para executar a tarefa X.
-- Cenário B: Quando for detectado o padrão Y.
+- Liste gatilhos e cenarios especificos em que o modelo ou o usuario deve acionar esta skill.
+- Cenario A: Quando o usuario pedir para executar a tarefa X.
+- Cenario B: Quando for detectado o padrao Y.
 
 ---
 
-## ⚙️ Pré-requisitos e Dependências
-- Ferramentas ou comandos necessários (ex.: PowerShell 7, MCP Server específico).
-- Permissões ou arquivos de configuração que devem existir.
+## 🚫 Quando NAO Usar
+- Cenario de exclusao A (quando outra skill for mais apropriada).
+- Cenario de exclusao B (quando a tarefa demandar acoes fora do escopo autorizado).
 
 ---
 
-## 📋 Passo a Passo de Execução
+## ⚙️ Pre-requisitos e Dependencias
+- Ferramentas ou comandos necessarios (ex.: PowerShell 7, MCP Server especifico).
+- Permissoes ou arquivos de configuracao que devem existir antes da execucao.
 
-### 1. Coleta de Informações e Validação
-- Verifique o ambiente e os parâmetros antes de agir.
-- Exemplo de comando seguro:
+---
+
+## 📋 Passo a Passo de Execucao (Divulgacao Progressiva)
+
+### 1. Coleta de Informacoes e Validacao Determinística
+- Verifique o ambiente e os parametros antes de agir.
+- Consulte `rules/criterios_auditoria.md` para aplicar validacoes booleanas (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`).
+- Exemplo de comando seguro em PowerShell:
   ```powershell
   Test-Path "caminho\alvo"
   ```
 
-### 2. Simulação (Dry-run / Preview)
-- Sempre que houver movimentação de arquivos ou modificação em lote, apresente um resumo ao usuário antes de aplicar.
+### 2. Simulacao (Dry-run / Preview)
+- Sempre que houver movimentacao de arquivos, delecoes temporarias ou modificacoes em lote, apresente um resumo ao usuario antes de aplicar.
 
-### 3. Execução Principal
-- Descreva os comandos ou procedimentos de forma clara e modular.
+### 3. Execucao Principal
+- Descreva os comandos ou procedimentos de forma modular e defensiva.
+- Trate erros e declare limites de passos (`max_steps`) caso utilize ferramentas repetitivas.
 
-### 4. Verificação de Sucesso
-- Como verificar se a tarefa foi concluída corretamente (ex.: checar tamanho do arquivo, verificar código de saída).
+### 4. Verificacao e Fechamento
+- Valide os resultados gerados sem inventar estatisticas.
+- Registre o encerramento com auto-reflexao ou conferencias de regras.
+
+---
+
+## 📤 Saídas e Entregáveis (Modelo de Saída)
+- Formato obrigatório da resposta final (tabelas, blocos de código tipados ou links `file:///`).
+- Checklist determinístico de verificação pós-execução (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`).
 
 ---
 
 ## 📁 Estrutura Recomendada da Pasta da Skill
 ```text
-skills/<nome-da-skill>/
-├── SKILL.md          # Instruções principais (este arquivo)
-├── scripts/          # Scripts auxiliares PowerShell / Node
-├── references/       # Manuais ou referências detalhadas
-└── examples/         # Exemplos de entrada e saída
+.agents/skills/<nome-da-skill>/
+├── SKILL.md            # Instrucoes nucleares (este arquivo)
+├── references/         # Opcional: Manuais ou dados factuais imutaveis sob demanda
+├── rules/              # Opcional: Criterios deterministicos de auditoria/rejeicao
+├── scripts/            # Opcional: Scripts auxiliares PowerShell / Node
+└── evals/              # Opcional: Cenarios de teste empiricos (evals.json)
 ```

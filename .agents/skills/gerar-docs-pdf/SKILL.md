@@ -2,6 +2,7 @@
 name: gerar-docs-pdf
 description: >-
   Use esta skill sempre que o usuário solicitar criação, redação, formatação de notas ou relatórios em Markdown (.md) e conversão para arquivos PDF profissionais.
+version: 1.0.0
 ---
 
 # Geração de Documentos Markdown e Conversão para PDF 📄
@@ -14,6 +15,19 @@ Procedimento para redigir documentação estruturada em Markdown e converter aut
 - Criação de relatórios técnicos, atas, resumos e documentações de projetos.
 - Geração de notas no formato compatível com o Obsidian Vault.
 - Exportação de arquivos `.md` para arquivos `.pdf` prontos para compartilhamento ou impressão.
+
+---
+
+## 🚫 Limites, Exceções e Quando NÃO Usar
+- Não usar para diagramação de livros ou revistas com tipografia gráfica complexa (InDesign).
+- Não realizar conversões com binários não instalados; utilizar exclusivamente Edge/Chrome headless nativo.
+
+---
+
+## 📥 Entradas Obrigatórias e Pré-requisitos
+1. **Conteúdo Fonte**: Texto bruto, notas ou arquivo `.md` a ser estruturado.
+2. **Caminho de Saída**: Destino do arquivo `.md` e/ou `.pdf` desejado.
+3. **Pré-requisito**: Microsoft Edge ou Google Chrome instalado no Windows (`msedge.exe` / `chrome.exe`).
 
 ---
 
@@ -65,3 +79,10 @@ $pdfPath = [System.IO.Path]::ChangeExtension($htmlPath, ".pdf")
 - **Margens**: 20mm (1.5cm a 2cm).
 - **Cores**: Tons neutros com azul/grafite para cabeçalhos.
 - **Quebras de Página**: `page-break-inside: avoid;` em tabelas e blocos de código.
+
+---
+
+## 📤 Saídas e Entregáveis (Modelo de Saída)
+1. Arquivo Markdown estruturado e formatado em disco.
+2. Arquivo PDF gerado de alta qualidade visual.
+3. Link clicável de acesso com protocolo `file:///` para abertura direta pelo usuário no Windows.

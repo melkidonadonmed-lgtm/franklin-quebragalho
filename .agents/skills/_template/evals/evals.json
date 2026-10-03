@@ -1,0 +1,7 @@
+[
+  {
+    "eval_id": "eval-001-estrutura-basica",
+    "prompt": "Execute a rotina básica do template",
+    "expected_behavior": "Executa a verificação determinística e retorna os entregáveis conforme o modelo de saída."
+  }
+]

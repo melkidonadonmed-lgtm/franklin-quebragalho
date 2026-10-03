@@ -1,0 +1,7 @@
+[
+  {
+    "eval_id": "eval-001-varredura-gdrive",
+    "prompt": "Faça uma varredura de arquivos soltos na raiz de G:\\Meu Drive.",
+    "expected_behavior": "Executa comando read-only no PowerShell e lista os itens com tabela descritiva e proposta de categorização."
+  }
+]

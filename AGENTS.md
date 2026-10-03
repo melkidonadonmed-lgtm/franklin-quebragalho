@@ -22,7 +22,7 @@ Este documento estabelece o modelo operacional, papéis e contratos de orquestra
 | **`DriveMaster`** | Organização do Google Drive | Unidade `G:\Meu Drive`, MCP `google-drive` (`search_files`, `get_file_metadata`, `create_file`, etc.) | Pedidos de triagem de pastas no Drive, auditoria de arquivos pesados, duplicações ou padronização de nomenclatura. |
 | **`FileOpsLocal`** | Manutenção de Pastas no Windows | PowerShell 7 (`pwsh`), `Get-ChildItem`, `Move-Item`, scripts de automação | Limpeza de Downloads, organização de Desktop, arquivamento de projetos em `dev/`, organização de notas. |
 | **`DocMaker`** | Criação e Conversão de Documentos | Markdown, Obsidian Vault, scripts de geração de PDF (Edge/Chrome headless) | Criação de notas técnicas, relatórios executivos, resumos em `.md` e geração de PDFs profissionais. |
-| **`SkillCraft`** | Engenharia e Evolução de Skills | Estrutura `.agents/skills/`, manifesto [MY_SKILLS.md](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/MY_SKILLS.md) | Desenvolvimento de novas habilidades para o Antigravity, testes práticos, versionamento e refatoração de prompts. |
+| **`SkillCraft`** | Engenharia e Evolução de Skills | Estrutura `.agents/skills/`, manifesto [MY_SKILLS.md](file:///c:/Users/melki/dev/franklin-quebragalho/MY_SKILLS.md) | Desenvolvimento de novas habilidades para o Antigravity, testes práticos, versionamento e refatoração de prompts. |
 
 ---
 
@@ -39,10 +39,13 @@ Este documento estabelece o modelo operacional, papéis e contratos de orquestra
    - Todo relatório de ação deve conter links clicáveis para os arquivos gerados ou pastas organizadas.
    - Antes de aplicar alterações em massa, o agente deve apresentar a simulação dos impactos.
 
+4. **Diretriz Anti-Sobre-Engenharia**:
+   - É expressamente proibido disparar esteiras de subagentes para criar aplicações web (Node/React/Vite/OAuth) para tarefas que demandam apenas manipulação de arquivos, atalhos do Windows ou relatórios locais.
+
 ---
 
 ## 📚 Documentos Relacionados
 
-- [MY_AGENTS.md](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/MY_AGENTS.md): Detalhamento dos perfis e prompts dos agentes.
-- [MY_SKILLS.md](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/MY_SKILLS.md): Catálogo de skills disponíveis para os agentes.
-- [GEMINI.md](file:///c:/Users/melki/Documents/antigravity/wonderful-franklin/GEMINI.md): Regras globais de ambiente e segurança.
+- [MY_AGENTS.md](file:///c:/Users/melki/dev/franklin-quebragalho/MY_AGENTS.md): Detalhamento dos perfis e prompts dos agentes.
+- [MY_SKILLS.md](file:///c:/Users/melki/dev/franklin-quebragalho/MY_SKILLS.md): Catálogo de skills disponíveis para os agentes.
+- [GEMINI.md](file:///c:/Users/melki/dev/franklin-quebragalho/GEMINI.md): Regras globais de ambiente e segurança.

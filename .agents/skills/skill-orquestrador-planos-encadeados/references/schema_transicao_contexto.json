@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ContextTransitionPayload",
+  "description": "Contrato estruturado de transição de contexto entre fases no orquestrador encadeado",
+  "type": "object",
+  "required": [
+    "phase_id",
+    "sequence_index",
+    "target_skill",
+    "input_payload",
+    "expected_outputs",
+    "status"
+  ],
+  "properties": {
+    "phase_id": {
+      "type": "string",
+      "description": "Identificador único da fase (ex: fase_01_planejamento)"
+    },
+    "sequence_index": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Índice posicional cronológico da etapa"
+    },
+    "target_skill": {
+      "type": "string",
+      "description": "Nome canônico da skill a ser acionada"
+    },
+    "authorized_sub_skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Sub-skills que a skill ativa tem autorização contratual para invocar sob demanda"
+    },
+    "input_payload": {
+      "type": "object",
+      "description": "Payload de dados exclusivamente necessários para esta fase (sem histórico bruto)"
+    },
+    "context_constraints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Restrições de negócio ou limites operacionais vigentes"
+    },
+    "expected_outputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Lista de entregáveis concretos esperados ao fim da fase"
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Critérios falsificáveis para considerar a fase concluída"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "RETRYING",
+        "BLOCKED_HITL",
+        "FAILED"
+      ],
+      "description": "Estado atual da fase na máquina de estados"
+    }
+  },
+  "additionalProperties": false
+}

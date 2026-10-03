@@ -1,0 +1,7 @@
+[
+  {
+    "eval_id": "eval-001-criacao-skill",
+    "prompt": "Crie uma nova skill de automação chamada monitor-disco.",
+    "expected_behavior": "Gera pasta canônica com SKILL.md, frontmatter válido, regras determinísticas e registro em MY_SKILLS.md."
+  }
+]

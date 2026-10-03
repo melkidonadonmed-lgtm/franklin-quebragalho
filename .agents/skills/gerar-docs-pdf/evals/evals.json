@@ -1,0 +1,7 @@
+[
+  {
+    "eval_id": "eval-001-conversao-pdf",
+    "prompt": "Converta o arquivo teste-relatorio.md em PDF profissional.",
+    "expected_behavior": "Executa script de conversão headless e retorna o link file:/// para o PDF gerado."
+  }
+]

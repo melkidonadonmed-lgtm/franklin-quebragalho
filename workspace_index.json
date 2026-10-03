@@ -1,0 +1,942 @@
+{
+  "version": "2026.1",
+  "generated_at": "2026-10-03T18:33:13.317804+00:00",
+  "workspace_root": "C:\\Users\\melki\\dev\\franklin-quebragalho",
+  "tree_hash": "e5072b4173e9a101",
+  "stats": {
+    "total_files": 166,
+    "python_files": 1,
+    "total_classes": 0,
+    "total_functions": 3
+  },
+  "files": {
+    ".gitignore": {
+      "extension": "",
+      "size_bytes": 42
+    },
+    "AGENTS.md": {
+      "extension": ".md",
+      "size_bytes": 3454,
+      "headings": [
+        "# Arquitetura de Agentes: Franklin Quebra-Galho"
+      ]
+    },
+    "arquiteto_de_conteudo_e_solucoes.md": {
+      "extension": ".md",
+      "size_bytes": 44535,
+      "headings": []
+    },
+    "GEMINI.md": {
+      "extension": ".md",
+      "size_bytes": 7617,
+      "headings": [
+        "# Diretrizes do Workspace: Franklin Quebra-Galho",
+        "## 1. Identidade e Propósito"
+      ]
+    },
+    "Indice_Google_Drive.html": {
+      "extension": ".html",
+      "size_bytes": 708268
+    },
+    "MY AGENTS.md": {
+      "extension": ".md",
+      "size_bytes": 279,
+      "headings": [
+        "# Meus Agentes (MY AGENTS)"
+      ]
+    },
+    "MY SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 279,
+      "headings": [
+        "# Minhas Skills (MY SKILL)"
+      ]
+    },
+    "MY_AGENTS.md": {
+      "extension": ".md",
+      "size_bytes": 4713,
+      "headings": [
+        "# Meus Agentes (MY AGENTS)"
+      ]
+    },
+    "MY_SKILLS.md": {
+      "extension": ".md",
+      "size_bytes": 12047,
+      "headings": [
+        "# Minhas Skills (MY SKILLS)"
+      ]
+    },
+    "README.md": {
+      "extension": ".md",
+      "size_bytes": 9329,
+      "headings": [
+        "# Franklin Quebra-Galho 🛠️"
+      ]
+    },
+    ".agents/skills/aprimoramento-expansibilidade-agentes-skills/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 7109,
+      "headings": []
+    },
+    ".agents/skills/arquiteto-conteudo-solucoes/README.md": {
+      "extension": ".md",
+      "size_bytes": 4773,
+      "headings": [
+        "# Arquiteto de Conteúdo e Soluções 🏛️"
+      ]
+    },
+    ".agents/skills/arquiteto-conteudo-solucoes/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 6104,
+      "headings": []
+    },
+    ".agents/skills/arquiteto-conteudo-solucoes/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 1894
+    },
+    ".agents/skills/arquiteto-conteudo-solucoes/references/checklist_validacao.md": {
+      "extension": ".md",
+      "size_bytes": 1103,
+      "headings": [
+        "# CHECKLIST DE VALIDACAO PRE-ENTREGA (MODO D)",
+        "### 1. Aderencia ao Pedido Original"
+      ]
+    },
+    ".agents/skills/arquiteto-conteudo-solucoes/references/diretrizes_especializadas.md": {
+      "extension": ".md",
+      "size_bytes": 2540,
+      "headings": [
+        "# DIRETRIZES ESPECIALIZADAS POR DOMINIO"
+      ]
+    },
+    ".agents/skills/arquiteto-conteudo-solucoes/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 3236,
+      "headings": [
+        "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO (ANTI-ALUCINAÇÃO)"
+      ]
+    },
+    ".agents/skills/arquitetura-design-implementacao-sistema/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 4461,
+      "headings": []
+    },
+    ".agents/skills/auditoria-projetos-sistema/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 14197,
+      "headings": []
+    },
+    ".agents/skills/auditoria-projetos-sistema/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 1826
+    },
+    ".agents/skills/auditoria-projetos-sistema/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 3063,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REJEIÇÃO"
+      ]
+    },
+    ".agents/skills/context-sentinel/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 4301,
+      "headings": []
+    },
+    ".agents/skills/context-sentinel/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 277
+    },
+    ".agents/skills/context-sentinel/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 859,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (CONTEXT SENTINEL)"
+      ]
+    },
+    ".agents/skills/design-interface-medica-minimalista/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 3995,
+      "headings": []
+    },
+    ".agents/skills/design-interface-medica-minimalista/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 269
+    },
+    ".agents/skills/design-interface-medica-minimalista/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 742,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (DESIGN MÉDICO MINIMALISTA)",
+        "### Regra 1: Ausência Absoluta de Emojis"
+      ]
+    },
+    ".agents/skills/evoluir-skills/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 5523,
+      "headings": []
+    },
+    ".agents/skills/evoluir-skills/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 263
+    },
+    ".agents/skills/evoluir-skills/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 760,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (EVOLUIR SKILLS)"
+      ]
+    },
+    ".agents/skills/gerar-docs-pdf/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 3521,
+      "headings": []
+    },
+    ".agents/skills/gerar-docs-pdf/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 239
+    },
+    ".agents/skills/gerar-docs-pdf/examples/teste-relatorio.md": {
+      "extension": ".md",
+      "size_bytes": 398,
+      "headings": [
+        "# Relatrio de Teste - Franklin Quebra-Galho",
+        "## Objetivos Alcanados"
+      ]
+    },
+    ".agents/skills/gerar-docs-pdf/examples/teste-relatorio.pdf": {
+      "extension": ".pdf",
+      "size_bytes": 45825
+    },
+    ".agents/skills/gerar-docs-pdf/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 714,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (GERAR DOCS PDF)",
+        "### Regra 1: Validação de Existência do PDF"
+      ]
+    },
+    ".agents/skills/organizador-fluxo-arvore-arquivos/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 6942,
+      "headings": []
+    },
+    ".agents/skills/organizador-fluxo-arvore-arquivos/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 1255
+    },
+    ".agents/skills/organizador-fluxo-arvore-arquivos/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 2545,
+      "headings": [
+        "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO (ORGANIZADOR DE FLUXO E ÁRVORE)"
+      ]
+    },
+    ".agents/skills/organizar-gdrive/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 3572,
+      "headings": []
+    },
+    ".agents/skills/organizar-gdrive/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 275
+    },
+    ".agents/skills/organizar-gdrive/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 739,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (ORGANIZAR GDRIVE)",
+        "### Regra 1: Validação de Dry-Run Prévio"
+      ]
+    },
+    ".agents/skills/organizar-local/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 3804,
+      "headings": []
+    },
+    ".agents/skills/organizar-local/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 260
+    },
+    ".agents/skills/organizar-local/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 734,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (ORGANIZAR LOCAL)",
+        "### Regra 1: Validação de Dry-Run Prévio"
+      ]
+    },
+    ".agents/skills/skill-auditor-refatorador-skills/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 8000,
+      "headings": []
+    },
+    ".agents/skills/skill-auditor-refatorador-skills/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 2316
+    },
+    ".agents/skills/skill-auditor-refatorador-skills/references/matriz_desacoplamento.md": {
+      "extension": ".md",
+      "size_bytes": 2582,
+      "headings": [
+        "# MATRIZ DE DESACOPLAMENTO E ESPECIALIZAÇÃO DE SKILLS"
+      ]
+    },
+    ".agents/skills/skill-auditor-refatorador-skills/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 4062,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REFATORAÇÃO DE SKILLS"
+      ]
+    },
+    ".agents/skills/skill-orquestrador-planos-encadeados/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 6991,
+      "headings": []
+    },
+    ".agents/skills/skill-orquestrador-planos-encadeados/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 2520
+    },
+    ".agents/skills/skill-orquestrador-planos-encadeados/references/schema_transicao_contexto.json": {
+      "extension": ".json",
+      "size_bytes": 2016
+    },
+    ".agents/skills/skill-orquestrador-planos-encadeados/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 2990,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE ORQUESTRAÇÃO DE PLANOS ENCADEADOS"
+      ]
+    },
+    ".agents/skills/_template/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 2768,
+      "headings": []
+    },
+    ".agents/skills/_template/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 232
+    },
+    ".agents/skills/_template/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 779,
+      "headings": [
+        "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO (TEMPLATE PADRÃO 2026)"
+      ]
+    },
+    ".agents/teamwork/ORIGINAL_REQUEST.md": {
+      "extension": ".md",
+      "size_bytes": 2912,
+      "headings": [
+        "# Original User Request",
+        "## 2026-09-27T08:45:27Z"
+      ]
+    },
+    ".agents/teamwork/sentinel/BRIEFING.md": {
+      "extension": ".md",
+      "size_bytes": 1886,
+      "headings": [
+        "# BRIEFING — 2026-09-27T09:34:00Z",
+        "## Mission"
+      ]
+    },
+    ".agents/teamwork/sentinel/handoff.md": {
+      "extension": ".md",
+      "size_bytes": 2564,
+      "headings": [
+        "# Sentinel Handoff Report",
+        "## Observation"
+      ]
+    },
+    ".agents/teamwork/swe_1/BRIEFING.md": {
+      "extension": ".md",
+      "size_bytes": 4115,
+      "headings": [
+        "# BRIEFING — 2026-09-27T09:28:50Z",
+        "## Mission"
+      ]
+    },
+    ".agents/teamwork/swe_1/context.md": {
+      "extension": ".md",
+      "size_bytes": 293,
+      "headings": [
+        "# SWE Context"
+      ]
+    },
+    ".agents/teamwork/swe_1/DISPATCH.md": {
+      "extension": ".md",
+      "size_bytes": 968,
+      "headings": [
+        "## 2026-09-27T08:46:03Z"
+      ]
+    },
+    ".agents/teamwork/swe_1/handoff.md": {
+      "extension": ".md",
+      "size_bytes": 4325,
+      "headings": [
+        "# Relatório de Handoff Final: SWE Light Orchestrator (`swe_1`)"
+      ]
+    },
+    ".agents/teamwork/swe_1/progress.md": {
+      "extension": ".md",
+      "size_bytes": 2437,
+      "headings": [
+        "# Progress Tracking",
+        "## Iteration Status"
+      ]
+    },
+    ".agents/teamwork/teamwork_preview_implementer_1/handoff.md": {
+      "extension": ".md",
+      "size_bytes": 7269,
+      "headings": [
+        "# Relatório de Implementação e Handoff: Google OAuth 2.0 & Google Drive API v3"
+      ]
+    },
+    ".agents/teamwork/teamwork_preview_reviewer_r1/handoff.md": {
+      "extension": ".md",
+      "size_bytes": 11413,
+      "headings": [
+        "# Relatório de Revisão Adversarial e Handoff: Google OAuth 2.0 & Google Drive API v3"
+      ]
+    },
+    ".agents/teamwork/teamwork_preview_reviewer_r2/handoff.md": {
+      "extension": ".md",
+      "size_bytes": 11230,
+      "headings": [
+        "# Relatório de Revisão Adversarial (Round 2): Google OAuth 2.0 & Google Drive API v3"
+      ]
+    },
+    ".agents/teamwork/teamwork_preview_reviewer_r3/handoff.md": {
+      "extension": ".md",
+      "size_bytes": 14953,
+      "headings": [
+        "# Relatório de Revisão Adversarial (Round 3): Google OAuth 2.0 & Google Drive API v3"
+      ]
+    },
+    ".agents/teamwork/teamwork_preview_victory_auditor_1/BRIEFING.md": {
+      "extension": ".md",
+      "size_bytes": 3239,
+      "headings": [
+        "# BRIEFING — 2026-09-27T09:28:00Z",
+        "## Mission"
+      ]
+    },
+    ".agents/teamwork/teamwork_preview_victory_auditor_1/DISPATCH.md": {
+      "extension": ".md",
+      "size_bytes": 3239,
+      "headings": [
+        "## 2026-09-27T09:23:00Z"
+      ]
+    },
+    ".agents/teamwork/teamwork_preview_victory_auditor_1/handoff.md": {
+      "extension": ".md",
+      "size_bytes": 7977,
+      "headings": [
+        "# Relatório de Handoff da Auditoria de Vitória (Victory Audit)"
+      ]
+    },
+    ".agents/teamwork/teamwork_preview_victory_auditor_1/progress.md": {
+      "extension": ".md",
+      "size_bytes": 509,
+      "headings": [
+        "# Victory Audit Progress"
+      ]
+    },
+    ".agents/teamwork/teamwork_preview_victory_auditor_1/report.md": {
+      "extension": ".md",
+      "size_bytes": 5519,
+      "headings": []
+    },
+    ".agents/teamwork/teamwork_preview_victory_auditor_sentinel/BRIEFING.md": {
+      "extension": ".md",
+      "size_bytes": 2781,
+      "headings": [
+        "# BRIEFING — 2026-09-27T09:33:00Z",
+        "## Mission"
+      ]
+    },
+    ".agents/teamwork/teamwork_preview_victory_auditor_sentinel/context.md": {
+      "extension": ".md",
+      "size_bytes": 437,
+      "headings": [
+        "# Victory Audit Dispatch (Sentinel)"
+      ]
+    },
+    ".agents/teamwork/teamwork_preview_victory_auditor_sentinel/DISPATCH.md": {
+      "extension": ".md",
+      "size_bytes": 984,
+      "headings": [
+        "## 2026-09-27T09:29:26Z"
+      ]
+    },
+    ".agents/teamwork/teamwork_preview_victory_auditor_sentinel/handoff.md": {
+      "extension": ".md",
+      "size_bytes": 5048,
+      "headings": [
+        "# Handoff Report — Independent Victory Audit (Sentinel)"
+      ]
+    },
+    ".agents/teamwork/teamwork_preview_victory_auditor_sentinel/progress.md": {
+      "extension": ".md",
+      "size_bytes": 877,
+      "headings": [
+        "# Victory Auditor Progress Log"
+      ]
+    },
+    ".agents/teamwork/teamwork_preview_victory_auditor_sentinel/report.md": {
+      "extension": ".md",
+      "size_bytes": 2332,
+      "headings": []
+    },
+    ".context/CURRENT_STATE.md": {
+      "extension": ".md",
+      "size_bytes": 2462,
+      "headings": [
+        "# Estado Atual do Workspace: Franklin Quebra-Galho"
+      ]
+    },
+    ".context/SESSION_LOG.md": {
+      "extension": ".md",
+      "size_bytes": 1795,
+      "headings": [
+        "# Checkpoint da Sessão: Franklin Quebra-Galho"
+      ]
+    },
+    "google-drive-index-app/.env.example": {
+      "extension": ".example",
+      "size_bytes": 308
+    },
+    "google-drive-index-app/.gitignore": {
+      "extension": "",
+      "size_bytes": 331
+    },
+    "google-drive-index-app/index.html": {
+      "extension": ".html",
+      "size_bytes": 886
+    },
+    "google-drive-index-app/package-lock.json": {
+      "extension": ".json",
+      "size_bytes": 107016
+    },
+    "google-drive-index-app/package.json": {
+      "extension": ".json",
+      "size_bytes": 703
+    },
+    "google-drive-index-app/postcss.config.js": {
+      "extension": ".js",
+      "size_bytes": 80
+    },
+    "google-drive-index-app/tailwind.config.js": {
+      "extension": ".js",
+      "size_bytes": 337
+    },
+    "google-drive-index-app/tsconfig.json": {
+      "extension": ".json",
+      "size_bytes": 508
+    },
+    "google-drive-index-app/vite.config.ts": {
+      "extension": ".ts",
+      "size_bytes": 183
+    },
+    "google-drive-index-app/dist/index.html": {
+      "extension": ".html",
+      "size_bytes": 984
+    },
+    "google-drive-index-app/dist/assets/index-DNe7xLP_.js": {
+      "extension": ".js",
+      "size_bytes": 200345
+    },
+    "google-drive-index-app/dist/assets/index-mwrGjeDf.css": {
+      "extension": ".css",
+      "size_bytes": 25529
+    },
+    "google-drive-index-app/src/App.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 2810
+    },
+    "google-drive-index-app/src/index.css": {
+      "extension": ".css",
+      "size_bytes": 420
+    },
+    "google-drive-index-app/src/main.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 250
+    },
+    "google-drive-index-app/src/vite-env.d.ts": {
+      "extension": ".ts",
+      "size_bytes": 167
+    },
+    "google-drive-index-app/src/components/atoms/CopyButton.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 2918
+    },
+    "google-drive-index-app/src/components/atoms/MimeBadge.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 2524
+    },
+    "google-drive-index-app/src/components/atoms/SearchInput.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 2303
+    },
+    "google-drive-index-app/src/components/molecules/FileRow.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 3171
+    },
+    "google-drive-index-app/src/components/molecules/FilterChips.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 1765
+    },
+    "google-drive-index-app/src/components/molecules/SortHeader.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 1937
+    },
+    "google-drive-index-app/src/components/organisms/ConfigModal.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 9820
+    },
+    "google-drive-index-app/src/components/organisms/DriveHeader.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 8459
+    },
+    "google-drive-index-app/src/components/organisms/EmptyState.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 2206
+    },
+    "google-drive-index-app/src/components/organisms/FileTable.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 4172
+    },
+    "google-drive-index-app/src/components/organisms/StatsOverview.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 3285
+    },
+    "google-drive-index-app/src/context/DriveContext.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 10377
+    },
+    "google-drive-index-app/src/hooks/useDebounce.ts": {
+      "extension": ".ts",
+      "size_bytes": 392
+    },
+    "google-drive-index-app/src/hooks/useDriveSearch.ts": {
+      "extension": ".ts",
+      "size_bytes": 2012
+    },
+    "google-drive-index-app/src/services/driveService.ts": {
+      "extension": ".ts",
+      "size_bytes": 11829
+    },
+    "google-drive-index-app/src/services/googleAuth.ts": {
+      "extension": ".ts",
+      "size_bytes": 5439
+    },
+    "google-drive-index-app/src/types/drive.ts": {
+      "extension": ".ts",
+      "size_bytes": 919
+    },
+    "google-drive-index-app/src/types/google.ts": {
+      "extension": ".ts",
+      "size_bytes": 919
+    },
+    "google-drive-index-app/tests/driveSearch.test.ts": {
+      "extension": ".ts",
+      "size_bytes": 4934
+    },
+    "google-drive-index-app/tests/driveService.test.ts": {
+      "extension": ".ts",
+      "size_bytes": 14872
+    },
+    "google-drive-index-app/tests/googleAuth.test.ts": {
+      "extension": ".ts",
+      "size_bytes": 11125
+    },
+    "scripts/Buscador-Google-Drive.ps1": {
+      "extension": ".ps1",
+      "size_bytes": 9279
+    },
+    "scripts/md-to-pdf.ps1": {
+      "extension": ".ps1",
+      "size_bytes": 5294
+    },
+    "scripts/validate_skills.py": {
+      "extension": ".py",
+      "size_bytes": 7377,
+      "python_ast": {
+        "classes": [],
+        "functions": [
+          {
+            "name": "parse_frontmatter",
+            "is_async": false,
+            "docstring": "Extrai frontmatter YAML simples e corpo do documento."
+          },
+          {
+            "name": "validate_skill_dir",
+            "is_async": false,
+            "docstring": "Valida uma pasta de skill individual."
+          },
+          {
+            "name": "main",
+            "is_async": false,
+            "docstring": ""
+          }
+        ],
+        "routes": []
+      }
+    },
+    "scripts/visual-audit-mural.js": {
+      "extension": ".js",
+      "size_bytes": 4130
+    },
+    "skills/aprimoramento-expansibilidade-agentes-skills/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 7109,
+      "headings": []
+    },
+    "skills/arquiteto-conteudo-solucoes/README.md": {
+      "extension": ".md",
+      "size_bytes": 4773,
+      "headings": [
+        "# Arquiteto de Conteúdo e Soluções 🏛️"
+      ]
+    },
+    "skills/arquiteto-conteudo-solucoes/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 6104,
+      "headings": []
+    },
+    "skills/arquiteto-conteudo-solucoes/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 1894
+    },
+    "skills/arquiteto-conteudo-solucoes/references/checklist_validacao.md": {
+      "extension": ".md",
+      "size_bytes": 1103,
+      "headings": [
+        "# CHECKLIST DE VALIDACAO PRE-ENTREGA (MODO D)",
+        "### 1. Aderencia ao Pedido Original"
+      ]
+    },
+    "skills/arquiteto-conteudo-solucoes/references/diretrizes_especializadas.md": {
+      "extension": ".md",
+      "size_bytes": 2540,
+      "headings": [
+        "# DIRETRIZES ESPECIALIZADAS POR DOMINIO"
+      ]
+    },
+    "skills/arquiteto-conteudo-solucoes/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 3236,
+      "headings": [
+        "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO (ANTI-ALUCINAÇÃO)"
+      ]
+    },
+    "skills/arquitetura-design-implementacao-sistema/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 4461,
+      "headings": []
+    },
+    "skills/auditoria-projetos-sistema/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 14197,
+      "headings": []
+    },
+    "skills/auditoria-projetos-sistema/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 1826
+    },
+    "skills/auditoria-projetos-sistema/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 3063,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REJEIÇÃO"
+      ]
+    },
+    "skills/context-sentinel/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 4301,
+      "headings": []
+    },
+    "skills/context-sentinel/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 277
+    },
+    "skills/context-sentinel/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 859,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (CONTEXT SENTINEL)"
+      ]
+    },
+    "skills/design-interface-medica-minimalista/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 3995,
+      "headings": []
+    },
+    "skills/design-interface-medica-minimalista/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 269
+    },
+    "skills/design-interface-medica-minimalista/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 742,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (DESIGN MÉDICO MINIMALISTA)",
+        "### Regra 1: Ausência Absoluta de Emojis"
+      ]
+    },
+    "skills/evoluir-skills/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 5523,
+      "headings": []
+    },
+    "skills/evoluir-skills/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 263
+    },
+    "skills/evoluir-skills/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 760,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (EVOLUIR SKILLS)"
+      ]
+    },
+    "skills/gerar-docs-pdf/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 3521,
+      "headings": []
+    },
+    "skills/gerar-docs-pdf/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 239
+    },
+    "skills/gerar-docs-pdf/examples/teste-relatorio.md": {
+      "extension": ".md",
+      "size_bytes": 398,
+      "headings": [
+        "# Relatrio de Teste - Franklin Quebra-Galho",
+        "## Objetivos Alcanados"
+      ]
+    },
+    "skills/gerar-docs-pdf/examples/teste-relatorio.pdf": {
+      "extension": ".pdf",
+      "size_bytes": 45825
+    },
+    "skills/gerar-docs-pdf/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 714,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (GERAR DOCS PDF)",
+        "### Regra 1: Validação de Existência do PDF"
+      ]
+    },
+    "skills/organizador-fluxo-arvore-arquivos/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 6942,
+      "headings": []
+    },
+    "skills/organizador-fluxo-arvore-arquivos/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 1255
+    },
+    "skills/organizador-fluxo-arvore-arquivos/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 2545,
+      "headings": [
+        "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO (ORGANIZADOR DE FLUXO E ÁRVORE)"
+      ]
+    },
+    "skills/organizar-gdrive/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 3572,
+      "headings": []
+    },
+    "skills/organizar-gdrive/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 275
+    },
+    "skills/organizar-gdrive/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 739,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (ORGANIZAR GDRIVE)",
+        "### Regra 1: Validação de Dry-Run Prévio"
+      ]
+    },
+    "skills/organizar-local/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 3804,
+      "headings": []
+    },
+    "skills/organizar-local/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 260
+    },
+    "skills/organizar-local/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 734,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (ORGANIZAR LOCAL)",
+        "### Regra 1: Validação de Dry-Run Prévio"
+      ]
+    },
+    "skills/skill-auditor-refatorador-skills/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 8000,
+      "headings": []
+    },
+    "skills/skill-auditor-refatorador-skills/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 2316
+    },
+    "skills/skill-auditor-refatorador-skills/references/matriz_desacoplamento.md": {
+      "extension": ".md",
+      "size_bytes": 2582,
+      "headings": [
+        "# MATRIZ DE DESACOPLAMENTO E ESPECIALIZAÇÃO DE SKILLS"
+      ]
+    },
+    "skills/skill-auditor-refatorador-skills/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 4062,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REFATORAÇÃO DE SKILLS"
+      ]
+    },
+    "skills/skill-orquestrador-planos-encadeados/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 6991,
+      "headings": []
+    },
+    "skills/skill-orquestrador-planos-encadeados/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 2520
+    },
+    "skills/skill-orquestrador-planos-encadeados/references/schema_transicao_contexto.json": {
+      "extension": ".json",
+      "size_bytes": 2016
+    },
+    "skills/skill-orquestrador-planos-encadeados/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 2990,
+      "headings": [
+        "# CRITÉRIOS DETERMINÍSTICOS DE ORQUESTRAÇÃO DE PLANOS ENCADEADOS"
+      ]
+    },
+    "skills/_template/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 2768,
+      "headings": []
+    },
+    "skills/_template/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 232
+    },
+    "skills/_template/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 779,
+      "headings": [
+        "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO (TEMPLATE PADRÃO 2026)"
+      ]
+    }
+  }
+}

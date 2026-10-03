@@ -2,6 +2,7 @@
 name: organizar-local
 description: >-
   Use esta skill para gerenciar, triar, catalogar e organizar pastas e arquivos no computador local (Windows 11), incluindo Downloads, Área de Trabalho, pasta dev e Obsidian Vault.
+version: 1.0.0
 ---
 
 # Organizar Pastas Locais (Windows 11) 💻
@@ -15,6 +16,20 @@ Procedimento operacional para triagem, higienização e organização de diretó
 - Triagem de projetos e repositórios em `C:\Users\melki\dev\`.
 - Organização de notas e anexos soltos no **Obsidian Vault** (`C:\Users\melki\Documents\Obsidian Vault\`).
 - Identificação de arquivos pesados que consom espaço em disco.
+
+---
+
+## 🚫 Limites, Exceções e Quando NÃO Usar
+- NUNCA executar `Remove-Item -Recurse -Force` sem confirmação humana explícita.
+- Não alterar pastas de sistema (`C:\Windows`, `C:\Program Files`) ou arquivos de runtime ativos.
+- Não modificar a pasta interna `.obsidian/` sem autorização expressa.
+
+---
+
+## 📥 Entradas Obrigatórias e Pré-requisitos
+1. **Pasta Alvo**: Ex.: `Downloads`, `Desktop`, `dev/` ou `Obsidian Vault`.
+2. **Critério de Agrupamento**: Por extensão, idade (dias) ou assunto do projeto.
+3. **Pré-requisito**: PowerShell 7 (`pwsh`) no Windows 11.
 
 ---
 
@@ -63,3 +78,10 @@ Get-ChildItem -Path "C:\Users\melki\Downloads" -File | Where-Object { $_.LastWri
 - No Obsidian, arquivos `.md` devem seguir links bidirecionais `[[Nota]]`.
 - Anexos (PDFs, imagens) devem ser mantidos na pasta designada de anexos (geralmente `_attachments/` ou `Anexos/`).
 - Não modifique a pasta oculta `.obsidian/` sem necessidade explícita.
+
+---
+
+## 📤 Saídas e Entregáveis (Modelo de Saída)
+1. Resumo da simulação com contagem de arquivos e extensões detectadas.
+2. Relatório de movimentação física comprovada em terminal PowerShell.
+3. Links clicáveis `file:///` para as pastas de destino organizadas.

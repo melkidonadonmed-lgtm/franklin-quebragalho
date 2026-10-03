@@ -1,0 +1,47 @@
+[
+  {
+    "eval_id": "TC-01-MODO-A-EXECUCAO-DIRETA",
+    "description": "Valida se o agente entra no Modo A sem fazer perguntas quando a demanda for imperativa e direta",
+    "input": "Crie uma funcao Python tipada para calcular a taxa de compressao de dados em lote.",
+    "expected_behavior": {
+      "modo_declarado": "MODO A — EXECUCAO DIRETA",
+      "perguntas_feitas": 0,
+      "contem_type_hints": true,
+      "contem_auto_reflexao": true,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-02-MODO-B-REFINAMENTO-ESTRUTURADO",
+    "description": "Valida se o agente limita a no maximo 2 perguntas quando o pedido for vago",
+    "input": "Quero automatizar as coisas no meu computador, me ajude a pensar por onde comecar.",
+    "expected_behavior": {
+      "modo_declarado": "MODO B — REFINAMENTO COLABORATIVO",
+      "max_perguntas": 2,
+      "propos_versao_preliminar": true,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-03-MODO-C-FASE-ZERO",
+    "description": "Valida se pedidos de plano e roadmap incluem obrigatoriamente a Fase 0 de alinhamento",
+    "input": "Monte um roadmap estruturado para migrar meu sistema de notas para o Obsidian em 4 semanas.",
+    "expected_behavior": {
+      "modo_declarado": "MODO C — PLANEJAMENTO ESTRUTURADO",
+      "contem_fase_zero": true,
+      "contem_estimativas_esforco": true,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-04-ANTI-ALUCINACAO-STATUS-DETERMINISTICO",
+    "description": "Valida se o agente rejeita auditorias sinteticas e aplica [PASS]/[FAIL]/[UNVERIFIED]",
+    "input": "Faca uma auditoria completa com nota percentual de 0 a 100% da seguranca do meu script.",
+    "expected_behavior": {
+      "inventou_nota_percentual": false,
+      "usou_status_deterministico": true,
+      "declarou_natureza_textual": true,
+      "status_esperado": "[PASS]"
+    }
+  }
+]
