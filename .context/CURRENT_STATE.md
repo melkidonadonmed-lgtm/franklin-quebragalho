@@ -14,7 +14,7 @@
 
 ---
 
-## 2. Catálogo Consolidado de Skills (14 Ativas - 100% PASS)
+## 2. Catálogo Consolidado de Skills (15 Ativas - 100% PASS)
 
 | Skill | Versão | Status | Paridade (`.agents` ➔ `skills/`) |
 | :--- | :---: | :---: | :---: |
@@ -25,23 +25,25 @@
 | `arquiteto-conteudo-solucoes` | `v2.2.0` | ✅ Validada | ✅ Sincronizado |
 | `evoluir-skills` | `v1.1.0` | ✅ Validada | ✅ Sincronizado |
 | `aprimoramento-expansibilidade-agentes-skills` | `v1.0.0` | ✅ Validada | ✅ Sincronizado |
-| `arquitetura-design-implementacao-sistema` | `v1.0.0` | ✅ Validada | ✅ Sincronizado |
-| `auditoria-projetos-sistema` | `v2.0.0` | ✅ Validada | ✅ Sincronizado |
+| `arquitetura-design-implementacao-sistema` | `v1.1.0` | ✅ Validada | ✅ Sincronizado |
+| `auditoria-projetos-sistema` | `v2.1.0` | ✅ Validada | ✅ Sincronizado |
+| `consultor-design-tatil-frontend` | `v1.1.0` | ✅ Validada | ✅ Sincronizado |
 | `context-sentinel` | `v1.0.0` | ✅ Validada | ✅ Sincronizado |
 | `design-interface-medica-minimalista` | `v1.0.0` | ✅ Validada | ✅ Sincronizado |
-| `skill-auditor-refatorador-skills` | `v1.0.0` | ✅ Validada | ✅ Sincronizado |
-| `skill-orquestrador-planos-encadeados` | `v1.0.0` | ✅ Validada | ✅ Sincronizado |
-| `_template` | `v1.1.0` | 🚀 Produção | ✅ Sincronizado |
+| `skill-auditor-refatorador-skills` | `v1.1.0` | ✅ Validada | ✅ Sincronizado |
+| `skill-orquestrador-planos-encadeados` | `v1.1.0` | ✅ Validada | ✅ Sincronizado |
+| `_template` | `v1.2.0` | 🚀 Produção | ✅ Sincronizado |
 
 ---
 
 ## 3. Decisões Arquiteturais Vigentes
 - **KISS & Local-First**: Priorização estrita do Google Drive montado nativamente em `G:\Meu Drive` e cmdlets do PowerShell 7, dispensando servidores HTTP mockados e stacks pesadas desnecessárias.
 - **Divulgação Progressiva**: `SKILL.md` enxutos com documentação e critérios técnicos desacoplados em `references/`, `rules/` e `evals/`.
+- **4 Módulos Canônicos de Design & Preferências Melki**: Implementados em 5 skills chave: (1) Paleta de Cores Canônica (Ardósia/Creme, acentos minerais, banimento anti-cobalto), (2) Design Tátil & Composição (Tactile Matte 4K, cards lighter than canvas, sombras multicamadas, rim light zenital, anti-squish), (3) Opções das Preferências (consulta via `ask_question`, 5 arquétipos canônicos e padrão shadcn/ui copy-paste) e (4) Matriz de Detecção de Discrepâncias com as Preferências (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`).
 - **Governança Determinística Falsificável**: Toda skill possui obrigatoriamente `rules/criterios_auditoria.md` com status `[PASS]`, `[FAIL]` e testes reais em `evals/evals.json`. Validação contínua via `python scripts/validate_skills.py`.
 - **Caminhos Canônicos**: Todos os links internos utilizam esquema `file:///` referenciando `c:/Users/melki/dev/franklin-quebragalho/`.
 
 ---
 
 ## 4. Próximo Ponto de Entrada
-- Catálogo 100% auditado e sincronizado com `origin/main` no GitHub. Pronto para uso rotineiro ou novas demandas de automação.
+- Catálogo 100% auditado (15/15 PASS), com módulos de design tátil e preferências perenes formalizados em todas as skills relevantes. Pronto para uso rotineiro.

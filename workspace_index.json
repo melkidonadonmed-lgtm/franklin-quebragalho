@@ -1,10 +1,10 @@
 {
   "version": "2026.1",
-  "generated_at": "2026-10-03T18:33:13.317804+00:00",
+  "generated_at": "2026-10-03T23:23:47.638508+00:00",
   "workspace_root": "C:\\Users\\melki\\dev\\franklin-quebragalho",
-  "tree_hash": "e5072b4173e9a101",
+  "tree_hash": "62c9acce0a5f15a2",
   "stats": {
-    "total_files": 166,
+    "total_files": 174,
     "python_files": 1,
     "total_classes": 0,
     "total_functions": 3
@@ -61,7 +61,7 @@
     },
     "MY_SKILLS.md": {
       "extension": ".md",
-      "size_bytes": 12047,
+      "size_bytes": 14308,
       "headings": [
         "# Minhas Skills (MY SKILLS)"
       ]
@@ -118,23 +118,46 @@
     },
     ".agents/skills/arquitetura-design-implementacao-sistema/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 4461,
+      "size_bytes": 10957,
       "headings": []
     },
     ".agents/skills/auditoria-projetos-sistema/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 14197,
+      "size_bytes": 17783,
       "headings": []
     },
     ".agents/skills/auditoria-projetos-sistema/evals/evals.json": {
       "extension": ".json",
-      "size_bytes": 1826
+      "size_bytes": 1892
     },
     ".agents/skills/auditoria-projetos-sistema/rules/criterios_auditoria.md": {
       "extension": ".md",
-      "size_bytes": 3063,
+      "size_bytes": 3249,
       "headings": [
         "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REJEIÇÃO"
+      ]
+    },
+    ".agents/skills/consultor-design-tatil-frontend/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 15471,
+      "headings": []
+    },
+    ".agents/skills/consultor-design-tatil-frontend/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 1489
+    },
+    ".agents/skills/consultor-design-tatil-frontend/references/paleta_estilo_melki.md": {
+      "extension": ".md",
+      "size_bytes": 5432,
+      "headings": [
+        "# Diretrizes do Design System Tátil Melki (Padrão 2026)"
+      ]
+    },
+    ".agents/skills/consultor-design-tatil-frontend/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 3946,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria e Design Tátil (Padrão Melki)"
       ]
     },
     ".agents/skills/context-sentinel/SKILL.md": {
@@ -267,7 +290,7 @@
     },
     ".agents/skills/skill-auditor-refatorador-skills/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 8000,
+      "size_bytes": 11744,
       "headings": []
     },
     ".agents/skills/skill-auditor-refatorador-skills/evals/evals.json": {
@@ -290,7 +313,7 @@
     },
     ".agents/skills/skill-orquestrador-planos-encadeados/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 6991,
+      "size_bytes": 11397,
       "headings": []
     },
     ".agents/skills/skill-orquestrador-planos-encadeados/evals/evals.json": {
@@ -310,7 +333,7 @@
     },
     ".agents/skills/_template/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 2768,
+      "size_bytes": 8388,
       "headings": []
     },
     ".agents/skills/_template/evals/evals.json": {
@@ -490,14 +513,14 @@
     },
     ".context/CURRENT_STATE.md": {
       "extension": ".md",
-      "size_bytes": 2462,
+      "size_bytes": 3044,
       "headings": [
         "# Estado Atual do Workspace: Franklin Quebra-Galho"
       ]
     },
     ".context/SESSION_LOG.md": {
       "extension": ".md",
-      "size_bytes": 1795,
+      "size_bytes": 2307,
       "headings": [
         "# Checkpoint da Sessão: Franklin Quebra-Galho"
       ]
@@ -732,23 +755,46 @@
     },
     "skills/arquitetura-design-implementacao-sistema/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 4461,
+      "size_bytes": 10957,
       "headings": []
     },
     "skills/auditoria-projetos-sistema/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 14197,
+      "size_bytes": 17783,
       "headings": []
     },
     "skills/auditoria-projetos-sistema/evals/evals.json": {
       "extension": ".json",
-      "size_bytes": 1826
+      "size_bytes": 1892
     },
     "skills/auditoria-projetos-sistema/rules/criterios_auditoria.md": {
       "extension": ".md",
-      "size_bytes": 3063,
+      "size_bytes": 3249,
       "headings": [
         "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REJEIÇÃO"
+      ]
+    },
+    "skills/consultor-design-tatil-frontend/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 15471,
+      "headings": []
+    },
+    "skills/consultor-design-tatil-frontend/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 1489
+    },
+    "skills/consultor-design-tatil-frontend/references/paleta_estilo_melki.md": {
+      "extension": ".md",
+      "size_bytes": 5432,
+      "headings": [
+        "# Diretrizes do Design System Tátil Melki (Padrão 2026)"
+      ]
+    },
+    "skills/consultor-design-tatil-frontend/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 3946,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria e Design Tátil (Padrão Melki)"
       ]
     },
     "skills/context-sentinel/SKILL.md": {
@@ -881,7 +927,7 @@
     },
     "skills/skill-auditor-refatorador-skills/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 8000,
+      "size_bytes": 11744,
       "headings": []
     },
     "skills/skill-auditor-refatorador-skills/evals/evals.json": {
@@ -904,7 +950,7 @@
     },
     "skills/skill-orquestrador-planos-encadeados/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 6991,
+      "size_bytes": 11397,
       "headings": []
     },
     "skills/skill-orquestrador-planos-encadeados/evals/evals.json": {
@@ -924,7 +970,7 @@
     },
     "skills/_template/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 2768,
+      "size_bytes": 8388,
       "headings": []
     },
     "skills/_template/evals/evals.json": {

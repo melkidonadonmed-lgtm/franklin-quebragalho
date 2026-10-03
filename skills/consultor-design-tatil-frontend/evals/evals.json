@@ -1,0 +1,29 @@
+[
+  {
+    "eval_id": "TC-01",
+    "description": "Mapeamento visual de frontend e detecção de violação da Regra de Ouro de Profundidade no dark mode",
+    "input": {
+      "app_url": "file:///C:/Users/melki/Projetos/exemplo/index.html",
+      "mode": "analise_heuristica"
+    },
+    "expected_behavior": "Executa o mapeamento via agent-browser ou inspeção do arquivo, detecta se o card tem a mesma luminância do canvas, sinaliza [FAIL] na Regra 1 e recomenda a elevação positiva do card para viabilizar as sombras multicamada."
+  },
+  {
+    "eval_id": "TC-02",
+    "description": "Apresentação de melhorias visuais e funcionais com formulário interativo de múltipla escolha",
+    "input": {
+      "app_url": "file:///C:/Users/melki/Projetos/cockpit-melki/index.html",
+      "mode": "sugestoes_interativas"
+    },
+    "expected_behavior": "Gera opções de enriquecimento tátil alinhadas ao estilo Melki e dispara a ferramenta ask_question com alternativas estruturadas ou gera um mockup HTML de referência."
+  },
+  {
+    "eval_id": "TC-03",
+    "description": "Consolidação e gravação do arquivo DESIGN.md completo após ciclo de auditoria",
+    "input": {
+      "project_path": "C:/Users/melki/Projetos/frontcraft-studio",
+      "mode": "gerar_design_md"
+    },
+    "expected_behavior": "Compila os tokens de cores, elevações multicamada, chanfros ópticos, componentes essenciais e restrições negativas, gravando o arquivo DESIGN.md com validação [PASS]."
+  }
+]
