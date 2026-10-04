@@ -1,24 +1,24 @@
 ---
 name: analise-design-tatil-frontend
 description: >-
-  Inspeciona e audita interfaces frontend (via agent-browser ou codigo estatico), analisa menus, sidebar, tipografia, fontes, icones, tamanho dos botoes, transicoes, layout e profundidade tatil, emitindo um Relatorio Comparativo deterministico confrontando o estado atual contra as preferencias canônicas do Melki.
-version: 1.0.0
-updated_at: 2026-10-03
+  Inspeciona e audita interfaces frontend (via agent-browser ou codigo estatico), analisa menus, sidebar, tipografia, fontes, icones, tamanho dos botoes, transicoes, layout, profundidade tatil e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide, emitindo um Relatorio Comparativo deterministico.
+version: 1.1.0
+updated_at: 2026-10-04
 author: FrontCraftMaster & Melki
 category: Diagnóstico Visual e Auditoria Frontend
 ---
 
 # 1. NOME DA SKILL
-`analise-design-tatil-frontend` (Diagnóstico Estrutural de Frontend, Inspeção Visual e Relatório Comparativo de Preferências).
+`analise-design-tatil-frontend` (Diagnóstico Estrutural de Frontend, Inspeção Visual, Auditoria Google Style Guides e Relatório Comparativo de Preferências).
 
 ---
 
 ## 2. GATILHOS DE ATIVAÇÃO (QUANDO USAR)
 
 Ative esta skill sempre que:
-- O usuário solicitar: "analise o frontend deste projeto", "compare o design atual com minhas preferências", "mapeie menus, botões e fontes", "audite a interface do app sem alterar o código".
+- O usuário solicitar: "analise o frontend deste projeto", "compare o design atual com minhas preferências", "mapeie menus, botões e fontes", "audite a interface do app sem alterar o código", "verifique a conformidade com o Google Style Guide no frontend".
 - Antes de iniciar qualquer refatoração de frontend, para levantar o baseline exato do projeto.
-- Para verificar se uma interface respeita o espaçamento nobre de menus, alvos de clique ergonômicos, fontes adequadas e o banimento de azul cobalto neon.
+- Para verificar se uma interface respeita o espaçamento nobre de menus, alvos de clique ergonômicos, fontes adequadas, banimento de azul cobalto neon e regras do Google HTML/CSS.
 - Quando for necessário inspecionar uma aplicação em execução via `agent-browser` ou código HTML/CSS estático gerando um relatório em tabela determinística (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`).
 
 ### Quando NÃO Usar
@@ -36,9 +36,9 @@ Ative esta skill sempre que:
 
 ---
 
-## 4. DIRETRIZES DE INSPEÇÃO PONTO A PONTO (PREFERÊNCIAS MELKI)
+## 4. DIRETRIZES DE INSPEÇÃO PONTO A PONTO (PREFERÊNCIAS MELKI & GOOGLE)
 
-A análise avalia rigorosamente os 8 pontos críticos do Design System Tátil:
+A análise avalia rigorosamente os 10 pontos críticos de design tátil e padrões de código:
 
 ### 4.1. Menus e Navegação
 - **Anti-Compactação:** Proibição de menus colapsados ou espremidos com padding claustrofóbico.
@@ -81,6 +81,18 @@ A análise avalia rigorosamente os 8 pontos críticos do Design System Tátil:
 - **Fio de Luz Superior (Rim Light):** Borda superior com micro-chanfro zenital mineral (`border-top: 1px solid rgba(255, 255, 255, 0.14)`).
 - **Anti-Glassmorphism:** Reprovação de caixas de vidro transparentes com blur excessivo e reflexos plásticos.
 
+### 4.9. Sintaxe HTML5 Semântica (Google HTML/CSS Style Guide)
+- **Tags e Atributos:** Todas as tags e atributos em minúsculas (`<div class="...">`).
+- **Ausência de Trailing Slash em Void Elements:** Reprovação de `<br />`, `<img ... />` ou `<meta ... />` em documentos HTML5; exigir `<br>`, `<img>`, `<meta>`.
+- **Omissão de Tipos Redundantes:** Reprovação de `type="text/javascript"` em `<script>` e `type="text/css"` em `<link>`.
+- **Protocolos Limpos:** URLs externas com HTTPS explícito ou protocolo relativo (`//`).
+
+### 4.10. Formatação CSS e Nomenclatura (Google Style Guide)
+- **Nomenclatura em Kebab-case:** Classes e identificadores obrigatoriamente no padrão `kebab-case` (`.user-card`, `.btn-action`). Reprovação de `camelCase` em classes CSS.
+- **Omissão de Unidade Zero:** Reprovação de `0px`, `0em`, `0%` onde deve ser apenas `0` (`margin: 0;`).
+- **Indentação e Espaçamento:** Indentação consistente de 2 espaços por nível de bloco CSS.
+- **Uso de IDs para Estilo:** Reprovação do uso de seletores `#id` para estilização (usar exclusivamente classes).
+
 ---
 
 ## 5. PROCESSO PASSO A PASSO (INSPEÇÃO E COMPARAÇÃO)
@@ -96,20 +108,22 @@ A análise avalia rigorosamente os 8 pontos críticos do Design System Tátil:
    ```powershell
    agent-browser --color-scheme dark screenshot --annotate
    ```
-3. Se arquivos estáticos, inspecionar folhas de estilo (`globals.css`, `tailwind.config.js`) e componentes principais.
+3. Se arquivos estáticos, inspecionar folhas de estilo (`globals.css`, `tailwind.config.js`) e arquivos HTML/JSX/TSX.
 
 ### Passo 2: Extração dos Parâmetros Reais
 Mapear os valores reais em uso:
 - Altura dos botões (`computedStyle.height`).
 - Font-family dos títulos e parágrafos.
 - Hexadecimais de fundo e cartões.
+- Presença de tags void com autofechamento XML (`<br/>`, `/>`).
+- Nomenclatura das classes CSS (`kebab-case` vs `camelCase`).
 - Existência de classes `shrink-0`, `whitespace-nowrap`, `active:scale-95`.
 - Espaçamento de itens da sidebar e navbar.
 
 ### Passo 3: Confronto com a Tabela Canônica de Preferências
-Atribuir status determinístico para cada um dos 8 critérios:
-- `[PASS]`: Atende integralmente à preferência do Melki.
-- `[FAIL]`: Viola a diretriz ou apresenta defeito visual/ergonômico.
+Atribuir status determinístico para cada um dos 10 critérios:
+- `[PASS]`: Atende integralmente à diretriz.
+- `[FAIL]`: Viola a diretriz ou apresenta defeito visual/ergonômico/sintático.
 - `[UNVERIFIED]`: Não foi possível testar dinamicamente no momento da análise.
 
 ### Passo 4: Emissão do Relatório Comparativo
@@ -129,9 +143,9 @@ A resposta final da skill entrega o relatório com este modelo:
 - **Tema Base Identificado:** [Dark Mode / Light Mode / Misto]
 - **Framework Detectado:** [React / Tailwind / HTML Puro / Outro]
 
-## 2. Matriz de Conformidade com as Preferências Melki
+## 2. Matriz de Conformidade com as Preferências Melki e Google Style Guides
 
-| Ponto de Análise | Estado Atual Detectado | Preferência Melki | Status | Discrepância / Diagnóstico |
+| Ponto de Análise | Estado Atual Detectado | Padrão Esperado | Status | Discrepância / Diagnóstico |
 | :--- | :--- | :--- | :---: | :--- |
 | **1. Menus & Navegação** | [Ex: Espaço 4px, compactado] | Espaçamento nobre (gap >= 12px, padding relaxado) | `[FAIL]` | Menus espremidos gerando sensação claustrofóbica |
 | **2. Sidebar** | [Ex: 180px de largura] | Mínimo 240px a 280px com labels completas | `[FAIL]` | Nomes de itens truncados |
@@ -141,9 +155,11 @@ A resposta final da skill entrega o relatório com este modelo:
 | **6. Transições & Feedback**| [Ex: Sem efeito de clique] | active:scale-95, transição tátil 150ms | `[FAIL]` | Elementos estáticos sem cinestesia |
 | **7. Layout & Grids** | [Ex: Coluna de 260px] | Colunas >= 350px, respiro generoso | `[PASS]` | Distribuição espacial adequada |
 | **8. Cores & Relevo Tátil** | [Ex: Fundo preto e card preto] | L_card > L_canvas, sombras multicamadas, rim-light | `[FAIL]` | Sem percepção de profundidade física |
+| **9. Sintaxe HTML5 (Google)**| [Ex: Tags <br/> e type redundante] | Tags void sem barra, omitir type em script/css | `[FAIL]` | Presença de sintaxe XML obsoleta em HTML5 |
+| **10. CSS & Classes (Google)**| [Ex: Classes em camelCase e 0px] | Classes kebab-case, 2 espaços, zero sem unidade | `[FAIL]` | Classes fora do padrão e unidades em valor 0 |
 
 ## 3. Recomendações Técnicas para Refatoração
-[Lista de classes Tailwind / CSS sugeridas para alimentar a skill de refatoração]
+[Lista de classes Tailwind / CSS e correções sugeridas para alimentar a skill de refatoração]
 ```
 
 ---

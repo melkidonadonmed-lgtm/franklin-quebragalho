@@ -1,15 +1,15 @@
 ---
 name: redator-tecnico-markdown
 description: >-
-  Redige relatorios executivos, notas tecnicas, atas de decisao e roadmaps estruturados em Markdown (.md) de alta fidelidade visual, com frontmatter YAML, caixas de alerta GitHub, tabelas ricas e compatibilidade plena com Obsidian.
-version: 1.0.0
+  Redige relatorios executivos, notas tecnicas, atas de decisao e roadmaps estruturados em Markdown (.md) de alta fidelidade visual, com frontmatter YAML, caixas de alerta GitHub, tabelas ricas, padroes Google Style Guides (HTML/CSS, JSON, Python) e compatibilidade plena com Obsidian.
+version: 1.1.0
 updated_at: 2026-10-04
 author: DocMaker & Melki
 category: Documentacao Tecnica e Redacao Estruturada
 ---
 
 # 1. NOME DA SKILL
-`redator-tecnico-markdown` (Redação Técnica Estruturada, Notas Executivas e Documentação no Padrão Obsidian/GitHub).
+`redator-tecnico-markdown` (Redação Técnica Estruturada, Notas Executivas, Documentação Padrão Obsidian/GitHub e Alinhamento Google Style Guides).
 
 ---
 
@@ -19,6 +19,7 @@ Ative e execute esta skill sempre que:
 - O usuário solicitar: "redija um relatório técnico", "crie uma nota para o Obsidian sobre este tema", "elabore uma ata de decisão de arquitetura (ADR)", "escreva a documentação do projeto em Markdown", "estruture um roadmap executivo em .md".
 - For necessário transformar notas brutas, resumos de reuniões ou rascunhos conceituais em documentos profissionais prontos para arquivo ou publicação.
 - Como etapa prévia antes da conversão para PDF, para garantir que o Markdown possua formatação semântica perfeita.
+- Quando a documentação exigir blocos de código com rigor de tipagem e formatação aderente aos padrões Google (`pyguide`, `jsoncguide`, `htmlcssguide`).
 
 ### Quando NÃO Usar
 - Para compilar ou converter Markdown para arquivos PDF (utilize `conversor-html-pdf`).
@@ -36,9 +37,9 @@ Ative e execute esta skill sempre que:
 
 ---
 
-## 4. DIRETRIZES DE FORMATAÇÃO E BLINDAGEM DE LAYOUT
+## 4. DIRETRIZES DE FORMATAÇÃO, BLINDAGEM DE LAYOUT E GOOGLE STYLE GUIDES
 
-Todo documento técnico em Markdown gerado por esta skill segue os padrões da governança global:
+Todo documento técnico em Markdown gerado por esta skill segue a governança global e os padrões Google:
 
 ### 4.1. Lei da Linha em Branco (Blank Line Law)
 - Inserção obrigatória de linha em branco antes e depois de títulos (`#` a `######`), listas ordenadas e não-ordenadas, tabelas completas, citações em bloco (`>`) e cercas de código (três crases).
@@ -71,6 +72,13 @@ Utilizar exclusivamente os marcadores canônicos suportados no Obsidian e GitHub
 - Proibição de quebras brutas de linha dentro de células; utilizar `<br>` se necessário.
 - Escape de barras verticais (`\|`) quando ocorrem dentro do texto das células.
 
+### 4.5. Padrões de Código Embutido (Google Style Guides)
+Qualquer trecho de código documentado dentro do Markdown deve seguir rigorosamente os Guias Oficiais do Google:
+- **Identificador de Linguagem Mandatório**: Toda cerca de código (três crases) deve especificar explicitamente a linguagem (`python`, `json`, `html`, `css`, `powershell`, `bash`, `mermaid`, `yaml`).
+- **Python (`pyguide`)**: Tipagem estática explícita (`typing`), docstrings Google (`Args:`, `Returns:`), indentação de 4 espaços (ou 2 se projeto Google), nomes em `snake_case` e classes em `PascalCase`.
+- **HTML/CSS (`htmlcssguide`)**: Tags e atributos em minúsculas, indentação de 2 espaços, omissão de barra final em elementos vazios (`<br>`, `<img>`, `<hr>`), seletores em `kebab-case`, zero sem unidade (`0`, não `0px`).
+- **JSON (`jsoncguide`)**: Propriedades em `camelCase`, payloads estruturados com envelopes claros (`data`, `error`), datas em padrão ISO 8601 UTC.
+
 ---
 
 ## 5. PROCESSO PASSO A PASSO (EXECUÇÃO DE REDAÇÃO)
@@ -79,11 +87,11 @@ Utilizar exclusivamente os marcadores canônicos suportados no Obsidian e GitHub
 Identificar o propósito e delimitar a hierarquia de seções:
 - Visão Geral / Sumário Executivo.
 - Diagnóstico Técnico / Motivação.
-- Especificação Detalhada com Tabelas e Código.
+- Especificação Detalhada com Tabelas e Código (validado pelos Google Style Guides).
 - Recomendações e Próximos Passos.
 
 ### Passo 2: Redação com Validação de Sintaxe
-Construir o documento aplicando a Lei da Linha em Branco e escape estrito de símbolos angulares soltos (`<`, `>`).
+Construir o documento aplicando a Lei da Linha em Branco, escape estrito de símbolos angulares soltos (`<`, `>`) e formatação Google nos exemplos de código.
 
 ### Passo 3: Revisão de Metadados e Gravação
 Gravar o arquivo `.md` no local designado e verificar a integridade da codificação UTF-8:
@@ -99,7 +107,7 @@ A resposta final da skill entrega:
 1. **Documento Markdown Formatado:**
    - Arquivo `.md` gravado no disco com metadados YAML e formatação completa.
 2. **Resumo das Seções Redigidas:**
-   - Visão sintética dos tópicos abordados e tags atribuídas.
+   - Visão sintética dos tópicos abordados, padrões de estilo aplicados e tags atribuídas.
 3. **Link Clicável Local:**
    - Link no padrão `file:///` apontando diretamente para o arquivo gerado.
 
