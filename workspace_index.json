@@ -1,10 +1,10 @@
 {
   "version": "2026.1",
-  "generated_at": "2026-10-04T00:10:12.061737+00:00",
+  "generated_at": "2026-10-04T04:22:44.727400+00:00",
   "workspace_root": "C:\\Users\\melki\\dev\\franklin-quebragalho",
-  "tree_hash": "a64a03c9b7b4f0c6",
+  "tree_hash": "cf8d5fe6923e1fe8",
   "stats": {
-    "total_files": 212,
+    "total_files": 280,
     "python_files": 1,
     "total_classes": 0,
     "total_functions": 3
@@ -16,7 +16,7 @@
     },
     "AGENTS.md": {
       "extension": ".md",
-      "size_bytes": 3454,
+      "size_bytes": 4184,
       "headings": [
         "# Arquitetura de Agentes: Franklin Quebra-Galho"
       ]
@@ -54,14 +54,14 @@
     },
     "MY_AGENTS.md": {
       "extension": ".md",
-      "size_bytes": 4713,
+      "size_bytes": 7524,
       "headings": [
         "# Meus Agentes (MY AGENTS)"
       ]
     },
     "MY_SKILLS.md": {
       "extension": ".md",
-      "size_bytes": 20058,
+      "size_bytes": 26095,
       "headings": [
         "# Minhas Skills (MY SKILLS)"
       ]
@@ -71,6 +71,33 @@
       "size_bytes": 10544,
       "headings": [
         "# Franklin Quebra-Galho 🛠️"
+      ]
+    },
+    ".agents/skills/analise-design-tatil-frontend/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 9819,
+      "headings": []
+    },
+    ".agents/skills/analise-design-tatil-frontend/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 929
+    },
+    ".agents/skills/analise-design-tatil-frontend/references/paleta_estilo_melki.md": {
+      "extension": ".md",
+      "size_bytes": 5432,
+      "headings": [
+        "# Diretrizes do Design System Tátil Melki (Padrão 2026)"
+      ]
+    },
+    ".agents/skills/analise-design-tatil-frontend/references/tokens_frontcraft.json": {
+      "extension": ".json",
+      "size_bytes": 1221
+    },
+    ".agents/skills/analise-design-tatil-frontend/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 2248,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: analise-design-tatil-frontend"
       ]
     },
     ".agents/skills/aprimoramento-expansibilidade-agentes-skills/SKILL.md": {
@@ -132,7 +159,7 @@
     },
     ".agents/skills/auditoria-projetos-sistema/rules/criterios_auditoria.md": {
       "extension": ".md",
-      "size_bytes": 3249,
+      "size_bytes": 3817,
       "headings": [
         "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REJEIÇÃO"
       ]
@@ -174,6 +201,46 @@
       "size_bytes": 859,
       "headings": [
         "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (CONTEXT SENTINEL)"
+      ]
+    },
+    ".agents/skills/conversor-html-pdf/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 5636,
+      "headings": []
+    },
+    ".agents/skills/conversor-html-pdf/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 911
+    },
+    ".agents/skills/conversor-html-pdf/references/print_theme.css": {
+      "extension": ".css",
+      "size_bytes": 1543
+    },
+    ".agents/skills/conversor-html-pdf/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 1287,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: conversor-html-pdf"
+      ]
+    },
+    ".agents/skills/curadoria-obsidian-vault/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 5141,
+      "headings": []
+    },
+    ".agents/skills/curadoria-obsidian-vault/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 867
+    },
+    ".agents/skills/curadoria-obsidian-vault/references/estrutura_vault_padrao.json": {
+      "extension": ".json",
+      "size_bytes": 416
+    },
+    ".agents/skills/curadoria-obsidian-vault/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 1218,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: curadoria-obsidian-vault"
       ]
     },
     ".agents/skills/design-interface-medica-minimalista/SKILL.md": {
@@ -243,6 +310,46 @@
         "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`gap-analyzer-auditor` v2.0.0)"
       ]
     },
+    ".agents/skills/gdrive-auditoria-limpeza/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 6109,
+      "headings": []
+    },
+    ".agents/skills/gdrive-auditoria-limpeza/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 880
+    },
+    ".agents/skills/gdrive-auditoria-limpeza/references/extensoes_residuos.json": {
+      "extension": ".json",
+      "size_bytes": 398
+    },
+    ".agents/skills/gdrive-auditoria-limpeza/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 1290,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: gdrive-auditoria-limpeza"
+      ]
+    },
+    ".agents/skills/gdrive-taxonomia-organizacao/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 5316,
+      "headings": []
+    },
+    ".agents/skills/gdrive-taxonomia-organizacao/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 840
+    },
+    ".agents/skills/gdrive-taxonomia-organizacao/references/taxonomia_padrao.json": {
+      "extension": ".json",
+      "size_bytes": 1381
+    },
+    ".agents/skills/gdrive-taxonomia-organizacao/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 1186,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: gdrive-taxonomia-organizacao"
+      ]
+    },
     ".agents/skills/gerar-docs-pdf/SKILL.md": {
       "extension": ".md",
       "size_bytes": 3521,
@@ -306,6 +413,26 @@
         "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`high-level-context-planner` v2.0.0)"
       ]
     },
+    ".agents/skills/manutencao-disco-windows/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 5197,
+      "headings": []
+    },
+    ".agents/skills/manutencao-disco-windows/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 768
+    },
+    ".agents/skills/manutencao-disco-windows/references/politica_retencao_local.json": {
+      "extension": ".json",
+      "size_bytes": 516
+    },
+    ".agents/skills/manutencao-disco-windows/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 1254,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: manutencao-disco-windows"
+      ]
+    },
     ".agents/skills/organizador-fluxo-arvore-arquivos/SKILL.md": {
       "extension": ".md",
       "size_bytes": 6942,
@@ -354,6 +481,56 @@
       "headings": [
         "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (ORGANIZAR LOCAL)",
         "### Regra 1: Validação de Dry-Run Prévio"
+      ]
+    },
+    ".agents/skills/redator-tecnico-markdown/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 4924,
+      "headings": []
+    },
+    ".agents/skills/redator-tecnico-markdown/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 926
+    },
+    ".agents/skills/redator-tecnico-markdown/references/guia_estilo_markdown.md": {
+      "extension": ".md",
+      "size_bytes": 1011,
+      "headings": [
+        "# Guia de Estilo Markdown Canônico (Obsidian & Antigravity)"
+      ]
+    },
+    ".agents/skills/redator-tecnico-markdown/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 1188,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: redator-tecnico-markdown"
+      ]
+    },
+    ".agents/skills/refatoracao-design-tatil-frontend/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 8150,
+      "headings": []
+    },
+    ".agents/skills/refatoracao-design-tatil-frontend/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 964
+    },
+    ".agents/skills/refatoracao-design-tatil-frontend/references/paleta_estilo_melki.md": {
+      "extension": ".md",
+      "size_bytes": 5432,
+      "headings": [
+        "# Diretrizes do Design System Tátil Melki (Padrão 2026)"
+      ]
+    },
+    ".agents/skills/refatoracao-design-tatil-frontend/references/tokens_frontcraft.json": {
+      "extension": ".json",
+      "size_bytes": 1221
+    },
+    ".agents/skills/refatoracao-design-tatil-frontend/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 2064,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: refatoracao-design-tatil-frontend"
       ]
     },
     ".agents/skills/refine-prompt/SKILL.md": {
@@ -625,14 +802,14 @@
     },
     ".context/CURRENT_STATE.md": {
       "extension": ".md",
-      "size_bytes": 3981,
+      "size_bytes": 4606,
       "headings": [
         "# Estado Atual do Workspace: Franklin Quebra-Galho"
       ]
     },
     ".context/SESSION_LOG.md": {
       "extension": ".md",
-      "size_bytes": 2986,
+      "size_bytes": 2168,
       "headings": [
         "# Checkpoint da Sessão: Franklin Quebra-Galho"
       ]
@@ -822,6 +999,33 @@
       "extension": ".js",
       "size_bytes": 4130
     },
+    "skills/analise-design-tatil-frontend/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 9819,
+      "headings": []
+    },
+    "skills/analise-design-tatil-frontend/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 929
+    },
+    "skills/analise-design-tatil-frontend/references/paleta_estilo_melki.md": {
+      "extension": ".md",
+      "size_bytes": 5432,
+      "headings": [
+        "# Diretrizes do Design System Tátil Melki (Padrão 2026)"
+      ]
+    },
+    "skills/analise-design-tatil-frontend/references/tokens_frontcraft.json": {
+      "extension": ".json",
+      "size_bytes": 1221
+    },
+    "skills/analise-design-tatil-frontend/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 2248,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: analise-design-tatil-frontend"
+      ]
+    },
     "skills/aprimoramento-expansibilidade-agentes-skills/SKILL.md": {
       "extension": ".md",
       "size_bytes": 7109,
@@ -881,7 +1085,7 @@
     },
     "skills/auditoria-projetos-sistema/rules/criterios_auditoria.md": {
       "extension": ".md",
-      "size_bytes": 3249,
+      "size_bytes": 3817,
       "headings": [
         "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REJEIÇÃO"
       ]
@@ -923,6 +1127,46 @@
       "size_bytes": 859,
       "headings": [
         "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (CONTEXT SENTINEL)"
+      ]
+    },
+    "skills/conversor-html-pdf/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 5636,
+      "headings": []
+    },
+    "skills/conversor-html-pdf/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 911
+    },
+    "skills/conversor-html-pdf/references/print_theme.css": {
+      "extension": ".css",
+      "size_bytes": 1543
+    },
+    "skills/conversor-html-pdf/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 1287,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: conversor-html-pdf"
+      ]
+    },
+    "skills/curadoria-obsidian-vault/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 5141,
+      "headings": []
+    },
+    "skills/curadoria-obsidian-vault/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 867
+    },
+    "skills/curadoria-obsidian-vault/references/estrutura_vault_padrao.json": {
+      "extension": ".json",
+      "size_bytes": 416
+    },
+    "skills/curadoria-obsidian-vault/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 1218,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: curadoria-obsidian-vault"
       ]
     },
     "skills/design-interface-medica-minimalista/SKILL.md": {
@@ -992,6 +1236,46 @@
         "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`gap-analyzer-auditor` v2.0.0)"
       ]
     },
+    "skills/gdrive-auditoria-limpeza/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 6109,
+      "headings": []
+    },
+    "skills/gdrive-auditoria-limpeza/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 880
+    },
+    "skills/gdrive-auditoria-limpeza/references/extensoes_residuos.json": {
+      "extension": ".json",
+      "size_bytes": 398
+    },
+    "skills/gdrive-auditoria-limpeza/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 1290,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: gdrive-auditoria-limpeza"
+      ]
+    },
+    "skills/gdrive-taxonomia-organizacao/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 5316,
+      "headings": []
+    },
+    "skills/gdrive-taxonomia-organizacao/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 840
+    },
+    "skills/gdrive-taxonomia-organizacao/references/taxonomia_padrao.json": {
+      "extension": ".json",
+      "size_bytes": 1381
+    },
+    "skills/gdrive-taxonomia-organizacao/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 1186,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: gdrive-taxonomia-organizacao"
+      ]
+    },
     "skills/gerar-docs-pdf/SKILL.md": {
       "extension": ".md",
       "size_bytes": 3521,
@@ -1055,6 +1339,26 @@
         "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`high-level-context-planner` v2.0.0)"
       ]
     },
+    "skills/manutencao-disco-windows/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 5197,
+      "headings": []
+    },
+    "skills/manutencao-disco-windows/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 768
+    },
+    "skills/manutencao-disco-windows/references/politica_retencao_local.json": {
+      "extension": ".json",
+      "size_bytes": 516
+    },
+    "skills/manutencao-disco-windows/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 1254,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: manutencao-disco-windows"
+      ]
+    },
     "skills/organizador-fluxo-arvore-arquivos/SKILL.md": {
       "extension": ".md",
       "size_bytes": 6942,
@@ -1103,6 +1407,56 @@
       "headings": [
         "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (ORGANIZAR LOCAL)",
         "### Regra 1: Validação de Dry-Run Prévio"
+      ]
+    },
+    "skills/redator-tecnico-markdown/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 4924,
+      "headings": []
+    },
+    "skills/redator-tecnico-markdown/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 926
+    },
+    "skills/redator-tecnico-markdown/references/guia_estilo_markdown.md": {
+      "extension": ".md",
+      "size_bytes": 1011,
+      "headings": [
+        "# Guia de Estilo Markdown Canônico (Obsidian & Antigravity)"
+      ]
+    },
+    "skills/redator-tecnico-markdown/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 1188,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: redator-tecnico-markdown"
+      ]
+    },
+    "skills/refatoracao-design-tatil-frontend/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 8150,
+      "headings": []
+    },
+    "skills/refatoracao-design-tatil-frontend/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 964
+    },
+    "skills/refatoracao-design-tatil-frontend/references/paleta_estilo_melki.md": {
+      "extension": ".md",
+      "size_bytes": 5432,
+      "headings": [
+        "# Diretrizes do Design System Tátil Melki (Padrão 2026)"
+      ]
+    },
+    "skills/refatoracao-design-tatil-frontend/references/tokens_frontcraft.json": {
+      "extension": ".json",
+      "size_bytes": 1221
+    },
+    "skills/refatoracao-design-tatil-frontend/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 2064,
+      "headings": [
+        "# Critérios Determinísticos de Auditoria: refatoracao-design-tatil-frontend"
       ]
     },
     "skills/refine-prompt/SKILL.md": {

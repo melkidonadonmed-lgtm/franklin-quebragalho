@@ -1,0 +1,22 @@
+[
+  {
+    "eval_id": "TC-REFAT-01",
+    "description": "Validação de refatoração de botão com injeção de anti-squish e relevo tátil.",
+    "input": {
+      "project_root_path": "c:/Users/melki/Projetos/mock-app",
+      "framework_target": "react_tailwind",
+      "archetype": "tactile_matte"
+    },
+    "expected_behavior": "Adicionar classes 'h-11 px-4 inline-flex items-center shrink-0 whitespace-nowrap active:scale-95 transition-all duration-150 rounded-lg' sem remover a função onClick original."
+  },
+  {
+    "eval_id": "TC-REFAT-02",
+    "description": "Validação de descompactação de menu e injeção de espaçamento nobre.",
+    "input": {
+      "project_root_path": "c:/Users/melki/Projetos/mock-app",
+      "framework_target": "html_css_vanilla",
+      "archetype": "tactile_matte"
+    },
+    "expected_behavior": "Substituir navegação compactada com gap de 4px por gap de 12px a 16px e padding de 10px 16px com tipografia Inter."
+  }
+]

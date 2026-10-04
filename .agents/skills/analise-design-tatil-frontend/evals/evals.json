@@ -1,0 +1,20 @@
+[
+  {
+    "eval_id": "TC-ANALISE-01",
+    "description": "Validação de análise de menus compactados e botões pequenos em frontend estático.",
+    "input": {
+      "target_url_or_path": "test_compact_menu.html",
+      "inspection_mode": "static_code"
+    },
+    "expected_behavior": "Identificar falha em menus compactados ([FAIL] no Critério 01) e falha em botões sem anti-squish ([FAIL] no Critério 05), gerando a tabela comparativa determinística sem alterar nenhum arquivo."
+  },
+  {
+    "eval_id": "TC-ANALISE-02",
+    "description": "Validação de checagem cromática e banimento de azul cobalto.",
+    "input": {
+      "target_url_or_path": "test_cobalt_ui.html",
+      "inspection_mode": "static_code"
+    },
+    "expected_behavior": "Detectar a presença de hexadecimais como #0044FF ou #1D4ED8 e sinalizar [FAIL] no Critério 08, indicando a substituição recomendada por Slate Navy ou Petroleum Blue."
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "eval_id": "TC-GDRIVE-TAXONOMIA-01",
+    "description": "Validação de categorização de arquivo financeiro solto na raiz do Drive.",
+    "input": {
+      "target_folder": "G:/Meu Drive/",
+      "taxonomy_profile": "padrao_melki"
+    },
+    "expected_behavior": "Identificar notas fiscais e comprovantes soltos e direcionar para 04_Financeiro_Fiscal com simulação dry-run."
+  },
+  {
+    "eval_id": "TC-GDRIVE-TAXONOMIA-02",
+    "description": "Validação de renomeação de arquivo com inserção de data ISO e remoção de caracteres proibidos.",
+    "input": {
+      "target_folder": "G:/Meu Drive/02_Documentos_Pessoais",
+      "apply_iso_dates": true
+    },
+    "expected_behavior": "Transformar nomes como 'contrato #1 final (novo).pdf' em 'YYYY-MM-DD_Contrato_1_Final_Novo.pdf' preservando a extensão original."
+  }
+]

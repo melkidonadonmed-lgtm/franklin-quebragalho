@@ -1,0 +1,21 @@
+{
+  "vault_structure": {
+    "inbox": "00_Inbox",
+    "projects": "01_Projetos",
+    "areas": "02_Areas",
+    "resources": "03_Recursos",
+    "archive": "04_Arquivo",
+    "attachments": "_anexos",
+    "orphan_quarantine": "_anexos_orfaos"
+  },
+  "protected_directories": [
+    ".obsidian",
+    ".trash"
+  ],
+  "required_frontmatter_fields": [
+    "title",
+    "date",
+    "tags"
+  ],
+  "date_format": "YYYY-MM-DD"
+}

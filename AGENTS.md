@@ -19,10 +19,13 @@ Este documento estabelece o modelo operacional, papéis e contratos de orquestra
 
 | Agente / Persona | Foco Principal | Ferramentas Típicas | Gatilho de Uso |
 | :--- | :--- | :--- | :--- |
-| **`DriveMaster`** | Organização do Google Drive | Unidade `G:\Meu Drive`, MCP `google-drive` (`search_files`, `get_file_metadata`, `create_file`, etc.) | Pedidos de triagem de pastas no Drive, auditoria de arquivos pesados, duplicações ou padronização de nomenclatura. |
-| **`FileOpsLocal`** | Manutenção de Pastas no Windows | PowerShell 7 (`pwsh`), `Get-ChildItem`, `Move-Item`, scripts de automação | Limpeza de Downloads, organização de Desktop, arquivamento de projetos em `dev/`, organização de notas. |
-| **`DocMaker`** | Criação e Conversão de Documentos | Markdown, Obsidian Vault, scripts de geração de PDF (Edge/Chrome headless) | Criação de notas técnicas, relatórios executivos, resumos em `.md` e geração de PDFs profissionais. |
-| **`SkillCraft`** | Engenharia e Evolução de Skills | Estrutura `.agents/skills/`, manifesto [MY_SKILLS.md](file:///c:/Users/melki/dev/franklin-quebragalho/MY_SKILLS.md) | Desenvolvimento de novas habilidades para o Antigravity, testes práticos, versionamento e refatoração de prompts. |
+| **`FrontCraftMaster`** | Design System Tátil & Frontend | `agent-browser`, Tailwind CSS, React, tokens do FrontCraft Studio | Diagnóstico comparativo de interfaces, descompactação de menus, botões ergonômicos e refatoração tátil. |
+| **`DriveMaster`** | Organização do Google Drive | Unidade `G:\Meu Drive`, `gdrive-auditoria-limpeza`, `gdrive-taxonomia-organizacao`, MCP `google-drive` | Pedidos de triagem de pastas no Drive, auditoria de arquivos pesados, duplicações ou padronização de nomenclatura. |
+| **`FileOpsLocal`** | Manutenção de Pastas no Windows | PowerShell 7 (`pwsh`), `manutencao-disco-windows`, `Get-ChildItem`, `Move-Item` | Limpeza de Downloads, organização de Desktop, arquivamento de projetos em `dev/`. |
+| **`VaultMaster`** | Gestão do Obsidian Vault (PKM) | `curadoria-obsidian-vault`, Obsidian Vault, frontmatter YAML, links bidirecionais | Curadoria de notas, limpeza de anexos órfãos, integridade de metadados e tags. |
+| **`DocMaker`** | Criação e Conversão de Documentos | `redator-tecnico-markdown`, `conversor-html-pdf`, Edge/Chrome headless | Criação de notas técnicas, relatórios executivos, resumos em `.md` e geração de PDFs profissionais. |
+| **`SkillCraft`** | Engenharia e Evolução de Skills | `evoluir-skills`, `skill-auditor-refatorador-skills`, `_template`, [MY_SKILLS.md](file:///c:/Users/melki/dev/franklin-quebragalho/MY_SKILLS.md) | Desenvolvimento de novas habilidades para o Antigravity, testes práticos, versionamento e refatoração de prompts. |
+| **`LoopPlanner`** | Orquestração Closed-Loop | `high-level-context-planner`, `gap-analyzer-auditor`, `skill-orquestrador-planos-encadeados` | Planejamento em malha fechada, decomposição em fases com Fase 0, RCA determinístico e replanejamento v2.0. |
 
 ---
 

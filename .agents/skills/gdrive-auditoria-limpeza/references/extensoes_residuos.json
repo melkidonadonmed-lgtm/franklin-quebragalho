@@ -1,0 +1,26 @@
+{
+  "heavy_extensions": [
+    ".iso",
+    ".vmdk",
+    ".dmg",
+    ".tar",
+    ".gz",
+    ".zip",
+    ".rar",
+    ".7z",
+    ".mp4",
+    ".mkv"
+  ],
+  "temporary_extensions": [
+    ".tmp",
+    ".bak",
+    ".old",
+    ".crdownload",
+    ".drivedownload"
+  ],
+  "quarantine_structure": {
+    "base_folder": "_Quarentena_Descarte",
+    "subfolder_format": "YYYY-MM-DD",
+    "retention_days": 30
+  }
+}

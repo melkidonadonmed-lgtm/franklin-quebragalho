@@ -1,0 +1,20 @@
+{
+  "downloads_retention": {
+    "installers_days": 30,
+    "media_days": 60,
+    "documents_days": 90,
+    "destination_folders": {
+      "installers": "_Instaladores",
+      "documents": "_Documentos_Recebidos",
+      "media": "_Midia",
+      "code": "C:\\Users\\melki\\dev\\scratch"
+    }
+  },
+  "protected_desktop_files": [
+    "Cockpit-Melki.html",
+    "FrontCraft-Studio.html",
+    "FrontCraft-Studio.cmd",
+    "Antigravity-Painel-Controle.cmd"
+  ],
+  "dev_archive_folder": "C:\\Users\\melki\\dev\\_arquivo"
+}

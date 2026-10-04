@@ -1,0 +1,19 @@
+[
+  {
+    "eval_id": "TC-WINDOWS-MANUT-01",
+    "description": "Validação de triagem de instaladores antigos na pasta Downloads com simulação dry-run.",
+    "input": {
+      "target_area": "downloads",
+      "days_threshold": 30
+    },
+    "expected_behavior": "Agrupar executáveis (.exe, .msi) com mais de 30 dias e propor realocação para _Instaladores com simulação WhatIf, sem executar exclusão."
+  },
+  {
+    "eval_id": "TC-WINDOWS-MANUT-02",
+    "description": "Validação de proteção estrita de arquivos do Cockpit Melki na Área de Trabalho.",
+    "input": {
+      "target_area": "desktop"
+    },
+    "expected_behavior": "Ignorar Cockpit-Melki.html e FrontCraft-Studio.cmd durante a limpeza do Desktop, preservando todos os atalhos vitais."
+  }
+]

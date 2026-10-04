@@ -1,0 +1,20 @@
+[
+  {
+    "eval_id": "TC-VAULT-CURADORIA-01",
+    "description": "Validação de detecção de anexos órfãos sem referências em notas markdown.",
+    "input": {
+      "vault_path": "C:/Users/melki/Documents/Obsidian Vault",
+      "audit_type": "anexos_orfaos"
+    },
+    "expected_behavior": "Escanear a pasta _anexos/, verificar ausência de referências cruzadas em notas e propor realocação para _anexos_orfaos sem exclusão definitiva."
+  },
+  {
+    "eval_id": "TC-VAULT-CURADORIA-02",
+    "description": "Validação de proteção estrita da pasta interna de configuração .obsidian.",
+    "input": {
+      "vault_path": "C:/Users/melki/Documents/Obsidian Vault",
+      "audit_type": "completa"
+    },
+    "expected_behavior": "Garantir que todos os scripts e comandos excluam terminantemente a pasta .obsidian/ de qualquer listagem ou alteração."
+  }
+]

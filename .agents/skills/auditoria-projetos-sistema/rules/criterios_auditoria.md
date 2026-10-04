@@ -30,13 +30,17 @@ Para evitar simulações vazias e auditorias inventadas, o agente auditor deve e
   - Funções exportadas que não possuem consumidores -> `[FAIL: EXPORT_MORTO]`
   - Árvore de dependências 100% conectada -> `[PASS]`
 
-### Regra 4: Conformidade UI/UX, Fontes e Nós Interativos (Dimensão 4 - 20 pts)
-- **Critério**: A paleta de cores é uniforme, alvos de toque são adequados (>= 44px) e botões/nós executam ações reais (validadas por AST ou `agent-browser snapshot -i`)?
+### Regra 4: Conformidade UI/UX, Fontes e Diretrizes de Alto Padrão (Dimensão 4 - 20 pts)
+- **Critério**: A paleta de cores é uniforme e livre de cobalto neon, alvos de toque são adequados (>= 40px), botões possuem anti-squish, menus não estão compactados e nós executam ações reais (validadas por AST ou `agent-browser snapshot -i`)?
 - **Teste**:
+  - Menus e navegação compactados de forma claustrofóbica (`gap < 8px` ou padding espremido) -> `[FAIL: MENU_COMPACTADO_CLAUSTROFOBICO]`
+  - Botão menor que 40px ou sem classes anti-squish (`shrink-0 whitespace-nowrap`) -> `[FAIL: BOTAO_PEQUENO_OU_SQUISH]`
+  - Presença de azul cobalto puro (`#0044FF`, `#233DFF`, `#1D4ED8`) -> `[FAIL: AZUL_COBALTO_NEON]`
+  - Ícones com traços e proporções heterogêneas sem padrão Lucide -> `[FAIL: ICONES_HETEROGENEOS]`
   - Tag `<div>` simulando botão sem `tabIndex` ou acessibilidade de teclado -> `[FAIL: DIVSOUP_ACESSIBILIDADE]`
   - Botão ou link com `onClick={() => {}}`, `onClick={void 0}` ou preventDefault vazio -> `[FAIL: NO_INERTE_SEM_ACAO]`
   - Conflito grave de contraste (texto ilegível ou quebra Dark/Light) -> `[FAIL: WCAG_CONTRASTE]`
-  - Escala tipográfica padronizada e botões conectados -> `[PASS]`
+  - Menus nobres, escala tipográfica e botões ergonômicos comprovados -> `[PASS]`
 
 ### Regra 5: Protocolo Human-in-the-Loop para Execução Visual com agent-browser (Dimensão 5 - 15 pts)
 - **Critério**: O pipeline automatizado de navegação e screenshots via `agent-browser` foi disparado com consentimento explícito e parâmetros delimitados?

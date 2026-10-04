@@ -38,11 +38,42 @@ Este repositório é a incubadora central de skills do **Franklin Quebra-Galho**
 | **`refine-prompt`** | `v3.0.0` | ✅ Validada | Expansão cognitiva, auditoria de factibilidade e refinamento de prompts e ideias sob Zero-Trust, 3 módulos de saída e âncora 2026. | [.agents/skills/refine-prompt/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/refine-prompt/SKILL.md) |
 | **`gap-analyzer-auditor`** | `v2.0.0` | ✅ Validada | Auditor técnico e analista de brechas em malha fechada (closed-loop), RCA em 4 vetores e hand-off estruturado para o planejador. | [.agents/skills/gap-analyzer-auditor/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/gap-analyzer-auditor/SKILL.md) |
 | **`high-level-context-planner`** | `v2.0.0` | ✅ Validada | Arquiteto estratégico e planejador de contexto em malha fechada, Fase 0 obrigatória, critérios Go/No-Go e replanning v2.0. | [.agents/skills/high-level-context-planner/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/high-level-context-planner/SKILL.md) |
+| **`analise-design-tatil-frontend`** | `v1.0.0` | ✅ Validada | Diagnóstico estrutural e visual de frontend, inspeção de menus, botões, fontes e emissão de Relatório Comparativo. | [.agents/skills/analise-design-tatil-frontend/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/analise-design-tatil-frontend/SKILL.md) |
+| **`refatoracao-design-tatil-frontend`** | `v1.0.0` | ✅ Validada | Refatoração de frontend por framework modular, navegação de alto padrão, menus nobres, botões ergonômicos e relevo tátil. | [.agents/skills/refatoracao-design-tatil-frontend/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/refatoracao-design-tatil-frontend/SKILL.md) |
+| **`gdrive-auditoria-limpeza`** | `v1.0.0` | ✅ Validada | Varredura de arquivos pesados (>100MB), identificação de duplicados por hash SHA-256 e quarentena segura no Google Drive. | [.agents/skills/gdrive-auditoria-limpeza/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/gdrive-auditoria-limpeza/SKILL.md) |
+| **`gdrive-taxonomia-organizacao`** | `v1.0.0` | ✅ Validada | Estrutura canônica numerada, padronização de nomenclatura com datas ISO (YYYY-MM-DD) e triagem documental no Drive. | [.agents/skills/gdrive-taxonomia-organizacao/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/gdrive-taxonomia-organizacao/SKILL.md) |
+| **`manutencao-disco-windows`** | `v1.0.0` | ✅ Validada | Manutenção do SO Windows 11: triagem de Downloads, Desktop, isolamento de instaladores e arquivamento dev com dry-run. | [.agents/skills/manutencao-disco-windows/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/manutencao-disco-windows/SKILL.md) |
+| **`curadoria-obsidian-vault`** | `v1.0.0` | ✅ Validada | Curadoria do cofre Obsidian: validação de frontmatter YAML, links bidirecionais [[Wikilinks]] e isolamento de anexos órfãos. | [.agents/skills/curadoria-obsidian-vault/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/curadoria-obsidian-vault/SKILL.md) |
+| **`redator-tecnico-markdown`** | `v1.0.0` | ✅ Validada | Redação técnica de relatórios executivos, notas técnicas e documentações com frontmatter YAML e alertas Obsidian/GitHub. | [.agents/skills/redator-tecnico-markdown/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/redator-tecnico-markdown/SKILL.md) |
+| **`conversor-html-pdf`** | `v1.0.0` | ✅ Validada | Conversão determinística de Markdown/HTML para PDF profissional via Edge headless com CSS de impressão calibrado. | [.agents/skills/conversor-html-pdf/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/conversor-html-pdf/SKILL.md) |
 | **`_template`** | `v1.2.0` | 🚀 Produção | Modelo base oficial padrão 2026 com os 4 módulos canônicos de paleta mineral, design tátil e matriz de discrepâncias. | [.agents/skills/_template/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/_template/SKILL.md) |
 
 ---
 
 ## 📜 Histórico de Versões e Contexto (Changelog)
+
+### [2026-10-04] - Fase 3: Desacoplamento de Redação Técnica e Conversor Headless para PDF
+- **Desacoplamento de Documentação e Publicação (`DocMaker`)**:
+  - `redator-tecnico-markdown` (v1.0.0): Especialista em redação técnica, formatação Obsidian, alertas estilizados (`> [!NOTE]`, `> [!IMPORTANT]`), tabelas ricas com alinhamento e conformidade estrita com a Lei da Linha em Branco.
+  - `conversor-html-pdf` (v1.0.0): Especialista em conversão física para PDF via Microsoft Edge/Chrome headless nativo, injetando CSS de impressão `@page`, margens A4 e proteção contra corte de tabelas e códigos (`page-break-inside: avoid;`).
+- **Validação Paritária 100% PASS**: Sincronização em `.agents/skills/` e `skills/`, validada por `validate_skills.py` com 26/26 skills aprovadas.
+
+### [2026-10-04] - Fase 2: Desacoplamento dos Monólitos de Armazenamento Local e Cloud
+- **Desacoplamento do Google Drive (`DriveMaster`)**:
+  - `gdrive-auditoria-limpeza` (v1.0.0): Inspeção de arquivos pesados (>100MB), identificação determinística de duplicados via SHA-256 e simulação dry-run com quarentena preventiva (`_Quarentena_Descarte/YYYY-MM-DD/`).
+  - `gdrive-taxonomia-organizacao` (v1.0.0): Aplicação de árvore canônica numerada (`01_Projetos` a `99_Arquivo`), sanitização de nomes ilegais e prefixos com datas ISO (`YYYY-MM-DD`).
+- **Desacoplamento de Sistema Local e Base de Conhecimento**:
+  - `manutencao-disco-windows` (v1.0.0 - `FileOpsLocal`): Foco em SO. Triagem de Downloads, Desktop, instaladores antigos para `_Instaladores/` e arquivamento seguro de projetos inativos em `dev/_arquivo/` com proteção estrita do Cockpit Melki.
+  - `curadoria-obsidian-vault` (v1.0.0 - `VaultMaster`): Foco em PKM. Validação de frontmatter YAML, verificação de links quebrados `[[Wikilinks]]`, detecção e isolamento de anexos órfãos (`_anexos_orfaos/`) e proteção absoluta da pasta `.obsidian/`.
+- **Validação Paritária 100% PASS**: Sincronização em `.agents/skills/` e `skills/`, validada por `validate_skills.py` com 24/24 skills aprovadas.
+
+### [2026-10-03] - Desacoplamento e Concepção das Skills de Frontend e Subagente FrontCraftMaster
+- **Desacoplamento Canônico em Duas Skills Especializadas**:
+  - `analise-design-tatil-frontend` (v1.0.0): Estritamente Read-Only. Inspeção de menus claustrofóbicos, sidebar mínima (240px), tipografia, ícones Lucide, botões ergonômicos (>= 40px), anti-squish e cores minerais, com emissão do Relatório Comparativo determinístico.
+  - `refatoracao-design-tatil-frontend` (v1.0.0): Estritamente mutação de código. Módulos por framework (React/Next, Tailwind, HTML5), injeção de tokens do FrontCraft Studio, descompactação de navegação e botões convexos com micro-interações táteis (`active:scale-95`).
+- **Criação do Subagente FrontCraftMaster**: Registrado formalmente em `AGENTS.md` e `MY_AGENTS.md` como especialista em UI/UX e design tátil.
+- **Atualização na Auditoria**: Inseridos critérios determinísticos de UI/UX em `auditoria-projetos-sistema/rules/criterios_auditoria.md` (`[FAIL: MENU_COMPACTADO_CLAUSTROFOBICO]`, `[FAIL: BOTAO_PEQUENO_OU_SQUISH]`, etc.).
+- **Validação Paritária 100% PASS**: Sincronização em `.agents/skills/` e `skills/`, validada por `validate_skills.py` com 20/20 skills aprovadas.
 
 ### [2026-10-03] - Consolidação e Integração da Skill high-level-context-planner (v2.0.0)
 - **Planejamento Estratégico em Malha Fechada**: Implementação do nó planejador de alto nível (`SKILL_HIGH_LEVEL_CONTEXT_PLANNER_V2`), conectado diretamente com o `gap-analyzer-auditor` e o `skill-orquestrador-planos-encadeados`.

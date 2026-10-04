@@ -1,0 +1,20 @@
+[
+  {
+    "eval_id": "TC-REDATOR-MD-01",
+    "description": "Validação de estruturação de nota técnica com frontmatter YAML e conformidade com a Lei da Linha em Branco.",
+    "input": {
+      "topic_or_draft": "Arquitetura do pipeline de ingestão de dados em memória",
+      "document_type": "nota_tecnica"
+    },
+    "expected_behavior": "Gerar documento Markdown iniciando com frontmatter YAML (title, date, tags), inserindo linhas em branco antes e depois de cada cabeçalho e tabela."
+  },
+  {
+    "eval_id": "TC-REDATOR-MD-02",
+    "description": "Validação de injeção de alertas GitHub estilizados sem HTML bruto.",
+    "input": {
+      "topic_or_draft": "Regras de segurança defensiva contra injeção SQL",
+      "document_type": "guia_instalacao"
+    },
+    "expected_behavior": "Utilizar blocos canônicos de alerta '> [!CAUTION]' e '> [!IMPORTANT]' com sintaxe pura sem tags <div class='alert'>."
+  }
+]

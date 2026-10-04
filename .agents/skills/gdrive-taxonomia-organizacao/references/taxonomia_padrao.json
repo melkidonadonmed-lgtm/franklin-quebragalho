@@ -1,0 +1,36 @@
+{
+  "buckets": [
+    {
+      "code": "01_Projetos",
+      "description": "Repositórios, códigos, especificações, deploys e wireframes",
+      "allowed_extensions": [".zip", ".tar.gz", ".md", ".json", ".yaml", ".sql"]
+    },
+    {
+      "code": "02_Documentos_Pessoais",
+      "description": "Certidões, identidades, passaportes, contratos de trabalho e saúde",
+      "allowed_extensions": [".pdf", ".docx", ".jpg", ".png"]
+    },
+    {
+      "code": "03_Estudos_Cursos",
+      "description": "Livros, apostilas, artigos acadêmicos, notas de cursos e tutoriais",
+      "allowed_extensions": [".pdf", ".epub", ".docx", ".pptx"]
+    },
+    {
+      "code": "04_Financeiro_Fiscal",
+      "description": "Notas fiscais, boletos, recibos, IRPF, informes de rendimentos e extratos",
+      "allowed_extensions": [".pdf", ".csv", ".xlsx", ".ofx"]
+    },
+    {
+      "code": "05_Midias_Assets",
+      "description": "Bancos de imagens, vetores, fotos, logotipos, fontes e kits de UI",
+      "allowed_extensions": [".png", ".jpg", ".svg", ".ai", ".psd", ".mp4"]
+    },
+    {
+      "code": "99_Arquivo_Historico",
+      "description": "Arquivamento de projetos e documentos encerrados por ano",
+      "allowed_extensions": ["*"]
+    }
+  ],
+  "date_format": "YYYY-MM-DD",
+  "forbidden_characters": ["#", "%", "&", "{", "}", "\\", "<", ">", "*", "?", "/", "$", "!", "'", "\"", ":", "@"]
+}

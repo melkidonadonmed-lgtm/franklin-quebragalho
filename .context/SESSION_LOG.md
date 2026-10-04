@@ -1,39 +1,35 @@
 # Checkpoint da Sessão: Franklin Quebra-Galho
 
-> **Data / Turno**: 2026-10-03  
+> **Data / Turno**: 2026-10-04  
 > **Nível de Persistência**: Nível 3 (Checkpoint de Sessão)  
-> **Ação Executada**: Consolidação, Engenharia e Validação da Skill `high-level-context-planner` v2.0.0 (100% PASS - 18/18)  
+> **Ação Executada**: Conclusão da Fase 3 de Modularização: Desacoplamento de Redação Técnica e Conversão PDF (26/26 PASS)  
 
 ---
 
 ## 1. Atividades Concluídas neste Turno
-1. **Engenharia e Governança da Skill `high-level-context-planner` (v2.0.0)**:
-   - Identificador de Ativo: `SKILL_HIGH_LEVEL_CONTEXT_PLANNER_V2`.
-   - Implementado pacote canônico completo em `.agents/skills/high-level-context-planner/`:
-     * `SKILL.md`: Contrato nuclear com metadados YAML, gatilhos, entradas, os 4 módulos canônicos de design tátil e paleta mineral, fluxo de execução com Fase 0 obrigatória, diagramas Mermaid, saídas estruturadas com registro de mitigações e restrições negativas.
-     * `references/schema_plano_contexto.json`: Schema JSON formal para planos de trabalho multifásicos.
-     * `references/protocolo_consumo_handoff.md`: Protocolo de consumo de payloads do `gap-analyzer-auditor` com ações de patch (`REFATORAR`, `INSERIR_GUARDRAIL`, `REMOVER_DEPENDENCIA`, `ADICIONAR_RETRY`, `BLOQUEIO_HITL`).
-     * `references/matriz_decisao_go_no_go.md`: Diretrizes para elaboração de portões de qualidade Go/No-Go com rotas de contingência.
-     * `rules/criterios_auditoria.md`: 7 regras determinísticas com marcadores falsificáveis `[PASS]` e `[FAIL]`.
-     * `evals/evals.json`: 5 casos de teste estruturados cobrindo Fase 0, consumo de hand-off, replanning v2.0, critérios Go/No-Go e sintaxe Mermaid.
-2. **Espelhamento Paritário Estrito**:
-   - Replicada a pasta completa `.agents/skills/high-level-context-planner/` para `skills/high-level-context-planner/`.
-3. **Auditoria Determinística Universal (`scripts/validate_skills.py`)**:
-   - Execução confirmada no terminal: **18/18 skills aprovadas com 100% de conformidade determinística (Exit Code 0)**.
-4. **Atualização do Catálogo e Documentação**:
-   - `MY_SKILLS.md`: Inclusão na tabela e registro detalhado no changelog de 2026-10-03.
-   - `README.md`: Adicionado ao catálogo rápido de skills do workspace.
-5. **Sincronização Contínua do Cockpit Melki**:
-   - Atualizada a contagem de skills em `C:\Users\melki\Projetos\cockpit-melki\index.html` para 18 Skills.
-   - Copiado imediatamente para `C:\Users\melki\OneDrive\Área de Trabalho\Cockpit-Melki.html`.
-6. **Reindexação Determinística do Workspace**:
-   - Executado `python C:\Users\melki\dev\scripts\generate_workspace_index.py --root C:\Users\melki\dev\franklin-quebragalho`.
-   - Gerado `workspace_index.json` atualizado com 212 arquivos indexados e Tree Hash `a64a03c9b7b4f0c6`.
-7. **Atualização da Governança de Contexto**:
-   - Atualizados `CURRENT_STATE.md` e `SESSION_LOG.md`.
+1. **Desacoplamento de Documentação e Publicação (`DocMaker`)**:
+   - `redator-tecnico-markdown` (v1.0.0):
+     * Foco em redação estruturada de notas técnicas, relatórios executivos, atas (ADRs) e roadmaps no padrão Obsidian/GitHub.
+     * Implementação obrigatória da Lei da Linha em Branco, caixas de alerta canônicas (`> [!NOTE]`, `> [!IMPORTANT]`), tabelas ricas alinhadas e frontmatter YAML válido.
+     * Pacote canônico completo: `SKILL.md`, `references/guia_estilo_markdown.md`, `rules/criterios_auditoria.md` e `evals/evals.json`.
+   - `conversor-html-pdf` (v1.0.0):
+     * Foco em pipeline determinístico de conversão para PDF via Microsoft Edge ou Chrome headless nativo (`msedge.exe`).
+     * Injeção de CSS de impressão profissional com blindagem contra quebras inadequadas (`page-break-inside: avoid;` em tabelas e código), dimensões A4 e validação de arquivo gerado (`Length > 0`).
+     * Pacote canônico completo: `SKILL.md`, `references/print_theme.css`, `rules/criterios_auditoria.md` e `evals/evals.json`.
+2. **Atualização dos Perfis de Subagentes**:
+   - `DocMaker` atualizado em `AGENTS.md` e `MY_AGENTS.md` para operar as duas novas skills especializadas e o script headless.
+3. **Validação Determinística Universal (`scripts/validate_skills.py`)**:
+   - Execução confirmada no terminal: **26/26 skills aprovadas com 100% de conformidade determinística (Exit Code 0)**.
+4. **Espelhamento Paritário e Reindexação AST**:
+   - Sincronizadas as novas skills para `skills/` e verificado o link no plugin global.
+   - Reindexado o workspace via `generate_workspace_index.py` (280 arquivos, Tree Hash `cf8d5fe6923e1fe8`).
+5. **Atualização da Governança de Contexto e Catálogo**:
+   - `MY_SKILLS.md` atualizado com as duas novas skills e changelog da Fase 3.
+   - `CURRENT_STATE.md` e `SESSION_LOG.md` sincronizados.
 
 ---
 
 ## 2. Próxima Ação Recomendada
-- Catálogo 100% auditado (18/18 PASS). A tríade completa de planejamento e auditoria reflexiva em malha fechada (`skill-orquestrador-planos-encadeados`, `gap-analyzer-auditor` e `high-level-context-planner`) está pronta para produção.
-- Realizar o commit e push das novas skills no repositório Git local.
+- As 3 fases de decomposição foram concluídas (Frontend, Storage/PKM e Documentação/PDF).
+- O catálogo saltou de 18 para 26 skills canônicas de alta precisão.
+- Repositório pronto para commit Git.

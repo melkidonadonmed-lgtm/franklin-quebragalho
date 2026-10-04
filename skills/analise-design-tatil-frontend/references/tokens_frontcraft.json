@@ -1,0 +1,47 @@
+{
+  "archetypes": {
+    "tactile_matte": {
+      "name": "Tactile Matte Minimalist",
+      "canvas": "#090B10",
+      "card": "#141B2D",
+      "surface_2": "#1E2B45",
+      "accent": "#3B82F6",
+      "border": "rgba(255, 255, 255, 0.08)",
+      "rim_light": "rgba(255, 255, 255, 0.14)"
+    },
+    "phantom_obsidian": {
+      "name": "Phantom Obsidian 4K",
+      "canvas": "#060709",
+      "card": "#11141D",
+      "surface_2": "#1A1F2C",
+      "accent": "#38BDF8",
+      "border": "rgba(255, 255, 255, 0.06)",
+      "rim_light": "rgba(56, 189, 248, 0.25)"
+    },
+    "polar_sand": {
+      "name": "Polar Sand Light",
+      "canvas": "#EEF2F6",
+      "card": "#FFFFFF",
+      "surface_2": "#E2E8F0",
+      "accent": "#0284C7",
+      "border": "rgba(15, 23, 42, 0.08)",
+      "rim_light": "rgba(255, 255, 255, 0.8)"
+    }
+  },
+  "metrics": {
+    "button_min_height": "40px",
+    "button_optimal_height": "44px",
+    "sidebar_min_width": "240px",
+    "sidebar_optimal_width": "280px",
+    "grid_column_min_width": "350px",
+    "menu_gap_min": "12px",
+    "transition_default": "150ms cubic-bezier(0.16, 1, 0.3, 1)"
+  },
+  "forbidden_colors": [
+    "#0044FF",
+    "#233DFF",
+    "#1D4ED8",
+    "#0000FF",
+    "#00E5FF"
+  ]
+}

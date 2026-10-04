@@ -1,0 +1,20 @@
+[
+  {
+    "eval_id": "TC-PDF-CONVERT-01",
+    "description": "Validação de conversão de Markdown para PDF com verificação de tamanho de arquivo > 0 bytes.",
+    "input": {
+      "input_file_path": "c:/Users/melki/dev/franklin-quebragalho/tests/relatorio_teste.md",
+      "theme": "light_executive"
+    },
+    "expected_behavior": "Gerar o arquivo PDF através do Microsoft Edge headless, validar que o tamanho seja maior que 0 bytes e registrar [PASS] no Critério 01."
+  },
+  {
+    "eval_id": "TC-PDF-CONVERT-02",
+    "description": "Validação de injeção de CSS de impressão com blindagem contra quebras de tabela.",
+    "input": {
+      "input_file_path": "c:/Users/melki/dev/franklin-quebragalho/tests/tabela_teste.html",
+      "page_orientation": "portrait"
+    },
+    "expected_behavior": "Garantir que as regras @media print incluam page-break-inside: avoid em tabelas e blocos pre code."
+  }
+]
