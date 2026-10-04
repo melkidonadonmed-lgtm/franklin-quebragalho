@@ -1,10 +1,10 @@
 {
   "version": "2026.1",
-  "generated_at": "2026-10-04T04:58:57.065714+00:00",
+  "generated_at": "2026-10-04T05:38:55.420081+00:00",
   "workspace_root": "C:\\Users\\melki\\dev\\franklin-quebragalho",
-  "tree_hash": "daebbcd930a4abbe",
+  "tree_hash": "c096e791d4b4f219",
   "stats": {
-    "total_files": 306,
+    "total_files": 307,
     "python_files": 1,
     "total_classes": 0,
     "total_functions": 3
@@ -802,14 +802,14 @@
     },
     ".context/CURRENT_STATE.md": {
       "extension": ".md",
-      "size_bytes": 4928,
+      "size_bytes": 4991,
       "headings": [
         "# Estado Atual do Workspace: Franklin Quebra-Galho"
       ]
     },
     ".context/SESSION_LOG.md": {
       "extension": ".md",
-      "size_bytes": 2446,
+      "size_bytes": 3795,
       "headings": [
         "# Checkpoint da Sessão: Franklin Quebra-Galho"
       ]
@@ -965,6 +965,10 @@
     "scripts/Buscador-Google-Drive.ps1": {
       "extension": ".ps1",
       "size_bytes": 9279
+    },
+    "scripts/Gerar-Novo-Projeto-Universal.cmd": {
+      "extension": ".cmd",
+      "size_bytes": 1545
     },
     "scripts/md-to-pdf.ps1": {
       "extension": ".ps1",
