@@ -52,6 +52,13 @@ Este repositório é a incubadora central de skills do **Franklin Quebra-Galho**
 
 ## 📜 Histórico de Versões e Contexto (Changelog)
 
+### [2026-10-04] - Lançamento do Servidor MCP Global: Franklin Skills MCP
+- **Servidor FastMCP Dedicado (`server.py`)**:
+  - Implementação do servidor MCP nativo do ecossistema Franklin Quebra-Galho, registrado globalmente em `~/.gemini/config/mcp_config.json`.
+  - **Ferramentas Especializadas**: `franklin_skills_list` (filtros por status/persona), `franklin_skills_get` (divulgação progressiva: contract, rules, references, evals, scripts, all), `franklin_skills_search` (busca semântica por intenção), `franklin_skills_validate` (auditoria determinística com 100% PASS), `franklin_get_agents` (catálogo de personas) e `franklin_run_skill_script` (execução segura de scripts).
+  - **Recursos e Prompts MCP**: `skills://catalog`, `skills://manifest`, `skills://agents`, `skills://skill/{name}`, `skills://rules/{name}`, prompt `activate_skill` e prompt `tactile_frontend_audit`.
+- **Validação e Homologação**: Suíte de testes automatizados com `pytest` (10/10 PASS), schemas JSON gerados em `~/.gemini/antigravity/mcp/franklin-skills/` e ambiente virtual gerenciado via `uv`.
+
 ### [2026-10-04] - Fase 3: Desacoplamento de Redação Técnica e Conversor Headless para PDF
 - **Desacoplamento de Documentação e Publicação (`DocMaker`)**:
   - `redator-tecnico-markdown` (v1.0.0): Especialista em redação técnica, formatação Obsidian, alertas estilizados (`> [!NOTE]`, `> [!IMPORTANT]`), tabelas ricas com alinhamento e conformidade estrita com a Lei da Linha em Branco.

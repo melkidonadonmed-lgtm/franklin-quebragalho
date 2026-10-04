@@ -73,9 +73,15 @@ franklin-quebragalho/
 │       ├── organizar-gdrive/                    # Rotinas para o Google Drive
 │       ├── organizar-local/                     # Rotinas de limpeza de pastas locais
 │       └── _template/                           # Modelo base oficial para criação de skills
+├── server.py                                    # Servidor FastMCP Global (Franklin Skills MCP)
+├── pyproject.toml                               # Configuração de dependências uv/hatchling
+├── .venv/                                       # Ambiente virtual Python isolado
 ├── skills/                                      # Espelho sincronizado das skills para acesso rápido
-├── scripts/                                     # Scripts utilitários de suporte (PowerShell / Node)
+├── scripts/                                     # Scripts utilitários de suporte (PowerShell / Python)
+│   ├── validate_skills.py                       # Validador determinístico de conformidade
 │   └── md-to-pdf.ps1                            # Conversor de Markdown para PDF via Chrome/Edge headless
+├── tests/                                       # Suíte de testes automatizados (pytest)
+│   └── test_server.py                           # Testes determinísticos do servidor MCP
 ├── arquiteto_de_conteudo_e_solucoes.md          # Arquitetura estruturada do ecossistema de skills
 ├── GEMINI.md                                    # Regras de comportamento e integridade do workspace
 ├── AGENTS.md                                    # Arquitetura e contratos de orquestração de subagentes
@@ -86,8 +92,36 @@ franklin-quebragalho/
 
 ---
 
+## 🌐 Servidor MCP Global: Franklin Skills MCP
+
+O ecossistema conta com um servidor MCP dedicado baseado em **FastMCP** integrado globalmente ao Antigravity (`~/.gemini/config/mcp_config.json`):
+
+### Ferramentas Expostas (Tools)
+- **`franklin_skills_list`**: Lista o catálogo de skills com filtros por status (`validada`, `producao`), persona (`FrontCraftMaster`, `DriveMaster`, etc.) e busca textual.
+- **`franklin_skills_get`**: Recupera a skill de forma granular (`contract`, `rules`, `references`, `evals`, `scripts`, `all`) preservando o *Token Budget*.
+- **`franklin_skills_search`**: Busca inteligente por intenção operacional, pontuação de relevância e recomendação do subagente especialista.
+- **`franklin_skills_validate`**: Executa a auditoria determinística estrutural de todas as 26 skills com relatório `[PASS]`/`[FAIL]`.
+- **`franklin_get_agents`**: Retorna a matriz operacional dos 7 subagentes especialistas e suas atribuições.
+- **`franklin_run_skill_script`**: Executa scripts utilitários com trava contra Path Traversal e isolamento de processo.
+
+### Recursos Passivos (Resources)
+- `skills://catalog`: JSON consolidado de todas as skills e metadados.
+- `skills://manifest`: O manifesto completo de `MY_SKILLS.md`.
+- `skills://agents`: As diretrizes completas de `AGENTS.md`.
+- `skills://skill/{name}`: Leitura direta do contrato operacional `SKILL.md`.
+- `skills://rules/{name}`: Leitura direta dos critérios de auditoria `rules/criterios_auditoria.md`.
+
+### Prompts Estruturados
+- `activate_skill`: Prompt pronto com injeção de contexto e regras determinísticas.
+- `tactile_frontend_audit`: Prompt especializado para auditoria visual pelo `FrontCraftMaster`.
+
+---
+
 ## ⚡ Comandos e Referências Rápidas
 
+- **Executar Servidor MCP Localmente**: `uv run python server.py`
+- **Executar Testes do Servidor**: `uv run pytest tests/test_server.py -v`
+- **Auditar Todas as Skills**: `uv run python scripts/validate_skills.py`
 - **Visualizar Agentes Próprios**: Consulte [MY_AGENTS.md](file:///c:/Users/melki/dev/franklin-quebragalho/MY_AGENTS.md)
 - **Consultar Catálogo de Skills e Versões**: Consulte [MY_SKILLS.md](file:///c:/Users/melki/dev/franklin-quebragalho/MY_SKILLS.md)
 - **Regras Operacionais e Anti-Alucinação**: Consulte [GEMINI.md](file:///c:/Users/melki/dev/franklin-quebragalho/GEMINI.md)

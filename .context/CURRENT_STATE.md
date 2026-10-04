@@ -2,15 +2,16 @@
 
 > **Última Atualização**: 2026-10-04  
 > **Nível de Persistência**: Nível 2 (Resumo de Contexto)  
-> **Status Geral**: 🟢 100% Operacional e Conforme com a Governança 2026 (26/26 PASS + Template Universal Ativo)  
+> **Status Geral**: 🟢 100% Operacional e Conforme com a Governança 2026 (26/26 PASS + Servidor MCP Global Ativo + Template Universal)  
 
 ---
 
 ## 1. Visão Geral e Fase do Projeto
 - **Repositório**: `c:\Users\melki\dev\franklin-quebragalho\`
 - **Objetivo**: Incubadora central de automações de produtividade, runbooks e skills personalizadas do agente Franklin Quebra-Galho para o Google Antigravity.
-- **Integração Global**: O diretório `.agents/skills/` está montado como NTFS Junction direta no plugin global do Antigravity (`~/.gemini/config/plugins/franklin-skills/skills`).
-- **Fase**: Fases 1, 2 e 3 de modularização concluídas com sucesso (26 skills canônicas). Arquitetura Universal de Projetos Melki 2026 implementada em `templates/universal-app/` com o documento canônico `docs/frontend.design.md` (Design System Tátil, fórmulas multi-sombra CSS e Canvas 2D, paletas minerais e few-shot prompts). Scaffolder automatizado em PowerShell (`scripts/scaffold-universal-app.ps1`) validado empiricamente. Reindexação AST concluída (306 arquivos, Tree Hash `daebbcd930a4abbe`).
+- **Servidor MCP Global Ativo**: Servidor FastMCP dedicado (`server.py`) registrado globalmente no ecossistema (`~/.gemini/config/mcp_config.json`) expondo 6 ferramentas, 5 recursos e 2 prompts MCP.
+- **Integração Global de Skills**: O diretório `.agents/skills/` está montado como NTFS Junction direta no plugin global do Antigravity (`~/.gemini/config/plugins/franklin-skills/skills`).
+- **Fase**: Fases 1, 2 e 3 de modularização e Servidor FastMCP Global concluídos com sucesso (26 skills canônicas). Arquitetura Universal de Projetos Melki 2026 implementada em `templates/universal-app/` com o documento canônico `docs/frontend.design.md`.
 
 ---
 
@@ -49,14 +50,13 @@
 
 ## 3. Decisões Arquiteturais Vigentes
 - **KISS & Local-First**: Operações diretas no SO, scripts nativos em PowerShell (`pwsh`) e browser headless nativo (`msedge.exe`).
-- **Arquitetura Universal de Projetos**: Template modular residente em `templates/universal-app/` integrando Vite, React, TypeScript no modo estrito e Tailwind CSS com Design System Tátil.
-- **Motor Multi-Sombra Canvas 2D**: Pipeline de dupla passagem (`ctx.shadowBlur` 18px e 4px) com rim light zenital de 1px garantindo gráficos táteis nítidos.
+- **Servidor FastMCP Global (`franklin-skills`)**: Padrão STDIO moderno em Python com carregamento granular (divulgação progressiva de `contract`, `rules`, `evals`, `scripts`), busca por intenção operacional e travas de segurança contra Path Traversal.
 - **Divulgação Progressiva**: `SKILL.md` enxutos com referências em `references/`, regras em `rules/` e asserções reais em `evals/`.
 - **Governança Determinística Falsificável**: 100% das 26 skills possuem validação por asserções booleanas `[PASS]` e `[FAIL]`.
 
 ---
 
 ## 4. Próximo Ponto de Entrada
-- Base universal e script `scripts/scaffold-universal-app.ps1` homologados.
-- Para provisionar um novo projeto: `.\scripts\scaffold-universal-app.ps1 -ProjectName "nome-do-app"`.
+- Servidor MCP Global registrado e testado com 10/10 PASS no pytest.
+- Cockpit Melki sincronizado com 19 servidores MCP ativos.
 - Repositório pronto para commit Git.
