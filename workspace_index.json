@@ -1,10 +1,10 @@
 {
   "version": "2026.1",
-  "generated_at": "2026-10-04T04:22:44.727400+00:00",
+  "generated_at": "2026-10-04T04:58:57.065714+00:00",
   "workspace_root": "C:\\Users\\melki\\dev\\franklin-quebragalho",
-  "tree_hash": "cf8d5fe6923e1fe8",
+  "tree_hash": "daebbcd930a4abbe",
   "stats": {
-    "total_files": 280,
+    "total_files": 306,
     "python_files": 1,
     "total_classes": 0,
     "total_functions": 3
@@ -802,14 +802,14 @@
     },
     ".context/CURRENT_STATE.md": {
       "extension": ".md",
-      "size_bytes": 4606,
+      "size_bytes": 4928,
       "headings": [
         "# Estado Atual do Workspace: Franklin Quebra-Galho"
       ]
     },
     ".context/SESSION_LOG.md": {
       "extension": ".md",
-      "size_bytes": 2168,
+      "size_bytes": 2446,
       "headings": [
         "# Checkpoint da Sessão: Franklin Quebra-Galho"
       ]
@@ -969,6 +969,10 @@
     "scripts/md-to-pdf.ps1": {
       "extension": ".ps1",
       "size_bytes": 5294
+    },
+    "scripts/scaffold-universal-app.ps1": {
+      "extension": ".ps1",
+      "size_bytes": 6762
     },
     "scripts/validate_skills.py": {
       "extension": ".py",
@@ -1561,6 +1565,118 @@
       "headings": [
         "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO (TEMPLATE PADRÃO 2026)"
       ]
+    },
+    "templates/universal-app/.env.example": {
+      "extension": ".example",
+      "size_bytes": 135
+    },
+    "templates/universal-app/.gitignore": {
+      "extension": "",
+      "size_bytes": 310
+    },
+    "templates/universal-app/index.html": {
+      "extension": ".html",
+      "size_bytes": 911
+    },
+    "templates/universal-app/package.json": {
+      "extension": ".json",
+      "size_bytes": 724
+    },
+    "templates/universal-app/postcss.config.js": {
+      "extension": ".js",
+      "size_bytes": 81
+    },
+    "templates/universal-app/README.md": {
+      "extension": ".md",
+      "size_bytes": 1109,
+      "headings": [
+        "# Universal App Template"
+      ]
+    },
+    "templates/universal-app/tailwind.config.ts": {
+      "extension": ".ts",
+      "size_bytes": 1618
+    },
+    "templates/universal-app/tsconfig.json": {
+      "extension": ".json",
+      "size_bytes": 586
+    },
+    "templates/universal-app/tsconfig.node.json": {
+      "extension": ".json",
+      "size_bytes": 213
+    },
+    "templates/universal-app/vite.config.ts": {
+      "extension": ".ts",
+      "size_bytes": 216
+    },
+    "templates/universal-app/docs/CONTEXT.md": {
+      "extension": ".md",
+      "size_bytes": 2999,
+      "headings": [
+        "# CONTEXTO OPERACIONAL E BÚSSOLA COGNITIVA"
+      ]
+    },
+    "templates/universal-app/docs/frontend.design.md": {
+      "extension": ".md",
+      "size_bytes": 17741,
+      "headings": [
+        "# ESPECIFICAÇÃO TÉCNICA DE UI/UX: DESIGN SYSTEM PREMIUM & TÁTIL"
+      ]
+    },
+    "templates/universal-app/docs/SPEC.md": {
+      "extension": ".md",
+      "size_bytes": 1577,
+      "headings": [
+        "# ESPECIFICAÇÃO DE ESCOPO E ROADMAP (SPEC.md)"
+      ]
+    },
+    "templates/universal-app/src/App.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 15079
+    },
+    "templates/universal-app/src/main.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 245
+    },
+    "templates/universal-app/src/canvas/elevationRenderer.ts": {
+      "extension": ".ts",
+      "size_bytes": 2872
+    },
+    "templates/universal-app/src/components/atoms/SunkenInput.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 2999
+    },
+    "templates/universal-app/src/components/atoms/TactileButton.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 3097
+    },
+    "templates/universal-app/src/components/molecules/NotificationToast.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 3625
+    },
+    "templates/universal-app/src/components/molecules/SearchBar.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 2582
+    },
+    "templates/universal-app/src/components/organisms/AppSidebar.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 5701
+    },
+    "templates/universal-app/src/components/organisms/TabsNav.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 3581
+    },
+    "templates/universal-app/src/components/templates/DashboardLayout.tsx": {
+      "extension": ".tsx",
+      "size_bytes": 2744
+    },
+    "templates/universal-app/src/styles/globals.css": {
+      "extension": ".css",
+      "size_bytes": 3708
+    },
+    "templates/universal-app/src/types/index.ts": {
+      "extension": ".ts",
+      "size_bytes": 687
     }
   }
 }

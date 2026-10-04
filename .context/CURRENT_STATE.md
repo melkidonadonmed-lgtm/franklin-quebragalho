@@ -2,7 +2,7 @@
 
 > **Última Atualização**: 2026-10-04  
 > **Nível de Persistência**: Nível 2 (Resumo de Contexto)  
-> **Status Geral**: 🟢 100% Operacional e Conforme com a Governança 2026 (26/26 PASS)  
+> **Status Geral**: 🟢 100% Operacional e Conforme com a Governança 2026 (26/26 PASS + Template Universal Ativo)  
 
 ---
 
@@ -10,7 +10,7 @@
 - **Repositório**: `c:\Users\melki\dev\franklin-quebragalho\`
 - **Objetivo**: Incubadora central de automações de produtividade, runbooks e skills personalizadas do agente Franklin Quebra-Galho para o Google Antigravity.
 - **Integração Global**: O diretório `.agents/skills/` está montado como NTFS Junction direta no plugin global do Antigravity (`~/.gemini/config/plugins/franklin-skills/skills`).
-- **Fase**: Fases 1, 2 e 3 de modularização concluídas com sucesso. Catálogo consolidado em 26 skills canônicas com 100% de aprovação no `validate_skills.py`. Desacoplados os monólitos de frontend, Google Drive, sistema local e documentação/conversão PDF. Subagentes especializados plenamente mapeados. Reindexação AST concluída (280 arquivos, Tree Hash `cf8d5fe6923e1fe8`).
+- **Fase**: Fases 1, 2 e 3 de modularização concluídas com sucesso (26 skills canônicas). Arquitetura Universal de Projetos Melki 2026 implementada em `templates/universal-app/` com o documento canônico `docs/frontend.design.md` (Design System Tátil, fórmulas multi-sombra CSS e Canvas 2D, paletas minerais e few-shot prompts). Scaffolder automatizado em PowerShell (`scripts/scaffold-universal-app.ps1`) validado empiricamente. Reindexação AST concluída (306 arquivos, Tree Hash `daebbcd930a4abbe`).
 
 ---
 
@@ -48,17 +48,15 @@
 ---
 
 ## 3. Decisões Arquiteturais Vigentes
-- **KISS & Local-First**: Operações diretas no SO e browser headless nativo (`msedge.exe`), eliminando dependências pesadas de terceiros (Pandoc, wkhtmltopdf).
-- **Desacoplamento Cirúrgico em 3 Fases**:
-  * Fase 1: Frontend dividido em Análise (Read-Only) e Refatoração (Write por framework).
-  * Fase 2: Storage dividido em Auditoria/Limpeza (pesados e quarentena) vs. Taxonomia (estrutura e datas ISO); e SO local vs. PKM Obsidian Vault.
-  * Fase 3: Documentação dividida em Redação Estruturada Markdown vs. Pipeline de Impressão Headless em PDF.
-- **Divulgação Progressiva**: `SKILL.md` enxutos com metadados claros, referências em `references/`, regras determinísticas em `rules/` e asserções reais em `evals/`.
+- **KISS & Local-First**: Operações diretas no SO, scripts nativos em PowerShell (`pwsh`) e browser headless nativo (`msedge.exe`).
+- **Arquitetura Universal de Projetos**: Template modular residente em `templates/universal-app/` integrando Vite, React, TypeScript no modo estrito e Tailwind CSS com Design System Tátil.
+- **Motor Multi-Sombra Canvas 2D**: Pipeline de dupla passagem (`ctx.shadowBlur` 18px e 4px) com rim light zenital de 1px garantindo gráficos táteis nítidos.
+- **Divulgação Progressiva**: `SKILL.md` enxutos com referências em `references/`, regras em `rules/` e asserções reais em `evals/`.
 - **Governança Determinística Falsificável**: 100% das 26 skills possuem validação por asserções booleanas `[PASS]` e `[FAIL]`.
 
 ---
 
 ## 4. Próximo Ponto de Entrada
-- Fases 1, 2 e 3 100% concluídas e validadas (26/26 PASS).
-- Todos os monólitos foram substituídos por pares modulares de alta precisão.
-- Repositório pronto para consolidação e commit.
+- Base universal e script `scripts/scaffold-universal-app.ps1` homologados.
+- Para provisionar um novo projeto: `.\scripts\scaffold-universal-app.ps1 -ProjectName "nome-do-app"`.
+- Repositório pronto para commit Git.
