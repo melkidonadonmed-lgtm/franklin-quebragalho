@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "StructuredPlanSchema",
+  "description": "Schema canônico para planos de trabalho estruturados emitidos pelo high-level-context-planner",
+  "type": "object",
+  "properties": {
+    "plan_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "target_orchestrator": {
+      "type": "string",
+      "enum": ["skill-orquestrador-planos-encadeados"]
+    },
+    "strategic_goal": {
+      "type": "string"
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "phase_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "responsible_skill": {
+            "type": "string"
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "go_no_go_criteria": {
+            "type": "object",
+            "properties": {
+              "go_condition": {
+                "type": "string"
+              },
+              "no_go_condition": {
+                "type": "string"
+              },
+              "contingency_route": {
+                "type": "string"
+              }
+            },
+            "required": ["go_condition", "no_go_condition", "contingency_route"],
+            "additionalProperties": false
+          },
+          "effort_level": {
+            "type": "string",
+            "enum": ["Baixo", "Médio", "Alto"]
+          }
+        },
+        "required": [
+          "phase_id",
+          "name",
+          "responsible_skill",
+          "inputs",
+          "outputs",
+          "go_no_go_criteria",
+          "effort_level"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 2
+    }
+  },
+  "required": [
+    "plan_id",
+    "version",
+    "target_orchestrator",
+    "strategic_goal",
+    "phases"
+  ],
+  "additionalProperties": false
+}

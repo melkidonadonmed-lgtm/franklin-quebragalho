@@ -48,6 +48,9 @@ O **Franklin Quebra-Galho** (`franklin-quebragalho`) é o assistente principal d
 | **`gerar-docs-pdf`** | `v1.0.0` | ✅ Validada | Criação e estilização de notas Markdown e conversão automatizada para PDF. | [.agents/skills/gerar-docs-pdf/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/gerar-docs-pdf/SKILL.md) |
 | **`organizar-gdrive`** | `v1.0.0` | ✅ Validada | Triagem, higienização e organização no Google Drive (`G:\Meu Drive` e MCP). | [.agents/skills/organizar-gdrive/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/organizar-gdrive/SKILL.md) |
 | **`organizar-local`** | `v1.0.0` | ✅ Validada | Rotinas de automação em diretórios do Windows 11 via PowerShell nativo. | [.agents/skills/organizar-local/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/organizar-local/SKILL.md) |
+| **`refine-prompt`** | `v3.0.0` | ✅ Validada | Expansão cognitiva, auditoria de factibilidade e refinamento de prompts e ideias sob Zero-Trust. | [.agents/skills/refine-prompt/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/refine-prompt/SKILL.md) |
+| **`gap-analyzer-auditor`** | `v2.0.0` | ✅ Validada | Auditoria de brechas e falhas em malha fechada, RCA em 4 vetores e hand-off estruturado. | [.agents/skills/gap-analyzer-auditor/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/gap-analyzer-auditor/SKILL.md) |
+| **`high-level-context-planner`** | `v2.0.0` | ✅ Validada | Planejador estratégico em malha fechada, Fase 0 obrigatória, critérios Go/No-Go e replanning. | [.agents/skills/high-level-context-planner/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/high-level-context-planner/SKILL.md) |
 | **`_template`** | `v1.2.0` | 🚀 Produção | Molde canônico oficial com 4 módulos de design tátil, paleta mineral, `rules/`, `evals/`, `references/`. | [.agents/skills/_template/](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/_template/SKILL.md) |
 
 ---

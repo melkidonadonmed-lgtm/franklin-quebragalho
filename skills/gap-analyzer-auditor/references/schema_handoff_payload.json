@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HandoffPayload",
+  "description": "Contrato de retroalimentação entre o gap-analyzer-auditor e o high-level-context-planner",
+  "type": "object",
+  "properties": {
+    "handoff_target": {
+      "type": "string",
+      "enum": ["high-level-context-planner", "skill-orquestrador-planos-encadeados"]
+    },
+    "incident_id": {
+      "type": "string",
+      "pattern": "^AUDIT-[0-9]{4}-[0-9]{2}-[0-9]{2}-[A-Z0-9]+$"
+    },
+    "recommended_option": {
+      "type": "string",
+      "enum": ["Opção 1", "Opção 2", "Opção 1 (Cirúrgica)", "Opção 2 (Arquitetural)"]
+    },
+    "required_adjustments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string",
+            "enum": ["REFATORAR", "INSERIR_GUARDRAIL", "REMOVER_DEPENDENCIA", "ADICIONAR_RETRY", "BLOQUEIO_HITL"]
+          },
+          "patch_instructions": {
+            "type": "string"
+          }
+        },
+        "required": ["step", "action", "patch_instructions"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "contingency_trigger": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "handoff_target",
+    "incident_id",
+    "recommended_option",
+    "required_adjustments",
+    "contingency_trigger"
+  ],
+  "additionalProperties": false
+}

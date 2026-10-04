@@ -1,10 +1,10 @@
 {
   "version": "2026.1",
-  "generated_at": "2026-10-03T23:23:47.638508+00:00",
+  "generated_at": "2026-10-04T00:10:12.061737+00:00",
   "workspace_root": "C:\\Users\\melki\\dev\\franklin-quebragalho",
-  "tree_hash": "62c9acce0a5f15a2",
+  "tree_hash": "a64a03c9b7b4f0c6",
   "stats": {
-    "total_files": 174,
+    "total_files": 212,
     "python_files": 1,
     "total_classes": 0,
     "total_functions": 3
@@ -61,14 +61,14 @@
     },
     "MY_SKILLS.md": {
       "extension": ".md",
-      "size_bytes": 14308,
+      "size_bytes": 20058,
       "headings": [
         "# Minhas Skills (MY SKILLS)"
       ]
     },
     "README.md": {
       "extension": ".md",
-      "size_bytes": 9329,
+      "size_bytes": 10544,
       "headings": [
         "# Franklin Quebra-Galho 🛠️"
       ]
@@ -209,6 +209,40 @@
         "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (EVOLUIR SKILLS)"
       ]
     },
+    ".agents/skills/gap-analyzer-auditor/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 11327,
+      "headings": []
+    },
+    ".agents/skills/gap-analyzer-auditor/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 2780
+    },
+    ".agents/skills/gap-analyzer-auditor/references/arquitetura_closed_loop.md": {
+      "extension": ".md",
+      "size_bytes": 4429,
+      "headings": [
+        "# Arquitetura de Orquestração em Malha Fechada (Closed-Loop Reflection)"
+      ]
+    },
+    ".agents/skills/gap-analyzer-auditor/references/schema_handoff_payload.json": {
+      "extension": ".json",
+      "size_bytes": 1473
+    },
+    ".agents/skills/gap-analyzer-auditor/references/taxonomia_rca_falhas.md": {
+      "extension": ".md",
+      "size_bytes": 3192,
+      "headings": [
+        "# Taxonomia de Causa-Raiz (RCA) e Classificação de Anomalias"
+      ]
+    },
+    ".agents/skills/gap-analyzer-auditor/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 4500,
+      "headings": [
+        "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`gap-analyzer-auditor` v2.0.0)"
+      ]
+    },
     ".agents/skills/gerar-docs-pdf/SKILL.md": {
       "extension": ".md",
       "size_bytes": 3521,
@@ -236,6 +270,40 @@
       "headings": [
         "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (GERAR DOCS PDF)",
         "### Regra 1: Validação de Existência do PDF"
+      ]
+    },
+    ".agents/skills/high-level-context-planner/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 11758,
+      "headings": []
+    },
+    ".agents/skills/high-level-context-planner/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 2787
+    },
+    ".agents/skills/high-level-context-planner/references/matriz_decisao_go_no_go.md": {
+      "extension": ".md",
+      "size_bytes": 2303,
+      "headings": [
+        "# Diretrizes para Elaboração da Matriz de Decisão Go/No-Go"
+      ]
+    },
+    ".agents/skills/high-level-context-planner/references/protocolo_consumo_handoff.md": {
+      "extension": ".md",
+      "size_bytes": 2419,
+      "headings": [
+        "# Protocolo de Consumo de Hand-Off Payload e Replanejamento Contínuo"
+      ]
+    },
+    ".agents/skills/high-level-context-planner/references/schema_plano_contexto.json": {
+      "extension": ".json",
+      "size_bytes": 2186
+    },
+    ".agents/skills/high-level-context-planner/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 4165,
+      "headings": [
+        "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`high-level-context-planner` v2.0.0)"
       ]
     },
     ".agents/skills/organizador-fluxo-arvore-arquivos/SKILL.md": {
@@ -286,6 +354,50 @@
       "headings": [
         "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (ORGANIZAR LOCAL)",
         "### Regra 1: Validação de Dry-Run Prévio"
+      ]
+    },
+    ".agents/skills/refine-prompt/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 12341,
+      "headings": []
+    },
+    ".agents/skills/refine-prompt/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 3413
+    },
+    ".agents/skills/refine-prompt/references/contratos_io_modulos.md": {
+      "extension": ".md",
+      "size_bytes": 4084,
+      "headings": [
+        "# Contratos de I/O e Especificação dos Módulos Operacionais"
+      ]
+    },
+    ".agents/skills/refine-prompt/references/diretrizes_zero_trust_owasp.md": {
+      "extension": ".md",
+      "size_bytes": 3773,
+      "headings": [
+        "# Diretrizes de Segurança Zero-Trust e Padrões OWASP LLM (2025/2026)"
+      ]
+    },
+    ".agents/skills/refine-prompt/references/prompt_sistema_master.md": {
+      "extension": ".md",
+      "size_bytes": 10367,
+      "headings": [
+        "# PROMPT MESTRE DE SISTEMA: REFINE-PROMPT v3.0"
+      ]
+    },
+    ".agents/skills/refine-prompt/references/taxonomia_epistemica.md": {
+      "extension": ".md",
+      "size_bytes": 4298,
+      "headings": [
+        "# Taxonomia de Premissas Epistêmicas e Auditoria de Factibilidade (Padrão 2026)"
+      ]
+    },
+    ".agents/skills/refine-prompt/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 4132,
+      "headings": [
+        "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`refine-prompt` v3.0)"
       ]
     },
     ".agents/skills/skill-auditor-refatorador-skills/SKILL.md": {
@@ -513,14 +625,14 @@
     },
     ".context/CURRENT_STATE.md": {
       "extension": ".md",
-      "size_bytes": 3044,
+      "size_bytes": 3981,
       "headings": [
         "# Estado Atual do Workspace: Franklin Quebra-Galho"
       ]
     },
     ".context/SESSION_LOG.md": {
       "extension": ".md",
-      "size_bytes": 2307,
+      "size_bytes": 2986,
       "headings": [
         "# Checkpoint da Sessão: Franklin Quebra-Galho"
       ]
@@ -846,6 +958,40 @@
         "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (EVOLUIR SKILLS)"
       ]
     },
+    "skills/gap-analyzer-auditor/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 11327,
+      "headings": []
+    },
+    "skills/gap-analyzer-auditor/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 2780
+    },
+    "skills/gap-analyzer-auditor/references/arquitetura_closed_loop.md": {
+      "extension": ".md",
+      "size_bytes": 4429,
+      "headings": [
+        "# Arquitetura de Orquestração em Malha Fechada (Closed-Loop Reflection)"
+      ]
+    },
+    "skills/gap-analyzer-auditor/references/schema_handoff_payload.json": {
+      "extension": ".json",
+      "size_bytes": 1473
+    },
+    "skills/gap-analyzer-auditor/references/taxonomia_rca_falhas.md": {
+      "extension": ".md",
+      "size_bytes": 3192,
+      "headings": [
+        "# Taxonomia de Causa-Raiz (RCA) e Classificação de Anomalias"
+      ]
+    },
+    "skills/gap-analyzer-auditor/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 4500,
+      "headings": [
+        "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`gap-analyzer-auditor` v2.0.0)"
+      ]
+    },
     "skills/gerar-docs-pdf/SKILL.md": {
       "extension": ".md",
       "size_bytes": 3521,
@@ -873,6 +1019,40 @@
       "headings": [
         "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (GERAR DOCS PDF)",
         "### Regra 1: Validação de Existência do PDF"
+      ]
+    },
+    "skills/high-level-context-planner/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 11758,
+      "headings": []
+    },
+    "skills/high-level-context-planner/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 2787
+    },
+    "skills/high-level-context-planner/references/matriz_decisao_go_no_go.md": {
+      "extension": ".md",
+      "size_bytes": 2303,
+      "headings": [
+        "# Diretrizes para Elaboração da Matriz de Decisão Go/No-Go"
+      ]
+    },
+    "skills/high-level-context-planner/references/protocolo_consumo_handoff.md": {
+      "extension": ".md",
+      "size_bytes": 2419,
+      "headings": [
+        "# Protocolo de Consumo de Hand-Off Payload e Replanejamento Contínuo"
+      ]
+    },
+    "skills/high-level-context-planner/references/schema_plano_contexto.json": {
+      "extension": ".json",
+      "size_bytes": 2186
+    },
+    "skills/high-level-context-planner/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 4165,
+      "headings": [
+        "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`high-level-context-planner` v2.0.0)"
       ]
     },
     "skills/organizador-fluxo-arvore-arquivos/SKILL.md": {
@@ -923,6 +1103,50 @@
       "headings": [
         "# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA (ORGANIZAR LOCAL)",
         "### Regra 1: Validação de Dry-Run Prévio"
+      ]
+    },
+    "skills/refine-prompt/SKILL.md": {
+      "extension": ".md",
+      "size_bytes": 12341,
+      "headings": []
+    },
+    "skills/refine-prompt/evals/evals.json": {
+      "extension": ".json",
+      "size_bytes": 3413
+    },
+    "skills/refine-prompt/references/contratos_io_modulos.md": {
+      "extension": ".md",
+      "size_bytes": 4084,
+      "headings": [
+        "# Contratos de I/O e Especificação dos Módulos Operacionais"
+      ]
+    },
+    "skills/refine-prompt/references/diretrizes_zero_trust_owasp.md": {
+      "extension": ".md",
+      "size_bytes": 3773,
+      "headings": [
+        "# Diretrizes de Segurança Zero-Trust e Padrões OWASP LLM (2025/2026)"
+      ]
+    },
+    "skills/refine-prompt/references/prompt_sistema_master.md": {
+      "extension": ".md",
+      "size_bytes": 10367,
+      "headings": [
+        "# PROMPT MESTRE DE SISTEMA: REFINE-PROMPT v3.0"
+      ]
+    },
+    "skills/refine-prompt/references/taxonomia_epistemica.md": {
+      "extension": ".md",
+      "size_bytes": 4298,
+      "headings": [
+        "# Taxonomia de Premissas Epistêmicas e Auditoria de Factibilidade (Padrão 2026)"
+      ]
+    },
+    "skills/refine-prompt/rules/criterios_auditoria.md": {
+      "extension": ".md",
+      "size_bytes": 4132,
+      "headings": [
+        "# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`refine-prompt` v3.0)"
       ]
     },
     "skills/skill-auditor-refatorador-skills/SKILL.md": {
