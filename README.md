@@ -103,6 +103,8 @@ O ecossistema conta com um servidor MCP dedicado baseado em **FastMCP** integrad
 - **`franklin_skills_validate`**: Executa a auditoria determinística estrutural de todas as 26 skills com relatório `[PASS]`/`[FAIL]`.
 - **`franklin_get_agents`**: Retorna a matriz operacional dos 7 subagentes especialistas e suas atribuições.
 - **`franklin_run_skill_script`**: Executa scripts utilitários com trava contra Path Traversal e isolamento de processo.
+- **`franklin_execute_dag`**: Executa planos de orquestração em grafo acíclico dirigido (DAG) via motor do Epic-Volta com particionamento em ondas de Kahn, resolução de dot-path e persistência transacional SQLite WAL.
+
 
 ### Recursos Passivos (Resources)
 - `skills://catalog`: JSON consolidado de todas as skills e metadados.

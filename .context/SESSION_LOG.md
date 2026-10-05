@@ -1,39 +1,37 @@
 # Checkpoint da Sessão: Franklin Quebra-Galho
 
-> **Data / Turno**: 2026-10-04  
+> **Data / Turno**: 2026-10-05 00:24 UTC  
 > **Nível de Persistência**: Nível 3 (Checkpoint de Sessão)  
-> **Ação Executada**: Padronização Canônica do Bloco Metadata e Licença em 100% das Skills (26/26) e Validação Determinística  
+> **Ação Executada**: Organização de arquivos fora de escopo, higienização de resíduos de build e integração da Tool MCP `franklin_execute_dag`  
+> **Exit Code Comprovado**: `uv run pytest tests/test_server.py -v` -> 13 passed em 1.75s (ExitCode: 0)  
 
 ---
 
 ## 1. Atividades Concluídas neste Turno
 
-1. **Atualização dos Validadores Determinísticos (`validate_skills.py` e `server.py`)**:
-   - Função `parse_frontmatter` / `_parse_frontmatter` aprimorada para processar YAML aninhado e blocos `metadata:`.
-   - Suporte prioritário via `PyYAML` com fallback resiliente e determinístico zero-dependency.
-   - Promoção automática de `metadata.version` para a raiz do schema de validação para garantia de paridade total.
+1. **Remoção de Arquivos Duplicados Fora de Escopo**:
+   - `MY AGENTS.md` e `MY SKILL.md`: Removidos via `git rm` (eliminação de arquivos duplicados de conveniência com espaços no nome, mantendo os arquivos canônicos `MY_AGENTS.md` e `MY_SKILLS.md`).
+   - `google-drive-index-app/dist/`: Resíduo antigo de compilação removido com segurança.
+   - `.gitignore` atualizado para conter exclusão recursiva de `**/dist/` e `**/.sessions/`.
+   - `generate_workspace_index.py` aprimorado para ignorar `dist` e `.sessions` na árvore AST.
 
-2. **Padronização Canônica de Metadados em 100% das Skills (26/26)**:
-   - Todas as 26 skills receberam o cabeçalho canônico oficial Google Antigravity / ADK Platform:
-     * `license: MIT`
-     * Bloco `metadata` com `version`, `author`, `category`, `updated_at`, `tags`.
-     * Retrocompatibilidade preservada com chaves raiz (`version`, `author`, `category`, `updated_at`).
-   - Sincronização tripla atômica aplicada entre `.agents/skills/`, `skills/` e o plugin global `~/.gemini/config/plugins/franklin-skills/skills/`.
+2. **Integração do Motor DAG no Servidor FastMCP Global (`server.py`)**:
+   - Adicionada a ferramenta `@mcp.tool()` `franklin_execute_dag`:
+     * Suporte a despacho de planos via caminho de arquivo ou string JSON inline (`DAGExecutionPlan`).
+     * Execução tolerante a falhas chamando o CLI do `epic-volta` com `--json`.
+     * Suporte aos parâmetros `run_id`, `resume`, `timeout_seconds` e `db_path`.
+   - Documentação da ferramenta atualizada no `README.md`.
 
-3. **Evolução de Skills Chave**:
-   - `refatoracao-design-tatil-frontend`: v1.1.0 com metadados estruturados, tags minerais e anti-cobalto.
-   - `skill-auditor-refatorador-skills`: Bump para v1.2.0, ensinada no Passo 1 a auditar a presença do bloco canônico `metadata`.
-   - `_template`: v1.2.0 consolidada como fonte canônica para criação de novas skills.
+3. **Evolução de Skills de Orquestração**:
+   - `skill-orquestrador-planos-encadeados`: Atualizado `SKILL.md` (passo 3) integrando despacho via `franklin_execute_dag` para planos no formato de grafo acíclico, sincronizado entre `.agents/skills/` e `skills/`.
 
-4. **Validação e Homologação Determinística**:
+4. **Validação Determinística**:
+   - `pytest tests/test_server.py -v`: **13/13 PASS** em 1.75s (incluindo testes de arquivo, JSON inline e entrada inválida para `franklin_execute_dag`).
    - `python scripts/validate_skills.py`: **26/26 PASS (100%)**.
-   - Ferramenta MCP `franklin_skills_validate`: **26/26 PASS (100%)**.
-   - Suíte de testes do servidor FastMCP `pytest tests/ -v`: **10/10 PASS**.
-   - Reindexação de AST do workspace executada com sucesso (`Tree Hash: d62ad90add2b60ef`).
+   - Reindexação de AST do workspace executada com sucesso (`Tree Hash: 185fd0d3ae5c534c`).
 
 ---
 
 ## 2. Próxima Ação Recomendada
 
-- Todas as 26 skills do Franklin estão com governança de metadados padronizada conforme a especificação oficial do Antigravity 2.0.
-- Ambiente totalmente limpo, sincronizado e pronto para commit Git.
+- O Franklin Quebra-Galho agora possui acesso direto ao motor de DAG do Epic-Volta via tool nativa MCP para despachar grafos complexos e concorrentes em segundo plano.

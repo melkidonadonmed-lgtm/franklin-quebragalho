@@ -1,17 +1,17 @@
 # Estado Atual do Workspace: Franklin Quebra-Galho
 
-> **Última Atualização**: 2026-10-04  
+> **Última Atualização**: 2026-10-05  
 > **Nível de Persistência**: Nível 2 (Resumo de Contexto)  
-> **Status Geral**: 🟢 100% Operacional e Conforme com a Governança 2026 (26/26 PASS + Servidor MCP Global Ativo + Template Universal)  
+> **Status Geral**: 🟢 100% Operacional e Conforme com a Governança 2026 (26/26 PASS + Servidor MCP Global com 7 Ferramentas Ativas + Motor DAG Integrado)  
 
 ---
 
 ## 1. Visão Geral e Fase do Projeto
 - **Repositório**: `c:\Users\melki\dev\franklin-quebragalho\`
 - **Objetivo**: Incubadora central de automações de produtividade, runbooks e skills personalizadas do agente Franklin Quebra-Galho para o Google Antigravity.
-- **Servidor MCP Global Ativo**: Servidor FastMCP dedicado (`server.py`) registrado globalmente no ecossistema (`~/.gemini/config/mcp_config.json`) expondo 6 ferramentas, 5 recursos e 2 prompts MCP.
+- **Servidor MCP Global Ativo**: Servidor FastMCP dedicado (`server.py`) registrado globalmente no ecossistema (`~/.gemini/config/mcp_config.json`) expondo 7 ferramentas (incluindo `franklin_execute_dag`), 5 recursos e 2 prompts MCP.
 - **Integração Global de Skills**: O diretório `.agents/skills/` está montado como NTFS Junction direta no plugin global do Antigravity (`~/.gemini/config/plugins/franklin-skills/skills`).
-- **Fase**: Fases 1, 2, 3 e 4 (Padronização Canônica de Metadata e Licença em 100% das Skills) concluídas com sucesso (26 skills canônicas). Servidor FastMCP Global registrado e ativo. Arquitetura Universal de Projetos Melki 2026 implementada em `templates/universal-app/` com o documento canônico `docs/frontend.design.md`.
+- **Fase**: Fases 1 a 4 concluídas (26 skills canônicas). Higienização de arquivos fora de escopo (remoção de duplicatas com espaços no nome e resíduos de compilação) e integração ativa com o motor de orquestração DAG (`epic-volta`).
 
 ---
 
@@ -50,14 +50,13 @@
 
 ## 3. Decisões Arquiteturais Vigentes
 - **KISS & Local-First**: Operações diretas no SO, scripts nativos em PowerShell (`pwsh`) e browser headless nativo (`msedge.exe`).
-- **Servidor FastMCP Global (`franklin-skills`)**: Padrão STDIO moderno em Python com carregamento granular (divulgação progressiva de `contract`, `rules`, `evals`, `scripts`), busca por intenção operacional e travas de segurança contra Path Traversal.
+- **Servidor FastMCP Global (`franklin-skills`)**: Padrão STDIO moderno em Python com carregamento granular (divulgação progressiva de `contract`, `rules`, `evals`, `scripts`), busca por intenção operacional, travas de segurança contra Path Traversal e despacho direto de grafos acíclicos dirigidos via `franklin_execute_dag`.
 - **Divulgação Progressiva**: `SKILL.md` enxutos com referências em `references/`, regras em `rules/` e asserções reais em `evals/`.
 - **Governança Determinística Falsificável**: 100% das 26 skills possuem validação por asserções booleanas `[PASS]` e `[FAIL]`.
 
 ---
 
 ## 4. Próximo Ponto de Entrada
-- Servidor MCP Global registrado e testado com 10/10 PASS no pytest.
+- Servidor MCP Global testado com 13/13 PASS no pytest.
 - Catálogo de 26 skills padronizado com metadata canônico e licença (26/26 PASS).
-- Repositório sincronizado e atualizado em `origin/main` no GitHub (commit `497994b`).
-- Workspace 100% operacional e limpo.
+- Workspace 100% operacional, higienizado e sincronizado.

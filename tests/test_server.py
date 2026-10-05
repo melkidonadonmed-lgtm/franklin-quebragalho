@@ -126,3 +126,43 @@ def test_prompts():
     p_front = server.tactile_frontend_audit_prompt("https://meuapp.com")
     assert "FrontCraftMaster" in p_front
     assert "Design System Tátil Melki" in p_front
+
+
+def test_franklin_execute_dag_file():
+    """Valida a execução de um plano DAG existente via arquivo."""
+    sample_plan = server.EPIC_VOLTA_DIR / "examples" / "sample_dag_plan.json"
+    res_str = server.franklin_execute_dag(str(sample_plan), run_id="test-mcp-file-run")
+    data = json.loads(res_str)
+    assert data["status"] == "COMPLETED"
+    assert data["total_tasks"] == 2
+    assert data["completed_tasks"] == 2
+    assert "get_time" in data["results"]
+
+
+def test_franklin_execute_dag_inline_json():
+    """Valida a execução de um plano DAG passado diretamente como string JSON."""
+    plan_dict = {
+        "objective": "Teste Inline do Franklin MCP",
+        "acceptance_criteria": ["Horário do sistema obtido com sucesso"],
+        "tasks": [
+            {
+                "id": "inline_time",
+                "group_id": "system_time",
+                "description": "Recuperar horário do sistema Windows"
+            }
+        ]
+    }
+    res_str = server.franklin_execute_dag(json.dumps(plan_dict), run_id="test-mcp-inline-run")
+    data = json.loads(res_str)
+    assert data["status"] == "COMPLETED"
+    assert data["completed_tasks"] == 1
+    assert "inline_time" in data["results"]
+
+
+
+def test_franklin_execute_dag_invalid_input():
+    """Valida o tratamento gracioso quando o arquivo não existe nem é JSON válido."""
+    res_str = server.franklin_execute_dag("arquivo_que_nao_existe_xyz.json")
+    data = json.loads(res_str)
+    assert data["status"] == "FILE_NOT_FOUND_OR_INVALID_JSON"
+

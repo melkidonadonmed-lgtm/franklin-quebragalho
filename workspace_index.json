@@ -1,18 +1,18 @@
 {
   "version": "2026.1",
-  "generated_at": "2026-10-04T05:38:55.420081+00:00",
+  "generated_at": "2026-10-05T04:24:13.299982+00:00",
   "workspace_root": "C:\\Users\\melki\\dev\\franklin-quebragalho",
-  "tree_hash": "c096e791d4b4f219",
+  "tree_hash": "185fd0d3ae5c534c",
   "stats": {
-    "total_files": 307,
-    "python_files": 1,
+    "total_files": 308,
+    "python_files": 4,
     "total_classes": 0,
-    "total_functions": 3
+    "total_functions": 41
   },
   "files": {
     ".gitignore": {
       "extension": "",
-      "size_bytes": 42
+      "size_bytes": 150
     },
     "AGENTS.md": {
       "extension": ".md",
@@ -38,20 +38,6 @@
       "extension": ".html",
       "size_bytes": 708268
     },
-    "MY AGENTS.md": {
-      "extension": ".md",
-      "size_bytes": 279,
-      "headings": [
-        "# Meus Agentes (MY AGENTS)"
-      ]
-    },
-    "MY SKILL.md": {
-      "extension": ".md",
-      "size_bytes": 279,
-      "headings": [
-        "# Minhas Skills (MY SKILL)"
-      ]
-    },
     "MY_AGENTS.md": {
       "extension": ".md",
       "size_bytes": 7524,
@@ -61,21 +47,144 @@
     },
     "MY_SKILLS.md": {
       "extension": ".md",
-      "size_bytes": 26095,
+      "size_bytes": 28385,
       "headings": [
         "# Minhas Skills (MY SKILLS)"
       ]
     },
+    "pyproject.toml": {
+      "extension": ".toml",
+      "size_bytes": 502
+    },
     "README.md": {
       "extension": ".md",
-      "size_bytes": 10544,
+      "size_bytes": 13283,
       "headings": [
         "# Franklin Quebra-Galho 🛠️"
       ]
     },
+    "server.py": {
+      "extension": ".py",
+      "size_bytes": 36483,
+      "python_ast": {
+        "classes": [],
+        "functions": [
+          {
+            "name": "_parse_frontmatter",
+            "is_async": false,
+            "docstring": "Extrai frontmatter YAML (com suporte a metadata aninhado) e corpo do documento Markdown."
+          },
+          {
+            "name": "_load_agents_map",
+            "is_async": false,
+            "docstring": "Mapeia cada skill à sua persona especialista correspondente via AGENTS.md."
+          },
+          {
+            "name": "_load_status_map",
+            "is_async": false,
+            "docstring": "Carrega o status do ciclo de vida das skills a partir de MY_SKILLS.md."
+          },
+          {
+            "name": "_collect_skill_data",
+            "is_async": false,
+            "docstring": "Lê metadados completos e estrutura de uma pasta de skill."
+          },
+          {
+            "name": "_get_all_skills_data",
+            "is_async": false,
+            "docstring": "Varre o diretório de skills e consolida todos os metadados."
+          },
+          {
+            "name": "_find_skill_dir",
+            "is_async": false,
+            "docstring": "Localiza o diretório de uma skill por correspondência exata ou substring unívoca."
+          },
+          {
+            "name": "franklin_skills_list",
+            "is_async": false,
+            "docstring": "Lista todas as Agent Skills do catálogo do Franklin Quebra-Galho com filtros e status.\nArgs:\n    status: Filtro por status do ciclo de vida ('all', 'validada', 'producao', 'teste', 'ideia').\n    persona: Filtro por subagente ('all', 'FrontCraftMaster', 'DriveMaster', 'FileOpsLocal', 'VaultMaster', 'DocMaker', 'SkillCraft', 'LoopPlanner', 'Franklin-Main').\n    search: Termo opcional para filtrar por nome ou descrição.\n    format: Formato de saída ('markdown' ou 'json')."
+          },
+          {
+            "name": "franklin_skills_get",
+            "is_async": false,
+            "docstring": "Recupera as instruções, regras ou dados de uma skill com suporte a divulgação progressiva.\nArgs:\n    skill_name: Nome exato ou aproximado da skill (ex: 'arquiteto-conteudo-solucoes', 'conversor-html-pdf', 'gdrive-auditoria-limpeza').\n    section: Seção para carregamento granular:\n             - 'contract': Apenas o SKILL.md enxuto (Ideal para preservar Token Budget).\n             - 'rules': Apenas os critérios determinísticos de auditoria (rules/criterios_auditoria.md).\n             - 'references': Lista e conteúdos dos manuais de referência (references/).\n             - 'evals': Suíte de testes estruturados (evals/evals.json).\n             - 'scripts': Lista dos scripts executáveis disponíveis.\n             - 'all': Pacote completo da skill concatenado."
+          },
+          {
+            "name": "franklin_skills_search",
+            "is_async": false,
+            "docstring": "Busca inteligente de skills por intenção operacional, palavras-chave, tags ou descrição.\nArgs:\n    query: Descrição do que você deseja realizar (ex: 'limpar downloads e instaladores', 'converter markdown em pdf', 'auditar tela de frontend', 'organizar duplicatas no drive').\n    limit: Quantidade máxima de recomendações sugeridas."
+          },
+          {
+            "name": "franklin_skills_validate",
+            "is_async": false,
+            "docstring": "Executa auditoria determinística de conformidade estrutural, contratual e semântica das skills.\nArgs:\n    target_skill: Nome de uma skill específica para validar, ou vazio para validar todas as 26 skills."
+          },
+          {
+            "name": "franklin_get_agents",
+            "is_async": false,
+            "docstring": "Retorna o catálogo oficial dos 7 Subagentes Especialistas do Franklin Quebra-Galho e suas diretrizes."
+          },
+          {
+            "name": "franklin_run_skill_script",
+            "is_async": false,
+            "docstring": "Executa de forma segura um script utilitário associado a uma skill ou ao workspace.\nArgs:\n    skill_name: Nome da skill (ou 'workspace' para scripts gerais em /scripts/).\n    script_name: Nome do arquivo de script (ex: 'md-to-pdf.ps1', 'validate_skills.py').\n    args: Argumentos opcionais para o script.\n    timeout_seconds: Tempo limite de execução (padrão: 60s)."
+          },
+          {
+            "name": "franklin_execute_dag",
+            "is_async": false,
+            "docstring": "Executa um plano de orquestração em grafo acíclico dirigido (DAG) via motor do Epic-Volta.\n\nDespacha o plano com ordenação topológica (Kahn), concorrência por ondas,\nprojeção de campos upstream por dot-notation e persistência transacional SQLite WAL.\n\nArgs:\n    plan_path_or_json: Caminho para o arquivo JSON do plano ou string JSON contendo o DAGExecutionPlan.\n    run_id: Identificador único opcional da execução (essencial para retomar execuções com resume=True).\n    resume: Se True, retoma a execução sem reexecutar nós já concluídos no SQLite.\n    timeout_seconds: Tempo limite global da execução em segundos (0 para sem limite).\n    db_path: Caminho do banco SQLite de persistência (padrão: .sessions/dag_cli.db do epic-volta)."
+          },
+          {
+            "name": "get_catalog_resource",
+            "is_async": false,
+            "docstring": "Recurso passivo expondo o catálogo consolidado de skills em formato JSON."
+          },
+          {
+            "name": "get_manifest_resource",
+            "is_async": false,
+            "docstring": "Recurso passivo expondo o manifesto completo e ciclo de vida de MY_SKILLS.md."
+          },
+          {
+            "name": "get_agents_resource",
+            "is_async": false,
+            "docstring": "Recurso passivo expondo a arquitetura e diretrizes de AGENTS.md."
+          },
+          {
+            "name": "get_skill_resource",
+            "is_async": false,
+            "docstring": "Recurso passivo para leitura direta do contrato SKILL.md de uma skill."
+          },
+          {
+            "name": "get_rules_resource",
+            "is_async": false,
+            "docstring": "Recurso passivo para leitura direta dos critérios de auditoria de uma skill."
+          },
+          {
+            "name": "activate_skill_prompt",
+            "is_async": false,
+            "docstring": "Gera o prompt estruturado de ativação de uma skill sob os padrões de 2026."
+          },
+          {
+            "name": "tactile_frontend_audit_prompt",
+            "is_async": false,
+            "docstring": "Gera prompt para auditoria tátil de frontend sob os padrões do FrontCraftMaster."
+          },
+          {
+            "name": "run",
+            "is_async": false,
+            "docstring": "Ponto de entrada para execução STDIO do servidor MCP."
+          }
+        ],
+        "routes": []
+      }
+    },
+    "uv.lock": {
+      "extension": ".lock",
+      "size_bytes": 262330
+    },
     ".agents/skills/analise-design-tatil-frontend/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 9819,
+      "size_bytes": 11996,
       "headings": []
     },
     ".agents/skills/analise-design-tatil-frontend/evals/evals.json": {
@@ -102,7 +211,7 @@
     },
     ".agents/skills/aprimoramento-expansibilidade-agentes-skills/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 7109,
+      "size_bytes": 7340,
       "headings": []
     },
     ".agents/skills/arquiteto-conteudo-solucoes/README.md": {
@@ -114,7 +223,7 @@
     },
     ".agents/skills/arquiteto-conteudo-solucoes/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 6104,
+      "size_bytes": 6573,
       "headings": []
     },
     ".agents/skills/arquiteto-conteudo-solucoes/evals/evals.json": {
@@ -145,12 +254,12 @@
     },
     ".agents/skills/arquitetura-design-implementacao-sistema/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 10957,
+      "size_bytes": 11194,
       "headings": []
     },
     ".agents/skills/auditoria-projetos-sistema/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 17783,
+      "size_bytes": 18125,
       "headings": []
     },
     ".agents/skills/auditoria-projetos-sistema/evals/evals.json": {
@@ -166,7 +275,7 @@
     },
     ".agents/skills/consultor-design-tatil-frontend/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 15471,
+      "size_bytes": 15918,
       "headings": []
     },
     ".agents/skills/consultor-design-tatil-frontend/evals/evals.json": {
@@ -189,7 +298,7 @@
     },
     ".agents/skills/context-sentinel/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 4301,
+      "size_bytes": 4751,
       "headings": []
     },
     ".agents/skills/context-sentinel/evals/evals.json": {
@@ -205,7 +314,7 @@
     },
     ".agents/skills/conversor-html-pdf/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 5636,
+      "size_bytes": 6007,
       "headings": []
     },
     ".agents/skills/conversor-html-pdf/evals/evals.json": {
@@ -225,7 +334,7 @@
     },
     ".agents/skills/curadoria-obsidian-vault/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 5141,
+      "size_bytes": 5501,
       "headings": []
     },
     ".agents/skills/curadoria-obsidian-vault/evals/evals.json": {
@@ -245,7 +354,7 @@
     },
     ".agents/skills/design-interface-medica-minimalista/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 3995,
+      "size_bytes": 4237,
       "headings": []
     },
     ".agents/skills/design-interface-medica-minimalista/evals/evals.json": {
@@ -262,7 +371,7 @@
     },
     ".agents/skills/evoluir-skills/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 5523,
+      "size_bytes": 5942,
       "headings": []
     },
     ".agents/skills/evoluir-skills/evals/evals.json": {
@@ -278,7 +387,7 @@
     },
     ".agents/skills/gap-analyzer-auditor/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 11327,
+      "size_bytes": 11735,
       "headings": []
     },
     ".agents/skills/gap-analyzer-auditor/evals/evals.json": {
@@ -312,7 +421,7 @@
     },
     ".agents/skills/gdrive-auditoria-limpeza/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 6109,
+      "size_bytes": 6485,
       "headings": []
     },
     ".agents/skills/gdrive-auditoria-limpeza/evals/evals.json": {
@@ -332,7 +441,7 @@
     },
     ".agents/skills/gdrive-taxonomia-organizacao/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 5316,
+      "size_bytes": 5674,
       "headings": []
     },
     ".agents/skills/gdrive-taxonomia-organizacao/evals/evals.json": {
@@ -352,7 +461,7 @@
     },
     ".agents/skills/gerar-docs-pdf/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 3521,
+      "size_bytes": 3861,
       "headings": []
     },
     ".agents/skills/gerar-docs-pdf/evals/evals.json": {
@@ -381,7 +490,7 @@
     },
     ".agents/skills/high-level-context-planner/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 11758,
+      "size_bytes": 12216,
       "headings": []
     },
     ".agents/skills/high-level-context-planner/evals/evals.json": {
@@ -415,7 +524,7 @@
     },
     ".agents/skills/manutencao-disco-windows/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 5197,
+      "size_bytes": 5549,
       "headings": []
     },
     ".agents/skills/manutencao-disco-windows/evals/evals.json": {
@@ -435,7 +544,7 @@
     },
     ".agents/skills/organizador-fluxo-arvore-arquivos/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 6942,
+      "size_bytes": 7376,
       "headings": []
     },
     ".agents/skills/organizador-fluxo-arvore-arquivos/evals/evals.json": {
@@ -451,7 +560,7 @@
     },
     ".agents/skills/organizar-gdrive/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 3572,
+      "size_bytes": 3934,
       "headings": []
     },
     ".agents/skills/organizar-gdrive/evals/evals.json": {
@@ -468,7 +577,7 @@
     },
     ".agents/skills/organizar-local/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 3804,
+      "size_bytes": 4171,
       "headings": []
     },
     ".agents/skills/organizar-local/evals/evals.json": {
@@ -485,7 +594,7 @@
     },
     ".agents/skills/redator-tecnico-markdown/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 4924,
+      "size_bytes": 6658,
       "headings": []
     },
     ".agents/skills/redator-tecnico-markdown/evals/evals.json": {
@@ -508,7 +617,7 @@
     },
     ".agents/skills/refatoracao-design-tatil-frontend/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 8150,
+      "size_bytes": 10932,
       "headings": []
     },
     ".agents/skills/refatoracao-design-tatil-frontend/evals/evals.json": {
@@ -535,7 +644,7 @@
     },
     ".agents/skills/refine-prompt/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 12341,
+      "size_bytes": 12788,
       "headings": []
     },
     ".agents/skills/refine-prompt/evals/evals.json": {
@@ -579,7 +688,7 @@
     },
     ".agents/skills/skill-auditor-refatorador-skills/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 11744,
+      "size_bytes": 12216,
       "headings": []
     },
     ".agents/skills/skill-auditor-refatorador-skills/evals/evals.json": {
@@ -602,7 +711,7 @@
     },
     ".agents/skills/skill-orquestrador-planos-encadeados/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 11397,
+      "size_bytes": 12167,
       "headings": []
     },
     ".agents/skills/skill-orquestrador-planos-encadeados/evals/evals.json": {
@@ -622,7 +731,7 @@
     },
     ".agents/skills/_template/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 8388,
+      "size_bytes": 8810,
       "headings": []
     },
     ".agents/skills/_template/evals/evals.json": {
@@ -802,14 +911,14 @@
     },
     ".context/CURRENT_STATE.md": {
       "extension": ".md",
-      "size_bytes": 4991,
+      "size_bytes": 5013,
       "headings": [
         "# Estado Atual do Workspace: Franklin Quebra-Galho"
       ]
     },
     ".context/SESSION_LOG.md": {
       "extension": ".md",
-      "size_bytes": 3795,
+      "size_bytes": 2266,
       "headings": [
         "# Checkpoint da Sessão: Franklin Quebra-Galho"
       ]
@@ -849,18 +958,6 @@
     "google-drive-index-app/vite.config.ts": {
       "extension": ".ts",
       "size_bytes": 183
-    },
-    "google-drive-index-app/dist/index.html": {
-      "extension": ".html",
-      "size_bytes": 984
-    },
-    "google-drive-index-app/dist/assets/index-DNe7xLP_.js": {
-      "extension": ".js",
-      "size_bytes": 200345
-    },
-    "google-drive-index-app/dist/assets/index-mwrGjeDf.css": {
-      "extension": ".css",
-      "size_bytes": 25529
     },
     "google-drive-index-app/src/App.tsx": {
       "extension": ".tsx",
@@ -970,6 +1067,10 @@
       "extension": ".cmd",
       "size_bytes": 1545
     },
+    "scripts/Iniciar-Franklin-MCP.cmd": {
+      "extension": ".cmd",
+      "size_bytes": 249
+    },
     "scripts/md-to-pdf.ps1": {
       "extension": ".ps1",
       "size_bytes": 5294
@@ -978,16 +1079,46 @@
       "extension": ".ps1",
       "size_bytes": 6762
     },
+    "scripts/standardize_skills_metadata.py": {
+      "extension": ".py",
+      "size_bytes": 13167,
+      "python_ast": {
+        "classes": [],
+        "functions": [
+          {
+            "name": "extract_description",
+            "is_async": false,
+            "docstring": "Extrai a descrição atual do frontmatter preservando seu texto exato."
+          },
+          {
+            "name": "extract_body",
+            "is_async": false,
+            "docstring": "Extrai o corpo do documento markdown após o frontmatter."
+          },
+          {
+            "name": "build_frontmatter",
+            "is_async": false,
+            "docstring": "Gera o frontmatter canônico padronizado com licença e bloco metadata."
+          },
+          {
+            "name": "main",
+            "is_async": false,
+            "docstring": ""
+          }
+        ],
+        "routes": []
+      }
+    },
     "scripts/validate_skills.py": {
       "extension": ".py",
-      "size_bytes": 7377,
+      "size_bytes": 8895,
       "python_ast": {
         "classes": [],
         "functions": [
           {
             "name": "parse_frontmatter",
             "is_async": false,
-            "docstring": "Extrai frontmatter YAML simples e corpo do documento."
+            "docstring": "Extrai frontmatter YAML (com suporte a metadata aninhado) e corpo do documento."
           },
           {
             "name": "validate_skill_dir",
@@ -1009,7 +1140,7 @@
     },
     "skills/analise-design-tatil-frontend/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 9819,
+      "size_bytes": 11996,
       "headings": []
     },
     "skills/analise-design-tatil-frontend/evals/evals.json": {
@@ -1036,7 +1167,7 @@
     },
     "skills/aprimoramento-expansibilidade-agentes-skills/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 7109,
+      "size_bytes": 7340,
       "headings": []
     },
     "skills/arquiteto-conteudo-solucoes/README.md": {
@@ -1048,7 +1179,7 @@
     },
     "skills/arquiteto-conteudo-solucoes/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 6104,
+      "size_bytes": 6573,
       "headings": []
     },
     "skills/arquiteto-conteudo-solucoes/evals/evals.json": {
@@ -1079,12 +1210,12 @@
     },
     "skills/arquitetura-design-implementacao-sistema/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 10957,
+      "size_bytes": 11194,
       "headings": []
     },
     "skills/auditoria-projetos-sistema/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 17783,
+      "size_bytes": 18125,
       "headings": []
     },
     "skills/auditoria-projetos-sistema/evals/evals.json": {
@@ -1100,7 +1231,7 @@
     },
     "skills/consultor-design-tatil-frontend/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 15471,
+      "size_bytes": 15918,
       "headings": []
     },
     "skills/consultor-design-tatil-frontend/evals/evals.json": {
@@ -1123,7 +1254,7 @@
     },
     "skills/context-sentinel/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 4301,
+      "size_bytes": 4751,
       "headings": []
     },
     "skills/context-sentinel/evals/evals.json": {
@@ -1139,7 +1270,7 @@
     },
     "skills/conversor-html-pdf/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 5636,
+      "size_bytes": 6007,
       "headings": []
     },
     "skills/conversor-html-pdf/evals/evals.json": {
@@ -1159,7 +1290,7 @@
     },
     "skills/curadoria-obsidian-vault/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 5141,
+      "size_bytes": 5501,
       "headings": []
     },
     "skills/curadoria-obsidian-vault/evals/evals.json": {
@@ -1179,7 +1310,7 @@
     },
     "skills/design-interface-medica-minimalista/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 3995,
+      "size_bytes": 4237,
       "headings": []
     },
     "skills/design-interface-medica-minimalista/evals/evals.json": {
@@ -1196,7 +1327,7 @@
     },
     "skills/evoluir-skills/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 5523,
+      "size_bytes": 5942,
       "headings": []
     },
     "skills/evoluir-skills/evals/evals.json": {
@@ -1212,7 +1343,7 @@
     },
     "skills/gap-analyzer-auditor/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 11327,
+      "size_bytes": 11735,
       "headings": []
     },
     "skills/gap-analyzer-auditor/evals/evals.json": {
@@ -1246,7 +1377,7 @@
     },
     "skills/gdrive-auditoria-limpeza/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 6109,
+      "size_bytes": 6485,
       "headings": []
     },
     "skills/gdrive-auditoria-limpeza/evals/evals.json": {
@@ -1266,7 +1397,7 @@
     },
     "skills/gdrive-taxonomia-organizacao/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 5316,
+      "size_bytes": 5674,
       "headings": []
     },
     "skills/gdrive-taxonomia-organizacao/evals/evals.json": {
@@ -1286,7 +1417,7 @@
     },
     "skills/gerar-docs-pdf/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 3521,
+      "size_bytes": 3861,
       "headings": []
     },
     "skills/gerar-docs-pdf/evals/evals.json": {
@@ -1315,7 +1446,7 @@
     },
     "skills/high-level-context-planner/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 11758,
+      "size_bytes": 12216,
       "headings": []
     },
     "skills/high-level-context-planner/evals/evals.json": {
@@ -1349,7 +1480,7 @@
     },
     "skills/manutencao-disco-windows/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 5197,
+      "size_bytes": 5549,
       "headings": []
     },
     "skills/manutencao-disco-windows/evals/evals.json": {
@@ -1369,7 +1500,7 @@
     },
     "skills/organizador-fluxo-arvore-arquivos/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 6942,
+      "size_bytes": 7376,
       "headings": []
     },
     "skills/organizador-fluxo-arvore-arquivos/evals/evals.json": {
@@ -1385,7 +1516,7 @@
     },
     "skills/organizar-gdrive/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 3572,
+      "size_bytes": 3934,
       "headings": []
     },
     "skills/organizar-gdrive/evals/evals.json": {
@@ -1402,7 +1533,7 @@
     },
     "skills/organizar-local/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 3804,
+      "size_bytes": 4171,
       "headings": []
     },
     "skills/organizar-local/evals/evals.json": {
@@ -1419,7 +1550,7 @@
     },
     "skills/redator-tecnico-markdown/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 4924,
+      "size_bytes": 6658,
       "headings": []
     },
     "skills/redator-tecnico-markdown/evals/evals.json": {
@@ -1442,7 +1573,7 @@
     },
     "skills/refatoracao-design-tatil-frontend/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 8150,
+      "size_bytes": 10932,
       "headings": []
     },
     "skills/refatoracao-design-tatil-frontend/evals/evals.json": {
@@ -1469,7 +1600,7 @@
     },
     "skills/refine-prompt/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 12341,
+      "size_bytes": 12788,
       "headings": []
     },
     "skills/refine-prompt/evals/evals.json": {
@@ -1513,7 +1644,7 @@
     },
     "skills/skill-auditor-refatorador-skills/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 11744,
+      "size_bytes": 12216,
       "headings": []
     },
     "skills/skill-auditor-refatorador-skills/evals/evals.json": {
@@ -1536,7 +1667,7 @@
     },
     "skills/skill-orquestrador-planos-encadeados/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 11397,
+      "size_bytes": 12167,
       "headings": []
     },
     "skills/skill-orquestrador-planos-encadeados/evals/evals.json": {
@@ -1556,7 +1687,7 @@
     },
     "skills/_template/SKILL.md": {
       "extension": ".md",
-      "size_bytes": 8388,
+      "size_bytes": 8810,
       "headings": []
     },
     "skills/_template/evals/evals.json": {
@@ -1681,6 +1812,81 @@
     "templates/universal-app/src/types/index.ts": {
       "extension": ".ts",
       "size_bytes": 687
+    },
+    "tests/test_server.py": {
+      "extension": ".py",
+      "size_bytes": 6229,
+      "python_ast": {
+        "classes": [],
+        "functions": [
+          {
+            "name": "test_server_initialization",
+            "is_async": false,
+            "docstring": "Valida se o servidor e os diretórios base estão configurados corretamente."
+          },
+          {
+            "name": "test_skills_list_all",
+            "is_async": false,
+            "docstring": "Valida se a listagem retorna todas as 26 skills ativas."
+          },
+          {
+            "name": "test_skills_list_filters",
+            "is_async": false,
+            "docstring": "Valida os filtros por persona e status."
+          },
+          {
+            "name": "test_skills_get_contract_and_sections",
+            "is_async": false,
+            "docstring": "Valida o carregamento granular com divulgação progressiva."
+          },
+          {
+            "name": "test_skills_search",
+            "is_async": false,
+            "docstring": "Valida a busca por intenção operacional e relevância."
+          },
+          {
+            "name": "test_skills_validate_deterministic",
+            "is_async": false,
+            "docstring": "Valida se a auditoria determinística do MCP aprova as 26 skills com 100% PASS."
+          },
+          {
+            "name": "test_get_agents",
+            "is_async": false,
+            "docstring": "Valida a extração do catálogo de subagentes."
+          },
+          {
+            "name": "test_run_skill_script_security",
+            "is_async": false,
+            "docstring": "Valida as travas de segurança contra Path Traversal no executor de scripts."
+          },
+          {
+            "name": "test_resources",
+            "is_async": false,
+            "docstring": "Valida a renderização dos recursos MCP passivos."
+          },
+          {
+            "name": "test_prompts",
+            "is_async": false,
+            "docstring": "Valida os prompts estruturados de 2026."
+          },
+          {
+            "name": "test_franklin_execute_dag_file",
+            "is_async": false,
+            "docstring": "Valida a execução de um plano DAG existente via arquivo."
+          },
+          {
+            "name": "test_franklin_execute_dag_inline_json",
+            "is_async": false,
+            "docstring": "Valida a execução de um plano DAG passado diretamente como string JSON."
+          },
+          {
+            "name": "test_franklin_execute_dag_invalid_input",
+            "is_async": false,
+            "docstring": "Valida o tratamento gracioso quando o arquivo não existe nem é JSON válido."
+          }
+        ],
+        "routes": []
+      }
     }
   }
 }

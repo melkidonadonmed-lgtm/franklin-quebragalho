@@ -44,6 +44,10 @@ else:
 
 AGENTS_MD_PATH = ROOT_DIR / "AGENTS.md"
 MY_SKILLS_MD_PATH = ROOT_DIR / "MY_SKILLS.md"
+EPIC_VOLTA_DIR = ROOT_DIR.parent / "epic-volta"
+if not EPIC_VOLTA_DIR.exists():
+    EPIC_VOLTA_DIR = Path(r"C:\Users\melki\dev\epic-volta")
+
 
 
 # -----------------------------------------------------------------------------
@@ -703,6 +707,130 @@ def franklin_run_skill_script(
         return f"Erro: Execução excedeu o tempo limite de {timeout_seconds} segundos."
     except Exception as e:
         return f"Erro ao executar script: {e}"
+
+
+@mcp.tool()
+def franklin_execute_dag(
+    plan_path_or_json: str,
+    run_id: str = "",
+    resume: bool = False,
+    timeout_seconds: float = 0,
+    db_path: str = ""
+) -> str:
+    """Executa um plano de orquestração em grafo acíclico dirigido (DAG) via motor do Epic-Volta.
+
+    Despacha o plano com ordenação topológica (Kahn), concorrência por ondas,
+    projeção de campos upstream por dot-notation e persistência transacional SQLite WAL.
+
+    Args:
+        plan_path_or_json: Caminho para o arquivo JSON do plano ou string JSON contendo o DAGExecutionPlan.
+        run_id: Identificador único opcional da execução (essencial para retomar execuções com resume=True).
+        resume: Se True, retoma a execução sem reexecutar nós já concluídos no SQLite.
+        timeout_seconds: Tempo limite global da execução em segundos (0 para sem limite).
+        db_path: Caminho do banco SQLite de persistência (padrão: .sessions/dag_cli.db do epic-volta).
+    """
+    if not EPIC_VOLTA_DIR.exists():
+        return json.dumps({
+            "status": "FAILED",
+            "error": f"Repositório Epic-Volta não encontrado em {EPIC_VOLTA_DIR}."
+        }, ensure_ascii=False)
+
+    plan_str = plan_path_or_json.strip()
+    resolved_plan_path: Optional[Path] = None
+    temp_file: Optional[Path] = None
+
+    # 1. Verifica se é um arquivo existente
+    candidate_paths = [
+        Path(plan_str),
+        ROOT_DIR / plan_str,
+        EPIC_VOLTA_DIR / plan_str,
+    ]
+    for cp in candidate_paths:
+        if cp.exists() and cp.is_file():
+            resolved_plan_path = cp.resolve()
+            break
+
+    # 2. Se não for arquivo, tenta interpretar como JSON embutido
+    if not resolved_plan_path:
+        try:
+            parsed = json.loads(plan_str)
+            if not isinstance(parsed, dict):
+                return json.dumps({
+                    "status": "INVALID_PLAN",
+                    "error": "O payload JSON deve ser um objeto compatível com DAGExecutionPlan."
+                }, ensure_ascii=False)
+
+            temp_dir = ROOT_DIR / ".sessions" / "temp_plans"
+            temp_dir.mkdir(parents=True, exist_ok=True)
+            import uuid
+            temp_file = temp_dir / f"plan_{uuid.uuid4().hex[:8]}.json"
+            temp_file.write_text(json.dumps(parsed, indent=2, ensure_ascii=False), encoding="utf-8")
+            resolved_plan_path = temp_file.resolve()
+        except json.JSONDecodeError as exc:
+            return json.dumps({
+                "status": "FILE_NOT_FOUND_OR_INVALID_JSON",
+                "error": f"Não foi possível localizar o arquivo nem interpretar como JSON válido: {exc}"
+            }, ensure_ascii=False)
+
+    # 3. Monta comando CLI via uv
+    cmd = [
+        "uv",
+        "--directory",
+        str(EPIC_VOLTA_DIR),
+        "run",
+        "python",
+        "-m",
+        "orchestrator.cli",
+        str(resolved_plan_path),
+        "--json"
+    ]
+
+    if run_id.strip():
+        cmd.extend(["--run-id", run_id.strip()])
+    if resume:
+        cmd.append("--resume")
+    if timeout_seconds > 0:
+        cmd.extend(["--timeout", str(timeout_seconds)])
+    if db_path.strip():
+        cmd.extend(["--db", db_path.strip()])
+
+    try:
+        res = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            errors="replace",
+            timeout=timeout_seconds + 30 if timeout_seconds > 0 else 120,
+            cwd=str(EPIC_VOLTA_DIR),
+            shell=False
+        )
+        stdout = res.stdout.strip()
+        if res.returncode == 0:
+            return stdout if stdout else json.dumps({"status": "COMPLETED", "note": "Sem saída stdout"}, ensure_ascii=False)
+        else:
+            stderr = res.stderr.strip()
+            return stdout if stdout.startswith("{") else json.dumps({
+                "status": "FAILED",
+                "exit_code": res.returncode,
+                "stdout": stdout,
+                "stderr": stderr
+            }, ensure_ascii=False)
+    except subprocess.TimeoutExpired:
+        return json.dumps({
+            "status": "TIMEOUT",
+            "error": f"Execução do DAG excedeu o limite de {timeout_seconds} segundos."
+        }, ensure_ascii=False)
+    except Exception as e:
+        return json.dumps({
+            "status": "EXECUTION_ERROR",
+            "error": str(e)
+        }, ensure_ascii=False)
+    finally:
+        if temp_file and temp_file.exists():
+            try:
+                temp_file.unlink()
+            except OSError:
+                pass
 
 
 # -----------------------------------------------------------------------------

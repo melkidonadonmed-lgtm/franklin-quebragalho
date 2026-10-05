@@ -132,9 +132,11 @@ Em todas as transições de fase e consolidações de entregáveis, o orquestrad
      }
      ```
 
-### Passo 3: Execução Condicional e Invocação de Sub-Skills
-1. Se uma skill de planejamento indicar a necessidade de um artefato complementar (ex.: fluxograma ou mockup visual), verificar se a permissão contratual de invocação (`authorized_sub_skills`) está ativa.
-2. Fazer o despacho da tarefa para a sub-skill autorizada, receber o retorno validado e reanexá-lo ao pacote de entrega da fase antes de prosseguir.
+### Passo 3: Execução Condicional, Despacho DAG e Invocação de Sub-Skills
+1. **Despacho Automático via Motor DAG:** Se o plano estruturado estiver no formato de grafo acíclico (`DAGExecutionPlan`), o orquestrador aciona a tool nativa do MCP `franklin_execute_dag(plan_path_or_json)` para execução paralela em ondas via Kahn, resolução determinística de dot-path e persistência atômica com retomada (`resume`).
+2. Se uma skill de planejamento indicar a necessidade de um artefato complementar (ex.: fluxograma ou mockup visual), verificar se a permissão contratual de invocação (`authorized_sub_skills`) está ativa.
+3. Fazer o despacho da tarefa para a sub-skill autorizada, receber o retorno validado e reanexá-lo ao pacote de entrega da fase antes de prosseguir.
+
 
 ### Passo 4: Verificação de Critérios de Aceite e Matriz de Discrepâncias (Quality Gate)
 1. Conferir se a saída produzida pela skill atende aos requisitos declarados no plano e passa na Matriz de Discrepâncias do Módulo 5.4.
