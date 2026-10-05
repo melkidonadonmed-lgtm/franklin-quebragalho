@@ -1,12 +1,23 @@
 ---
 name: design-interface-medica-minimalista
-description: Define o padrão de UI/UX para aplicações médicas e SaaS de saúde. Deve ser ativada sempre que o usuário solicitar o desenvolvimento, análise ou refatoração do frontend de sistemas médicos, prontuários, receituários ou calculadoras clínicas.
-version: "1.0.0"
-id: "AST-2026-004"
-categoria: "Design"
-compatibilidade: ["ChatGPT", "Claude", "Gemini", "ADK"]
-data_criacao: "2026-07-30"
-tags: ["design", "ui", "ux", "tailwind", "saúde", "minimalista"]
+description: >-
+  Define o padrão de UI/UX para aplicações médicas e SaaS de saúde. Deve ser ativada sempre que o usuário solicitar o desenvolvimento, análise ou refatoração do frontend de sistemas médicos, prontuários, receituários ou calculadoras clínicas.
+license: MIT
+metadata:
+  version: "1.0.0"
+  author: "Franklin-Main & Melki"
+  category: "Design de Interface Médica Minimalista"
+  updated_at: "2026-10-04"
+  tags:
+    - "saude"
+    - "clinico"
+    - "prontuario"
+    - "minimalista"
+    - "tailwind"
+version: 1.0.0
+updated_at: 2026-10-04
+author: Franklin-Main & Melki
+category: Design de Interface Médica Minimalista
 ---
 
 # Skill: Design System Médico Executivo & Minimalista

@@ -2,6 +2,18 @@
 name: refatoracao-design-tatil-frontend
 description: >-
   Executa a refatoracao e implementacao pratica de frontend por framework modular (React, Tailwind, HTML5/CSS, Vue), aplicando navegabilidade de alto padrao, menus descompactados com espacamento nobre, botoes ergonomicos com anti-squish, icones Lucide, tipografia refinada, elevacao tatil mineral e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide.
+license: MIT
+metadata:
+  version: "1.1.0"
+  author: "FrontCraftMaster & Melki"
+  category: "Implementação e Refatoração Frontend"
+  updated_at: "2026-10-04"
+  tags:
+    - "frontend"
+    - "design-tatil"
+    - "tailwind"
+    - "refatoracao"
+    - "anti-cobalto"
 version: 1.1.0
 updated_at: 2026-10-04
 author: FrontCraftMaster & Melki

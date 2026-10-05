@@ -1,12 +1,22 @@
 ---
 name: aprimoramento-expansibilidade-agentes-skills
-description: Executa o diagnóstico, otimização de contexto, modularização e expansão de capacidade de Agentes de IA e arquivos SKILL.md. Deve ser ativada quando for necessário converter um agente monolítico em multi-agente, adicionar suporte a novas ferramentas/APIs, refatorar habilidades para despoluir o contexto ou otimizar pipelines de raciocínio (ReAct, CoT, Self-Refine).
-version: "1.0.0"
-id: "AST-2026-005"
-categoria: "Engenharia de Agentes"
-compatibilidade: ["ChatGPT", "Claude", "Gemini", "ADK"]
-data_criacao: "2026-07-30"
-tags: ["agentes", "modularização", "contexto", "react", "self-refine", "adk", "multi-agente"]
+description: >-
+  Executa o diagnóstico, otimização de contexto, modularização e expansão de capacidade de Agentes de IA e arquivos SKILL.md. Deve ser ativada quando for necessário converter um agente monolítico em multi-agente, adicionar suporte a novas ferramentas/APIs, refatorar habilidades para despoluir o contexto ou otimizar pipelines de raciocínio (ReAct, CoT, Self-Refine).
+license: MIT
+metadata:
+  version: "1.0.0"
+  author: "SkillCraft & Melki"
+  category: "Arquitetura e Expansibilidade de Agentes"
+  updated_at: "2026-10-04"
+  tags:
+    - "multiagente"
+    - "otimizacao-contexto"
+    - "cot"
+    - "react"
+version: 1.0.0
+updated_at: 2026-10-04
+author: SkillCraft & Melki
+category: Arquitetura e Expansibilidade de Agentes
 ---
 
 # Skill: Aprimoramento e Expansibilidade de Agentes e Skills

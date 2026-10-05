@@ -2,8 +2,20 @@
 name: template-skill
 description: >-
   Modelo padrao oficial para criacao de novas skills no Antigravity e no workspace Franklin Quebra-Galho, estruturado sob divulgacao progressiva, regras deterministicas, diretrizes de design tatil, modulos de paleta mineral, opcoes de preferencias e matriz de discrepancias.
+license: MIT
+metadata:
+  version: "1.2.0"
+  author: "Franklin-Main & Melki"
+  category: "Engenharia e Governança de Skills"
+  updated_at: "2026-10-04"
+  tags:
+    - "template"
+    - "padrao-2026"
+    - "design-tatil"
 version: 1.2.0
-updated_at: 2026-10-03
+updated_at: 2026-10-04
+author: Franklin-Main & Melki
+category: Engenharia e Governança de Skills
 ---
 
 # Template de Skill (Padrao Franklin 2026)

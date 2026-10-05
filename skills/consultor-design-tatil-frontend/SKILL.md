@@ -2,10 +2,21 @@
 name: consultor-design-tatil-frontend
 description: >-
   Analisa e mapeia interfaces frontend via agent-browser, avalia conformidade com o Design System Tátil Melki (profundidade de sombras, cards mais claros que o fundo, rim light e paleta mineral anti-cobalto), oferece opções interativas de melhorias visuais e funcionais com formulários de múltipla escolha ou mockups de referência, audita discrepâncias determinísticas e gera o documento canônico DESIGN.md.
+license: MIT
+metadata:
+  version: "1.1.0"
+  author: "FrontCraftMaster & Melki"
+  category: "Consultoria de Design Tátil e UX"
+  updated_at: "2026-10-04"
+  tags:
+    - "consultoria-ux"
+    - "design-tatil"
+    - "paleta-mineral"
+    - "design-md"
 version: 1.1.0
-updated_at: 2026-10-03
-author: Arquiteto de Conteúdo e Soluções & Melki
-category: Design System, UI/UX e Inspeção Web
+updated_at: 2026-10-04
+author: FrontCraftMaster & Melki
+category: Consultoria de Design Tátil e UX
 ---
 
 # 1. NOME DA SKILL

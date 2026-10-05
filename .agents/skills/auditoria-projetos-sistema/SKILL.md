@@ -2,12 +2,21 @@
 name: auditoria-projetos-sistema
 description: >-
   Audita a integridade estrutural, arquivos essenciais (README, CONTEXT, DESIGN, SPEC), higiene de repositório (.env, .gitignore, Git), orfandade de código, discrepâncias entre escopo documentado e executado, conformidade de UI/UX (temas, fontes, alvos de clique, nós de ação) e esteira visual automatizada via agent-browser (snapshots interativos, nós @eX e anotações visuais) com emissão de nota ponderada (0 a 100).
-version: "2.1.0"
-compatibility: Ambientes com suporte a Agent Skills (Antigravity IDE, Claude Desktop, Cursor, Google ADK, VS Code Copilot). Requer agent-browser CLI e Node.js 20+ ou Python 3.11+.
+license: MIT
 metadata:
   version: "2.1.0"
-  author: "Arquiteto de Soluções & Melki"
-  category: "Engenharia de Software, Auditoria e Qualidade"
+  author: "Franklin-Main & Melki"
+  category: "Auditoria Estrutural e Higiene de Repositório"
+  updated_at: "2026-10-04"
+  tags:
+    - "auditoria"
+    - "agent-browser"
+    - "higiene-repo"
+    - "qualidade"
+version: 2.1.0
+updated_at: 2026-10-04
+author: Franklin-Main & Melki
+category: Auditoria Estrutural e Higiene de Repositório
 ---
 
 # 1. NOME DA SKILL

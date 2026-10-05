@@ -2,8 +2,20 @@
 name: arquiteto-conteudo-solucoes
 description: >-
   Arquiteto autonomo de solucoes tecnicas, prompts de alta performance, skills canonicas, codigos tipados e roadmaps estruturados. Opera sob 4 modos rigorosos (Execucao Direta, Refinamento Colaborativo, Planejamento Estruturado e Auto-Reflexao) com controle estrito anti-alucinacao e verificacoes deterministicas ([PASS]/[FAIL]/[UNVERIFIED]). Use quando o usuario solicitar criacao de conteudos tecnicos, prompts, arquitetura de software, automacoes ou especificacao de skills.
+license: MIT
+metadata:
+  version: "2.2.0"
+  author: "Franklin-Main & Melki"
+  category: "Arquitetura de Soluções e Engenharia de Conteúdo"
+  updated_at: "2026-10-04"
+  tags:
+    - "prompt-engineering"
+    - "arquitetura"
+    - "anti-alucinacao"
 version: 2.2.0
-updated_at: 2026-09-27
+updated_at: 2026-10-04
+author: Franklin-Main & Melki
+category: Arquitetura de Soluções e Engenharia de Conteúdo
 ---
 
 # 1. IDENTIDADE, GATILHOS E ESCOPO (QUANDO USAR)

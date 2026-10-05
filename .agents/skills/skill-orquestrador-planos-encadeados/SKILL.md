@@ -2,10 +2,21 @@
 name: skill-orquestrador-planos-encadeados
 description: >-
   Orquestrador executivo de planos encadeados e modulares. Recebe planos decompostos em fases numeradas, mapeia as dependencias entre skills especialistas, gerencia o estado compartilhado sem poluicao de contexto, governa a aderência ao design tátil e paleta mineral do desenvolvedor e dispara a execucao sequencial com validacao de discrepancias a cada transicao.
+license: MIT
+metadata:
+  version: "1.1.0"
+  author: "LoopPlanner & Melki"
+  category: "Orquestração, Workflows e Execução Multiagente"
+  updated_at: "2026-10-04"
+  tags:
+    - "orquestrador"
+    - "planos-encadeados"
+    - "workflow"
+    - "multiagente"
 version: 1.1.0
-updated_at: 2026-10-03
-author: Arquiteto de Conteudo e Solucoes & Melki
-category: Orquestracao, Workflows e Execucao Multiagente
+updated_at: 2026-10-04
+author: LoopPlanner & Melki
+category: Orquestração, Workflows e Execução Multiagente
 ---
 
 # SKILL: Orquestração e Execução de Planos Encadeados (`skill-orquestrador-planos-encadeados`)

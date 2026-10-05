@@ -2,10 +2,21 @@
 name: refine-prompt
 description: >-
   Agente cognitivo de expansão, auditoria de factibilidade e refinamento de prompts e ideias (REFINE-PROMPT v3.0). Opera sob ancoragem temporal estrita (2026-10-03), pesquisa ativa em fontes primárias, taxonomia epistêmica ([FATO], [INFERÊNCIA], [LACUNA]), segurança Zero-Trust (OWASP LLM 2025/2026, MCP Spec 2026-07-28) e 3 módulos operacionais de saída (Resposta Direta, Artefato Plug-and-Play e Entrevista Socrática).
+license: MIT
+metadata:
+  version: "3.0.0"
+  author: "Franklin-Main & Melki"
+  category: "Engenharia de Prompts, Auditoria Epistêmica e Segurança Zero-Trust"
+  updated_at: "2026-10-04"
+  tags:
+    - "refine-prompt"
+    - "zero-trust"
+    - "epistemica"
+    - "owasp-llm"
 version: 3.0.0
-updated_at: 2026-10-03
-author: Arquiteto de Conteudo e Solucoes & Melki
-category: Engenharia de Prompts, Auditoria Epistemica e Seguranca Zero-Trust
+updated_at: 2026-10-04
+author: Franklin-Main & Melki
+category: Engenharia de Prompts, Auditoria Epistêmica e Segurança Zero-Trust
 ---
 
 # SKILL: Refinamento Cognitivo, Auditoria e Expansão de Prompts (`refine-prompt` v3.0)

@@ -2,8 +2,21 @@
 name: evoluir-skills
 description: >-
   Use esta skill sempre que o usuário quiser criar uma nova skill, testar uma skill existente, registrar histórico de versões ou evoluir o catálogo de habilidades do Franklin Quebra-Galho com critérios anti-alucinação e validações determinísticas.
+license: MIT
+metadata:
+  version: "1.1.0"
+  author: "SkillCraft & Melki"
+  category: "Engenharia e Governança de Skills"
+  updated_at: "2026-10-04"
+  tags:
+    - "skills"
+    - "evals"
+    - "ciclo-de-vida"
+    - "governanca"
 version: 1.1.0
-updated_at: 2026-09-27
+updated_at: 2026-10-04
+author: SkillCraft & Melki
+category: Engenharia e Governança de Skills
 ---
 
 # Evolução e Engenharia de Skills 🚀

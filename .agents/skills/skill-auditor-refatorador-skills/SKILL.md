@@ -2,10 +2,21 @@
 name: skill-auditor-refatorador-skills
 description: >-
   Subagente auditor e refatorador de habilidades. Inspeciona o catalogo de skills em busca de schemas incompletos, descricoes imprecisas, monólitos e discrepâncias com as preferências de design tátil e paleta mineral do desenvolvedor, propondo desacoplamento em cadeias modulares e atualizando os arquivos SKILL.md com changelogs detalhados.
-version: 1.1.0
-updated_at: 2026-10-03
-author: Arquiteto de Conteudo e Solucoes & Melki
-category: Governanca, Metaprompting e Arquitetura de Agentes
+license: MIT
+metadata:
+  version: "1.2.0"
+  author: "SkillCraft & Melki"
+  category: "Governança, Metaprompting e Arquitetura de Agentes"
+  updated_at: "2026-10-04"
+  tags:
+    - "auditoria"
+    - "refatoracao"
+    - "metaprompting"
+    - "governanca-skills"
+version: 1.2.0
+updated_at: 2026-10-04
+author: SkillCraft & Melki
+category: Governança, Metaprompting e Arquitetura de Agentes
 ---
 
 # SKILL: Auditoria Arquitetural e Refatoração de Skills (`skill-auditor-refatorador-skills`)
@@ -95,7 +106,7 @@ Ao auditar e refatorar qualquer skill do catálogo, o auditor valida a presença
 ```
 
 ### Passo 1: Inspeção e Validação de Contrato Estático & Preferências
-1. Verificar a presença e formato do frontmatter YAML (`name`, `description`, `version`, `updated_at`).
+1. Verificar a presença e formato do frontmatter YAML canônico (`name`, `description`, `license`, bloco `metadata` com `version`, `author`, `category`, `updated_at`, `tags`).
 2. Avaliar se o campo `description` contém: o que a skill faz, quando ativa e gatilhos negativos (quando NÃO ativar), respeitando o limite máximo de 1024 caracteres.
 3. Checar a presença das seções essenciais do corpo: Objetivo, Gatilhos, Entradas Mínimas, Módulos de Design e Preferências, Processamento Passo a Passo, Saídas Estruturadas e Exceções/Limites.
 4. Consultar os critérios formais em `rules/criterios_auditoria.md` e emitir status determinísticos (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`).

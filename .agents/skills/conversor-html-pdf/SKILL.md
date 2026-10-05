@@ -2,10 +2,21 @@
 name: conversor-html-pdf
 description: >-
   Converte documentos Markdown (.md) e HTML para arquivos PDF profissionais de alta fidelidade visual via Microsoft Edge ou Chrome headless, aplicando CSS de impressao calibrado, quebras de pagina inteligentes e estilizacao executiva.
+license: MIT
+metadata:
+  version: "1.0.0"
+  author: "DocMaker & Melki"
+  category: "Publicação e Conversão de Documentos"
+  updated_at: "2026-10-04"
+  tags:
+    - "pdf"
+    - "headless-browser"
+    - "css-print"
+    - "conversao"
 version: 1.0.0
 updated_at: 2026-10-04
 author: DocMaker & Melki
-category: Publicacao e Conversao de Documentos
+category: Publicação e Conversão de Documentos
 ---
 
 # 1. NOME DA SKILL

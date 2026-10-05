@@ -11,7 +11,7 @@
 - **Objetivo**: Incubadora central de automações de produtividade, runbooks e skills personalizadas do agente Franklin Quebra-Galho para o Google Antigravity.
 - **Servidor MCP Global Ativo**: Servidor FastMCP dedicado (`server.py`) registrado globalmente no ecossistema (`~/.gemini/config/mcp_config.json`) expondo 6 ferramentas, 5 recursos e 2 prompts MCP.
 - **Integração Global de Skills**: O diretório `.agents/skills/` está montado como NTFS Junction direta no plugin global do Antigravity (`~/.gemini/config/plugins/franklin-skills/skills`).
-- **Fase**: Fases 1, 2 e 3 de modularização e Servidor FastMCP Global concluídos com sucesso (26 skills canônicas). Arquitetura Universal de Projetos Melki 2026 implementada em `templates/universal-app/` com o documento canônico `docs/frontend.design.md`.
+- **Fase**: Fases 1, 2, 3 e 4 (Padronização Canônica de Metadata e Licença em 100% das Skills) concluídas com sucesso (26 skills canônicas). Servidor FastMCP Global registrado e ativo. Arquitetura Universal de Projetos Melki 2026 implementada em `templates/universal-app/` com o documento canônico `docs/frontend.design.md`.
 
 ---
 
@@ -19,14 +19,14 @@
 
 | Skill | Versão | Status | Paridade (`.agents` ➔ `skills/`) | Subagente Operador |
 | :--- | :---: | :---: | :---: | :--- |
-| `redator-tecnico-markdown` | `v1.0.0` | ✅ Validada | ✅ Sincronizado | `DocMaker` / `VaultMaster` |
+| `redator-tecnico-markdown` | `v1.1.0` | ✅ Validada | ✅ Sincronizado | `DocMaker` / `VaultMaster` |
 | `conversor-html-pdf` | `v1.0.0` | ✅ Validada | ✅ Sincronizado | `DocMaker` |
 | `gdrive-auditoria-limpeza` | `v1.0.0` | ✅ Validada | ✅ Sincronizado | `DriveMaster` |
 | `gdrive-taxonomia-organizacao` | `v1.0.0` | ✅ Validada | ✅ Sincronizado | `DriveMaster` |
 | `manutencao-disco-windows` | `v1.0.0` | ✅ Validada | ✅ Sincronizado | `FileOpsLocal` |
 | `curadoria-obsidian-vault` | `v1.0.0` | ✅ Validada | ✅ Sincronizado | `VaultMaster` |
 | `analise-design-tatil-frontend` | `v1.0.0` | ✅ Validada | ✅ Sincronizado | `FrontCraftMaster` |
-| `refatoracao-design-tatil-frontend` | `v1.0.0` | ✅ Validada | ✅ Sincronizado | `FrontCraftMaster` |
+| `refatoracao-design-tatil-frontend` | `v1.1.0` | ✅ Validada | ✅ Sincronizado | `FrontCraftMaster` |
 | `high-level-context-planner` | `v2.0.0` | ✅ Validada | ✅ Sincronizado | `LoopPlanner` |
 | `skill-orquestrador-planos-encadeados` | `v1.1.0` | ✅ Validada | ✅ Sincronizado | `LoopPlanner` |
 | `gap-analyzer-auditor` | `v2.0.0` | ✅ Validada | ✅ Sincronizado | `LoopPlanner` |
@@ -37,7 +37,7 @@
 | `organizador-fluxo-arvore-arquivos` | `v1.1.0` | ✅ Validada | ✅ Sincronizado | `DocMaker` |
 | `arquiteto-conteudo-solucoes` | `v2.2.0` | ✅ Validada | ✅ Sincronizado | `Franklin-Main` |
 | `evoluir-skills` | `v1.1.0` | ✅ Validada | ✅ Sincronizado | `SkillCraft` |
-| `skill-auditor-refatorador-skills` | `v1.1.0` | ✅ Validada | ✅ Sincronizado | `SkillCraft` |
+| `skill-auditor-refatorador-skills` | `v1.2.0` | ✅ Validada | ✅ Sincronizado | `SkillCraft` |
 | `aprimoramento-expansibilidade-agentes-skills` | `v1.0.0` | ✅ Validada | ✅ Sincronizado | `SkillCraft` |
 | `arquitetura-design-implementacao-sistema` | `v1.1.0` | ✅ Validada | ✅ Sincronizado | `Franklin-Main` |
 | `auditoria-projetos-sistema` | `v2.1.0` | ✅ Validada | ✅ Sincronizado | `Franklin-Main` |

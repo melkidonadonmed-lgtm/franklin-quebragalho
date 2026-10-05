@@ -2,10 +2,21 @@
 name: curadoria-obsidian-vault
 description: >-
   Audita e gerencia o cofre Obsidian Vault (C:\Users\melki\Documents\Obsidian Vault\), validando frontmatter YAML, links bidirecionais [[Wikilinks]], consistencia de tags, deteccao de anexos orfaos e organizacao de pastas de conhecimento sem perda de dados.
+license: MIT
+metadata:
+  version: "1.0.0"
+  author: "VaultMaster & Melki"
+  category: "Gestão de Conhecimento e PKM"
+  updated_at: "2026-10-04"
+  tags:
+    - "obsidian"
+    - "wikilinks"
+    - "frontmatter"
+    - "anexos-orfaos"
 version: 1.0.0
 updated_at: 2026-10-04
 author: VaultMaster & Melki
-category: Gestao de Conhecimento e PKM
+category: Gestão de Conhecimento e PKM
 ---
 
 # 1. NOME DA SKILL

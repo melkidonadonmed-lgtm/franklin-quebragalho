@@ -2,7 +2,21 @@
 name: organizar-local
 description: >-
   Use esta skill para gerenciar, triar, catalogar e organizar pastas e arquivos no computador local (Windows 11), incluindo Downloads, Área de Trabalho, pasta dev e Obsidian Vault.
+license: MIT
+metadata:
+  version: "1.0.0"
+  author: "FileOpsLocal & Melki"
+  category: "Organização e Manutenção de Disco Local"
+  updated_at: "2026-10-04"
+  tags:
+    - "windows-11"
+    - "local-storage"
+    - "powershell"
+    - "dev-folder"
 version: 1.0.0
+updated_at: 2026-10-04
+author: FileOpsLocal & Melki
+category: Organização e Manutenção de Disco Local
 ---
 
 # Organizar Pastas Locais (Windows 11) 💻

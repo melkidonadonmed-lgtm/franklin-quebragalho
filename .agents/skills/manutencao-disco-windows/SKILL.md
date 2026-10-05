@@ -2,10 +2,21 @@
 name: manutencao-disco-windows
 description: >-
   Executa manutencao, triagem e higienizacao de pastas locais no Windows 11 (Downloads, Desktop, dev), isolando instaladores antigos, limpando residuos temporarios e arquivando projetos inativos em dev com simulacao preventiva.
+license: MIT
+metadata:
+  version: "1.0.0"
+  author: "FileOpsLocal & Melki"
+  category: "Sistema Operacional e Automação Local"
+  updated_at: "2026-10-04"
+  tags:
+    - "windows-11"
+    - "powershell"
+    - "downloads"
+    - "disco"
 version: 1.0.0
 updated_at: 2026-10-04
 author: FileOpsLocal & Melki
-category: Sistema Operacional e Automacao Local
+category: Sistema Operacional e Automação Local
 ---
 
 # 1. NOME DA SKILL

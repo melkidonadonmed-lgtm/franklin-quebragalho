@@ -2,9 +2,20 @@
 name: gap-analyzer-auditor
 description: >-
   Auditor técnico e analista de brechas de processos em malha fechada (Closed-Loop Reflection). Inspeciona comandos, arquivos, traces e logs operacionais, identifica causas-raiz (RCA), separa fatos de inferências, propõe rotas alternativas e emite contrato de hand-off estruturado para retroalimentar o planejador de alto nível.
+license: MIT
+metadata:
+  version: "2.0.0"
+  author: "LoopPlanner & Melki"
+  category: "Auditoria de Processos, RCA e Hand-off Multiagente"
+  updated_at: "2026-10-04"
+  tags:
+    - "rca"
+    - "closed-loop"
+    - "hand-off"
+    - "auditoria"
 version: 2.0.0
-updated_at: 2026-10-03
-author: Arquiteto de Conteudo e Solucoes & Melki
+updated_at: 2026-10-04
+author: LoopPlanner & Melki
 category: Auditoria de Processos, RCA e Hand-off Multiagente
 ---
 

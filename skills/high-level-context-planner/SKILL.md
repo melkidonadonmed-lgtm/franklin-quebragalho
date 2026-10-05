@@ -2,10 +2,21 @@
 name: high-level-context-planner
 description: >-
   Arquiteto estratégico e planejador de contexto de alto nível em malha fechada (Closed-Loop Reflection). Decompõe metas complexas em fases numeradas sequenciais com Fase 0 obrigatória, mapeia dependências, critérios de aceite Go/No-Go e consome o Hand-off Payload do gap-analyzer-auditor para replanejamento corretivo autônomo (Plano v2.0).
+license: MIT
+metadata:
+  version: "2.0.0"
+  author: "LoopPlanner & Melki"
+  category: "Planejamento Estratégico, Orquestração Multiagente e Workflows"
+  updated_at: "2026-10-04"
+  tags:
+    - "planejamento"
+    - "fase-zero"
+    - "closed-loop"
+    - "replanning"
 version: 2.0.0
-updated_at: 2026-10-03
-author: Arquiteto de Conteudo e Solucoes & Melki
-category: Planejamento Estrategico, Orquestracao Multiagente e Workflows
+updated_at: 2026-10-04
+author: LoopPlanner & Melki
+category: Planejamento Estratégico, Orquestração Multiagente e Workflows
 ---
 
 # SKILL: Planejador Estratégico de Contexto de Alto Nível (`high-level-context-planner` v2.0.0)

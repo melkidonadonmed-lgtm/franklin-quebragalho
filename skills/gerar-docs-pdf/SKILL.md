@@ -2,7 +2,21 @@
 name: gerar-docs-pdf
 description: >-
   Use esta skill sempre que o usuário solicitar criação, redação, formatação de notas ou relatórios em Markdown (.md) e conversão para arquivos PDF profissionais.
+license: MIT
+metadata:
+  version: "1.0.0"
+  author: "DocMaker & Melki"
+  category: "Geração e Conversão de Documentos PDF"
+  updated_at: "2026-10-04"
+  tags:
+    - "markdown"
+    - "pdf"
+    - "relatorios"
+    - "conversao"
 version: 1.0.0
+updated_at: 2026-10-04
+author: DocMaker & Melki
+category: Geração e Conversão de Documentos PDF
 ---
 
 # Geração de Documentos Markdown e Conversão para PDF 📄

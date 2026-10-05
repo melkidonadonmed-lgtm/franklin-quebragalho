@@ -2,10 +2,21 @@
 name: gdrive-auditoria-limpeza
 description: >-
   Audita e higieniza a unidade Google Drive (G:\Meu Drive e MCP), detectando arquivos pesados (>100MB), duplicatas por hash e nome, pastas vazias orfas e executando simulacao segura de descarte com quarentena preventiva (Dry-run).
+license: MIT
+metadata:
+  version: "1.0.0"
+  author: "DriveMaster & Melki"
+  category: "Gestão Cloud e Higienização de Armazenamento"
+  updated_at: "2026-10-04"
+  tags:
+    - "google-drive"
+    - "limpeza"
+    - "sha256"
+    - "dry-run"
 version: 1.0.0
 updated_at: 2026-10-04
 author: DriveMaster & Melki
-category: Gestao Cloud e Higienizacao de Armazenamento
+category: Gestão Cloud e Higienização de Armazenamento
 ---
 
 # 1. NOME DA SKILL

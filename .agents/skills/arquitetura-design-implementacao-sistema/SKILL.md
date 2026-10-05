@@ -2,13 +2,20 @@
 name: arquitetura-design-implementacao-sistema
 description: >-
   Executa o diagnóstico, design de navegabilidade/UX, especificação funcional e plano de implementação para produtos digitais e softwares, incorporando o Design System Tátil Melki, paleta mineral anti-cobalto, opções de arquétipos e matriz de discrepâncias com as preferências do desenvolvedor.
-version: "1.1.0"
-id: "AST-2026-003"
-categoria: "Arquitetura e Design System"
-compatibilidade: ["ChatGPT", "Claude", "Gemini", "ADK"]
-data_criacao: "2026-07-30"
-updated_at: "2026-10-03"
-tags: ["arquitetura", "ux", "navegabilidade", "api", "design-tatil", "paleta-mineral", "preferencias"]
+license: MIT
+metadata:
+  version: "1.1.0"
+  author: "Franklin-Main & Melki"
+  category: "Arquitetura e Implementação de Software"
+  updated_at: "2026-10-04"
+  tags:
+    - "especificacao-funcional"
+    - "arquitetura"
+    - "design-tatil"
+version: 1.1.0
+updated_at: 2026-10-04
+author: Franklin-Main & Melki
+category: Arquitetura e Implementação de Software
 ---
 
 # Skill: Análise, Design e Implementação de Sistemas (`arquitetura-design-implementacao-sistema`)

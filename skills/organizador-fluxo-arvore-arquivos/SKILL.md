@@ -2,9 +2,21 @@
 name: organizador-fluxo-arvore-arquivos
 description: >-
   Transforma ideias brutas e requisitos de projetos/apps em fluxos visuais limpos (Mermaid), árvores de diretórios comentadas e planos de execução diretos, preservando o pedido original, mantendo histórico de versões e oferecendo exportação direta em arquivo único Markdown (.md) ou PDF formatado para evitar quebras.
-compatibility: Markdown, Mermaid.js, UTF-8
+license: MIT
+metadata:
+  version: "1.1.0"
+  author: "DocMaker & Melki"
+  category: "Planejamento Visual e Diagramação de Diretórios"
+  updated_at: "2026-10-04"
+  tags:
+    - "mermaid"
+    - "arvore-arquivos"
+    - "fluxogramas"
+    - "planejamento"
 version: 1.1.0
-date: 2026-09-27
+updated_at: 2026-10-04
+author: DocMaker & Melki
+category: Planejamento Visual e Diagramação de Diretórios
 ---
 
 # 1. NOME DA SKILL

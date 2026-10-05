@@ -2,10 +2,21 @@
 name: redator-tecnico-markdown
 description: >-
   Redige relatorios executivos, notas tecnicas, atas de decisao e roadmaps estruturados em Markdown (.md) de alta fidelidade visual, com frontmatter YAML, caixas de alerta GitHub, tabelas ricas, padroes Google Style Guides (HTML/CSS, JSON, Python) e compatibilidade plena com Obsidian.
+license: MIT
+metadata:
+  version: "1.1.0"
+  author: "DocMaker & Melki"
+  category: "Documentação Técnica e Redação Estruturada"
+  updated_at: "2026-10-04"
+  tags:
+    - "markdown"
+    - "obsidian"
+    - "google-styleguides"
+    - "documentacao"
 version: 1.1.0
 updated_at: 2026-10-04
 author: DocMaker & Melki
-category: Documentacao Tecnica e Redacao Estruturada
+category: Documentação Técnica e Redação Estruturada
 ---
 
 # 1. NOME DA SKILL

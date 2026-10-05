@@ -2,7 +2,21 @@
 name: organizar-gdrive
 description: >-
   Use esta skill sempre que o usuário solicitar organização, varredura, limpeza, triagem ou classificação de pastas e arquivos no Google Drive (unidade G:\Meu Drive ou via MCP google-drive).
+license: MIT
+metadata:
+  version: "1.0.0"
+  author: "DriveMaster & Melki"
+  category: "Gestão Cloud e Armazenamento Google Drive"
+  updated_at: "2026-10-04"
+  tags:
+    - "google-drive"
+    - "mcp-drive"
+    - "classificacao"
+    - "arquivos"
 version: 1.0.0
+updated_at: 2026-10-04
+author: DriveMaster & Melki
+category: Gestão Cloud e Armazenamento Google Drive
 ---
 
 # Organizar Google Drive ☁️

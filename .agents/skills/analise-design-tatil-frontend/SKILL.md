@@ -2,10 +2,21 @@
 name: analise-design-tatil-frontend
 description: >-
   Inspeciona e audita interfaces frontend (via agent-browser ou codigo estatico), analisa menus, sidebar, tipografia, fontes, icones, tamanho dos botoes, transicoes, layout, profundidade tatil e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide, emitindo um Relatorio Comparativo deterministico.
-version: 1.1.0
+license: MIT
+metadata:
+  version: "1.0.0"
+  author: "FrontCraftMaster & Melki"
+  category: "Design System Tátil e Frontend"
+  updated_at: "2026-10-04"
+  tags:
+    - "design-tatil"
+    - "auditoria-ui"
+    - "anti-cobalto"
+    - "ergonomia"
+version: 1.0.0
 updated_at: 2026-10-04
 author: FrontCraftMaster & Melki
-category: Diagnóstico Visual e Auditoria Frontend
+category: Design System Tátil e Frontend
 ---
 
 # 1. NOME DA SKILL

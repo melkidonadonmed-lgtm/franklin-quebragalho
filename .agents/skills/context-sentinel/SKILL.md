@@ -2,8 +2,21 @@
 name: context-sentinel
 description: >-
   Audita a integridade da janela de contexto em conversas multi-turn e pipelines multiagente. A cada ciclo de turnos ou sob demanda, extrai o estado estruturado da sessão com validação determinística Pydantic/JSON (classificando [FATO], [PENDENCIA] e [LACUNA]) para persistência em SQLite ou JSON local.
+license: MIT
+metadata:
+  version: "1.0.0"
+  author: "Franklin-Main & Melki"
+  category: "Auditoria e Integridade de Janela de Contexto"
+  updated_at: "2026-10-04"
+  tags:
+    - "context-rot"
+    - "sqlite"
+    - "snapshots"
+    - "pydantic"
 version: 1.0.0
-updated_at: 2026-09-30
+updated_at: 2026-10-04
+author: Franklin-Main & Melki
+category: Auditoria e Integridade de Janela de Contexto
 ---
 
 # Context Sentinel & Automated State Checkpointer 🛡️
