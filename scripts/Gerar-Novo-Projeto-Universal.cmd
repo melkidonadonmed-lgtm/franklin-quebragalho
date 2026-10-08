@@ -27,9 +27,9 @@ echo.
 
 where pwsh >nul 2>&1
 if %ERRORLEVEL% EQU 0 (
-    pwsh -NoProfile -ExecutionPolicy Bypass -File "C:\Users\melki\dev\franklin-quebragalho\scripts\scaffold-universal-app.ps1" -ProjectName "%PROJECT_NAME%" -DestinationPath "C:\Users\melki\Projetos"
+    pwsh -NoProfile -ExecutionPolicy Bypass -File "C:\Users\melki\dev\agents\franklin-quebragalho\scripts\scaffold-universal-app.ps1" -ProjectName "%PROJECT_NAME%" -DestinationPath "C:\Users\melki\Projetos"
 ) else (
-    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\melki\dev\franklin-quebragalho\scripts\scaffold-universal-app.ps1" -ProjectName "%PROJECT_NAME%" -DestinationPath "C:\Users\melki\Projetos"
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\melki\dev\agents\franklin-quebragalho\scripts\scaffold-universal-app.ps1" -ProjectName "%PROJECT_NAME%" -DestinationPath "C:\Users\melki\Projetos"
 )
 
 if %ERRORLEVEL% NEQ 0 (

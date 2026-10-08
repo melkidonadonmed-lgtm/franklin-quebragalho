@@ -46,96 +46,26 @@ AGENTS_MD_PATH = ROOT_DIR / "AGENTS.md"
 MY_SKILLS_MD_PATH = ROOT_DIR / "MY_SKILLS.md"
 EPIC_VOLTA_DIR = ROOT_DIR.parent / "epic-volta"
 if not EPIC_VOLTA_DIR.exists():
-    EPIC_VOLTA_DIR = Path(r"C:\Users\melki\dev\epic-volta")
+    EPIC_VOLTA_DIR = Path(r"C:\Users\melki\dev\agents\epic-volta")
 
 
 
 # -----------------------------------------------------------------------------
 # Utilitários de Parsing de Metadados e Estado
 # -----------------------------------------------------------------------------
-def _parse_frontmatter(content: str) -> Tuple[Dict[str, Any], str]:
-    """Extrai frontmatter YAML (com suporte a metadata aninhado) e corpo do documento Markdown."""
-    match = re.match(r"^---\s*\r?\n(.*?)\r?\n---\s*\r?\n(.*)$", content, re.DOTALL)
-    if not match:
-        return {}, content
+from shared.tools.frontmatter_parser import parse_frontmatter as _parse_frontmatter
+from shared.harness import (
+    CheckpointRecord,
+    CheckpointStore,
+    RiskLevel,
+    SecurityViolationError,
+    SemanticGuard,
+    evaluate_action_risk,
+)
 
-    raw_yaml, body = match.group(1), match.group(2)
-    meta: Dict[str, Any] = {}
-
-    try:
-        import yaml
-        parsed = yaml.safe_load(raw_yaml)
-        if isinstance(parsed, dict):
-            meta = parsed
-            if "metadata" in meta and isinstance(meta["metadata"], dict):
-                for k, v in meta["metadata"].items():
-                    if k not in meta:
-                        meta[k] = v
-            return meta, body
-    except ImportError:
-        pass
-
-    # Parser determinístico fallback sem dependências
-    current_key: Optional[str] = None
-    multiline_val: List[str] = []
-    in_metadata = False
-    metadata_dict: Dict[str, Any] = {}
-
-    for line in raw_yaml.splitlines():
-        if re.match(r"^\s+", line) and current_key:
-            multiline_val.append(line.strip())
-            continue
-
-        if current_key and multiline_val:
-            val_joined = " ".join(multiline_val)
-            if in_metadata:
-                metadata_dict[current_key] = val_joined
-            else:
-                meta[current_key] = val_joined
-            multiline_val = []
-            current_key = None
-
-        if re.match(r"^metadata:\s*$", line):
-            in_metadata = True
-            continue
-
-        if in_metadata and re.match(r"^\s+([a-zA-Z0-9_\-]+):\s*(.*)$", line):
-            m = re.match(r"^\s+([a-zA-Z0-9_\-]+):\s*(.*)$", line)
-            if m:
-                k, v = m.group(1), m.group(2).strip().strip("'\"")
-                if v in (">-", ">", "|", "|-"):
-                    current_key = k
-                    multiline_val = []
-                else:
-                    metadata_dict[k] = v
-            continue
-
-        kv_match = re.match(r"^([a-zA-Z0-9_\-]+):\s*(.*)$", line)
-        if kv_match:
-            in_metadata = False
-            key, val = kv_match.group(1), kv_match.group(2).strip()
-            if val in (">-", ">", "|", "|-"):
-                current_key = key
-                multiline_val = []
-            else:
-                val = val.strip("'\"")
-                meta[key] = val
-                current_key = None
-
-    if current_key and multiline_val:
-        val_joined = " ".join(multiline_val)
-        if in_metadata:
-            metadata_dict[current_key] = val_joined
-        else:
-            meta[current_key] = val_joined
-
-    if metadata_dict:
-        meta["metadata"] = metadata_dict
-        for k, v in metadata_dict.items():
-            if k not in meta:
-                meta[k] = v
-
-    return meta, body
+SESSIONS_DIR = ROOT_DIR / ".sessions"
+CHECKPOINTS_FILE = SESSIONS_DIR / "harness_checkpoints.json"
+harness_store = CheckpointStore(CHECKPOINTS_FILE)
 
 
 def _load_agents_map() -> Dict[str, str]:
@@ -606,8 +536,14 @@ def franklin_skills_validate(
                 if evals_file.exists():
                     try:
                         evals_data = json.loads(evals_file.read_text(encoding="utf-8"))
-                        if not isinstance(evals_data, list) or len(evals_data) == 0:
-                            errs.append("evals.json deve ser uma lista não-vazia")
+                        if isinstance(evals_data, dict) and "evals" in evals_data:
+                            evals_list = evals_data["evals"]
+                        elif isinstance(evals_data, list):
+                            evals_list = evals_data
+                        else:
+                            evals_list = []
+                        if not isinstance(evals_list, list) or len(evals_list) == 0:
+                            errs.append("evals.json deve conter uma lista não-vazia de testes")
                     except Exception as e:
                         errs.append(f"Sintaxe JSON inválida em evals.json: {e}")
 
@@ -833,9 +769,190 @@ def franklin_execute_dag(
                 pass
 
 
+@mcp.tool()
+def franklin_harness_guard(
+    task_intent: str,
+    proposed_tool_or_action: str = "",
+    session_id: str = "default",
+) -> str:
+    """Aplica o Harness de Governança Determinística e Human-in-the-Loop antes de executar ações.
+
+    Avalia a intenção da tarefa e a ferramenta proposta contra o ecossistema de 26 Skills do Franklin:
+    1. Executa sanitização semântica preventiva contra injeções de prompt e tokens maliciosos.
+    2. Aplica Divulgação Progressiva: identifica a Skill mais adequada e suas regras de corte.
+    3. Avalia o nível de risco: se a intenção ou ferramenta envolver mutações destrutivas no disco ou Drive
+       (Remove-Item, deleção, expurgo, format, descarte), classifica como CRITICAL, pausa a execução
+       e cria um Checkpoint persistente pendente de aprovação humana.
+    4. Se for operação de leitura/segura (análise, auditoria, conversão, Get-ChildItem), classifica como
+       LOW e retorna AUTHORIZED com as diretrizes da Skill.
+
+    Args:
+        task_intent: O que se pretende realizar em linguagem natural.
+        proposed_tool_or_action: Ferramenta MCP, script ou comando de terminal pretendido.
+        session_id: Identificador da sessão para rastreabilidade de checkpoint.
+
+    Returns:
+        JSON com status ('AUTHORIZED'|'APPROVAL_REQUIRED'|'BLOCKED'), riskLevel, activeSkill, reason, instructions, checkpointId.
+    """
+    import uuid
+
+    # 1. Sanitização Semântica
+    try:
+        clean_intent = SemanticGuard.sanitize_input(task_intent)
+        clean_action = SemanticGuard.sanitize_input(proposed_tool_or_action) if proposed_tool_or_action else ""
+    except SecurityViolationError as e:
+        return json.dumps({
+            "status": "BLOCKED",
+            "riskLevel": "CRITICAL",
+            "reason": str(e),
+            "instructions": "Execução terminantemente bloqueada pelo SemanticGuard fora da janela do LLM."
+        }, indent=2, ensure_ascii=False)
+
+    # 2. Resolução Progressiva de Skills entre as 26 skills reais
+    skills = _get_all_skills_data()
+    combined_query = f"{clean_intent} {clean_action}".lower()
+
+    best_skill: dict[str, Any] | None = None
+    max_score = 0
+    for s in skills:
+        score = 0
+        name = s["name"].lower()
+        if name in combined_query:
+            score += 20
+        for tag in s.get("tags", []):
+            if len(tag) > 3 and tag.lower() in combined_query:
+                score += len(tag)
+        if score > max_score:
+            max_score = score
+            best_skill = s
+
+    active_skill_name = best_skill["name"] if best_skill else "franklin-main"
+    persona = best_skill["persona"] if best_skill else "Franklin-Main"
+
+    # 3. Avaliação Determinística de Risco
+    risk_level, risk_reason = evaluate_action_risk(f"{clean_intent} {clean_action}")
+
+    # 4. Ação Crítica: Pausa Operacional e Checkpoint Durável (HITL)
+    if risk_level == RiskLevel.CRITICAL:
+        chk_id = f"chk-{uuid.uuid4().hex[:8]}"
+        harness_store.create(
+            checkpoint_id=chk_id,
+            session_id=session_id,
+            task_intent=clean_intent,
+            proposed_action=clean_action or "Ação de mutação no sistema",
+            active_skill=active_skill_name,
+            risk_level="CRITICAL",
+            notes=risk_reason,
+        )
+        return json.dumps({
+            "status": "APPROVAL_REQUIRED",
+            "riskLevel": "CRITICAL",
+            "checkpointId": chk_id,
+            "activeSkill": active_skill_name,
+            "persona": persona,
+            "reason": risk_reason,
+            "instructions": (
+                f"AÇÃO CRÍTICA DETECTADA: O Harness pausou a execução para proteger o sistema. "
+                f"Checkpoint registrado sob o ID '{chk_id}'. "
+                f"OBRIGATÓRIO: Apresente o plano / simulação (Dry-Run) com a lista dos itens impactados ao usuário e solicite "
+                f"sua aprovação expressa antes de executar. Para aprovar, use 'franklin_harness_checkpoint(action=\"approve\", checkpoint_id=\"{chk_id}\")'."
+            )
+        }, indent=2, ensure_ascii=False)
+
+    # 5. Ação Segura: Autorização Imediata
+    return json.dumps({
+        "status": "AUTHORIZED",
+        "riskLevel": "LOW",
+        "activeSkill": active_skill_name,
+        "persona": persona,
+        "reason": risk_reason,
+        "instructions": (
+            f"Operação segura autorizada pelo Harness sob a persona {persona}. "
+            f"Siga os procedimentos e salvaguardas da skill '{active_skill_name}'."
+        )
+    }, indent=2, ensure_ascii=False)
+
+
+@mcp.tool()
+def franklin_harness_checkpoint(
+    action: str = "list",
+    session_id: str = "default",
+    checkpoint_id: str = "",
+    approved: bool = False,
+    notes: str = ""
+) -> str:
+    """Gerencia checkpoints de governança e aprovações humanas no ecossistema do Franklin.
+
+    Args:
+        action: 'list' (listar checkpoints pendentes), 'get' (detalhes de um ID), 'approve' (aprovar ação retida), 'reject' (vetar ação), 'clear' (limpar histórico).
+        session_id: Filtro de sessão opcional para a listagem.
+        checkpoint_id: ID do checkpoint alvo (ex: 'chk-a1b2c3d4').
+        approved: True quando ação for 'approve'.
+        notes: Justificativa ou notas do operador humano.
+
+    Returns:
+        JSON com a lista de pendências ou confirmação da deliberação humana.
+    """
+    act = action.strip().lower()
+
+    if act == "list":
+        pending = harness_store.list(status="PENDING", session_id=session_id if session_id != "all" else None)
+        return json.dumps({
+            "totalPending": len(pending),
+            "checkpoints": [r.to_dict() for r in pending]
+        }, indent=2, ensure_ascii=False)
+
+    if act == "get":
+        if not checkpoint_id:
+            return json.dumps({"error": "checkpoint_id é obrigatório para a ação 'get'"}, ensure_ascii=False)
+        rec = harness_store.get(checkpoint_id)
+        if not rec:
+            return json.dumps({"error": f"Checkpoint '{checkpoint_id}' não encontrado"}, ensure_ascii=False)
+        return json.dumps(rec.to_dict(), indent=2, ensure_ascii=False)
+
+    if act == "approve":
+        if not checkpoint_id:
+            return json.dumps({"error": "checkpoint_id é obrigatório para aprovação"}, ensure_ascii=False)
+        rec = harness_store.update_status(checkpoint_id, status="APPROVED", notes=notes or "Aprovado pelo operador")
+        if not rec:
+            return json.dumps({"error": f"Checkpoint '{checkpoint_id}' não encontrado"}, ensure_ascii=False)
+        return json.dumps({
+            "status": "APPROVED",
+            "checkpointId": checkpoint_id,
+            "message": f"Ação '{rec.proposed_action}' foi APROVADA pelo operador humano. A execução pode prosseguir.",
+            "record": rec.to_dict()
+        }, indent=2, ensure_ascii=False)
+
+    if act == "reject":
+        if not checkpoint_id:
+            return json.dumps({"error": "checkpoint_id é obrigatório para rejeição"}, ensure_ascii=False)
+        rec = harness_store.update_status(checkpoint_id, status="REJECTED", notes=notes or "Rejeitado pelo operador")
+        if not rec:
+            return json.dumps({"error": f"Checkpoint '{checkpoint_id}' não encontrado"}, ensure_ascii=False)
+        return json.dumps({
+            "status": "REJECTED",
+            "checkpointId": checkpoint_id,
+            "message": f"Ação '{rec.proposed_action}' foi VETADA pelo operador humano. A execução está cancelada.",
+            "record": rec.to_dict()
+        }, indent=2, ensure_ascii=False)
+
+    if act == "clear":
+        count = harness_store.clear()
+        return json.dumps({"status": "CLEARED", "removedCount": count}, indent=2, ensure_ascii=False)
+
+    return json.dumps({"error": f"Ação '{action}' inválida. Use: list, get, approve, reject ou clear."}, ensure_ascii=False)
+
+
 # -----------------------------------------------------------------------------
 # Recursos MCP (Resources)
 # -----------------------------------------------------------------------------
+@mcp.resource("skills://harness/checkpoints")
+def get_harness_checkpoints_resource() -> str:
+    """Recurso passivo expondo a lista de checkpoints e aprovações pendentes do Harness."""
+    records = harness_store.list()
+    return json.dumps([r.to_dict() for r in records], indent=2, ensure_ascii=False)
+
+
 @mcp.resource("skills://catalog")
 def get_catalog_resource() -> str:
     """Recurso passivo expondo o catálogo consolidado de skills em formato JSON."""
