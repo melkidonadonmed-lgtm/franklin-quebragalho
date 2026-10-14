@@ -4,23 +4,24 @@ description: >-
   Analisa e mapeia interfaces frontend via agent-browser, avalia conformidade com o Design System Tátil Melki (profundidade de sombras, cards mais claros que o fundo, rim light e paleta mineral anti-cobalto), oferece opções interativas de melhorias visuais e funcionais com formulários de múltipla escolha ou mockups de referência, audita discrepâncias determinísticas e gera o documento canônico DESIGN.md.
 license: MIT
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   author: "FrontCraftMaster & Melki"
   category: "Consultoria de Design Tátil e UX"
-  updated_at: "2026-10-04"
+  updated_at: "2026-10-14"
   tags:
     - "consultoria-ux"
     - "design-tatil"
     - "paleta-mineral"
     - "design-md"
-version: 1.1.0
-updated_at: 2026-10-04
+    - "multidimensional-2026"
+version: 1.2.0
+updated_at: 2026-10-14
 author: FrontCraftMaster & Melki
 category: Consultoria de Design Tátil e UX
 ---
 
 # 1. NOME DA SKILL
-`consultor-design-tatil-frontend` (Consultor e Mapeador de Frontend com Agent Web, Relevo Tátil, Opções de Preferências e Gerador de DESIGN.md).
+`consultor-design-tatil-frontend` (Consultor e Mapeador de Frontend com Agent Web, Motor Multidimensional 2026, Relevo Tátil, Opções de Preferências e Gerador de DESIGN.md).
 
 ---
 
@@ -41,38 +42,41 @@ Carregue e execute esta skill sempre que:
 
 ## 3. ENTRADAS ESPERADAS E PRÉ-REQUISITOS
 
-- `target_url_or_path` (obrigatório): URL da aplicação web em execução (ex.: `http://localhost:5173`, `http://localhost:3000`) ou caminho absoluto de arquivo HTML local (ex.: `file:///C:/Users/melki/Projetos/frontcraft-studio/index.html`).
+- `target_url_or_path` (obrigatório): URL da aplicação web em execução (ex.: `http://localhost:3000`, `http://localhost:5173`) ou caminho absoluto de arquivo HTML local (ex.: `file:///C:/Users/melki/dev/repos/frontcraft-studio/index.html`).
 - `project_root_path` (opcional): Diretório raiz do projeto para gravação do `DESIGN.md` resultante (padrão: diretório do projeto alvo).
-- `archetype_preference` (opcional): Arquétipo visual de preferência (`tactile-matte`, `phantom-4k`, `luxury-deepblue`, `gilded-navy`, `polar-sand`). Padrão: `tactile-matte` (Padrão Melki).
+- `archetype_preference` (opcional): Arquétipo visual dentre os **22 temas do FrontCraft Studio (`v2.6.0-2026`)**:
+  * **7 Estúdio**: `tactile-matte` (Padrão Melki), `phantom-4k`, `luxury-deepblue`, `gilded-navy`, `polar-sand`, `emerald-terminal`, `monokai-tactile`.
+  * **5 Trends 2026**: `warm-editorial-paper`, `quiet-luxury-titanium`, `neo-swiss-grid`, `biophilic-matcha-stone`, `tactile-carbon-2026`.
+  * **10 Canônicas Melki**: `steadfast-stainless`, `window-tide`, `cotton-dandelions`, `ocean-window`, `mermaid-lagoon`, `nightfall-ambiance`, `sky-balloons`, `grained-memories`, `living-a-dream`, `van-goghs-dream`.
 - `feedback_mode` (opcional): Mecanismo de interação com o usuário (`interactive_form` para formulário de múltipla escolha via `ask_question`, `html_mockup` para geração de artefato HTML de referência, ou `both`). Padrão: `both`.
 
 ---
 
-## 4. DIRETRIZES TÉCNICAS E MÓDULOS DE DESIGN (PADRÃO MELKI 2026)
+## 4. DIRETRIZES TÉCNICAS E MÓDULOS DE DESIGN (PADRÃO MELKI `v2.6.0-2026`)
 
-### 4.1. Módulo de Paleta de Cores Canônica
+### 4.1. Módulo de Paleta de Cores Canônica & Motor Multidimensional
 
-A paleta oficial do ecossistema prioriza tons minerais, superfícies de ardósia e contrastes equilibrados, banindo categoricamente cores ácidas ou azuis de alta fluorescência:
+A paleta oficial do ecossistema prioriza tons minerais, superfícies de ardósia e contrastes equilibrados (WCAG AA/AAA), sincronizados com **4 Pares Tipográficos (`TYPOGRAPHY_PRESETS`)** e **5 Escalas de Curvatura (`GEOMETRY_PRESETS`)**:
 
 | Função Semântica | Token CSS | Valor HEX | Uso Recomendado |
 | :--- | :--- | :--- | :--- |
-| **Canvas Escuro (Fundo)** | `--bg-canvas` | `#0B101B` / `#090B10` | Fundo principal da aplicação no tema escuro |
-| **Superfície Card Escuro** | `--bg-card` | `#162033` / `#141B2D` | Superfície elevada dos cartões no tema escuro |
-| **Superfície Modais / Menus** | `--bg-surface-2` | `#1E2B45` | Painéis flutuantes, tooltips e flyouts |
-| **Canvas Claro (Fundo)** | `--bg-canvas-light`| `#FDFEE9` / `#EEF2F6` | Fundo suave / Polar Sand no tema claro |
-| **Superfície Card Claro** | `--bg-card-light` | `#FFFFFF` / `#E6E7E2` | Branco puro ou primer mineral elevado |
-| **Acento Primário Sóbrio** | `--accent-primary` | `#2B4C7E` / `#3B82F6` | Petroleum Blue / Safira Fosca atenuada |
-| **Acento Slate Navy** | `--accent-navy` | `#203657` / `#4A5B73` | Barras de navegação, abas e âncoras |
-| **Acento Marítimo / Céu** | `--accent-sky` | `#145DA0` / `#38BDF8` | Detalhes pontuais de foco e badges de status |
+| **Canvas Escuro (Fundo)** | `--bg-canvas` | `#090B10` / `#060709` | Fundo principal da aplicação no tema escuro |
+| **Superfície Card Escuro** | `--bg-card` | `#141824` / `#11141D` | Superfície elevada dos cartões no tema escuro |
+| **Superfície Modais / Menus** | `--bg-surface-2` | `#1D2436` / `#1B2130` | Painéis flutuantes, tooltips e flyouts |
+| **Canvas Claro (Fundo)** | `--bg-canvas-light`| `#EEF2F6` / `#EFECE6` | Fundo suave Polar Sand / Editorial Paper |
+| **Superfície Card Claro** | `--bg-card-light` | `#FFFFFF` / `#FCFBF8` | Branco puro ou marfim algodão elevado |
+| **Acento Primário Sóbrio** | `--accent-primary` | `#3B82F6` / `#345E7D` | Safira Fosca / Slate Navy |
+| **Acento Editorial / Titanium** | `--accent-2026` | `#9A3412` / `#C5A880` | Terracota Editorial / Ouro Titânio Anodizado |
+| **Acento Suíço / Matcha** | `--accent-trend` | `#BE123C` / `#2E6F40` | Carmesim Suíço / Verde Matcha Botânico |
 | **Acento Ouro Champanhe** | `--accent-gold` | `#D4AF37` / `#C5A059` | Destaques nobres, planos e badges executivas |
-| **Acento Sage Clínico** | `--accent-sage` | `#2D6A4F` / `#10B981` | Sucesso, métricas positivas e saúde |
-| **Acento Amber Matte** | `--accent-amber` | `#925C18` / `#F59E0B` | Avisos, pendências e alertas atenuados |
+| **Acento Sage Clínico** | `--accent-sage` | `#10B981` / `#274472` | Sucesso, métricas positivas e saúde clínica |
+| **Acento Amber / Violet** | `--accent-amber` | `#F59E0B` / `#8B5CF6` | Avisos, telemetria e AI Studio Dark Craft |
 
 - ❌ **Banimento Categórico de Cores Agressivas (Anti-Cobalto):**
   - Proibido o uso de azul cobalto puro (`#0044FF`, `#233DFF`, `#1D4ED8`, `#0000FF`).
   - Proibido o uso de cores fluorescentes de saturação 100% desbalanceadas que causem estresse visual prolongado.
 
-### 4.2. Módulo de Design Tátil e Composição Visual (Tactile Matte 4K)
+### 4.2. Módulo de Design Tátil e Composição Visual (Tactile Matte 4K + DNA 2026)
 
 1. **Filosofia Anti-Glassmorphism & Primazia das Sombras:**
    - Proibido o uso de fundos de vidro com desfoque excessivo (`backdrop-filter: blur`), gradientes plásticos reflexivos e contornos neon brilhantes.
@@ -82,18 +86,17 @@ A paleta oficial do ecossistema prioriza tons minerais, superfícies de ardósia
    - Isso garante o contraste positivo necessário para que a projeção de sombra externa seja perceptível ao olho humano.
 3. **Sistema de Sombras Físicas Multicamadas:**
    - Toda superfície elevada deve empregar no mínimo duas camadas complementares:
-     * *Camada de Contato Curta:* `0 2px 4px rgba(0, 0, 0, 0.4)` (oclusão próxima).
-     * *Camada de Projeção Difusa:* `0 10px 25px -4px rgba(0, 0, 0, 0.65)` (volume espacial).
-     * *Micro-chanfro óptico:* `inset 0 1px 0 rgba(255, 255, 255, 0.08)`.
-4. **Fio de Luz Superior Mineral (Rim Light Zenital):**
-   - Cartões, botões e modais devem possuir acabamento superior refletindo luz zenital:
-     `border-top: 1px solid rgba(255, 255, 255, 0.14);` ou `box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);`.
+     * *Camada de Contato Curta:* `0 4px 10px rgba(0, 0, 0, 0.35)` (oclusão próxima).
+     * *Camada de Projeção Difusa:* `0 16px 36px -4px rgba(0, 0, 0, 0.65)` (volume espacial).
+     * *Micro-chanfro óptico:* `inset 0 1px 0 rgba(255, 255, 255, 0.1)`.
+4. **Fio de Luz Superior Mineral (Rim Light Zenital) & Física 3D (`calculateCardTilt`):**
+   - Cartões, botões e modais devem possuir acabamento superior refletindo luz zenital (`border-top: 1px solid rgba(255, 255, 255, 0.14);`) e inclinação 3D opcional limitada a $\pm 5.5^\circ$ (com desativação automática sob `prefers-reduced-motion`).
 5. **Resiliência de Conteúdo (Anti-Squish):**
    - Botões de ação, badges e tags de status devem incluir obrigatoriamente `flex-shrink: 0;` e `white-space: nowrap;`, impedindo categoricamente quebras verticais de texto ("C o p i a r").
    - Caminhos de arquivo e URLs longas devem usar truncamento inteligente (`text-overflow: ellipsis; white-space: nowrap; overflow: hidden; min-width: 0;`) com atributo `title="..."`.
 6. **Grid Responsivo & Ergonomia Cognitiva (Suporte TDAH):**
    - Largura mínima de coluna de `350px` em grids (`gap: 1.5rem`), evitando compactação de títulos.
-   - Todo app deve conter atalho de busca rápida centralizada (`Ctrl + K`).
+   - Todo app deve conter atalho de busca rápida centralizada (`Ctrl + K` / `⌘K`).
    - Feedbacks cinestésicos físicos instantâneos em botões: `active:scale-95` ou `translateY(1px)`.
    - Proibido o uso de caixas de diálogo nativas bloqueantes (`alert()`, `confirm()`); utilizar toasts in-page ou modais contextuais.
 
@@ -102,13 +105,7 @@ A paleta oficial do ecossistema prioriza tons minerais, superfícies de ardósia
 Sempre que a interface for avaliada ou concebida, a skill formula alternativas prontas alinhadas com as preferências do Melki:
 
 1. **Apresentação Estruturada de Opções:**
-   - Uso da ferramenta `ask_question` para permitir ao usuário escolher o arquétipo e as melhorias com 1 clique.
-   - Fornecimento de 5 Arquétipos Canônicos pré-definidos:
-     * `[Recomendado] Tactile Matte Minimalist`: Canvas Ardósia `#090B10`, Card `#141B2D`, Acento Petroleum Blue atenuado.
-     * `Phantom Obsidian 4K`: Canvas Ultra-Dark `#060709`, Card `#11141D`, Acento Ciano Céu `#38BDF8`.
-     * `Luxury Deep Blue`: Canvas `#070C18`, Card `#121C31`, Acento Azul Mineral `#60A5FA`.
-     * `Gilded Navy Heritage`: Canvas `#05070D`, Card `#0E1424`, Acento Ouro Champanhe `#D4AF37`.
-     * `Polar Sand Light`: Canvas Claro Neutro `#EEF2F6`, Card `#FFFFFF`, Acento Navy Profundo `#0284C7`.
+   - Uso da ferramenta `ask_question` para permitir ao usuário escolher o arquétipo e as melhorias com 1 clique dentre os **22 temas** (7 Estúdio, 5 Trends 2026, 10 Canônicas Melki), os **4 Pares Tipográficos** (`humanist-tech`, `editorial-serif`, `swiss-grotesk`, `classic-garamond`) e as **5 Geometrias de Borda** (`6px`, `12px`, `16px`, `20px`, `24px`).
 2. **Ecosistema de Componentes Open Source Autorizado (Padrão shadcn/ui):**
    - Priorizar componentes de código aberto "copy-paste" (desacoplados no projeto, sem pacotes "caixa-preta"): **shadcn/ui**, **Radix UI**, **Tailwind UI / Catalyst**, **Lucide Icons** e **Geist Design**.
 3. **Geração de Mockup HTML Interativo:**

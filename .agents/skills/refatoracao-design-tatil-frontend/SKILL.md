@@ -4,24 +4,25 @@ description: >-
   Executa a refatoracao e implementacao pratica de frontend por framework modular (React, Tailwind, HTML5/CSS, Vue), aplicando navegabilidade de alto padrao, menus descompactados com espacamento nobre, botoes ergonomicos com anti-squish, icones Lucide, tipografia refinada, elevacao tatil mineral e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide.
 license: MIT
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   author: "FrontCraftMaster & Melki"
   category: "Implementação e Refatoração Frontend"
-  updated_at: "2026-10-04"
+  updated_at: "2026-10-14"
   tags:
     - "frontend"
     - "design-tatil"
     - "tailwind"
     - "refatoracao"
     - "anti-cobalto"
-version: 1.1.0
-updated_at: 2026-10-04
+    - "multidimensional-2026"
+version: 1.2.0
+updated_at: 2026-10-14
 author: FrontCraftMaster & Melki
 category: Implementação e Refatoração Frontend
 ---
 
 # 1. NOME DA SKILL
-`refatoracao-design-tatil-frontend` (Refatoração de Frontend Modular, Navegação de Alto Padrão, Injeção do Design System Tátil Melki e Conformidade Google Style Guides).
+`refatoracao-design-tatil-frontend` (Refatoração de Frontend Modular, Navegação de Alto Padrão, Injeção do Design System Tátil & Multidimensional Melki `v2.6.0-2026` e Conformidade Google Style Guides).
 
 ---
 
@@ -45,7 +46,10 @@ Ative e execute esta skill sempre que:
 
 - `project_root_path` (obrigatório): Caminho absoluto da raiz do projeto frontend a ser refatorado.
 - `framework_target` (opcional): `react_tailwind`, `html_css_vanilla`, `vue_tailwind` ou `detect` (padrão: `detect` automático inspecionando `package.json` ou arquivos de código).
-- `archetype` (opcional): Arquétipo visual desejado (`tactile_matte`, `phantom_obsidian`, `polar_sand`). Padrão: `tactile_matte` (Padrão Melki).
+- `archetype` (opcional): Qualquer um dos **22 temas homologados no FrontCraft Studio (`v2.6.0-2026`)**:
+  * **Estúdio (7)**: `tactile-matte` (Padrão Melki), `phantom-4k`, `luxury-deepblue`, `gilded-navy`, `polar-sand`, `emerald-terminal`, `monokai-tactile`.
+  * **Trends 2026 (5)**: `warm-editorial-paper`, `quiet-luxury-titanium`, `neo-swiss-grid`, `biophilic-matcha-stone`, `tactile-carbon-2026`.
+  * **Canônicas Melki (10)**: `steadfast-stainless`, `window-tide`, `cotton-dandelions`, `ocean-window`, `mermaid-lagoon`, `nightfall-ambiance`, `sky-balloons`, `grained-memories`, `living-a-dream`, `van-goghs-dream`.
 - `analysis_report_path` (opcional): Caminho do relatório comparativo gerado pela skill de análise.
 
 ---
@@ -55,29 +59,33 @@ Ative e execute esta skill sempre que:
 A refatoração opera via módulos desacoplados de acordo com a stack técnica do projeto:
 
 ### 4.1. Módulo React / Next.js / Vite com Tailwind CSS
-- **Tokens no Tailwind:** Configurar no `tailwind.config.js` ou `:root` em `globals.css` as superfícies minerais:
+- **Tokens Multidimensionais no Tailwind (`:root`):** Configurar em `globals.css` as superfícies minerais, tipografia e geometria:
   ```css
   :root {
     --bg-canvas: #090B10;
-    --bg-card: #141B2D;
-    --bg-surface-2: #1E2B45;
+    --bg-card: #141824;
+    --bg-surface-2: #1D2436;
     --accent-primary: #3B82F6;
-    --rim-light: rgba(255, 255, 255, 0.14);
+    --rim-light: rgba(255, 255, 255, 0.16);
+    --font-display: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --radius-lg: 20px;
   }
   ```
 - **Componentes Copy-Paste (Padrão shadcn/ui):** Manter componentes desacoplados na pasta `components/ui/` do projeto, sem pacotes externos fechados.
 
 ### 4.2. Módulo HTML5 Semântico / CSS Puro / Vanilla JS
-- **Variáveis Nativas:** Injetar tokens no topo da folha de estilos principal (`style.css` ou `main.css`).
+- **Variáveis Nativas:** Injetar tokens no topo da folha de estilos principal (`style.css` ou `css/themes.css`).
 - **Classes Utilitárias Táteis:** Injetar classes reutilizáveis em `kebab-case`:
-  * `.btn-tactile`: `height: 44px; display: inline-flex; align-items: center; justify-content: center; padding: 0 1.25rem; font-weight: 500; border-radius: 8px; flex-shrink: 0; white-space: nowrap; transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);`
-  * `.card-tactile`: `background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.08); border-top: 1px solid var(--rim-light); box-shadow: 0 2px 4px rgba(0,0,0,0.4), 0 10px 25px -4px rgba(0,0,0,0.65); border-radius: 12px;`
+  * `.btn-tactile`: `height: 44px; display: inline-flex; align-items: center; justify-content: center; padding: 0 1.25rem; font-weight: 500; border-radius: var(--radius-md, 14px); flex-shrink: 0; white-space: nowrap; transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);`
+  * `.card-tactile`: `background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.08); border-top: 1px solid var(--rim-light); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35), 0 16px 36px -4px rgba(0, 0, 0, 0.65); border-radius: var(--radius-lg, 20px);`
 
 ---
 
 ## 5. DIRETRIZES DE ALTO PADRÃO E GOOGLE STYLE GUIDES
 
-Toda refatoração deve aplicar os 6 mandamentos de ergonomia tátil somados às regras oficiais do Google:
+Toda refatoração deve aplicar os mandamentos de ergonomia tátil e motor multidimensional `v2.6.0-2026` somados às regras oficiais do Google:
 
 ### 5.1. Conformidade Estrita com Google HTML/CSS Style Guide
 - **Sintaxe HTML5 Semântica:**
@@ -104,11 +112,16 @@ Toda refatoração deve aplicar os 6 mandamentos de ergonomia tátil somados às
   * Links e itens de menu: `padding: 0.625rem 1rem`, `border-radius: 8px`, texto legível com peso 500.
 - **Sidebar Estável:** Largura mínima fixa de `260px` no desktop, impedindo que os itens fiquem comprimidos.
 
-### 5.4. Tipografia e Fontes
-- **Injeção de Fontes Autorizadas:** Configurar importação limpa de **Inter**, **Geist Sans** ou **JetBrains Mono** (para dados/código).
+### 5.4. Tipografia Multidimensional (`TYPOGRAPHY_PRESETS`) e Geometria (`GEOMETRY_PRESETS`)
+- **Injeção de Pares Tipográficos Autorizados (Edição 2026):**
+  * `humanist-tech`: **Plus Jakarta Sans** + **JetBrains Mono**
+  * `editorial-serif`: **Instrument Serif** + **Plus Jakarta Sans** + **JetBrains Mono**
+  * `swiss-grotesk`: **Space Grotesk** + **Inter** + **JetBrains Mono**
+  * `classic-garamond`: **Cormorant Garamond** + **Plus Jakarta Sans** + **JetBrains Mono**
+- **Geometria de Borda (`GEOMETRY_PRESETS`):** `sharp` (`6px`), `editorial` (`12px`), `technical` (`16px`), `tactile` (`20px`) ou `organic` (`24px`).
 - **Hierarquia:**
-  * `h1`: 1.75rem a 2.25rem, font-weight 600, tracking-tight.
-  * `h2` / `h3`: 1.25rem a 1.5rem, font-weight 600.
+  * `h1`: 1.75rem a 2.25rem, `font-family: var(--font-display)`, tracking calibrado.
+  * `h2` / `h3`: 1.25rem a 1.5rem, `font-family: var(--font-display)`.
   * Rótulos / Menus: 0.875rem a 0.9375rem, font-weight 500.
   * `line-height`: 1.5 para textos corridos.
 
@@ -121,13 +134,14 @@ Toda refatoração deve aplicar os 6 mandamentos de ergonomia tátil somados às
 - **Blindagem Anti-Squish:** Adicionar obrigatoriamente `flex-shrink: 0; white-space: nowrap;` (Tailwind: `shrink-0 whitespace-nowrap`).
 - **Relevo Físico Convexo:** Borda sutil, gradiente de 1 grau imperceptível ou rim-light no topo.
 
-### 5.7. Transições e Micro-interações
+### 5.7. Transições, Micro-interações e Física 3D (`calculateCardTilt`)
 - **Feedback Tátil:** Adicionar `active:scale-95` ou `translateY(1px)` em botões e cards clicáveis.
 - **Tempo de Transição:** `transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1)`.
+- **Inclinação 3D Opcional:** Suporte a `.tactile-card-interactive` com rotação limitada a $\pm 5.5^\circ$ e proteção obrigatória `@media (prefers-reduced-motion: reduce)`.
 
-### 5.8. Paleta Mineral e Eliminação de Anti-Padrões
-- **Banimento Total:** Substituir qualquer `#0044FF`, `#233DFF`, `#1D4ED8` por Petroleum Blue (`#2B4C7E` / `#3B82F6`) ou Slate Navy (`#203657`).
-- **Eliminação de Vidro Borrado:** Remover `backdrop-filter: blur` excessivo e fundos translúcidos de plástico, substituindo por ardósia fosca sólida.
+### 5.8. Paleta Mineral (22 Temas) e Eliminação de Anti-Padrões
+- **Banimento Total:** Substituir qualquer `#0044FF`, `#233DFF`, `#1D4ED8` por Safira Fosco (`#3B82F6`), Slate Navy (`#345E7D`), Terracota Editorial (`#9A3412`), Titânio Champanhe (`#C5A880`), Carmesim Suíço (`#BE123C`), Matcha Botânico (`#2E6F40`) ou Ametista Ardósia (`#8B5CF6`).
+- **Eliminação de Vidro Borrado:** Remover `backdrop-filter: blur` excessivo e fundos translúcidos de plástico, substituindo por ardósia fosca sólida ou papel algodão elevado.
 - **Regra de Ouro da Luminância:** No Dark Mode, cartões devem ser mais claros que o fundo (`L_card > L_canvas`), com projeção de sombra física visível e rim-light no topo.
 
 ---

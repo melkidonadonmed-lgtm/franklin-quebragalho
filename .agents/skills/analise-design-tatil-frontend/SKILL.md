@@ -4,23 +4,24 @@ description: >-
   Inspeciona e audita interfaces frontend (via agent-browser ou codigo estatico), analisa menus, sidebar, tipografia, fontes, icones, tamanho dos botoes, transicoes, layout, profundidade tatil e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide, emitindo um Relatorio Comparativo deterministico.
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   author: "FrontCraftMaster & Melki"
   category: "Design System Tátil e Frontend"
-  updated_at: "2026-10-04"
+  updated_at: "2026-10-14"
   tags:
     - "design-tatil"
     - "auditoria-ui"
     - "anti-cobalto"
     - "ergonomia"
-version: 1.0.0
-updated_at: 2026-10-04
+    - "multidimensional-2026"
+version: 1.1.0
+updated_at: 2026-10-14
 author: FrontCraftMaster & Melki
 category: Design System Tátil e Frontend
 ---
 
 # 1. NOME DA SKILL
-`analise-design-tatil-frontend` (Diagnóstico Estrutural de Frontend, Inspeção Visual, Auditoria Google Style Guides e Relatório Comparativo de Preferências).
+`analise-design-tatil-frontend` (Diagnóstico Estrutural de Frontend, Inspeção Visual, Motor Multidimensional 2026, Auditoria Google Style Guides e Relatório Comparativo de Preferências).
 
 ---
 
@@ -41,7 +42,7 @@ Ative esta skill sempre que:
 
 ## 3. ENTRADAS ESPERADAS E PRÉ-REQUISITOS
 
-- `target_url_or_path` (obrigatório): URL ativa da aplicação (ex.: `http://localhost:5173`) ou caminho do arquivo HTML local (ex.: `C:\Users\melki\Projetos\frontcraft-studio\index.html`).
+- `target_url_or_path` (obrigatório): URL ativa da aplicação (ex.: `http://localhost:3000`, `http://localhost:5173`) ou caminho do arquivo HTML local (ex.: `C:\Users\melki\dev\repos\frontcraft-studio\index.html`).
 - `inspection_mode` (opcional): `live_browser` (via `agent-browser`) ou `static_code` (análise de arquivos em disco). Padrão: detecção automática (se URL acessível, `live_browser`; se arquivo estático, `static_code`).
 - `output_report_path` (opcional): Caminho para salvar o relatório Markdown gerado (padrão: `.context/RELATORIO_ANALISE_FRONTEND.md` no projeto alvo).
 
@@ -49,7 +50,7 @@ Ative esta skill sempre que:
 
 ## 4. DIRETRIZES DE INSPEÇÃO PONTO A PONTO (PREFERÊNCIAS MELKI & GOOGLE)
 
-A análise avalia rigorosamente os 10 pontos críticos de design tátil e padrões de código:
+A análise avalia rigorosamente os 10 pontos críticos de design tátil, motor multidimensional `v2.6.0-2026` e padrões de código:
 
 ### 4.1. Menus e Navegação
 - **Anti-Compactação:** Proibição de menus colapsados ou espremidos com padding claustrofóbico.
@@ -60,10 +61,14 @@ A análise avalia rigorosamente os 10 pontos críticos de design tátil e padrõ
 - **Largura Mínima Operacional:** No estado expandido, a sidebar deve possuir largura de no mínimo `240px` a `280px` para acomodar rótulos completos e badges sem truncamento.
 - **Hierarquia:** Separação semântica nítida entre seções de navegação, ações de rodapé e perfil de usuário.
 
-### 4.3. Tipografia e Fontes
-- **Famílias Autorizadas:** Valida se o projeto utiliza fontes profissionais refinadas (ex.: **Inter**, **Geist Sans**, **system-ui** bem calibrado e **JetBrains Mono** para dados/código).
+### 4.3. Tipografia e Pareamento Multidimensional (`TYPOGRAPHY_PRESETS`)
+- **Famílias e Pares Autorizados (Padrão 2026):** Valida se o projeto utiliza um dos 4 pareamentos canônicos:
+  * `humanist-tech`: **Plus Jakarta Sans** + **JetBrains Mono** (`tracking: -0.025em`)
+  * `editorial-serif`: **Instrument Serif** + **Plus Jakarta Sans** + **JetBrains Mono** (`tracking: -0.015em`)
+  * `swiss-grotesk`: **Space Grotesk** + **Inter** + **JetBrains Mono** (`tracking: -0.03em`)
+  * `classic-garamond`: **Cormorant Garamond** + **Plus Jakarta Sans** + **JetBrains Mono** (`tracking: -0.015em`)
 - **Banimento de Fontes Genéricas:** Reprovação de fontes descalibradas (Arial crua, Times New Roman, Comic Sans ou fontes com kerning irregular).
-- **Escala e Line-Height:** `line-height` relaxado (`1.4` a `1.6`), contrastes tipográficos WCAG AA mínimos (4.5:1).
+- **Escala e Line-Height:** `line-height` relaxado (`1.4` a `1.6`), contrastes tipográficos WCAG AA mínimos (4.5:1; ideal AAA $\ge$ 7.0:1).
 
 ### 4.4. Ícones
 - **Padronização:** Adoção recomendada de **Lucide Icons** ou biblioteca equivalente de traço linear limpo.
@@ -75,21 +80,21 @@ A análise avalia rigorosamente os 10 pontos críticos de design tátil e padrõ
 - **Anti-Squish Obrigatório:** Presença de `flex-shrink: 0;` e `white-space: nowrap;` em botões de ação e tags, eliminando quebras verticais ("C o p i a r").
 - **Padding Interno:** Mínimo horizontal de `1rem` (16px) em botões principais.
 
-### 4.6. Transições e Micro-interações
+### 4.6. Transições, Micro-interações e Física 3D (`calculateCardTilt`)
 - **Feedback Tátil Cinestésico:** Existência de resposta visual imediata no clique (`active:scale-95` ou `translateY(1px)`).
 - **Curva e Tempo de Transição:** Animações rápidas e orgânicas (`150ms` a `200ms`, `cubic-bezier(0.16, 1, 0.3, 1)`).
-- **Ausência de Rigidez:** Reprovação de elementos interativos que não ofereçam mudança perceptível de estado no hover/active.
+- **Física 3D Opcional Resiliente:** Quando houver inclinação 3D em cartões (`.tactile-card-interactive`), deve respeitar limite angular de $\pm 5.5^\circ$ e desativar transformações sob `@media (prefers-reduced-motion: reduce)`.
 
-### 4.7. Layout e Grids
+### 4.7. Layout, Grids e Geometria Estrutural (`GEOMETRY_PRESETS`)
 - **Largura Mínima de Colunas:** Colunas em grids de dashboards devem respeitar largura mínima de `350px`, evitando quebras agressivas em telas médias.
-- **Respiro Geral:** `gap` consistente entre cartões (`1.5rem` / `24px`).
-- **Comando Rápido:** Presença ou ausência de barra de comando rápido (`Ctrl+K`).
+- **Geometria Coerente de Borda:** Raios calibrados conforme o preset do tema: `sharp` (`6px`), `editorial` (`12px`), `technical` (`16px`), `tactile` (`20px`) ou `organic` (`24px`).
+- **Comando Rápido:** Presença ou ausência de barra de comando rápido (`Ctrl+K` / `⌘K`).
 
-### 4.8. Cores e Profundidade Tátil
+### 4.8. Cores, 22 Temas Homologados e Profundidade Tátil
 - **Banimento Anti-Cobalto:** Reprovação expressa de azul cobalto puro (`#0044FF`, `#233DFF`, `#1D4ED8`) ou cores fluorescentes ácidas.
+- **Catálogo de 22 Temas (`v2.6.0-2026`):** Suporte às 10 Paletas Canônicas Melki (`steadfast-stainless`, `window-tide`, `cotton-dandelions`, `ocean-window`, `mermaid-lagoon`, `nightfall-ambiance`, `sky-balloons`, `grained-memories`, `living-a-dream`, `van-goghs-dream`), 5 Trends 2026 (`warm-editorial-paper`, `quiet-luxury-titanium`, `neo-swiss-grid`, `biophilic-matcha-stone`, `tactile-carbon-2026`) e 7 Temas de Estúdio (`tactile-matte`, `phantom-4k`, `luxury-deepblue`, `gilded-navy`, `polar-sand`, `emerald-terminal`, `monokai-tactile`), cada um com 6 swatches únicos.
 - **Regra da Luminância no Dark Mode:** Cartões e painéis devem ser visivelmente mais claros que o canvas de fundo (`L_card > L_canvas`), garantindo o contraste necessário para projeção da sombra.
-- **Sombras Multicamadas:** Presença de sombra de contato curta combinada com projeção difusa ampla.
-- **Fio de Luz Superior (Rim Light):** Borda superior com micro-chanfro zenital mineral (`border-top: 1px solid rgba(255, 255, 255, 0.14)`).
+- **Sombras Multicamadas & Rim Light:** Presença de sombra de contato curta combinada com projeção difusa ampla e borda superior com micro-chanfro zenital mineral (`border-top: 1px solid rgba(255, 255, 255, 0.14)`).
 - **Anti-Glassmorphism:** Reprovação de caixas de vidro transparentes com blur excessivo e reflexos plásticos.
 
 ### 4.9. Sintaxe HTML5 Semântica (Google HTML/CSS Style Guide)

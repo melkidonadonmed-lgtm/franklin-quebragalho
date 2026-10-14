@@ -4,16 +4,17 @@ description: >-
   Executa o diagnóstico, design de navegabilidade/UX, especificação funcional e plano de implementação para produtos digitais e softwares, incorporando o Design System Tátil Melki, paleta mineral anti-cobalto, opções de arquétipos e matriz de discrepâncias com as preferências do desenvolvedor.
 license: MIT
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   author: "Franklin-Main & Melki"
   category: "Arquitetura e Implementação de Software"
-  updated_at: "2026-10-04"
+  updated_at: "2026-10-14"
   tags:
     - "especificacao-funcional"
     - "arquitetura"
     - "design-tatil"
-version: 1.1.0
-updated_at: 2026-10-04
+    - "multidimensional-2026"
+version: 1.2.0
+updated_at: 2026-10-14
 author: Franklin-Main & Melki
 category: Arquitetura e Implementação de Software
 ---
@@ -24,7 +25,7 @@ category: Arquitetura e Implementação de Software
 - Solicitações de arquitetura de software, aplicativos ou plataformas web.
 - Pedidos para desenhar navegabilidade, jornadas de usuário, wireframes conceituais ou interfaces táteis.
 - Criação de planos de implementação técnica, mapeamento de rotas de API e especificação funcional de produtos digitais.
-- Demandas para alinhar sistemas ao Design System Tátil do Melki, com paleta mineral e auditoria de discrepâncias.
+- Demandas para alinhar sistemas ao Design System Tátil & Multidimensional do Melki (`v2.6.0-2026`), com paleta mineral (22 temas), tipografia e auditoria de discrepâncias.
 
 ### Quando NÃO Usar
 - Para auditoria isolada de repositório Git ou checagem exclusiva de `.gitignore` (utilize `auditoria-projetos-sistema`).
@@ -37,36 +38,42 @@ category: Arquitetura e Implementação de Software
 1. **Objetivo do Sistema:** O problema central que o software resolve e os resultados esperados.
 2. **Perfis de Usuário:** Quem utilizará a plataforma e seus níveis de permissão.
 3. **Escopo ou Funcionalidades Mínimas:** Recursos indispensáveis para a versão inicial (MVP).
-4. **Arquétipo de Preferência (Opcional):** Arquétipo visual Melki pretendido (`tactile-matte`, `phantom-4k`, `luxury-deepblue`, `gilded-navy`, `polar-sand`). Padrão: `tactile-matte`.
+4. **Arquétipo de Preferência (Opcional):** Qualquer um dos **22 temas homologados no FrontCraft Studio (`v2.6.0-2026`)**:
+   * **7 Estúdio**: `tactile-matte` (Padrão Melki), `phantom-4k`, `luxury-deepblue`, `gilded-navy`, `polar-sand`, `emerald-terminal`, `monokai-tactile`.
+   * **5 Trends 2026**: `warm-editorial-paper`, `quiet-luxury-titanium`, `neo-swiss-grid`, `biophilic-matcha-stone`, `tactile-carbon-2026`.
+   * **10 Canônicas Melki**: `steadfast-stainless`, `window-tide`, `cotton-dandelions`, `ocean-window`, `mermaid-lagoon`, `nightfall-ambiance`, `sky-balloons`, `grained-memories`, `living-a-dream`, `van-goghs-dream`.
 
 ---
 
-## Diretrizes Canônicas de Design e Preferências Melki no Design de Sistemas
+## Diretrizes Canônicas de Design e Preferências Melki no Design de Sistemas (`v2.6.0-2026`)
 
 Toda arquitetura concebida por esta skill deve incorporar formalmente os 4 módulos canônicos abaixo:
 
-### Módulo 1: Paleta de Cores do Sistema (Padrão Melki)
+### Módulo 1: Paleta de Cores (22 Temas) & Motor Multidimensional (Padrão Melki)
 - **Tema Escuro (Dark Mode):**
-  * Canvas de Fundo: Ardósia Grafite (`#0B101B` ou `#090B10`).
-  * Superfície de Cartões e Painéis: Ardósia Escuro Elevado (`#162033` ou `#141B2D`).
-  * Superfícies Flutuantes / Modais: (`#1E2B45`).
+  * Canvas de Fundo: Ardósia Grafite (`#090B10`, `#060709`, `#0B0C0E` ou `#07080C`).
+  * Superfície de Cartões e Painéis: Ardósia Elevado (`#141824`, `#11141D`, `#16181D` ou `#12141E`).
+  * Superfícies Flutuantes / Modais: (`#1D2436` ou `#22262E`).
 - **Tema Claro (Light Mode):**
-  * Canvas de Fundo: Fundo Creme Suave (`#FDFEE9`, `#F8F7F2`) ou Polar Sand (`#EEF2F6`).
-  * Cartões e Superfícies: Branco Puro (`#FFFFFF`) ou Primer Cinzento (`#E6E7E2`).
-- **Acentos Minerais Autorizados:** Petroleum Blue (`#2B4C7E`), Slate Navy (`#203657`, `#4A5B73`), Royal Navy (`#042698`), Ouro Champanhe (`#D4AF37`), Sage Clínico (`#2D6A4F`) e Amber Matte (`#925C18`).
+  * Canvas de Fundo: Polar Sand (`#EEF2F6`), Papel Algodão (`#EFECE6`), Grid Suíço (`#E6E9EF`), Matcha Stone (`#E7ECE6`) ou Creme Estelar (`#FDFEE9`).
+  * Cartões e Superfícies: Branco Puro (`#FFFFFF`) ou Marfim Elevado (`#FCFBF8`, `#FBFDF9`).
+- **Acentos Minerais Autorizados:** Safira Fosco (`#3B82F6`), Slate Navy (`#345E7D`), Glacial Navy (`#274472`), Ouro Champanhe (`#D4AF37`), Titânio Anodizado (`#C5A880`), Terracota Editorial (`#9A3412`), Carmesim Suíço (`#BE123C`), Matcha Botânico (`#2E6F40`) e Ametista Ardósia (`#8B5CF6`).
+- **Pareamento Tipográfico (`TYPOGRAPHY_PRESETS`) & Geometria (`GEOMETRY_PRESETS`):**
+  * `humanist-tech` (*Plus Jakarta Sans + JetBrains Mono*), `editorial-serif` (*Instrument Serif + Jakarta*), `swiss-grotesk` (*Space Grotesk + Inter*) ou `classic-garamond` (*Cormorant Garamond + Jakarta*).
+  * Raios estruturais de card: `6px` (`sharp`), `12px` (`editorial`), `16px` (`technical`), `20px` (`tactile`) ou `24px` (`organic`).
 - ❌ **Banimento Anti-Cobalto:** É proibido prescrever tons de azul cobalto puro (`#0044FF`, `#233DFF`, `#1D4ED8`) ou cores fluorescentes que causem fadiga visual.
 
 ### Módulo 2: Diretrizes de Design Tátil e Especificação de Interface (Tactile Matte 4K)
 - **Anti-Glassmorphism:** Proibido especificar vidros translúcidos com blur excessivo (`backdrop-filter: blur`), gradientes plásticos reflexivos ou caixas neon brilhantes.
 - **Regra de Ouro da Profundidade:** No dark mode, os cartões devem ser estritamente mais claros que o canvas de fundo (`L_card > L_canvas`), assegurando a percepção de volume físico tridimensional.
-- **Sistema de Sombras Multicamadas:** Elementos de UI elevados devem combinar sombra de contato curta (`0 2px 4px rgba(0, 0, 0, 0.4)`) com sombra difusa de projeção ampla (`0 10px 25px -4px rgba(0, 0, 0, 0.65)`).
-- **Fio de Luz Superior Mineral (Rim Light):** Micro-chanfro óptico refletindo luz zenital (`border-top: 1px solid rgba(255, 255, 255, 0.14)` ou `inset 0 1px 0 rgba(255, 255, 255, 0.12)`).
+- **Sistema de Sombras Multicamadas:** Elementos de UI elevados devem combinar sombra de contato curta (`0 4px 10px rgba(0, 0, 0, 0.35)`) com sombra difusa de projeção ampla (`0 16px 36px -4px rgba(0, 0, 0, 0.65)`).
+- **Fio de Luz Superior Mineral (Rim Light) & Física 3D (`calculateCardTilt`):** Micro-chanfro óptico refletindo luz zenital (`border-top: 1px solid rgba(255, 255, 255, 0.14)`) e inclinação 3D opcional limitada a $\pm 5.5^\circ$ (protegida por `prefers-reduced-motion`).
 - **Anti-Squish em Botões e Badges:** Obrigatoriedade de `flex-shrink: 0;` e `white-space: nowrap;` em botões de ação e tags para impedir quebras verticais de texto.
-- **Ergonomia Cognitiva e Suporte a TDAH:** Busca rápida unificada (`Ctrl+K`), agrupamento semântico limpo em cartões individuais, ausência de bloqueios nativos do navegador (`alert()`) e feedback cinestésico tátil (`active:scale-95`).
+- **Ergonomia Cognitiva e Suporte a TDAH:** Busca rápida unificada (`Ctrl+K` / `⌘K`), agrupamento semântico limpo em cartões individuais, ausência de bloqueios nativos do navegador (`alert()`) e feedback cinestésico tátil (`active:scale-95`).
 
 ### Módulo 3: Módulo de Opções e Preferências do Desenvolvedor
 - **Consulta Estruturada via `ask_question`:** Em bifurcações de arquitetura, stack técnica ou layout, consultar o desenvolvedor com opções pré-configuradas e recomendação técnica fundamentada.
-- **Arquétipos Canônicos Pré-Aprovados:** Oferecer os 5 arquétipos visuais oficiais (*Tactile Matte Minimalist*, *Phantom Obsidian 4K*, *Luxury Deep Blue*, *Gilded Navy Heritage*, *Polar Sand Light*).
+- **Catálogo de 22 Temas Homologados:** Oferecer os temas das 3 famílias oficiais (*10 Canônicas Melki*, *5 Trends 2026* e *7 Temas de Estúdio*).
 - **Ecossistema Open Source Autorizado (Padrão shadcn/ui):** Priorizar arquitetura de frontend desacoplada com componentes de código aberto "copy-paste" (**shadcn/ui**, **Radix UI**, **Tailwind UI / Catalyst**, **Lucide Icons** e **Geist Design**), evitando dependências pesadas proprietárias.
 
 ### Módulo 4: Matriz de Detecção de Discrepâncias com as Preferências
