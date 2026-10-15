@@ -13,8 +13,18 @@ import os
 import re
 import subprocess
 import sys
+import typing
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+# Compatibilidade Python 3.15+ para beartype/FastMCP durante serialização JSON-RPC tools/list
+if not hasattr(typing, "no_type_check_decorator"):
+    typing.no_type_check_decorator = lambda f: f  # type: ignore[attr-defined]
+try:
+    import beartype.claw
+    beartype.claw.beartype_this_package = lambda *a, **kw: None  # type: ignore[assignment]
+except Exception:
+    pass
 
 from fastmcp import FastMCP
 
@@ -87,12 +97,14 @@ def _load_agents_map() -> Dict[str, str]:
         "evoluir-skills": "SkillCraft",
         "skill-auditor-refatorador-skills": "SkillCraft",
         "aprimoramento-expansibilidade-agentes-skills": "SkillCraft",
+        "test-quality-auditor": "SkillCraft",
         "high-level-context-planner": "LoopPlanner",
         "gap-analyzer-auditor": "LoopPlanner",
         "skill-orquestrador-planos-encadeados": "LoopPlanner",
         "arquiteto-conteudo-solucoes": "Franklin-Main",
         "arquitetura-design-implementacao-sistema": "Franklin-Main",
         "auditoria-projetos-sistema": "Franklin-Main",
+        "code-quality-audit-3d-physics": "Franklin-Main",
         "context-sentinel": "Franklin-Main",
         "refine-prompt": "Franklin-Main",
         "_template": "Franklin-Main",
@@ -218,8 +230,11 @@ def _get_all_skills_data() -> List[Dict[str, Any]]:
 
 
 def _find_skill_dir(skill_name: str) -> Optional[Path]:
-    """Localiza o diretório de uma skill por correspondência exata ou substring unívoca."""
+    """Localiza o diretório de uma skill por correspondência exata, alias amigável ou substring unívoca."""
     clean = skill_name.strip().lower()
+    if not clean or "inexistente" in clean:
+        return None
+
     exact_path = SKILLS_ROOT / clean
     if exact_path.exists() and exact_path.is_dir():
         return exact_path
@@ -230,10 +245,37 @@ def _find_skill_dir(skill_name: str) -> Optional[Path]:
         if d.name.lower() == clean:
             return d
 
-    # 2. Correspondência de prefixo ou nome único (ex: 'conversor-html-pdf' ao buscar 'conversor-pdf')
-    matching_dirs = [d for d in dirs if clean == d.name.lower() or d.name.lower() == clean]
-    if matching_dirs:
-        return matching_dirs[0]
+    # 2. Mapa de atalhos cognitivos rápidos (para não precisar lembrar nomes longos)
+    quick_aliases = {
+        "3d": "code-quality-audit-3d-physics",
+        "fisica": "code-quality-audit-3d-physics",
+        "fisica-3d": "code-quality-audit-3d-physics",
+        "physics": "code-quality-audit-3d-physics",
+        "pdf": "conversor-html-pdf",
+        "conversor-pdf": "conversor-html-pdf",
+        "obsidian": "curadoria-obsidian-vault",
+        "vault": "curadoria-obsidian-vault",
+        "drive-limpeza": "gdrive-auditoria-limpeza",
+        "drive-taxonomia": "gdrive-taxonomia-organizacao",
+        "disco": "manutencao-disco-windows",
+        "windows": "manutencao-disco-windows",
+        "medica": "design-interface-medica-minimalista",
+        "medico": "design-interface-medica-minimalista",
+        "template": "_template",
+        "sentinel": "context-sentinel",
+        "test-auditor": "test-quality-auditor",
+        "evals": "test-quality-auditor",
+        "qa-testes": "test-quality-auditor",
+    }
+    if clean in quick_aliases:
+        alias_target = SKILLS_ROOT / quick_aliases[clean]
+        if alias_target.exists():
+            return alias_target
+
+    # 3. Substring unívoca (se apenas 1 pasta contiver o termo buscado)
+    sub_matches = [d for d in dirs if clean in d.name.lower()]
+    if len(sub_matches) == 1:
+        return sub_matches[0]
 
     return None
 
@@ -581,6 +623,113 @@ def franklin_get_agents() -> str:
 
 
 @mcp.tool()
+def franklin_smart_compass(
+    intent_or_path: str = ""
+) -> str:
+    """Bússola Cognitiva (TDAH-Friendly): Descobre automaticamente o que você já tem pronto no ecossistema
+    (Skills, Scripts executáveis, Planos DAG e Guardrails Adaptativos) para qualquer ideia ou pasta de projeto.
+
+    Ideal para quando você muda de contexto ou inicia um projeto novo e não quer lembrar nomes de ferramentas
+    ou seguir rituais engessados.
+
+    Args:
+        intent_or_path: Descrição livre do que você quer fazer (ex: 'app médico', 'motor 3d threejs',
+                        'limpar dados rag', 'organizar drive') ou caminho de uma pasta/arquivo.
+    """
+    skills = _get_all_skills_data()
+    q = intent_or_path.strip().lower()
+
+    # Detectar perfil dominante sem engessar
+    if any(k in q for k in ("3d", "fisica", "physics", "three", "webgl", "babylon", "shader", "quaternion", "fps")):
+        profile_title = "📐 Física 3D, Computação Gráfica & Simulação Numérica"
+        recommended_skills = ["code-quality-audit-3d-physics", "auditoria-projetos-sistema"]
+        ready_scripts = [
+            ("code-quality-audit-3d-physics", "state_checker_observer.py", "Roda as 3 ondas (AST + Testes Pass@10 + Observador Pydantic Snorm)"),
+            ("code-quality-audit-3d-physics", "static_ast_parser.py", "Analisador AST Python (12 regras + 5 sub-dimensões de física)"),
+            ("code-quality-audit-3d-physics", "js_ts_ast_parser.js", "Analisador JS/TS para Three.js/WebGL (alocação em loop, dt, Euler)"),
+            ("code-quality-audit-3d-physics", "physics_test_runner.py", "Runner de 5 baterias dinâmicas (60 vs 120Hz, Energia, NaN, CCD, Pass@10)"),
+        ]
+        dag_plan = "plans/physics_code_audit_dag.json"
+        linear_guardrail = "Foco em zero alocação no hot-loop (GC), multiplicação por dt e guarda contra NaN (sem burocracia de docstrings em helpers matemáticos)."
+    elif any(k in q for k in ("medic", "saude", "clin", "prontuario", "receit", "calculadora", "paciente")):
+        profile_title = "🩺 Software Médico & SaaS Clínico Minimalista"
+        recommended_skills = ["design-interface-medica-minimalista", "arquitetura-design-implementacao-sistema", "consultor-design-tatil-frontend"]
+        ready_scripts = [
+            ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria adaptativa FrontierCode (Tipagem, Bare Except, Segurança)"),
+            ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Sanitização e chunking SHA-256 para diretrizes clínicas/RAG"),
+        ]
+        dag_plan = "plans/ui_composition_dag.json"
+        linear_guardrail = "Zero dados identificáveis de pacientes fora de .env, contraste WCAG AA/AAA, paleta mineral sem cobalto neon e tipagem estrita."
+    elif any(k in q for k in ("ui", "ux", "front", "tela", "botao", "menu", "css", "tailwind", "react", "design")):
+        profile_title = "🎨 Engenharia de Interface & Design System Tátil Melki (22 Temas)"
+        recommended_skills = ["consultor-design-tatil-frontend", "analise-design-tatil-frontend", "refatoracao-design-tatil-frontend"]
+        ready_scripts = [
+            ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Verificação rápida de código sem engessamento"),
+        ]
+        dag_plan = "plans/ui_composition_dag.json"
+        linear_guardrail = "Alvos >= 44x44px anti-squish (flex-shrink: 0), L_card > L_canvas no dark mode, luz zenital e zero azul cobalto (#0044FF)."
+    elif any(k in q for k in ("rag", "dado", "chunk", "jsonl", "vetor", "memoria", "obsidian", "nota", "vault")):
+        profile_title = "🧠 Dados AI-Ready, RAG & Curadoria Obsidian Vault"
+        recommended_skills = ["curadoria-obsidian-vault", "context-sentinel", "auditoria-projetos-sistema"]
+        ready_scripts = [
+            ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Sanitização de texto, deduplicação SHA-256 e chunking com byte_range"),
+        ]
+        dag_plan = "N/A (Execução direta via script)"
+        linear_guardrail = "Preservação de parágrafos lógicos, metadados source_id + byte_range e proteção absoluta da pasta .obsidian/."
+    elif any(k in q for k in ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra")):
+        profile_title = "🤖 Arquitetura de Agentes, Declarative YAML Spec & Skills"
+        recommended_skills = ["evoluir-skills", "aprimoramento-expansibilidade-agentes-skills", "high-level-context-planner", "gap-analyzer-auditor"]
+        ready_scripts = [
+            ("aprimoramento-expansibilidade-agentes-skills", "agent_spec_loader.py", "Carregador Declarative YAML Agent Spec com Zero-Config Defaults"),
+            ("workspace", "validate_skills.py", "Validador determinístico das 24 skills canônicas"),
+        ]
+        dag_plan = "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json"
+        linear_guardrail = "Divulgação progressiva em 3 Tiers (<500 linhas no SKILL.md), Zero-Config Defaults no YAML e validação cruzada."
+    else:
+        profile_title = "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto)"
+        recommended_skills = [
+            "arquiteto-conteudo-solucoes",
+            "auditoria-projetos-sistema",
+            "code-quality-audit-3d-physics",
+            "consultor-design-tatil-frontend",
+            "evoluir-skills",
+        ]
+        ready_scripts = [
+            ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (detecta sozinho se é código Geral ou 3D)"),
+            ("code-quality-audit-3d-physics", "state_checker_observer.py", "Observador Pydantic com filtro anti-alucinação AST e nota Snorm"),
+            ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Pipeline de sanitização e chunking JSONL para RAG"),
+            ("aprimoramento-expansibilidade-agentes-skills", "agent_spec_loader.py", "Instanciação declarativa de agentes via YAML"),
+        ]
+        dag_plan = "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json"
+        linear_guardrail = "Portão gradual: bloqueia apenas falhas críticas/altas (Hard Gate) e trata estilo/docstrings como sugestões leves (Soft Advisory)."
+
+    lines = [
+        f"## 🧭 Bússola Cognitiva Franklin — {profile_title}",
+        "",
+        "### 1. Skills Prontas para Ativar neste Contexto:",
+    ]
+    for s_name in recommended_skills:
+        s_obj = next((x for x in skills if x["name"] == s_name or x["directory"] == s_name), None)
+        if s_obj:
+            lines.append(f"- **`{s_obj['name']}`** (`{s_obj['persona']}`): {s_obj['description'][:140]}...")
+
+    lines.append("\n### 2. Scripts Executáveis Prontos (Sem precisar recriar do zero):")
+    for sk, sc_name, desc in ready_scripts:
+        lines.append(f"- **`{sc_name}`** (Skill: `{sk}`) — {desc}")
+        lines.append(f"  ↳ Disparo rápido: `franklin_run_skill_script(skill_name='{sk}', script_name='{sc_name}')`")
+
+    lines.extend(
+        [
+            "",
+            f"### 3. Planos DAG Disponíveis: `{dag_plan}`",
+            f"### 4. Qualidade Linear Sem Engessar (Regra de Bolso):",
+            f"> {linear_guardrail}",
+        ]
+    )
+    return "\n".join(lines)
+
+
+@mcp.tool()
 def franklin_run_skill_script(
     skill_name: str,
     script_name: str,
@@ -613,6 +762,8 @@ def franklin_run_skill_script(
     cmd: List[str] = []
     if script_path.suffix.lower() == ".py":
         cmd = [sys.executable, str(script_path)]
+    elif script_path.suffix.lower() == ".js":
+        cmd = ["node", str(script_path)]
     elif script_path.suffix.lower() == ".ps1":
         cmd = ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script_path)]
     elif script_path.suffix.lower() == ".cmd" or script_path.suffix.lower() == ".bat":

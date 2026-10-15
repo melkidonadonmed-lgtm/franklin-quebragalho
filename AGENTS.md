@@ -29,14 +29,27 @@ Este documento estabelece o modelo operacional, papéis e contratos de orquestra
 
 ---
 
+## 🔄 Esquadrão de Subagentes de UI (`Topologia 3+1` sob `FrontCraftMaster`)
+
+Os 6 módulos de engenharia visual e interação ficam consolidados em **4 Subagentes Especialistas** na pasta [`agents/`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/agents/) e orquestrados em **3 ondas paralelas (Kahn)** via [`plans/ui_composition_dag.json`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/plans/ui_composition_dag.json) no Epic-Volta:
+
+| Onda | Subagente (`agents/*.md`) | Módulos Cobertos | Entregável Determinístico (`upstream_mapping`) |
+| :---: | :--- | :--- | :--- |
+| **1** | **[`ui-shell-navigator`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/agents/ui-shell-navigator.md)** | **1. Arquitetura Visual e Layout**<br/>**2. Navegação e Menus** | `layout_contract` (*UI Islands*, Grid/SplitView, `AppWindow`, `Shadow DOM`, $\text{CLS} < 0.1$) + `navigation_contract` (`MenuBar`, `TabView` lazy, `TreeView` async, `SemanticZoom`, `Ctrl+K`) |
+| **2A** | **[`ui-controls-data`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/agents/ui-controls-data.md)** | **3. Entrada, Seleção e Ações**<br/>**4. Exibição de Dados e Feedback** | `controls_contract` ($\ge 44\times44\text{px}$, anti-squish, Regra 1+2, WAI-ARIA inline) + `data_feedback_contract` (`ListView`/`ItemsView` virtualizados a $60\text{fps}$, `aria-live`, links/ícones WCAG) |
+| **2B** | **[`ui-motion-interaction`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/agents/ui-motion-interaction.md)** | **5.1 Efeitos Visuais e Transições**<br/>**5.2 Gestos e Interações** | `motion_contract` (`ConnectedAnimation`, `ImplicitTransition` via GPU, `prefers-reduced-motion`) + `interaction_contract` (`Touch/Pen/Mouse/Key`, `PullToRefresh`) |
+| **3** | **[`ui-deterministic-observer`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/agents/ui-deterministic-observer.md)** | **5.3 Coordenador Determinístico**<br/>**6. Diretrizes e Boas Práticas** | `observer_audit_report` (*State Bus*, WCAG 2.1 AA/AAA, CWV $\text{LCP}<2.5\text{s}/\text{INP}<200\text{ms}/\text{CLS}<0.1$, Web Workers, Tipagem/DI **Hilt**, Testes e Fidelidade Física de Luz/Sombra) |
+
+---
+
 ## 🔄 Protocolo de Delegação e Orquestração
 
 1. **Triagem de Demanda**:
    O Franklin avalia se a tarefa pode ser executada em um único turno com ferramentas normais ou se demanda análise extensiva / pesquisa em segundo plano.
 
-2. **Uso de Subagentes (`invoke_subagent`)**:
+2. **Uso de Subagentes (`invoke_subagent` / `franklin_execute_dag`)**:
    - Para pesquisas longas ou exploração profunda no disco/Drive: invocar subagente `research` ou persona especializada.
-   - Para execuções com ferramentas de escrita e scripts: executar diretamente ou usar `self` / subagente com ferramentas de escrita habilitadas.
+   - Para composições completas de UI/UX: disparar a esteira `3+1` lendo os contratos em `agents/*.md` ou executando `franklin_execute_dag("plans/ui_composition_dag.json")`.
 
 3. **Validação e Entrega**:
    - Todo relatório de ação deve conter links clicáveis para os arquivos gerados ou pastas organizadas.

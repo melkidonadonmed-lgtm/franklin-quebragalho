@@ -38,7 +38,7 @@ test('formatFileSize formats byte quantities into human-readable strings', () =>
 
 test('formatDate formats ISO dates or returns fallback', () => {
   const formatted = formatDate('2026-09-27T08:15:00Z');
-  assert.ok(formatted.length > 5, 'Data deve ser formatada com sucesso');
+  assert.match(formatted, /\d{2}\/\d{2}\/2026/, 'Data deve conter dia/mês/2026 formatados no padrão pt-BR');
   // Formato inválido deve retornar a string original sem quebrar
   const fallback = formatDate('data-invalida');
   assert.strictEqual(fallback, 'data-invalida');

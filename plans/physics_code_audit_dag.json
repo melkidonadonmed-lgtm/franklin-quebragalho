@@ -1,0 +1,100 @@
+{
+  "objective": "Orquestração Determinística de Auditoria de Código & Física 3D em 3 Ondas (Topologia 3+1+1: 3 Auditores Estáticos AST -> 1 Runner Determinístico Pass@10 -> 1 State Checker Observer Snorm)",
+  "acceptance_criteria": [
+    "Onda 1A (static_sanitization_auditor): Detectar ALLOC_IN_LOOP (-30), DUPLICATE_FUNCTION (-20), DEAD_CODE_FUNCTION (-10) e UNUSED_VARIABLE (-5) com cálculo de s1 (peso 20%)",
+    "Onda 1B (architecture_hardcoded_auditor): Detectar PHYSICS_RENDER_COUPLING (-35), RIGID_CONSTRUCTOR (-15) e HARDCODED_MAGIC_NUMBER (-10) com cálculo de s2 (peso 15%)",
+    "Onda 1C (physics_3d_math_auditor): Auditar as 5 sub-dimensões S1..S5 (Integração dt, Quaternions/Normalize, Conservação/Damping, Colisão/CCD, Robustez Float EPSILON) com cálculo de s3 (peso 25%)",
+    "Onda 2 (deterministic_tests_auditor): Executar as 5 baterias dinâmicas em physics_test_runner.py (60Hz vs 120Hz, Conservação de Energia, Imunidade NaN, Anti-Tunneling CCD e Pass@10) com cálculo de s4 (peso 20%)",
+    "Onda 3 (state_checker_observer): Realizar validação cruzada anti-alucinação no código-fonte, descartar falsos positivos, calcular Snorm (0 a 100) e emitir Relatório Final padronizado"
+  ],
+  "tasks": [
+    {
+      "id": "wave1_static_sanitization",
+      "group_id": "static_sanitization_auditor",
+      "description": "Varredura estática AST para detectar código morto, funções duplicadas, variáveis não lidas e alocações de memória no laço 3D (w1 = 20%)",
+      "criticality": "MEDIUM",
+      "payload": {
+        "subskill": "static-sanitization-auditor",
+        "weight": 0.20,
+        "tools": [
+          ".agents/skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py",
+          ".agents/skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js"
+        ],
+        "rules": ["ALLOC_IN_LOOP", "DUPLICATE_FUNCTION", "DEAD_CODE_FUNCTION", "UNUSED_VARIABLE"]
+      }
+    },
+    {
+      "id": "wave1_architecture_hardcoded",
+      "group_id": "architecture_hardcoded_auditor",
+      "description": "Auditoria de modularidade, separação entre motor físico e camada de renderização/DOM, injeção de parâmetros e caça a números mágicos (w2 = 15%)",
+      "criticality": "MEDIUM",
+      "payload": {
+        "subskill": "architecture-hardcoded-auditor",
+        "weight": 0.15,
+        "tools": [
+          ".agents/skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py",
+          ".agents/skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js"
+        ],
+        "rules": ["PHYSICS_RENDER_COUPLING", "RIGID_CONSTRUCTOR", "HARDCODED_MAGIC_NUMBER"]
+      }
+    },
+    {
+      "id": "wave1_physics_3d_math",
+      "group_id": "physics_3d_math_auditor",
+      "description": "Auditoria matemática das 5 sub-dimensões de Física 3D (S1: Delta Time 25%, S2: Quaternions/Normalize 25%, S3: Conservação/Damping 20%, S4: Colisão/CCD 15%, S5: Robustez IEEE 754 15%) (w3 = 25%)",
+      "criticality": "HIGH",
+      "payload": {
+        "subskill": "physics-3d-math-auditor",
+        "weight": 0.25,
+        "tools": [
+          ".agents/skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py",
+          ".agents/skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js"
+        ],
+        "rules": ["MISSING_DELTA_TIME", "UNCHECKED_NORMALIZE", "EULER_GIMBAL_LOCK", "STRICT_FLOAT_COMPARE", "MISSING_DAMPING"]
+      }
+    },
+    {
+      "id": "wave2_deterministic_tests",
+      "group_id": "deterministic_tests_auditor",
+      "description": "Execução da suíte de 5 testes dinâmicos determinísticos (FPS Independence, Conservação de Energia, NaN Immunity, Anti-Tunneling CCD e Pass@10) (w4 = 20%)",
+      "dependencies": [
+        "wave1_static_sanitization",
+        "wave1_architecture_hardcoded",
+        "wave1_physics_3d_math"
+      ],
+      "criticality": "HIGH",
+      "payload": {
+        "subskill": "deterministic-tests-auditor",
+        "weight": 0.20,
+        "runner": ".agents/skills/code-quality-audit-3d-physics/scripts/physics_test_runner.py",
+        "pass_at_k": 10
+      },
+      "upstream_mapping": {
+        "sanitization_report": "wave1_static_sanitization.issues",
+        "architecture_report": "wave1_architecture_hardcoded.issues",
+        "physics_math_report": "wave1_physics_3d_math.issues"
+      }
+    },
+    {
+      "id": "wave3_state_checker_observer",
+      "group_id": "state_checker_observer",
+      "description": "Validação cruzada anti-alucinação na AST/código-fonte, eliminação de falsos positivos, consolidação do Escore Normalizado Global Snorm e geração do Relatório Final (w5 = 20%)",
+      "dependencies": [
+        "wave2_deterministic_tests"
+      ],
+      "criticality": "HIGH",
+      "payload": {
+        "subskill": "state-checker-observer",
+        "weight": 0.20,
+        "observer_script": ".agents/skills/code-quality-audit-3d-physics/scripts/state_checker_observer.py",
+        "formula": "S_norm = 0.20*s1 + 0.15*s2 + 0.25*s3 + 0.20*s4 + 0.20*s5"
+      },
+      "upstream_mapping": {
+        "s1_score": "wave1_static_sanitization.s1_static_sanitization",
+        "s2_score": "wave1_architecture_hardcoded.s2_architecture_hardcoded",
+        "s3_score": "wave1_physics_3d_math.s3_physics_3d_math",
+        "s4_score": "wave2_deterministic_tests.pass_rate_score"
+      }
+    }
+  ]
+}

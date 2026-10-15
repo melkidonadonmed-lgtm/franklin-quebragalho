@@ -1,4 +1,4 @@
-import { DriveFile, MimeCategory, UserProfile } from '../types/drive';
+import type { DriveFile, MimeCategory, UserProfile } from '../types/drive';
 
 export const MOCK_DRIVE_FILES: DriveFile[] = [
   {

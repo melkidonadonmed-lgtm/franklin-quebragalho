@@ -1,8 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import { MOCK_DRIVE_FILES } from '../src/services/driveService';
-import { DriveFile, DriveQuery, MimeCategory } from '../types/drive';
-import { categorizeMime } from '../src/services/driveService';
+import { MOCK_DRIVE_FILES, categorizeMime } from '../src/services/driveService';
+import type { DriveFile, DriveQuery, MimeCategory } from '../src/types/drive';
 
 import { searchAndSortFiles } from '../src/hooks/useDriveSearch';
 

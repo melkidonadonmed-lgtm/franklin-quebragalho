@@ -1,0 +1,59 @@
+{
+  "module_name": "mcp_test_auditor",
+  "script_mirror": "scripts/mcp_test_auditor.py",
+  "domain": "mcp",
+  "version": "1.2.0",
+  "description": "Espelho de Evals para o Módulo MCP (JSON-RPC 2.0 / FastMCP / StdioServer) — detecta MCP_INCOMPLETE_STDIO_HANDSHAKE, MCP_UNVERIFIED_ERROR_CODE_CONTRACT, MCP_TAUTOLOGICAL_RAW_RESPONSE, MCP_WEAK_SECURITY_GUARD_ASSERT e aprova Nível 4.",
+  "evals": [
+    {
+      "id": "EVAL_MCP_001_INCOMPLETE_STDIO_HANDSHAKE_AND_ERROR",
+      "eval_id": "EVAL_MCP_001_INCOMPLETE_STDIO_HANDSHAKE_AND_ERROR",
+      "language": "go",
+      "domain": "mcp",
+      "trigger_type": "should_trigger",
+      "should_trigger": true,
+      "prompt": "Audite este teste de servidor MCP stdio que dispara tools/call direto em nonexistent_tool sem initialize e sem validar o erro JSON-RPC -32601.",
+      "input_code": "package mcpserver_test\nimport \"testing\"\nfunc TestMCPBrokenStdio(t *testing.T) {\n\treq := `{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"nonexistent_tool\"}}`\n\tresp := runStdioServer(req)\n\tif len(resp) == 0 {\n\t\tt.Fatalf(\"empty response\")\n\t}\n}",
+      "expected_issues": ["MCP_INCOMPLETE_STDIO_HANDSHAKE", "MCP_UNVERIFIED_ERROR_CODE_CONTRACT"],
+      "expected_status": "REJECTED",
+      "expected_level": "NÍVEL 2: SUPERFICIAL / FRÁGIL",
+      "assertions": [
+        "Detecta ausência de handshake initialize (MCP_INCOMPLETE_STDIO_HANDSHAKE)",
+        "Detecta ausência de verificação do código JSON-RPC -32601 (MCP_UNVERIFIED_ERROR_CODE_CONTRACT)"
+      ]
+    },
+    {
+      "id": "EVAL_MCP_002_RAW_JSON_WITHOUT_PARSE_AND_SECURITY",
+      "eval_id": "EVAL_MCP_002_RAW_JSON_WITHOUT_PARSE_AND_SECURITY",
+      "language": "python",
+      "domain": "mcp",
+      "trigger_type": "should_trigger",
+      "should_trigger": true,
+      "prompt": "Audite este teste de tool MCP que passa payload '../secrets.json' para franklin_execute_dag mas só valida len(res) > 0 sem json.loads nem checagem de bloqueio.",
+      "input_code": "def test_mcp_weak_json_and_security():\n    res = server.franklin_execute_dag(\"../secrets.json\")\n    assert len(res) > 0",
+      "expected_issues": ["MCP_TAUTOLOGICAL_RAW_RESPONSE", "MCP_WEAK_SECURITY_GUARD_ASSERT"],
+      "expected_status": "REJECTED",
+      "expected_level": "NÍVEL 1: ILUSÓRIO / PLACEBO",
+      "assertions": [
+        "Detecta falta de decodificação JSON em tool MCP (MCP_TAUTOLOGICAL_RAW_RESPONSE)",
+        "Detecta falta de asserção de bloqueio Zero-Trust (MCP_WEAK_SECURITY_GUARD_ASSERT)"
+      ]
+    },
+    {
+      "id": "EVAL_MCP_003_LEVEL4_STDIO_AND_HARNESS",
+      "eval_id": "EVAL_MCP_003_LEVEL4_STDIO_AND_HARNESS",
+      "language": "go",
+      "domain": "mcp",
+      "trigger_type": "should_trigger",
+      "should_trigger": true,
+      "prompt": "Audite este teste MCP Stdio de Nível 4 que valida initialize, notifications/initialized sem id, tools/list com nomes reais e erro -32601.",
+      "input_code": "package mcpserver_test\nimport (\n\t\"encoding/json\"\n\t\"strings\"\n\t\"testing\"\n)\nfunc TestMCPStdioComplete(t *testing.T) {\n\treqs := []string{\n\t\t`{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{}}`,\n\t\t`{\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\",\"params\":{}}`,\n\t\t`{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\",\"params\":{}}`,\n\t\t`{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{\"name\":\"nonexistent_tool\"}}`,\n\t}\n\tout := serveMCP(t.TempDir(), reqs)\n\tvar errResp JSONRPCResponse\n\tif err := json.Unmarshal([]byte(out[2]), &errResp); err != nil {\n\t\tt.Fatalf(\"unmarshal failed: %v\", err)\n\t}\n\tif !strings.Contains(out[1], \"go_fast_dispatch\") || errResp.Error.Code != -32601 {\n\t\tt.Errorf(\"invalid mcp contract: %+v\", errResp)\n\t}\n}",
+      "expected_issues": [],
+      "expected_status": "APPROVED",
+      "expected_level": "NÍVEL 4: DETERMINÍSTICO & RESILIENTE",
+      "assertions": [
+        "Aprova o teste MCP Stdio completo no Nível 4 com 100/100 pts"
+      ]
+    }
+  ]
+}

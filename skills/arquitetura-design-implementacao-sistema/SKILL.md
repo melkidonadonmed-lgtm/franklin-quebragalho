@@ -87,6 +87,14 @@ Toda arquitetura concebida por esta skill deve incorporar formalmente os 4 módu
   * `[DISC-07: TDAH-UX]` `[PASS / FAIL]`: Atalho rápido de busca (`Ctrl+K`) e modais sem bloqueio nativo.
   * `[DISC-08: SUPPLY]` `[PASS / FAIL]`: Adoção do modelo copy-paste (shadcn/ui) com zero caixas-pretas.
 
+### Módulo 5: Orquestração de Subagentes de UI em 3 Ondas (`Topologia 3+1`)
+> [!TIP]
+> **Referência Técnica Completa (Tier 3):** Para a especificação detalhada das 6 camadas (*UI Islands*, *Layouts/Janelas*, *Menus/Abas*, *Inputs $44\times44\text{px}$ WAI-ARIA*, *Listas Virtualizadas $60\text{fps}$*, *Animações GPU/Gestos*, *State Bus*, *Core Web Vitals*, *Tipagem/DI Hilt* e *Fidelidade Física de Luz/Sombra*), consulte [`references/taxonomia_subagentes_ui_6_camadas.md`](references/taxonomia_subagentes_ui_6_camadas.md) e o plano executável [`plans/ui_composition_dag.json`](../../plans/ui_composition_dag.json).
+- **Onda 1 (`ui-shell-navigator`)**: Arquitetura visual, *UI Islands*, Grid/SplitView ($\text{CLS} < 0.1$), `Shadow DOM` e navegação (`MenuBar`, `TabView` lazy, `SemanticZoom`).
+- **Onda 2A (`ui-controls-data`)**: Botões $\ge 44\times44\text{px}$ anti-squish (Regra 1+2), entradas validadas WAI-ARIA, listas virtualizadas a $60\text{fps}$ e alertas `aria-live`.
+- **Onda 2B (`ui-motion-interaction`)**: Transições aceleradas por GPU, `prefers-reduced-motion` e gestos multi-input (`Touch/Pen/Mouse/Keyboard`).
+- **Onda 3 (`ui-deterministic-observer`)**: Coordenador determinístico, *State Bus*, auditoria WCAG 2.1 AA/AAA, Core Web Vitals, DI (**Hilt**) e física de luz/sombra.
+
 ---
 
 ## Fluxo Passo a Passo com Decisões Condicionais

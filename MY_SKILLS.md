@@ -17,10 +17,12 @@ Este repositório é a incubadora central de skills do **Franklin Quebra-Galho**
 
 ---
 
-## 📦 Catálogo de Skills do Workspace (23 Skills Canônicas)
+## 📦 Catálogo de Skills do Workspace (25 Skills Canônicas)
 
 | Skill | Versão | Status | Descrição Curta | Localização |
 | :--- | :---: | :---: | :--- | :--- |
+| **`test-quality-auditor`** | `v1.2.0` | 🚀 Produção | Auditor modular (`<300` linhas/módulo) em 5 domínios (Python, TS/JS, Go `*_test.go`, MCP `JSON-RPC 2.0` e Harness HITL/Evals) com espelhamento 1:1 em `evals/modules/*_evals.json`. | [.agents/skills/test-quality-auditor/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/test-quality-auditor/SKILL.md) |
+| **`code-quality-audit-3d-physics`** | `v1.0.0` | 🚀 Produção | Auditoria de código e Física 3D em 3 ondas (5 subskills: sanitização AST Py/JS, hardcoded, 5 sub-dimensões de física, testes Pass@10 e observador $S_{\text{norm}}$). | [.agents/skills/code-quality-audit-3d-physics/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/code-quality-audit-3d-physics/SKILL.md) |
 | **`organizador-fluxo-arvore-arquivos`** | `v1.1.0` | ✅ Validada | Converte ideias brutas em diagramas Mermaid, árvores de arquivos e planos de execução, com exportação direta em MD ou PDF. | [.agents/skills/organizador-fluxo-arvore-arquivos/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/organizador-fluxo-arvore-arquivos/SKILL.md) |
 | **`arquiteto-conteudo-solucoes`** | `v2.2.0` | ✅ Validada | Arquiteto autônomo para engenharia de prompts, planos estruturados, roadmaps, código tipado e skills modulares anti-alucinação. | [.agents/skills/arquiteto-conteudo-solucoes/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/arquiteto-conteudo-solucoes/SKILL.md) |
 | **`evoluir-skills`** | `v2.0.0` | 🚀 Produção | Orquestrador mestre do ciclo de vida (4 estágios: `expansao-contexto-adaptativa` ➔ `aprimoramento` ➔ `skill-creator` ➔ `auditor`), 3 Tiers e Trigger Matrix. | [.agents/skills/evoluir-skills/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/evoluir-skills/SKILL.md) |
@@ -34,7 +36,7 @@ Este repositório é a incubadora central de skills do **Franklin Quebra-Galho**
 | **`consultor-design-tatil-frontend`** | `v1.2.0` | ✅ Validada | Mapeamento de frontend com agent-browser, consultoria tátil multidimensional (22 temas), 4 módulos e gerador de DESIGN.md. | [.agents/skills/consultor-design-tatil-frontend/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/consultor-design-tatil-frontend/SKILL.md) |
 | **`refine-prompt`** | `v3.0.0` | ✅ Validada | Expansão cognitiva, auditoria de factibilidade e refinamento de prompts e ideias sob Zero-Trust, 3 módulos de saída e âncora 2026. | [.agents/skills/refine-prompt/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/refine-prompt/SKILL.md) |
 | **`gap-analyzer-auditor`** | `v2.0.0` | ✅ Validada | Auditor técnico e analista de brechas em malha fechada (closed-loop), RCA em 4 vetores e hand-off estruturado para o planejador. | [.agents/skills/gap-analyzer-auditor/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/gap-analyzer-auditor/SKILL.md) |
-| **`high-level-context-planner`** | `v2.0.0` | ✅ Validada | Arquiteto estratégico e planejador de contexto em malha fechada, Fase 0 obrigatória, critérios Go/No-Go e replanning v2.0. | [.agents/skills/high-level-context-planner/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/high-level-context-planner/SKILL.md) |
+| **`high-level-context-planner`** | `v2.0.0` | 🚀 Produção | Arquiteto estratégico e planejador de contexto em malha fechada, Fase 0 obrigatória, critérios Go/No-Go e replanning v2.0. | [.agents/skills/high-level-context-planner/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/high-level-context-planner/SKILL.md) |
 | **`analise-design-tatil-frontend`** | `v1.1.0` | ✅ Validada | Diagnóstico estrutural e visual de frontend, motor multidimensional 2026 (22 temas, 4 presets tipográficos, 5 geometrias) e Relatório Comparativo. | [.agents/skills/analise-design-tatil-frontend/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/analise-design-tatil-frontend/SKILL.md) |
 | **`refatoracao-design-tatil-frontend`** | `v1.2.0` | ✅ Validada | Refatoração de frontend por framework modular, injeção de 22 temas multidimensionais, física 3D, botões ergonômicos e relevo tátil. | [.agents/skills/refatoracao-design-tatil-frontend/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/refatoracao-design-tatil-frontend/SKILL.md) |
 | **`gdrive-auditoria-limpeza`** | `v1.0.0` | ✅ Validada | Varredura de arquivos pesados (>100MB), identificação de duplicados por hash SHA-256 e quarentena segura no Google Drive. | [.agents/skills/gdrive-auditoria-limpeza/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/gdrive-auditoria-limpeza/SKILL.md) |
@@ -48,6 +50,39 @@ Este repositório é a incubadora central de skills do **Franklin Quebra-Galho**
 ---
 
 ## 📜 Histórico de Versões e Contexto (Changelog)
+
+### [2026-10-15] - Fase 11: Evolução da Skill `test-quality-auditor` (`v1.2.0`) — Módulo de Qualidade de Testes de Harness (`harness_test_auditor.py`) e Arquitetura de Evals Espelhados (`evals/modules/*_evals.json`)
+- **Módulo de Testes de Harness (`scripts/harness_test_auditor.py` + `references/modulo_qualidade_testes_harness.md`)**:
+  - Auditoria determinística de suítes de testes para **Harnesses de Governança (Zero-Trust / HITL)** (`SemanticGuard.sanitize_input`, `SecurityViolationError`, `evaluate_action_risk`, `CheckpointStore`) e **Eval-Driven Harness** (`run_eval_harness`), detectando `HARNESS_WEAK_INJECTION_GUARD_TEST`, `HARNESS_UNVERIFIED_RISK_TRANSITION`, `HARNESS_MISSING_TEARDOWN_CLEANUP`, `HARNESS_INCOMPLETE_CHECKPOINT_LIFECYCLE` e `HARNESS_EVAL_MISSING_EVIDENCE_OR_DELTA`.
+- **Espelhamento 1:1 de Evals (`scripts/*_auditor.py` $\leftrightarrow$ `evals/modules/*_evals.json`)**:
+  - Criação dos 5 arquivos modulares espelhados (`python_evals.json`, `ts_js_evals.json`, `go_evals.json`, `mcp_evals.json`, `harness_evals.json`) gerando relatórios individuais em `evals/workspace/iteration-1/modules/<mod>_grading.json` e `<mod>_benchmark.json`, além do manifesto consolidado `evals/evals.json` com `20/20 PASS` (`100%`) e da suíte real `tests/test_harness_quality.py`.
+
+### [2026-10-15] - Fase 10: Evolução da Skill `test-quality-auditor` (`v1.1.0`) — Módulos de Qualidade de Testes em Go (`*_test.go`) e MCP (`JSON-RPC 2.0` / `FastMCP`)
+- **Desacoplamento Modular em 7 Componentes (`<300` linhas cada em `scripts/`)**:
+  - `models.py`, `python_ast_auditor.py`, `ts_js_auditor.py`, `go_test_auditor.py`, `mcp_test_auditor.py`, `eval_harness.py` e `test_quality_auditor.py`.
+- **Módulo Go (`go_test_auditor.py` + `references/modulo_qualidade_testes_go.md`)**:
+  - Inspeção determinística de funções `func Test*(t *testing.T)` (incluindo *Table-Driven Tests*, goroutines e Google ADK Go v2), detectando `EMPTY_TEST_BODY`, `MISSING_ASSERTIONS`, `TAUTOLOGICAL_ASSERT`, `SILENCED_ERROR_IN_TEST` (`res, _ := sut()` e `if err != nil` sem `t.Fatal`/`t.Error`), `WEAK_NIL_ONLY_ASSERT`, `UNSAFE_GOROUTINE_FATAL` (`t.Fatalf` em goroutine filha), `GLOBAL_STATE_LEAKAGE` (`os.Setenv` sem `t.Setenv`/`t.Cleanup`) e `NON_DETERMINISTIC_TIME` (distinguindo sincronismo legítimo com `sync/atomic` / `Debouncer`).
+- **Módulo MCP (`mcp_test_auditor.py` + `references/modulo_qualidade_testes_mcp.md`)**:
+  - Auditoria de protocolo Model Context Protocol (JSON-RPC 2.0 `stdio`, FastMCP Python e Go `StdioServer`), detectando `MCP_INCOMPLETE_STDIO_HANDSHAKE` (`tools/call` sem `initialize` ou `notifications/initialized` com `id`), `MCP_TAUTOLOGICAL_RAW_RESPONSE` (tools JSON sem `json.loads`/`json.Unmarshal`), `MCP_WEAK_TOOLS_LIST_DISCOVERY`, `MCP_UNVERIFIED_ERROR_CODE_CONTRACT` (`-32601`) e `MCP_WEAK_SECURITY_GUARD_ASSERT` (Path Traversal / Prompt Injection sem checar `BLOCKED`).
+- **Expansão do Eval-Driven Harness (`evals/evals.json`)**:
+  - Ampliado de 8 para **15 casos de avaliação** multi-domínio (`6 python`, `3 go`, `3 mcp`, `3 near-miss`) com `15/15 PASS` (`pass_rate: 1.0`) em `grading.json` e `benchmark.json`, além da nova suíte de regressão `tests/test_quality_auditor_go_mcp.py`.
+
+### [2026-10-15] - Fase 9: Implantação da Skill `test-quality-auditor` (`v1.0.0`) e Saneamento da Suíte de Testes do Franklin
+- **Engenharia do Auditor de Qualidade de Testes e Esteira de Evals (`test-quality-auditor` `v1.0.0`)**:
+  - Implementação de `scripts/test_quality_auditor.py` com analisador estático AST para Python (`TestQualityASTVisitor`) e parser estrutural para TypeScript/JavaScript (`audit_ts_js_test_file`), cobrindo `EMPTY_TEST_BODY`, `MISSING_ASSERTIONS`, `TAUTOLOGICAL_ASSERT`, `WEAK_IS_NOT_NONE_ASSERT`, `WEAK_SURFACE_ASSERT`, `NON_DETERMINISTIC_TIME`, `SILENCED_EXCEPTION_IN_TEST`, `GLOBAL_STATE_LEAKAGE` e `BRITTLE_CATALOG_COUNT`.
+  - Classificação automática no **Espectro de Qualidade (Níveis 1 a 4)** e motor *Eval-Driven Harness* (`--run-evals`) que processa `evals/evals.json` (8 casos incluindo *Trigger Matrix* com *Near-Misses*) e emite `grading.json` e `benchmark.json` (`8/8 PASS`, $\Delta \text{Pass Rate} = +0.75$).
+- **Auditoria e Refatoração das Suítes de Teste do Workspace**:
+  - Elevação de `tests/test_server.py`, `google-drive-index-app/tests/driveService.test.ts` e `google-drive-index-app/tests/googleAuth.test.ts` para **100% Nível 4 (Determinístico & Resiliente)** (eliminação de 15 inconformidades AST: `BRITTLE_CATALOG_COUNT`, `GLOBAL_STATE_LEAKAGE`, `WEAK_SURFACE_ASSERT` e `NON_DETERMINISTIC_TIME`).
+
+### [2026-10-15] - Fase 8: Implantação da Skill `code-quality-audit-3d-physics` (`v1.0.0`) e Esteira de 5 Subskills em 3 Ondas
+- **Arquitetura de 5 Módulos em 3 Ondas (`Topologia 3+1+1`)**:
+  - Implementação consolidada de `static-sanitization-auditor` ($w_1=20\%$), `architecture-hardcoded-auditor` ($w_2=15\%$), `physics-3d-math-auditor` ($w_3=25\%$ com decomposição nas 5 sub-dimensões $S_1..S_5$), `deterministic-tests-auditor` ($w_4=20\%$, $Pass@10$) e `state-checker-observer` ($w_5=20\%$, filtro anti-alucinação e consolidador $S_{\text{norm}}$).
+- **Ferramental Executável Refatorado (`scripts/`)**:
+  - `static_ast_parser.py`: Normalização estrutural de AST (`LocalIdentifierNormalizer`), guarda contextual em `UNCHECKED_NORMALIZE`, 12 regras estáticas e cálculo automático de $s_1, s_2, s_3$ e $S_1..S_5$.
+  - `js_ts_ast_parser.js`: Rastreamento exato de profundidade de blocos `{}` (`braceDepth`) para escopo de `inAnimationLoop`, 12 regras e suporte a execução via `franklin_run_skill_script` (`node`).
+  - `physics_test_runner.py`: Suporte a CLI `--target` e `--json`, sub-stepping determinístico e Continuous Collision Detection (CCD) contra colisores finos.
+  - `state_checker_observer.py`: Validação cruzada no código-fonte para eliminação de falsos positivos e emissão do Relatório Final padronizado.
+- **Plano DAG**: Adicionado `plans/physics_code_audit_dag.json` compatível com `franklin_execute_dag`.
 
 ### [2026-10-14] - Fase 7: Internalização do Pacote `shared`, Saneamento de Caminhos da Máquina e Remoção de Monólitos Legados (23 Skills Canônicas)
 - **Internalização Standalone (`shared/`)**:

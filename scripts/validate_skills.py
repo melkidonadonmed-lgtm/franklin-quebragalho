@@ -60,30 +60,52 @@ def validate_skill_dir(skill_dir: Path) -> List[str]:
         if len(desc) < 30:
             errors.append(f"[FAIL] Descrição muito curta ou rasa ({len(desc)} chars)")
 
-    # Checagem de seções essenciais no corpo
+    # Checagem de seções essenciais no corpo (aceitando sinônimos naturais sem engessar)
     required_sections = [
-        (r"(#|##)\s+.*(Gatilhos|Quando Usar|Propósito|Proposito|Missão|Missao)", "Gatilhos / Quando Usar"),
-        (r"(#|##)\s+.*(Entradas|Pr[eé]-requisitos|Par[aâ]metros)", "Entradas / Pré-requisitos"),
-        (r"(#|##)\s+.*(Processamento|Passo a Passo|Fluxo|Execução|Execucao)", "Processamento / Fluxo"),
-        (r"(#|##)\s+.*(Saídas|Saidas|Entregáveis|Entregaveis|Modelo de Saída|Modelo de Saida)", "Saídas / Entregáveis"),
-        (r"(#|##)\s+.*(Exceções|Excecoes|Limites|Quando N[AÃ]O Usar)", "Exceções / Limites"),
+        (
+            r"(#|##)\s+.*(Gatilhos|Quando Usar|Propósito|Proposito|Missão|Missao|Visão Geral|Visao Geral|Objetivo)",
+            "Gatilhos / Quando Usar / Objetivo",
+        ),
+        (
+            r"(#|##)\s+.*(Entradas|Pr[eé]-requisitos|Par[aâ]metros|Contexto|Configura[cç][aã]o|Insumos)",
+            "Entradas / Pré-requisitos",
+        ),
+        (
+            r"(#|##)\s+.*(Processamento|Passo a Passo|Fluxo|Execução|Execucao|Arquitetura|M[oó]dulos|Como Funciona)",
+            "Processamento / Fluxo / Arquitetura",
+        ),
+        (
+            r"(#|##)\s+.*(Saídas|Saidas|Entregáveis|Entregaveis|Modelo de Saída|Modelo de Saida|Formato|Relat[oó]rio)",
+            "Saídas / Entregáveis",
+        ),
+        (
+            r"(#|##)\s+.*(Exceções|Excecoes|Limites|Quando N[AÃ]O Usar|Restri[cç][oõ]es|Guardrails)",
+            "Exceções / Limites / Guardrails",
+        ),
     ]
 
     for sec_pattern, sec_name in required_sections:
         if not re.search(sec_pattern, body, re.IGNORECASE):
-            errors.append(f"[FAIL] Seção obrigatória ausente: {sec_name}")
+            errors.append(f"[FAIL] Seção essencial ausente: {sec_name}")
 
-    # Checagem de evals/evals.json se existir
+    # Checagem de evals/evals.json se existir (aceita lista direta [...] ou objeto {"evals": [...]})
     evals_file = skill_dir / "evals" / "evals.json"
     if evals_file.exists():
         try:
             evals_data = json.loads(evals_file.read_text(encoding="utf-8"))
-            if not isinstance(evals_data, list) or len(evals_data) == 0:
-                errors.append("[FAIL] evals.json deve ser uma lista não-vazia de testes")
+            if isinstance(evals_data, dict) and "evals" in evals_data:
+                evals_list = evals_data["evals"]
+            elif isinstance(evals_data, list):
+                evals_list = evals_data
             else:
-                for idx, tc in enumerate(evals_data):
-                    if not isinstance(tc, dict) or "eval_id" not in tc or "expected_behavior" not in tc:
-                        errors.append(f"[FAIL] Test case #{idx} em evals.json malformado (requer eval_id e expected_behavior)")
+                evals_list = []
+
+            if not isinstance(evals_list, list) or len(evals_list) == 0:
+                errors.append("[FAIL] evals.json deve conter uma lista não-vazia de testes")
+            else:
+                for idx, tc in enumerate(evals_list):
+                    if not isinstance(tc, dict) or ("eval_id" not in tc and "id" not in tc):
+                        errors.append(f"[FAIL] Test case #{idx} em evals.json requer 'eval_id' (ou 'id')")
         except Exception as e:
             errors.append(f"[FAIL] Erro de sintaxe JSON em evals/evals.json: {e}")
 

@@ -1,0 +1,228 @@
+{
+  "skill_name": "test-quality-auditor",
+  "version": "1.2.0",
+  "module": "all",
+  "target_script": "scripts/test_quality_auditor.py",
+  "timestamp": "2026-10-15T04:15:00-04:00",
+  "assertion_results": [
+    {
+      "eval_id": "EVAL_001_TAUTOLOGICAL_ASSERT",
+      "domain": "python",
+      "text": "Auditar teste de unidade contendo 'assert True' e explicar por que gera falsa sensação de segurança.",
+      "passed": true,
+      "evidence": "Domínio=PYTHON | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['TAUTOLOGICAL_ASSERT'] | Nota=20.0/100 (NÍVEL 1: ILUSÓRIO / PLACEBO)"
+    },
+    {
+      "eval_id": "EVAL_002_MISSING_ASSERTIONS",
+      "domain": "python",
+      "text": "Auditar teste de unidade que invoca a função de pagamento mas não realiza nenhuma asserção.",
+      "passed": true,
+      "evidence": "Domínio=PYTHON | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['MISSING_ASSERTIONS'] | Nota=20.0/100 (NÍVEL 1: ILUSÓRIO / PLACEBO)"
+    },
+    {
+      "eval_id": "EVAL_003_FLAKY_TIME_DEPENDENCY",
+      "domain": "python",
+      "text": "Auditar teste com dependência direta de time.sleep() e assert True.",
+      "passed": true,
+      "evidence": "Domínio=PYTHON | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['NON_DETERMINISTIC_TIME', 'TAUTOLOGICAL_ASSERT'] | Nota=0.0/100 (NÍVEL 1: ILUSÓRIO / PLACEBO)"
+    },
+    {
+      "eval_id": "EVAL_004_SILENCED_EXCEPTIONS",
+      "domain": "python",
+      "text": "Auditar teste que captura exceção com try/except pass silenciando falhas.",
+      "passed": true,
+      "evidence": "Domínio=PYTHON | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['MISSING_ASSERTIONS', 'SILENCED_EXCEPTION_IN_TEST'] | Nota=0.0/100 (NÍVEL 1: ILUSÓRIO / PLACEBO)"
+    },
+    {
+      "eval_id": "EVAL_005_WEAK_IS_NOT_NONE",
+      "domain": "python",
+      "text": "Meus testes da API de cobrança passam sempre com assert res is not None, mas um bug zerou os valores em produção. Audite este teste.",
+      "passed": true,
+      "evidence": "Domínio=PYTHON | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['WEAK_IS_NOT_NONE_ASSERT'] | Nota=45.0/100 (NÍVEL 2: SUPERFICIAL / FRÁGIL)"
+    },
+    {
+      "eval_id": "EVAL_006_HIGH_QUALITY_DETERMINISTIC_TEST",
+      "domain": "python",
+      "text": "Auditar teste de unidade bem estruturado com Arrange-Act-Assert rigoroso.",
+      "passed": true,
+      "evidence": "Domínio=PYTHON | Status=APPROVED (esperado=APPROVED) | Issues detectadas=[] | Nota=100.0/100 (NÍVEL 4: DETERMINÍSTICO & RESILIENTE)"
+    },
+    {
+      "eval_id": "EVAL_007_GO_SILENCED_ERROR_AND_NIL_ONLY",
+      "domain": "go",
+      "text": "Audite este teste em Go (*_test.go) que descarta o erro com blank identifier '_' e verifica apenas se o ponteiro não é nil.",
+      "passed": true,
+      "evidence": "Domínio=GO | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['SILENCED_ERROR_IN_TEST', 'WEAK_NIL_ONLY_ASSERT'] | Nota=0.0/100 (NÍVEL 1: ILUSÓRIO / PLACEBO)"
+    },
+    {
+      "eval_id": "EVAL_008_GO_UNSAFE_GOROUTINE_AND_SETENV",
+      "domain": "go",
+      "text": "Audite este teste Go que usa os.Setenv sem t.Cleanup e invoca t.Fatalf dentro de uma goroutine secundária.",
+      "passed": true,
+      "evidence": "Domínio=GO | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['GLOBAL_STATE_LEAKAGE', 'UNSAFE_GOROUTINE_FATAL'] | Nota=35.0/100 (NÍVEL 2: SUPERFICIAL / FRÁGIL)"
+    },
+    {
+      "eval_id": "EVAL_009_GO_LEVEL4_DETERMINISTIC_SUITE",
+      "domain": "go",
+      "text": "Audite este teste Go de Nível 4 que usa t.TempDir(), verifica err != nil e valida atributos de domínio e errors.Is.",
+      "passed": true,
+      "evidence": "Domínio=GO | Status=APPROVED (esperado=APPROVED) | Issues detectadas=[] | Nota=100.0/100 (NÍVEL 4: DETERMINÍSTICO & RESILIENTE)"
+    },
+    {
+      "eval_id": "EVAL_010_MCP_INCOMPLETE_STDIO_HANDSHAKE_AND_ERROR",
+      "domain": "mcp",
+      "text": "Audite este teste de servidor MCP stdio que dispara tools/call direto em nonexistent_tool sem initialize e sem validar o erro JSON-RPC -32601.",
+      "passed": true,
+      "evidence": "Domínio=MCP | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['MCP_INCOMPLETE_STDIO_HANDSHAKE', 'MCP_UNVERIFIED_ERROR_CODE_CONTRACT'] | Nota=40.0/100 (NÍVEL 2: SUPERFICIAL / FRÁGIL)"
+    },
+    {
+      "eval_id": "EVAL_011_MCP_RAW_JSON_WITHOUT_PARSE_AND_SECURITY",
+      "domain": "mcp",
+      "text": "Audite este teste de tool MCP que passa payload '../secrets.json' para franklin_execute_dag mas só valida len(res) > 0 sem json.loads nem checagem de bloqueio.",
+      "passed": true,
+      "evidence": "Domínio=MCP | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['MCP_TAUTOLOGICAL_RAW_RESPONSE', 'MCP_WEAK_SECURITY_GUARD_ASSERT'] | Nota=10.0/100 (NÍVEL 1: ILUSÓRIO / PLACEBO)"
+    },
+    {
+      "eval_id": "EVAL_012_MCP_LEVEL4_STDIO_AND_HARNESS",
+      "domain": "mcp",
+      "text": "Audite este teste MCP Stdio de Nível 4 que valida initialize, notifications/initialized sem id, tools/list com nomes reais e erro -32601.",
+      "passed": true,
+      "evidence": "Domínio=MCP | Status=APPROVED (esperado=APPROVED) | Issues detectadas=[] | Nota=100.0/100 (NÍVEL 4: DETERMINÍSTICO & RESILIENTE)"
+    },
+    {
+      "eval_id": "EVAL_013_HARNESS_WEAK_GUARD_AND_RISK",
+      "domain": "harness",
+      "text": "Audite este teste de Harness que passa 'Ignore all previous instructions' ao SemanticGuard sem pytest.raises(SecurityViolationError) e executa evaluate_action_risk com 'Remove-Item -Recurse -Force' sem checar RiskLevel.CRITICAL.",
+      "passed": true,
+      "evidence": "Domínio=HARNESS | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['HARNESS_UNVERIFIED_RISK_TRANSITION', 'HARNESS_WEAK_INJECTION_GUARD_TEST'] | Nota=5.0/100 (NÍVEL 1: ILUSÓRIO / PLACEBO)"
+    },
+    {
+      "eval_id": "EVAL_014_HARNESS_CHECKPOINT_LEAK_AND_INCOMPLETE",
+      "domain": "harness",
+      "text": "Audite este teste de CheckpointStore do Harness que instancia o store no arquivo de produção padrão sem tmp_path e só testa create() sem update_status.",
+      "passed": true,
+      "evidence": "Domínio=HARNESS | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['HARNESS_INCOMPLETE_CHECKPOINT_LIFECYCLE', 'HARNESS_MISSING_TEARDOWN_CLEANUP'] | Nota=40.0/100 (NÍVEL 2: SUPERFICIAL / FRÁGIL)"
+    },
+    {
+      "eval_id": "EVAL_015_HARNESS_EVAL_RUNNER_NO_DELTA",
+      "domain": "harness",
+      "text": "Audite este teste de run_eval_harness que verifica apenas se grading_path existe sem validar pass_rate_gain (delta) nem evidence.",
+      "passed": true,
+      "evidence": "Domínio=HARNESS | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['HARNESS_EVAL_MISSING_EVIDENCE_OR_DELTA'] | Nota=65.0/100 (NÍVEL 3: FUNCIONAL RÍGIDO)"
+    },
+    {
+      "eval_id": "EVAL_016_HARNESS_LEVEL4_COMPLETE",
+      "domain": "harness",
+      "text": "Audite este teste de Harness Nível 4 que valida SemanticGuard contra prompt injection, evaluate_action_risk (LOW/MEDIUM/CRITICAL) e CheckpointStore isolado em tmp_path.",
+      "passed": true,
+      "evidence": "Domínio=HARNESS | Status=APPROVED (esperado=APPROVED) | Issues detectadas=[] | Nota=100.0/100 (NÍVEL 4: DETERMINÍSTICO & RESILIENTE)"
+    },
+    {
+      "eval_id": "EVAL_017_TS_JS_WEAK_SURFACE_AND_DATE_NOW",
+      "domain": "typescript",
+      "text": "Audite este teste TypeScript (.test.ts) que valida formatação de data apenas com formatted.length > 5 e mede tempo real com Date.now().",
+      "passed": true,
+      "evidence": "Domínio=TYPESCRIPT | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['NON_DETERMINISTIC_TIME', 'WEAK_SURFACE_ASSERT'] | Nota=34.0/100 (NÍVEL 2: SUPERFICIAL / FRÁGIL)"
+    },
+    {
+      "eval_id": "EVAL_018_NEAR_MISS_FRONTEND_TACTILE_CSS",
+      "domain": "near-miss",
+      "text": "[EVAL_018_NEAR_MISS_FRONTEND_TACTILE_CSS] Filtro de Near-Miss na Matriz de Disparo",
+      "passed": true,
+      "evidence": "[PASS] Near-miss 'EVAL_018_NEAR_MISS_FRONTEND_TACTILE_CSS' corretamente filtrado fora do escopo do auditor de testes (should_trigger=False)."
+    },
+    {
+      "eval_id": "EVAL_019_NEAR_MISS_GDRIVE_DEDUP",
+      "domain": "near-miss",
+      "text": "[EVAL_019_NEAR_MISS_GDRIVE_DEDUP] Filtro de Near-Miss na Matriz de Disparo",
+      "passed": true,
+      "evidence": "[PASS] Near-miss 'EVAL_019_NEAR_MISS_GDRIVE_DEDUP' corretamente filtrado fora do escopo do auditor de testes (should_trigger=False)."
+    },
+    {
+      "eval_id": "EVAL_020_NEAR_MISS_GO_CLOUDRUN_DEPLOY",
+      "domain": "near-miss",
+      "text": "[EVAL_020_NEAR_MISS_GO_CLOUDRUN_DEPLOY] Filtro de Near-Miss na Matriz de Disparo",
+      "passed": true,
+      "evidence": "[PASS] Near-miss 'EVAL_020_NEAR_MISS_GO_CLOUDRUN_DEPLOY' corretamente filtrado fora do escopo do auditor de testes (should_trigger=False)."
+    }
+  ],
+  "domain_breakdown": {
+    "python": {
+      "total": 6,
+      "passed": 6
+    },
+    "go": {
+      "total": 3,
+      "passed": 3
+    },
+    "mcp": {
+      "total": 3,
+      "passed": 3
+    },
+    "harness": {
+      "total": 4,
+      "passed": 4
+    },
+    "typescript": {
+      "total": 1,
+      "passed": 1
+    },
+    "near-miss": {
+      "total": 3,
+      "passed": 3
+    }
+  },
+  "summary": {
+    "passed": 20,
+    "failed": 0,
+    "total": 20,
+    "pass_rate": 1.0
+  },
+  "mirrored_modules": {
+    "python": {
+      "evals_file": "evals/modules/python_evals.json",
+      "target_script": "scripts/python_ast_auditor.py",
+      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\python_grading.json",
+      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\python_benchmark.json",
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0
+    },
+    "ts_js": {
+      "evals_file": "evals/modules/ts_js_evals.json",
+      "target_script": "scripts/ts_js_auditor.py",
+      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\ts_js_grading.json",
+      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\ts_js_benchmark.json",
+      "passed": 3,
+      "total": 3,
+      "pass_rate": 1.0
+    },
+    "go": {
+      "evals_file": "evals/modules/go_evals.json",
+      "target_script": "scripts/go_test_auditor.py",
+      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\go_grading.json",
+      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\go_benchmark.json",
+      "passed": 3,
+      "total": 3,
+      "pass_rate": 1.0
+    },
+    "mcp": {
+      "evals_file": "evals/modules/mcp_evals.json",
+      "target_script": "scripts/mcp_test_auditor.py",
+      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\mcp_grading.json",
+      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\mcp_benchmark.json",
+      "passed": 3,
+      "total": 3,
+      "pass_rate": 1.0
+    },
+    "harness": {
+      "evals_file": "evals/modules/harness_evals.json",
+      "target_script": "scripts/harness_test_auditor.py",
+      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\harness_grading.json",
+      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\harness_benchmark.json",
+      "passed": 4,
+      "total": 4,
+      "pass_rate": 1.0
+    }
+  }
+}

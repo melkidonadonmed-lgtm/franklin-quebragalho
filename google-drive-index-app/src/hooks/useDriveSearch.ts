@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { DriveFile, DriveQuery } from '../types/drive';
+import type { DriveFile, DriveQuery } from '../types/drive';
 import { categorizeMime } from '../services/driveService';
 
 export function searchAndSortFiles(files: DriveFile[], query: DriveQuery): DriveFile[] {

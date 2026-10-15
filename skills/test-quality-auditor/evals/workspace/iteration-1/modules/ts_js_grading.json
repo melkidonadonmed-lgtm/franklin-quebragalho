@@ -1,0 +1,42 @@
+{
+  "skill_name": "test-quality-auditor",
+  "version": "1.2.0",
+  "module": "ts_js",
+  "target_script": "scripts/ts_js_auditor.py",
+  "timestamp": "2026-10-15T04:15:00-04:00",
+  "assertion_results": [
+    {
+      "eval_id": "EVAL_TS_001_WEAK_SURFACE_AND_DATE_NOW",
+      "domain": "typescript",
+      "text": "Audite este teste TypeScript (.test.ts) que valida formatação de data apenas com formatted.length > 5 e mede tempo real com Date.now().",
+      "passed": true,
+      "evidence": "Domínio=TYPESCRIPT | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['NON_DETERMINISTIC_TIME', 'WEAK_SURFACE_ASSERT'] | Nota=34.0/100 (NÍVEL 2: SUPERFICIAL / FRÁGIL)"
+    },
+    {
+      "eval_id": "EVAL_TS_002_GLOBAL_WINDOW_LEAKAGE",
+      "domain": "typescript",
+      "text": "Audite este teste TypeScript que sobrescreve globalThis.window sem bloco try/finally para restaurar o estado.",
+      "passed": true,
+      "evidence": "Domínio=TYPESCRIPT | Status=REJECTED (esperado=REJECTED) | Issues detectadas=['GLOBAL_STATE_LEAKAGE'] | Nota=75.0/100 (NÍVEL 3: FUNCIONAL RÍGIDO)"
+    },
+    {
+      "eval_id": "EVAL_TS_003_LEVEL4_DETERMINISTIC",
+      "domain": "typescript",
+      "text": "Audite este teste TypeScript de Nível 4 com try/finally restaurando globalThis.window e regex estrita de data.",
+      "passed": true,
+      "evidence": "Domínio=TYPESCRIPT | Status=APPROVED (esperado=APPROVED) | Issues detectadas=[] | Nota=100.0/100 (NÍVEL 4: DETERMINÍSTICO & RESILIENTE)"
+    }
+  ],
+  "domain_breakdown": {
+    "typescript": {
+      "total": 3,
+      "passed": 3
+    }
+  },
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3,
+    "pass_rate": 1.0
+  }
+}

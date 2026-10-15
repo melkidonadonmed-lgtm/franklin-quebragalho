@@ -1,0 +1,75 @@
+{
+  "module_name": "python_ast_auditor",
+  "script_mirror": "scripts/python_ast_auditor.py",
+  "domain": "python",
+  "version": "1.2.0",
+  "description": "Espelho de Evals para o Módulo AST Python (Pytest / Unittest) — detecta TAUTOLOGICAL_ASSERT, MISSING_ASSERTIONS, NON_DETERMINISTIC_TIME, SILENCED_EXCEPTION_IN_TEST, WEAK_IS_NOT_NONE_ASSERT e aprova Nível 4.",
+  "evals": [
+    {
+      "id": "EVAL_PY_001_TAUTOLOGICAL_ASSERT",
+      "eval_id": "EVAL_PY_001_TAUTOLOGICAL_ASSERT",
+      "language": "python",
+      "domain": "python",
+      "trigger_type": "should_trigger",
+      "should_trigger": true,
+      "prompt": "Auditar teste de unidade Python contendo 'assert True' e explicar por que gera falsa sensação de segurança.",
+      "input_code": "def test_falso_positivo():\n    resultado = 1 + 1\n    assert True",
+      "expected_issues": ["TAUTOLOGICAL_ASSERT"],
+      "expected_status": "REJECTED",
+      "expected_level": "NÍVEL 1: ILUSÓRIO / PLACEBO",
+      "assertions": [
+        "Detecta a anomalia TAUTOLOGICAL_ASSERT na linha do assert True",
+        "Classifica o teste como REJECTED no NÍVEL 1: ILUSÓRIO / PLACEBO"
+      ]
+    },
+    {
+      "id": "EVAL_PY_002_MISSING_AND_SILENCED",
+      "eval_id": "EVAL_PY_002_MISSING_AND_SILENCED",
+      "language": "python",
+      "domain": "python",
+      "trigger_type": "should_trigger",
+      "should_trigger": true,
+      "prompt": "Auditar teste Python que captura exceção com try/except pass sem realizar nenhuma asserção.",
+      "input_code": "def test_silencioso():\n    try:\n        dividir(10, 0)\n    except:\n        pass",
+      "expected_issues": ["SILENCED_EXCEPTION_IN_TEST", "MISSING_ASSERTIONS"],
+      "expected_status": "REJECTED",
+      "expected_level": "NÍVEL 1: ILUSÓRIO / PLACEBO",
+      "assertions": [
+        "Detecta SILENCED_EXCEPTION_IN_TEST e MISSING_ASSERTIONS",
+        "Recomenda uso explícito de pytest.raises()"
+      ]
+    },
+    {
+      "id": "EVAL_PY_003_WEAK_IS_NOT_NONE",
+      "eval_id": "EVAL_PY_003_WEAK_IS_NOT_NONE",
+      "language": "python",
+      "domain": "python",
+      "trigger_type": "should_trigger",
+      "should_trigger": true,
+      "prompt": "Auditar teste Python que valida apenas 'assert res is not None' sem checar valor de negócio.",
+      "input_code": "def test_cobranca_superficial():\n    res = calcular_fatura(150.0)\n    assert res is not None",
+      "expected_issues": ["WEAK_IS_NOT_NONE_ASSERT"],
+      "expected_status": "REJECTED",
+      "expected_level": "NÍVEL 2: SUPERFICIAL / FRÁGIL",
+      "assertions": [
+        "Detecta WEAK_IS_NOT_NONE_ASSERT e reprova no Nível 2"
+      ]
+    },
+    {
+      "id": "EVAL_PY_004_LEVEL4_DETERMINISTIC",
+      "eval_id": "EVAL_PY_004_LEVEL4_DETERMINISTIC",
+      "language": "python",
+      "domain": "python",
+      "trigger_type": "should_trigger",
+      "should_trigger": true,
+      "prompt": "Auditar teste Python Nível 4 com montagem Arrange-Act-Assert estrita.",
+      "input_code": "def test_calcular_desconto_correto():\n    preco_original = 100.0\n    desconto = 15.0\n    resultado = calcular_desconto(preco_original, desconto)\n    assert resultado == 85.0\n    assert isinstance(resultado, float)",
+      "expected_issues": [],
+      "expected_status": "APPROVED",
+      "expected_level": "NÍVEL 4: DETERMINÍSTICO & RESILIENTE",
+      "assertions": [
+        "Aprova o teste Python no Nível 4 com 100/100 pts e zero falsos positivos"
+      ]
+    }
+  ]
+}
