@@ -1,0 +1,39 @@
+[
+  {
+    "eval_id": "arch-v2-01-mvp-cut-and-islands",
+    "category": "should-trigger",
+    "prompt": "Preciso arquitetar um sistema web de triagem clínica rápida para médicos plantonistas com TDAH. Eles querem dashboard de atendimento, prescrição rápida, chat interno, gamificação com ranking, exportação PDF e integração com 5 ERPs na Semana 1. Faça a arquitetura em ilhas funcionais, corte o excesso do MVP e calcule o score determinístico SGA.",
+    "expected_behavior": [
+      "Aciona o Módulo 3 (Crítica Severa de MVP) classificando gamificação, chat interno e 5 ERPs como [CORTE OBRIGATÓRIO - FASE 2].",
+      "Aglomera as funções essenciais em Ilhas Funcionais (Módulo 2) separando data tools de render tools, com anti-squish (flex-shrink: 0; white-space: nowrap).",
+      "Define tipografia linear com clamp(), limite de 65ch e tabular-nums sem poluição de paletas cosméticas.",
+      "Apresenta grafo Mermaid com atalho Ctrl+K, diagnóstico comentado nó a nó, cobertura dos 4 estados (Empty, Loading, Success, Error) e memória de cálculo exata do SGA (INE, ICI, IPC, IRM, ICTE)."
+    ]
+  },
+  {
+    "eval_id": "arch-v2-02-resolution-mode-v1-v2-html",
+    "category": "should-trigger",
+    "prompt": "Refatore a arquitetura V1 deste painel financeiro que tem 5 níveis de cliques, chamadas fetch() misturadas dentro dos botões React, alertas window.alert() bloqueantes e números desalinhados. Gere o diagnóstico de resolução V1 vs V2 com score determinístico e o relatório HTML com metadados e diagrama de diff.",
+    "expected_behavior": [
+      "Ativa o Passo 5 (Modo de Resolução V1 -> V2) e executa o cálculo determinístico comparando V1 Baseline vs V2 Refatorada.",
+      "Gera o artefato HTML5 autocontido contendo <meta> tags auditáveis (score-v1-baseline, score-v2-resolved, score-delta, audit-timestamp).",
+      "Constrói o diagrama Mermaid usando cores exclusivamente como semântica de diff (Vermelho = removido da V1, Amarelo = refatorado, Verde = nova ilha/fluxo na V2)."
+    ]
+  },
+  {
+    "eval_id": "arch-v2-03-near-miss-cosmetic-palette-only",
+    "category": "should-not-trigger",
+    "prompt": "Quero apenas escolher quais códigos hexadecimais de cores e temas claros/escuros do FrontCraft Studio combinam melhor com meu blog pessoal.",
+    "expected_behavior": [
+      "Reconhece que o pedido é exclusivamente cosmético/cromático sem arquitetura de sistema, delegando para DESIGN.md ou para a skill consultor-design-tatil-frontend."
+    ]
+  },
+  {
+    "eval_id": "arch-v2-04-near-miss-git-hygiene-only",
+    "category": "should-not-trigger",
+    "prompt": "Verifique apenas se o meu arquivo .gitignore está ignorando a pasta .venv e se existem commits órfãos no repositório.",
+    "expected_behavior": [
+      "Não aciona a arquitetura completa de sistemas; delega para auditoria-projetos-sistema."
+    ]
+  }
+]

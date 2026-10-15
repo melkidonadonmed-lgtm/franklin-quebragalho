@@ -16,8 +16,16 @@ const fs = require('fs');
 
 function stripCommentsAndStrings(line) {
   return line
-    .replace(/\/\/.*$/, '')
-    .replace(/'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|`(?:\\.|[^`\\])*`/g, '""');
+    .replace(/'(?:\\.|[^'\\\r\n])*'|"(?:\\.|[^"\\\r\n])*"|`(?:\\.|[^`\\])*`/g, '""')
+    .replace(/\/\/.*$/, '');
+}
+
+function stripStringsPreservingTemplateExprs(code) {
+  // Remove comentários de bloco, strings simples/duplas na mesma linha e comentários de linha (sem quebrar http://)
+  return code
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/'(?:\\.|[^'\\\r\n])*'|"(?:\\.|[^"\\\r\n])*"/g, '""')
+    .replace(/\/\/.*$/gm, '');
 }
 
 function computeScores(issues) {
@@ -170,9 +178,10 @@ function analyzeJsTsCode(code, filename = 'script.ts') {
       }
     }
 
-    // Detectar laços explícitos ou callbacks de animação
+    // Detectar laços explícitos ou callbacks de animação (incluindo React Three Fiber useFrame)
     if (
       /\b(for|while)\s*\(/.test(cleanLine) ||
+      /\buseFrame\s*\(/.test(cleanLine) ||
       cleanLine.includes('requestAnimationFrame') ||
       cleanLine.includes('.setAnimationLoop')
     ) {
@@ -399,7 +408,7 @@ function analyzeJsTsCode(code, filename = 'script.ts') {
   });
 
   // Verificar funções declaradas mas nunca referenciadas (DEAD_CODE_FUNCTION)
-  const strippedFullCode = stripCommentsAndStrings(code);
+  const strippedFullCode = stripStringsPreservingTemplateExprs(code);
   for (const [fnName, meta] of declaredFunctions.entries()) {
     if (meta.exported || ['main', 'animate', 'render', 'init', 'update'].includes(fnName)) {
       continue;

@@ -279,5 +279,46 @@ def test_quality_auditor_skill_and_evals() -> None:
     assert '"mirrored_modules": {' in res
 
 
+def test_franklin_mcp_build_advisor_2026_spec() -> None:
+    """Valida o consultor arquitetural MCP 2026-07-28 (build-with-agent-skills) e o recurso skills://mcp-2026/spec."""
+    res_json = server.franklin_mcp_build_advisor(
+        connects_to="local_process_or_fs",
+        audience="public_distribution",
+        action_count=45,
+        interaction_needs="simple_structured_input",
+        upstream_auth="none",
+        preferred_language="go",
+        server_name="franklin-local-go",
+    )
+    parsed = json.loads(res_json)
+    assert parsed["specVersion"] == "2026-07-28"
+    assert parsed["activeSkillRoute"] == "build-mcpb"
+    assert parsed["deploymentModel"] == "mcpb"
+    assert parsed["toolDesignPattern"] == "search-and-execute"
+    assert parsed["interactionMechanism"] == "elicitation-with-capability-fallback"
+    assert parsed["mcpbManifestV04"]["manifest_version"] == "0.4"
+    assert "SEP-2577" in parsed["sep2577DeprecationNotice"]
 
+    spec_res = json.loads(server.get_mcp_2026_spec_resource())
+    assert spec_res["specVersion"] == "2026-07-28"
+
+
+def test_arquitetura_deterministic_scorer_v2() -> None:
+    """Valida o motor determinístico SGA (V1 vs V2) e o scanner AST/Regex da skill arquitetura-design-implementacao-sistema v2.0.0."""
+    skill_dir = server._find_skill_dir("arquitetura")
+    assert skill_dir is not None and skill_dir.name == "arquitetura-design-implementacao-sistema"
+
+    res = server.franklin_run_skill_script("arquitetura", "deterministic_scorer.py", ["--self-test"])
+    assert "[Exit Code: 0]" in res
+    assert '"sga_global_score": 100.0' in res
+    assert '"delta": 85.33' in res
+    assert '"status": "PASS"' in res
+
+    scan_res = server.franklin_run_skill_script(
+        "arquitetura",
+        "deterministic_scorer.py",
+        ["--scan", str(skill_dir / "templates")],
+    )
+    assert "[Exit Code: 0]" in scan_res
+    assert '"icte_typography_structure": 100.0' in scan_res
 

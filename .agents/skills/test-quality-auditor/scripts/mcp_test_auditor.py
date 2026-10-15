@@ -186,6 +186,10 @@ def enrich_with_mcp_audit(report: FileAuditReport, code_str: str) -> FileAuditRe
             for tool_tok in (
                 "go_fast_dispatch",
                 "analyze_issue_triage",
+                "design_mcp_with_agent_skills",
+                "evaluate_agy_safety_policy",
+                "node_runtime_inspector",
+                "mcp_build_with_agent_skills",
                 "list_workspace",
                 "fetch_url",
                 "search_files",

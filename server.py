@@ -65,6 +65,12 @@ if not EPIC_VOLTA_DIR.exists():
 # -----------------------------------------------------------------------------
 # Utilitários de Parsing de Metadados e Estado
 # -----------------------------------------------------------------------------
+from shared.a2a_bridge import (
+    FranklinA2ATaskManager,
+    build_franklin_agent_card,
+    sanitize_external_agent_card,
+    verify_agent_card_signature,
+)
 from shared.tools.frontmatter_parser import parse_frontmatter as _parse_frontmatter
 from shared.harness import (
     CheckpointRecord,
@@ -74,10 +80,12 @@ from shared.harness import (
     SemanticGuard,
     evaluate_action_risk,
 )
+from shared.mcp_2026_advisor import evaluate_mcp_2026_architecture
 
 SESSIONS_DIR = ROOT_DIR / ".sessions"
 CHECKPOINTS_FILE = SESSIONS_DIR / "harness_checkpoints.json"
 harness_store = CheckpointStore(CHECKPOINTS_FILE)
+a2a_task_manager = FranklinA2ATaskManager(SKILLS_ROOT, harness_store)
 
 
 def _load_agents_map() -> Dict[str, str]:
@@ -266,6 +274,8 @@ def _find_skill_dir(skill_name: str) -> Optional[Path]:
         "test-auditor": "test-quality-auditor",
         "evals": "test-quality-auditor",
         "qa-testes": "test-quality-auditor",
+        "arquitetura": "arquitetura-design-implementacao-sistema",
+        "ilhas": "arquitetura-design-implementacao-sistema",
     }
     if clean in quick_aliases:
         alias_target = SKILLS_ROOT / quick_aliases[clean]
@@ -1093,9 +1103,119 @@ def franklin_harness_checkpoint(
     return json.dumps({"error": f"Ação '{action}' inválida. Use: list, get, approve, reject ou clear."}, ensure_ascii=False)
 
 
+@mcp.tool()
+def franklin_a2a_agent_card(
+    skill_filter: str = "",
+    verify_signature: bool = True,
+) -> str:
+    """Gera e assina criptograficamente (JCS + JWS HMAC-SHA256) o AgentCard oficial A2A v1.0 / v0.3 do Franklin.
+
+    Args:
+        skill_filter: Filtro opcional para exportar apenas skills de um domínio ou palavra-chave.
+        verify_signature: Se True, executa auto-verificação da assinatura JWS antes de retornar.
+    """
+    card = build_franklin_agent_card(
+        skills_dir=SKILLS_ROOT,
+        skill_filter=skill_filter,
+        sign=True,
+    )
+    verified = verify_agent_card_signature(card) if verify_signature else True
+    card["signatureVerified"] = verified
+    return json.dumps(card, indent=2, ensure_ascii=False)
+
+
+@mcp.tool()
+def franklin_a2a_dispatch_task(
+    query: str = "",
+    skill_id: str = "",
+    context_id: str = "ctx-default",
+    task_id: str = "",
+    action: str = "send",
+) -> str:
+    """Despacha, consulta ou cancela uma Task no protocolo Agent2Agent (A2A v1.0) acoplado ao Harness HITL.
+
+    Args:
+        query: Mensagem ou instrução A2A (obrigatória para action='send').
+        skill_id: ID opcional da skill alvo no AgentCard.
+        context_id: Identificador de contexto conversacional A2A (isolado de user_id por segurança Zero-Trust).
+        task_id: ID opcional da Task A2A (obrigatório para action='get' ou 'cancel').
+        action: Operação A2A ('send', 'get', 'cancel').
+    """
+    act = action.strip().lower()
+    if act == "send":
+        task = a2a_task_manager.submit_task(
+            query=query,
+            skill_id=skill_id,
+            context_id=context_id,
+            task_id=task_id.strip() or None,
+        )
+        return json.dumps(task, indent=2, ensure_ascii=False)
+
+    if act == "get":
+        if not task_id.strip():
+            return json.dumps({"error": "task_id é obrigatório para action='get'"}, ensure_ascii=False)
+        found = a2a_task_manager.get_task(task_id.strip())
+        if not found:
+            return json.dumps({"error": f"Task A2A '{task_id}' não encontrada"}, ensure_ascii=False)
+        return json.dumps(found, indent=2, ensure_ascii=False)
+
+    if act == "cancel":
+        if not task_id.strip():
+            return json.dumps({"error": "task_id é obrigatório para action='cancel'"}, ensure_ascii=False)
+        canceled = a2a_task_manager.cancel_task(task_id.strip())
+        if not canceled:
+            return json.dumps({"error": f"Task A2A '{task_id}' não encontrada"}, ensure_ascii=False)
+        return json.dumps(canceled, indent=2, ensure_ascii=False)
+
+    return json.dumps({"error": f"Ação A2A '{action}' inválida. Use: send, get ou cancel."}, ensure_ascii=False)
+
+
+@mcp.tool()
+def franklin_mcp_build_advisor(
+    connects_to: str = "cloud_api",
+    audience: str = "personal_or_team",
+    action_count: int = 10,
+    interaction_needs: str = "plain_text_or_json",
+    upstream_auth: str = "none",
+    preferred_language: str = "python",
+    server_name: str = "franklin-mcp-service",
+) -> str:
+    """Consultor Arquitetural MCP 2026-07-28 (`build-with-agent-skills`).
+
+    Executa a descoberta de 5 fases (build-mcp-server, build-mcp-app, build-mcpb),
+    recomenda o modelo de deploy (remote-streamable-http, mcp-app, mcpb, local-stdio),
+    o padrão de ferramentas (Pattern A one-per-action vs Pattern B search-and-execute),
+    roteamento Elicitation vs Widget (`text/html;profile=mcp-app`), SDK oficial
+    (TypeScript v2, Python v2/FastMCP 3.x, Go v1.7+) e gera o manifesto `.mcpb` v0.4.
+    """
+    result = evaluate_mcp_2026_architecture(
+        connects_to=connects_to,
+        audience=audience,
+        action_count=action_count,
+        interaction_needs=interaction_needs,
+        upstream_auth=upstream_auth,
+        preferred_language=preferred_language,
+        server_name=server_name,
+    )
+    return json.dumps(result, indent=2, ensure_ascii=False)
+
+
 # -----------------------------------------------------------------------------
 # Recursos MCP (Resources)
 # -----------------------------------------------------------------------------
+@mcp.resource("skills://mcp-2026/spec")
+def get_mcp_2026_spec_resource() -> str:
+    """Recurso passivo expondo a matriz da especificação MCP 2026-07-28, SEP-2577 e Build with Agent Skills."""
+    return json.dumps(evaluate_mcp_2026_architecture(), indent=2, ensure_ascii=False)
+
+
+@mcp.resource("skills://a2a/agent-card")
+def get_a2a_agent_card_resource() -> str:
+    """Recurso passivo expondo o AgentCard oficial A2A v1.0 assinado do Franklin Quebra-Galho."""
+    card = build_franklin_agent_card(skills_dir=SKILLS_ROOT, sign=True)
+    return json.dumps(card, indent=2, ensure_ascii=False)
+
+
 @mcp.resource("skills://harness/checkpoints")
 def get_harness_checkpoints_resource() -> str:
     """Recurso passivo expondo a lista de checkpoints e aprovações pendentes do Harness."""

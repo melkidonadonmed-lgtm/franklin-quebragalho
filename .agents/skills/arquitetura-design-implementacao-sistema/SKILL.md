@@ -1,180 +1,152 @@
 ---
 name: arquitetura-design-implementacao-sistema
 description: >-
-  Executa o diagnóstico, design de navegabilidade/UX, especificação funcional e plano de implementação para produtos digitais e softwares, incorporando o Design System Tátil Melki, paleta mineral anti-cobalto, opções de arquétipos e matriz de discrepâncias com as preferências do desenvolvedor.
+  Executa diagnóstico severo de MVP, arquitetura de navegabilidade comentada,
+  aglomeração funcional por ilhas (Island UI/UX), especificação tipográfica linear,
+  auditoria anti-hardcode e plano de implementação modular com score determinístico
+  e histórico comparativo V1 vs V2 em HTML com metadados.
 license: MIT
 metadata:
-  version: "1.2.0"
+  version: "2.0.0"
   author: "Franklin-Main & Melki"
-  category: "Arquitetura e Implementação de Software"
-  updated_at: "2026-10-14"
+  category: "Arquitetura, UI/UX Estrutural e Qualidade de Código"
+  updated_at: "2026-10-15"
   tags:
-    - "especificacao-funcional"
-    - "arquitetura"
-    - "design-tatil"
-    - "multidimensional-2026"
-version: 1.2.0
-updated_at: 2026-10-14
+    - "navegabilidade"
+    - "arquitetura-em-ilhas"
+    - "auditoria-mvp"
+    - "zero-hardcode"
+    - "tipografia-linear"
+    - "score-deterministico"
+version: 2.0.0
+updated_at: 2026-10-15
 author: Franklin-Main & Melki
-category: Arquitetura e Implementação de Software
+category: Arquitetura, UI/UX Estrutural e Qualidade de Código
 ---
 
-# Skill: Análise, Design e Implementação de Sistemas (`arquitetura-design-implementacao-sistema`)
+# Skill: Arquitetura, Navegabilidade, Ilhas Funcionais e Implementação de Sistemas (`v2.0.0`)
 
 ## Gatilhos de Ativação
-- Solicitações de arquitetura de software, aplicativos ou plataformas web.
-- Pedidos para desenhar navegabilidade, jornadas de usuário, wireframes conceituais ou interfaces táteis.
-- Criação de planos de implementação técnica, mapeamento de rotas de API e especificação funcional de produtos digitais.
-- Demandas para alinhar sistemas ao Design System Tátil & Multidimensional do Melki (`v2.6.0-2026`), com paleta mineral (22 temas), tipografia e auditoria de discrepâncias.
+- Solicitações para arquitetar softwares, plataformas web ou aplicativos focando em navegabilidade, intuitividade e modularidade.
+- Pedidos de diagnóstico arquitetural severo de MVPs, refatoração de código acoplado/hardcoded ou organização de interfaces em ilhas funcionais (*Functional Island Architecture*).
+- Demandas de modo de resolução (`V1 -> V2`) exigindo diagrama de fluxo comentado, score determinístico auditável (`SGA`) e relatório comparativo em HTML com metadados.
 
-### Quando NÃO Usar
-- Para auditoria isolada de repositório Git ou checagem exclusiva de `.gitignore` (utilize `auditoria-projetos-sistema`).
-- Para execução de scripts operacionais de infraestrutura que não envolvam concepção de sistemas.
-- Para aplicar mutações de código em lote sem aprovação explícita do desenvolvedor (Human-in-the-Loop).
-
----
+## Quando NÃO Usar
+- Para definição exclusiva de paletas de cores ou temas puramente cosméticos (delegar ao arquivo `DESIGN.md` ou à skill `consultor-design-tatil-frontend`).
+- Para auditoria isolada de árvore Git ou `.gitignore` sem escopo de arquitetura de software (delegar à skill `auditoria-projetos-sistema`).
+- Para aplicar mutações destrutivas em banco de dados de produção sem validação humana explícita (*Human-in-the-Loop*).
 
 ## Entradas Obrigatórias
-1. **Objetivo do Sistema:** O problema central que o software resolve e os resultados esperados.
-2. **Perfis de Usuário:** Quem utilizará a plataforma e seus níveis de permissão.
-3. **Escopo ou Funcionalidades Mínimas:** Recursos indispensáveis para a versão inicial (MVP).
-4. **Arquétipo de Preferência (Opcional):** Qualquer um dos **22 temas homologados no FrontCraft Studio (`v2.6.0-2026`)**:
-   * **7 Estúdio**: `tactile-matte` (Padrão Melki), `phantom-4k`, `luxury-deepblue`, `gilded-navy`, `polar-sand`, `emerald-terminal`, `monokai-tactile`.
-   * **5 Trends 2026**: `warm-editorial-paper`, `quiet-luxury-titanium`, `neo-swiss-grid`, `biophilic-matcha-stone`, `tactile-carbon-2026`.
-   * **10 Canônicas Melki**: `steadfast-stainless`, `window-tide`, `cotton-dandelions`, `ocean-window`, `mermaid-lagoon`, `nightfall-ambiance`, `sky-balloons`, `grained-memories`, `living-a-dream`, `van-goghs-dream`.
+1. **Objetivo Central e Dor Real:** O problema exato que o sistema resolve (sem jargões de marketing).
+2. **Perfis de Acesso e Contexto de Uso:** Quem opera o sistema, sob qual pressão cognitiva/tempo e com quais permissões.
+3. **Proposta de Escopo (Candidato a MVP) ou Código/Fluxo Atual (V1):** Funcionalidades pretendidas ou artefato existente para diagnóstico e refatoração.
 
 ---
 
-## Diretrizes Canônicas de Design e Preferências Melki no Design de Sistemas (`v2.6.0-2026`)
+## Módulos Funcionais e Regras de Engenharia (v2.0.0)
 
-Toda arquitetura concebida por esta skill deve incorporar formalmente os 4 módulos canônicos abaixo:
+Toda arquitetura concebida ou auditada por esta skill é governada por 5 módulos técnicos independentes de cor (evitando *lost in the middle* por poluição cosmética):
 
-### Módulo 1: Paleta de Cores (22 Temas) & Motor Multidimensional (Padrão Melki)
-- **Tema Escuro (Dark Mode):**
-  * Canvas de Fundo: Ardósia Grafite (`#090B10`, `#060709`, `#0B0C0E` ou `#07080C`).
-  * Superfície de Cartões e Painéis: Ardósia Elevado (`#141824`, `#11141D`, `#16181D` ou `#12141E`).
-  * Superfícies Flutuantes / Modais: (`#1D2436` ou `#22262E`).
-- **Tema Claro (Light Mode):**
-  * Canvas de Fundo: Polar Sand (`#EEF2F6`), Papel Algodão (`#EFECE6`), Grid Suíço (`#E6E9EF`), Matcha Stone (`#E7ECE6`) ou Creme Estelar (`#FDFEE9`).
-  * Cartões e Superfícies: Branco Puro (`#FFFFFF`) ou Marfim Elevado (`#FCFBF8`, `#FBFDF9`).
-- **Acentos Minerais Autorizados:** Safira Fosco (`#3B82F6`), Slate Navy (`#345E7D`), Glacial Navy (`#274472`), Ouro Champanhe (`#D4AF37`), Titânio Anodizado (`#C5A880`), Terracota Editorial (`#9A3412`), Carmesim Suíço (`#BE123C`), Matcha Botânico (`#2E6F40`) e Ametista Ardósia (`#8B5CF6`).
-- **Pareamento Tipográfico (`TYPOGRAPHY_PRESETS`) & Geometria (`GEOMETRY_PRESETS`):**
-  * `humanist-tech` (*Plus Jakarta Sans + JetBrains Mono*), `editorial-serif` (*Instrument Serif + Jakarta*), `swiss-grotesk` (*Space Grotesk + Inter*) ou `classic-garamond` (*Cormorant Garamond + Jakarta*).
-  * Raios estruturais de card: `6px` (`sharp`), `12px` (`editorial`), `16px` (`technical`), `20px` (`tactile`) ou `24px` (`organic`).
-- ❌ **Banimento Anti-Cobalto:** É proibido prescrever tons de azul cobalto puro (`#0044FF`, `#233DFF`, `#1D4ED8`) ou cores fluorescentes que causem fadiga visual.
+### Módulo 1: Navegabilidade, Grafo Comentado e Intuitividade Cognitiva
+- **Regra dos 3 Cliques e Zero Becos sem Saída (Dead-Ends):** Nenhuma ação de valor primário pode exigir mais de 3 transições de estado a partir do Dashboard. Todo nó do fluxo deve possuir rota de retorno clara ou conclusão explícita.
+- **Diagnóstico Comentado com Diagrama de Navegabilidade:** Todo mapa Mermaid deve vir acompanhado de comentários técnicos nó a nó explicando: (a) gatilho de entrada, (b) validação de estado e (c) motivo da transição.
+- **Ergonomia Cognitiva (Padrão TDAH-Friendly):** Obrigatoriedade de barra de comando/busca global unificada (`Ctrl+K` / `Cmd+K`), ausência total de bloqueios nativos de thread (`alert()`, `confirm()`), feedback cinestésico imediato (`active:scale-95`) e previsibilidade espacial.
+- **Cobertura Estrita dos 4 Estados de UI:** Toda tela ou ilha assíncrona deve especificar formalmente os estados `Empty`, `Loading`, `Success` e `Error`.
 
-### Módulo 2: Diretrizes de Design Tátil e Especificação de Interface (Tactile Matte 4K)
-- **Anti-Glassmorphism:** Proibido especificar vidros translúcidos com blur excessivo (`backdrop-filter: blur`), gradientes plásticos reflexivos ou caixas neon brilhantes.
-- **Regra de Ouro da Profundidade:** No dark mode, os cartões devem ser estritamente mais claros que o canvas de fundo (`L_card > L_canvas`), assegurando a percepção de volume físico tridimensional.
-- **Sistema de Sombras Multicamadas:** Elementos de UI elevados devem combinar sombra de contato curta (`0 4px 10px rgba(0, 0, 0, 0.35)`) com sombra difusa de projeção ampla (`0 16px 36px -4px rgba(0, 0, 0, 0.65)`).
-- **Fio de Luz Superior Mineral (Rim Light) & Física 3D (`calculateCardTilt`):** Micro-chanfro óptico refletindo luz zenital (`border-top: 1px solid rgba(255, 255, 255, 0.14)`) e inclinação 3D opcional limitada a $\pm 5.5^\circ$ (protegida por `prefers-reduced-motion`).
-- **Anti-Squish em Botões e Badges:** Obrigatoriedade de `flex-shrink: 0;` e `white-space: nowrap;` em botões de ação e tags para impedir quebras verticais de texto.
-- **Ergonomia Cognitiva e Suporte a TDAH:** Busca rápida unificada (`Ctrl+K` / `⌘K`), agrupamento semântico limpo em cartões individuais, ausência de bloqueios nativos do navegador (`alert()`) e feedback cinestésico tátil (`active:scale-95`).
+### Módulo 2: Aglomeração de Funções por Ilha (Functional Island Architecture)
+- **Coesão Funcional por Ilha:** Funções que manipulam o mesmo domínio ou intenção imediata do usuário devem ser agrupadas em "Ilhas Funcionais" autocontidas (cards/painéis independentes). É proibido espalhar botões da mesma tarefa em extremidades opostas da tela.
+- **Isolamento de Estado e Desacoplamento Data/Render:** Cada ilha gerencia seu estado efêmero de apresentação, enquanto os dados de negócio residem de forma autoritativa no servidor/store central. Ferramentas de busca/mutação de dados (*data tools*) devem ser estritamente separadas da camada de renderização da UI (*render tools*).
+- **Blindagem Estrutural (Anti-Squish):** Botões de ação, badges e controles dentro das ilhas devem impor `flex-shrink: 0` e `white-space: nowrap` para impedir quebras verticais ou esmagamento em layouts responsivos.
+- **Hierarquia de Profundidade Estrutural:** Uso de sombras físicas multicamadas (oclusão curta + projeção difusa) e micro-chanfro superior (`border-top: 1px solid`) para delimitar ilhas sem depender de blur pesado (proibido glassmorphism difuso que degrade performance e leitura).
+- **Orquestração Multiagente de UI (`Topologia 3+1`):** Para decomposição em 3 ondas paralelas (*Shell/Navigator*, *Controls/Data*, *Motion/Interaction* e *Deterministic Observer*), consulte [`references/taxonomia_subagentes_ui_6_camadas.md`](references/taxonomia_subagentes_ui_6_camadas.md) e [`plans/ui_composition_dag.json`](../../plans/ui_composition_dag.json).
 
-### Módulo 3: Módulo de Opções e Preferências do Desenvolvedor
-- **Consulta Estruturada via `ask_question`:** Em bifurcações de arquitetura, stack técnica ou layout, consultar o desenvolvedor com opções pré-configuradas e recomendação técnica fundamentada.
-- **Catálogo de 22 Temas Homologados:** Oferecer os temas das 3 famílias oficiais (*10 Canônicas Melki*, *5 Trends 2026* e *7 Temas de Estúdio*).
-- **Ecossistema Open Source Autorizado (Padrão shadcn/ui):** Priorizar arquitetura de frontend desacoplada com componentes de código aberto "copy-paste" (**shadcn/ui**, **Radix UI**, **Tailwind UI / Catalyst**, **Lucide Icons** e **Geist Design**), evitando dependências pesadas proprietárias.
+### Módulo 3: Crítica Severa de MVP (Rigor Técnico Superior)
+- **Filtro Implacável de Escopo (Anti-Bloat):** O agente deve atuar como um Tech Lead severo. Toda funcionalidade proposta para o MVP que não contribua diretamente para validar a hipótese central de valor na Semana 1 deve ser classificada como `[CORTE OBRIGATÓRIO - FASE 2]` com justificativa técnica.
+- **Proibição de "Vibe Coding" Frágil:** Rejeitar arquiteturas baseadas em mocks estáticos fingindo funcionamento, rotas sem tratamento de erro ou fluxos sem validação de schema (exigir Zod, Pydantic ou JSON Schema estrito).
 
-### Módulo 4: Matriz de Detecção de Discrepâncias com as Preferências
-- Checklist determinístico que valida o design do sistema contra as preferências perenes:
-  * `[DISC-01: COR]` `[PASS / FAIL]`: Paleta mineral livre de azul cobalto e saturações neon.
-  * `[DISC-02: DARK-LUM]` `[PASS / FAIL]`: Cartões no dark mode mais claros que o canvas de fundo.
-  * `[DISC-03: SOMBRA]` `[PASS / FAIL]`: Presença de sombras físicas multicamadas calibradas.
-  * `[DISC-04: RIM-LIGHT]` `[PASS / FAIL]`: Fio de luz superior zenital mineral especificado.
-  * `[DISC-05: GLASS]` `[PASS / FAIL]`: Ausência de glassmorphism difuso ou reflexos sintéticos.
-  * `[DISC-06: SQUISH]` `[PASS / FAIL]`: Botões e badges blindados com anti-squish.
-  * `[DISC-07: TDAH-UX]` `[PASS / FAIL]`: Atalho rápido de busca (`Ctrl+K`) e modais sem bloqueio nativo.
-  * `[DISC-08: SUPPLY]` `[PASS / FAIL]`: Adoção do modelo copy-paste (shadcn/ui) com zero caixas-pretas.
+### Módulo 4: Qualidade de Código, Modularidade por Função e Zero Hardcode
+- **Tolerância Zero a Hardcode:** É proibido chumbar strings de configuração, URLs, limites numéricos ("magic numbers"), regras de negócio ou credenciais dentro de componentes de UI. Tudo deve ser extraído para constantes tipadas, variáveis de ambiente ou dicionários de configuração.
+- **Modularidade por Função Única (SRP):** Cada módulo ou arquivo deve ter uma única responsabilidade clara (ex: `calculators/`, `validators/`, `adapters/`, `ui-islands/`).
+- **Ecossistema Open-Source Auditável (Copy-Paste Pattern):** Priorizar componentes modulares abertos sem caixa-preta (`shadcn/ui`, Radix Primitives, Lucide Icons), garantindo controle total sobre o DOM e acessibilidade.
 
-### Módulo 5: Orquestração de Subagentes de UI em 3 Ondas (`Topologia 3+1`)
-> [!TIP]
-> **Referência Técnica Completa (Tier 3):** Para a especificação detalhada das 6 camadas (*UI Islands*, *Layouts/Janelas*, *Menus/Abas*, *Inputs $44\times44\text{px}$ WAI-ARIA*, *Listas Virtualizadas $60\text{fps}$*, *Animações GPU/Gestos*, *State Bus*, *Core Web Vitals*, *Tipagem/DI Hilt* e *Fidelidade Física de Luz/Sombra*), consulte [`references/taxonomia_subagentes_ui_6_camadas.md`](references/taxonomia_subagentes_ui_6_camadas.md) e o plano executável [`plans/ui_composition_dag.json`](../../plans/ui_composition_dag.json).
-- **Onda 1 (`ui-shell-navigator`)**: Arquitetura visual, *UI Islands*, Grid/SplitView ($\text{CLS} < 0.1$), `Shadow DOM` e navegação (`MenuBar`, `TabView` lazy, `SemanticZoom`).
-- **Onda 2A (`ui-controls-data`)**: Botões $\ge 44\times44\text{px}$ anti-squish (Regra 1+2), entradas validadas WAI-ARIA, listas virtualizadas a $60\text{fps}$ e alertas `aria-live`.
-- **Onda 2B (`ui-motion-interaction`)**: Transições aceleradas por GPU, `prefers-reduced-motion` e gestos multi-input (`Touch/Pen/Mouse/Keyboard`).
-- **Onda 3 (`ui-deterministic-observer`)**: Coordenador determinístico, *State Bus*, auditoria WCAG 2.1 AA/AAA, Core Web Vitals, DI (**Hilt**) e física de luz/sombra.
+### Módulo 5: Tipografia Linear e Combinada (Fluid & Harmonious Typography)
+- **Escala Tipográfica Linear/Fluida:** Tamanhos de fonte e espaçamentos devem seguir progressão matemática contínua usando `clamp(min, val_fluido, max)` com base em grid estrito de `4px` / `8px`, evitando saltos bruscos entre mobile e desktop.
+- **Pareamento Semântico em 3 Camadas (Combinando):**
+  1. **Display / Títulos de Ilha:** Fonte geométrica ou humanista de alto impacto (`font-weight: 600-700`, `letter-spacing: -0.02em`, `line-height: 1.15`).
+  2. **Corpo / Leitura Contínua:** Sans-serif de alta legibilidade (`font-size: clamp(0.95rem, 1vw, 1.05rem)`, `line-height: 1.6`, largura máxima de linha de `65ch`).
+  3. **Dados Técnicos / Métricas / Badges:** Fonte Monospace alinhada (`font-variant-numeric: tabular-nums`) para garantir que números e tabelas nunca desalinhem horizontalmente.
 
 ---
 
-## Fluxo Passo a Passo com Decisões Condicionais
+## Motor de Cálculos Determinísticos (Zero Números Vazios / Zero Placebo)
 
-### Passo 1: Interpretação de Intenção, Regras de Negócio e Consulta de Opções
-- Analise os requisitos do sistema. Se faltarem detalhes operacionais de baixo risco, assuma a interpretação mais útil e técnica. Se houver dúvidas de arquitetura ou estética visual, acione `ask_question` apresentando opções alinhadas aos arquétipos do Melki.
+É terminantemente proibido atribuir notas subjetivas ou inventadas. Todo diagnóstico deve calcular o **Score Global de Arquitetura (SGA de 0 a 100)** usando as 5 equações determinísticas abaixo (implementadas em [`modules/deterministic_scorer.py`](modules/deterministic_scorer.py) e [`scripts/deterministic_scorer.py`](scripts/deterministic_scorer.py)) a partir das contagens reais extraídas do projeto/especificação:
 
-### Passo 2: Arquitetura de Navegabilidade e UX Tátil
-- Monte a árvore de navegação completa.
-- Mapeie a jornada do usuário do login/onboarding às ações de maior valor.
-- Garanta que toda ação de saída redirecione para um estado válido e que haja atalho de comando rápido (`Ctrl+K`).
+1. **Índice de Navegabilidade e Estados (INE - Peso 25%):**
+   - `Taxa_Rotas_Validas = (Total_Nos - Nos_Orfaos_Ou_DeadEnds) / max(1, Total_Nos)`
+   - `Taxa_Estados_UI = Telas_Com_4_Estados_Mapeados / max(1, Total_Telas)`
+   - `Penalidade_Cliques = max(0, (Profundidade_Maxima_Cliques - 3) * 15)`
+   - `INE = max(0, ((Taxa_Rotas_Validas * 0.5 + Taxa_Estados_UI * 0.5) * 100) - Penalidade_Cliques)`
 
-### Passo 3: Design de Funcionamento, Interface e Tokens Táteis
-- Especifique a hierarquia visual de cada tela crítica com os tokens da paleta mineral (Módulo 1).
-- Defina o comportamento dinâmico de componentes (botões com anti-squish, formulários com relevo tátil, tabelas com respiro).
-- Especifique as fórmulas de elevação física multicamada e rim light (Módulo 2).
-- Mapeie explicitamente os 4 estados de interface: *Loading*, *Success*, *Error* e *Empty State*.
+2. **Índice de Coesão em Ilhas (ICI - Peso 20%):**
+   - `ICI = (Funcoes_Agrupadas_Em_Ilhas_Com_SRP / max(1, Total_Funcoes_Mapeadas)) * 100`
+   - Se uma ilha misturar mais de 2 domínios distintos ou ultrapassar 7 elementos interativos primários sem sub-agrupamento, ela é contada como `0` (falha de sobrecarga cognitiva).
 
-### Passo 4: Plano de Implementação e Arquitetura Técnica
-- Especifique as APIs e endpoints REST/GraphQL vinculados a cada tela.
-- Defina a estrutura básica do modelo de dados (entidades, atributos e relacionamentos).
-- Utilize componentes open source copy-paste do ecossistema shadcn/ui e Lucide Icons (Módulo 3).
-- Organize a entrega em fases de desenvolvimento cronológicas.
+3. **Índice de Pureza de Código e Zero Hardcode (IPC - Peso 25%):**
+   - `IPC = max(0, 100 - (Ocorrencias_Hardcode * 12) - (Funcoes_Acopladas_Data_UI * 15))`
+   - Qualquer valor mágico, string de regra fixa na view ou chamada de banco/API direta dentro do componente visual deduz pontos imediatamente.
 
-### Passo 5: Auditoria de Discrepâncias e Fechamento
-- Execute a Matriz de Detecção de Discrepâncias do Módulo 4 contra a especificação produzida.
-- Assegure que nenhum ponto de atenção crítico ou desvio das preferências permaneça sem justificativa técnica.
+4. **Rigor de Enxugamento de MVP (IRM - Peso 15%):**
+   - `IRM = (Features_Essenciais_Com_Contrato_Verificavel / max(1, Total_Features_Mantidas_No_MVP)) * 100`
+   - Deduzir `20 pontos` para cada feature cosmética/secundária que não foi cortada da Fase 1.
 
----
+5. **Conformidade Tipográfica e Estrutural (ICTE - Peso 15%):**
+   - Soma binária auditável (20 pontos cada item cumprido):
+     1. Uso de escala fluida `clamp()` definida.
+     2. Pareamento de 3 camadas (Display + Body + Monospace `tabular-nums`).
+     3. Respeito ao limite de `65ch` para texto corrido e ritmo vertical (`line-height`).
+     4. Blindagem `anti-squish` (`flex-shrink: 0; white-space: nowrap`) em botões/tags.
+     5. Presença de atalho global `Ctrl+K` sem `alert()` nativo.
 
-## Decisões Condicionais
-- **SE o sistema for focado em Front-End / UX:** Aprofunde o detalhamento da hierarquia de telas, componentes táteis reutilizáveis, sombras multicamadas e navegabilidade; reduza a especificação de infraestrutura de banco de dados.
-- **SE o sistema for uma API / Back-End:** Inverta a prioridade para o modelo de dados, contratos de endpoints tipados, segurança e concorrência, mantendo a navegabilidade limitada ao fluxo de consumo de dados.
-
----
-
-## Modelo de Saída
-
-### 1. Visão Geral e Intenção Prática
-* **Objetivo do Sistema:** [Resumo em 1-2 frases]
-* **Público e Permissões:** [Lista de perfis de acesso]
-* **Arquétipo Visual Melki Selecionado:** [Tactile Matte Minimalist / Outro]
-
-### 2. Mapa de Navegabilidade (UX)
-
-```mermaid
-graph TD
-    A["Tela de Login"] --> B["Dashboard Principal"]
-    B --> C["Módulo de Análise"]
-    B --> D["Configurações de Perfil"]
-    C --> E["Modal: Exportar Relatório"]
-```
-
-### 3. Especificação de Funcionamento e Interface Tátil
-
-| Tela / Módulo | Componentes de UI | Tokens de Cor & Elevação | Funcionamento / Regra de Negócio | Estados de Interface |
-| :--- | :--- | :--- | :--- | :--- |
-| Ex: Dashboard | Gráfico de Vendas, Filtro Temporal, Botões Anti-Squish | Card `#162033` sobre Canvas `#0B101B`, `--elevation-card`, Rim Light | Atualizar métricas ao alterar o filtro; atalho `Ctrl+K` para busca | Empty, Loading, Success, Error |
-
-### 4. Plano de Implementação Técnica
-* **Fase 1 (MVP):** [Entregáveis das primeiras 2-4 semanas com componentes shadcn/ui]
-* **Fase 2 (Escala):** [Recursos secundários, automações e otimizações]
-* **Estrutura de Rotas / APIs:**
-  * `POST /api/v1/auth/login` — Autenticação de usuário
-  * `GET /api/v1/dashboard/metrics` — Recuperação de indicadores
-
-### 5. Matriz de Discrepâncias com as Preferências e Checklist de Aceite
-
-| Critério de Preferência | Status Determinístico | Evidência / Observação |
-| :--- | :---: | :--- |
-| **Paleta Mineral Anti-Cobalto** | `[PASS]` | Uso de Slate Navy e Petroleum Blue; zero azul cobalto |
-| **Profundidade Dark Mode (Cards Lighter)** | `[PASS]` | Cartões `#162033` sobre canvas `#0B101B` |
-| **Sombras Multicamadas + Rim Light** | `[PASS]` | Sombra oclusão + projeção e borda superior mineral |
-| **Anti-Squish em Botões e Tags** | `[PASS]` | `flex-shrink: 0; white-space: nowrap;` em ações |
-| **Ergonomia e Suporte a TDAH** | `[PASS]` | Atalho `Ctrl+K` e ausência de bloqueios nativos |
-| **Componentes Modulares (shadcn/ui)** | `[PASS]` | Modelo copy-paste sem bibliotecas caixa-preta |
+- **Fórmula Final do Score Global (SGA):**
+  `SGA = (INE * 0.25) + (ICI * 0.20) + (IPC * 0.25) + (IRM * 0.15) + (ICTE * 0.15)`
 
 ---
 
-## Limites de Segurança
-* Não expor senhas, credenciais reais ou dados sensíveis nos exemplos de código ou documentação.
-* Exigir validação humana explícita antes de sugerir comandos de execução em ambientes ativos de desenvolvimento.
-* Proibir arquiteturas que recomendem dependências vulneráveis ou pacotes não auditados.
+## Fluxo Operacional Passo a Passo
+
+### Passo 1: Crítica Severa de Intenção e Corte de MVP
+- Disseque o pedido do usuário. Identifique excessos de escopo, premissas frágeis e potenciais pontos de hardcode.
+- Apresente a crítica severa antes de desenhar a solução, separando o que entra no **MVP Enxuto (Fase 1)** do que vai para o **Backlog (Fase 2)**.
+
+### Passo 2: Mapeamento de Ilhas Funcionais e Tipografia Linear
+- Agrupe as funcionalidades aprovadas em Ilhas Funcionais numeradas, definindo o contrato de entrada/saída de cada ilha (separando *data tools* de *render tools*).
+- Defina a árvore de tokens tipográficos lineares (`clamp`) e pareamento de fontes em 3 camadas sem acoplamento de cores.
+
+### Passo 3: Diagnóstico Comentado e Diagrama de Navegabilidade
+- Construa o grafo Mermaid de navegabilidade mostrando todas as transições e atalhos (`Ctrl+K`).
+- Abaixo do diagrama, forneça o **Diagnóstico Comentado Nó a Nó**, justificando a ergonomia do fluxo e provando a ausência de becos sem saída.
+
+### Passo 4: Cálculo Determinístico de Métricas (Tabela Aberta)
+- Execute `scripts/deterministic_scorer.py` (ou aplique as equações exatas sobre as contagens auditadas) e apresente a memória de cálculo completa das 5 fórmulas (`INE`, `ICI`, `IPC`, `IRM`, `ICTE`) mostrando numerador, denominador e penalidades aplicadas até chegar ao `SGA`.
+
+### Passo 5: Modo de Resolução (Histórico V1 vs V2 em HTML com Metadados)
+- **Gatilho Condicional:** Sempre que a skill for usada para corrigir, refatorar ou evoluir uma arquitetura/tela existente (Modo de Resolução), gere obrigatoriamente um arquivo **HTML5 autocontido** baseado em [`templates/resolution_diff_v1_v2.html`](templates/resolution_diff_v1_v2.html) contendo:
+  1. `<head>` com `<meta>` tags de rastreabilidade (`skill-name`, `skill-version`, `resolution-mode`, `score-v1-baseline`, `score-v2-resolved`, `score-delta`, `audit-timestamp`).
+  2. **Histórico Simples de Mudanças (Changelog Arquitetural V1 -> V2):** O que foi removido, o que foi isolado em ilhas e quais hardcodes foram eliminados.
+  3. **Diagrama de Navegabilidade e Ilhas com Cores Semânticas de Diff:**
+     - Vermelho (`#ef4444` / `#fef2f2`): Rota quebrada, hardcode ou excesso removido da V1.
+     - Amarelo (`#f59e0b` / `#fffbeb`): Componente refatorado / desacoplado na transição V1 -> V2.
+     - Verde (`#10b981` / `#ecfdf5`): Nova Ilha Funcional, validação determinística ou rota otimizada na V2.
+  4. **Painel Comparativo de Scores Determinísticos (V1 vs V2):** Mostra a evolução matemática de cada módulo.
+
+---
+
+## Saídas e Entregáveis (Modelo de Saída)
+
+Toda execução da skill deve entregar de forma estruturada:
+1. **Matriz de Crítica Severa de MVP:** Tabela separando features aprovadas para a Fase 1 vs. features cortadas (`[CORTE OBRIGATÓRIO - FASE 2]`) com justificativa técnica.
+2. **Especificação de Ilhas Funcionais e Tipografia Linear:** Contratos de dados vs. renderização por ilha, cobertura dos 4 estados (`Empty`, `Loading`, `Success`, `Error`) e tokens `clamp()` + `tabular-nums`.
+3. **Grafo Mermaid de Navegabilidade + Diagnóstico Comentado Nó a Nó:** Comprovação da Regra dos 3 Cliques, atalho `Ctrl+K` e zero dead-ends.
+4. **Memória de Cálculo Determinística (`SGA`):** Tabela com contagens brutas e resultados exatos de `INE`, `ICI`, `IPC`, `IRM`, `ICTE` e `SGA` (`0.00` a `100.00`).
+5. **Artefato HTML de Resolução (`V1 -> V2`):** Gerado em modo de refatoração/resolução via `scripts/deterministic_scorer.py --html-out` ou template [`templates/resolution_diff_v1_v2.html`](templates/resolution_diff_v1_v2.html).

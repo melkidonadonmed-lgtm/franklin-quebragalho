@@ -37,6 +37,7 @@ def audit_ts_js_test_file(code_str: str, filename: str) -> FileAuditReport:
         for j in range(i, n):
             clean_line = re.sub(r"//.*$", "", lines[j])
             clean_line = re.sub(r"'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"|`(?:\\.|[^`\\])*`", '""', clean_line)
+            clean_line = re.sub(r"/(?![/*])(?:\\.|\[(?:\\.|[^\]\\])*\]|[^/\\\n])+/[dgimsuvy]*", "//", clean_line)
             for ch in clean_line:
                 if ch == "{":
                     brace_depth += 1

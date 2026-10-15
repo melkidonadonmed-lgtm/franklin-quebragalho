@@ -1,0 +1,414 @@
+{
+  "name": "Franklin Quebra-Galho (A2A + MCP Orchestrator)",
+  "description": "Orquestrador multiagente e catálogo de 25 Skills canônicas (Python, TS/JS, Go, MCP, Harness e Design Tátil) com suporte nativo a Agent2Agent (A2A v1.0) e Model Context Protocol (MCP).",
+  "supportedInterfaces": [
+    {
+      "url": "http://localhost:10999",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    },
+    {
+      "url": "http://localhost:10999",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "0.3"
+    }
+  ],
+  "provider": {
+    "url": "https://github.com/melkidonadonmed-lgtm/franklin-quebragalho",
+    "organization": "Melki Dev Lab (Franklin Quebra-Galho)"
+  },
+  "version": "1.2.0",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": true,
+    "extendedAgentCard": true
+  },
+  "defaultInputModes": [
+    "text",
+    "text/plain",
+    "application/json"
+  ],
+  "defaultOutputModes": [
+    "text",
+    "text/plain",
+    "application/json"
+  ],
+  "skills": [
+    {
+      "id": "template-skill",
+      "name": "template-skill",
+      "description": "Modelo padrao oficial para criacao de novas skills no Antigravity e no workspace Franklin Quebra-Galho, estruturado sob divulgacao progressiva, regras deterministicas, diretrizes de design tatil, modulos de paleta mineral, opcoes de preferencias e matriz de discrepancias.",
+      "tags": [
+        "template",
+        "padrao-2026",
+        "design-tatil"
+      ],
+      "examples": [
+        "Executar a skill template-skill no contexto atual"
+      ]
+    },
+    {
+      "id": "analise-design-tatil-frontend",
+      "name": "analise-design-tatil-frontend",
+      "description": "Inspeciona e audita interfaces frontend (via agent-browser ou codigo estatico), analisa menus, sidebar, tipografia, fontes, icones, tamanho dos botoes, transicoes, layout, profundidade tatil e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide, emitindo um Relatorio Comparativo deterministico.",
+      "tags": [
+        "design-tatil",
+        "auditoria-ui",
+        "anti-cobalto",
+        "ergonomia",
+        "multidimensional-2026"
+      ],
+      "examples": [
+        "Executar a skill analise-design-tatil-frontend no contexto atual"
+      ]
+    },
+    {
+      "id": "aprimoramento-expansibilidade-agentes-skills",
+      "name": "aprimoramento-expansibilidade-agentes-skills",
+      "description": "Motor consultivo de arquitetura, expansibilidade (3 Tiers, Envelope Pattern, Context Forking, Memória em 3 Camadas, MCP/A2A) e ciclo de qualidade orientado a dados (Eval-Driven Iteration, Pass@k, FNR < 0.001, LLM-as-a-Judge Snorm, Trigger Optimization, GEPA/ADK e Densidade de Atenção Softmax) para Agentes de IA e SKILL.md. Use quando consultada pela evoluir-skills ou quando o usuário solicitar conversão de agente monolítico em multiagente, escalabilidade em Níveis 1 a 4, despoluição de janela de contexto ou engenharia de métricas de avaliação. Não use para criar pasta física de skill do zero sem passar pela evoluir-skills.",
+      "tags": [
+        "expansibilidade",
+        "eval-driven",
+        "pass-at-k",
+        "envelope-pattern",
+        "context-forking",
+        "mcp-a2a"
+      ],
+      "examples": [
+        "Executar a skill aprimoramento-expansibilidade-agentes-skills no contexto atual"
+      ]
+    },
+    {
+      "id": "arquiteto-conteudo-solucoes",
+      "name": "arquiteto-conteudo-solucoes",
+      "description": "Arquiteto autonomo de solucoes tecnicas, prompts de alta performance, skills canonicas, codigos tipados e roadmaps estruturados. Opera sob 4 modos rigorosos (Execucao Direta, Refinamento Colaborativo, Planejamento Estruturado e Auto-Reflexao) com controle estrito anti-alucinacao e verificacoes deterministicas ([PASS]/[FAIL]/[UNVERIFIED]). Use quando o usuario solicitar criacao de conteudos tecnicos, prompts, arquitetura de software, automacoes ou especificacao de skills.",
+      "tags": [
+        "prompt-engineering",
+        "arquitetura",
+        "anti-alucinacao"
+      ],
+      "examples": [
+        "Executar a skill arquiteto-conteudo-solucoes no contexto atual"
+      ]
+    },
+    {
+      "id": "arquitetura-design-implementacao-sistema",
+      "name": "arquitetura-design-implementacao-sistema",
+      "description": "Executa o diagnóstico, design de navegabilidade/UX, especificação funcional e plano de implementação para produtos digitais e softwares, incorporando o Design System Tátil Melki, paleta mineral anti-cobalto, opções de arquétipos e matriz de discrepâncias com as preferências do desenvolvedor.",
+      "tags": [
+        "especificacao-funcional",
+        "arquitetura",
+        "design-tatil",
+        "multidimensional-2026"
+      ],
+      "examples": [
+        "Executar a skill arquitetura-design-implementacao-sistema no contexto atual"
+      ]
+    },
+    {
+      "id": "auditoria-projetos-sistema",
+      "name": "auditoria-projetos-sistema",
+      "description": "Audita a integridade estrutural, arquivos essenciais (AGENTS.md, README, CONTEXT, DESIGN, SPEC), higiene de repositório (.env, .gitignore, Git), orfandade de código, desacoplamento/tipagem/chunking, discrepâncias entre escopo documentado e executado, conformidade de UI/UX (temas, fontes, alvos de clique, nós de ação sem bagunça visual) e esteira visual automatizada via agent-browser (snapshots por aba/menu, nós @eX e anotações visuais) com emissão de nota ponderada (0 a 100).",
+      "tags": [
+        "auditoria",
+        "agent-browser",
+        "higiene-repo",
+        "qualidade"
+      ],
+      "examples": [
+        "Executar a skill auditoria-projetos-sistema no contexto atual"
+      ]
+    },
+    {
+      "id": "code-quality-audit-3d-physics",
+      "name": "code-quality-audit-3d-physics",
+      "description": "Audita e sanitiza código de sistemas com Física 3D, Computação Gráfica (WebGL, Three.js, Babylon.js) e Engenharia Numérica (Python, JS/TS). Orquestra 5 módulos de subskills em 3 ondas (static-sanitization-auditor, architecture-hardcoded-auditor, physics-3d-math-auditor, deterministic-tests-auditor e state-checker-observer), calcula as 5 sub-dimensões de física (S1..S5), executa testes determinísticos Pass@k (k=10) e emite o Escore Normalizado Global Snorm (0 a 100) com filtro anti-alucinação.",
+      "tags": [
+        "fisica-3d",
+        "auditoria-codigo",
+        "ast-parser",
+        "threejs",
+        "webgl",
+        "testes-deterministicos"
+      ],
+      "examples": [
+        "Executar a skill code-quality-audit-3d-physics no contexto atual"
+      ]
+    },
+    {
+      "id": "consultor-design-tatil-frontend",
+      "name": "consultor-design-tatil-frontend",
+      "description": "Analisa e mapeia interfaces frontend via agent-browser, avalia conformidade com o Design System Tátil Melki (profundidade de sombras, cards mais claros que o fundo, rim light e paleta mineral anti-cobalto), oferece opções interativas de melhorias visuais e funcionais com formulários de múltipla escolha ou mockups de referência, audita discrepâncias determinísticas e gera o documento canônico DESIGN.md.",
+      "tags": [
+        "consultoria-ux",
+        "design-tatil",
+        "paleta-mineral",
+        "design-md",
+        "multidimensional-2026"
+      ],
+      "examples": [
+        "Executar a skill consultor-design-tatil-frontend no contexto atual"
+      ]
+    },
+    {
+      "id": "context-sentinel",
+      "name": "context-sentinel",
+      "description": "Audita a integridade da janela de contexto em conversas multi-turn e pipelines multiagente. A cada ciclo de turnos ou sob demanda, extrai o estado estruturado da sessão com validação determinística Pydantic/JSON (classificando [FATO], [PENDENCIA] e [LACUNA]) para persistência em SQLite ou JSON local.",
+      "tags": [
+        "context-rot",
+        "sqlite",
+        "snapshots",
+        "pydantic"
+      ],
+      "examples": [
+        "Executar a skill context-sentinel no contexto atual"
+      ]
+    },
+    {
+      "id": "conversor-html-pdf",
+      "name": "conversor-html-pdf",
+      "description": "Converte documentos Markdown (.md) e HTML para arquivos PDF profissionais de alta fidelidade visual via Microsoft Edge ou Chrome headless, aplicando CSS de impressao calibrado, quebras de pagina inteligentes e estilizacao executiva.",
+      "tags": [
+        "pdf",
+        "headless-browser",
+        "css-print",
+        "conversao"
+      ],
+      "examples": [
+        "Executar a skill conversor-html-pdf no contexto atual"
+      ]
+    },
+    {
+      "id": "curadoria-obsidian-vault",
+      "name": "curadoria-obsidian-vault",
+      "description": "Audita e higieniza estruturalmente o cofre do Obsidian (C:\\Users\\melki\\dev\\notes\\), validando frontmatter YAML, links bidirecionais [[Wikilinks]], paridade de projetos ativos com dev\\repos, deteccao de anexos orfaos e sincronizacao com MemPalace (wing: notes) sem perda de dados.",
+      "tags": [
+        "obsidian",
+        "wikilinks",
+        "frontmatter",
+        "mempalace",
+        "anexos-orfaos"
+      ],
+      "examples": [
+        "Executar a skill curadoria-obsidian-vault no contexto atual"
+      ]
+    },
+    {
+      "id": "design-interface-medica-minimalista",
+      "name": "design-interface-medica-minimalista",
+      "description": "Define o padrão de UI/UX para aplicações médicas e SaaS de saúde. Deve ser ativada sempre que o usuário solicitar o desenvolvimento, análise ou refatoração do frontend de sistemas médicos, prontuários, receituários ou calculadoras clínicas.",
+      "tags": [
+        "saude",
+        "clinico",
+        "prontuario",
+        "minimalista",
+        "tailwind"
+      ],
+      "examples": [
+        "Executar a skill design-interface-medica-minimalista no contexto atual"
+      ]
+    },
+    {
+      "id": "evoluir-skills",
+      "name": "evoluir-skills",
+      "description": "Orquestrador mestre do ciclo de vida e pipeline de engenharia de skills do Franklin Quebra-Galho. Use quando o usuário pedir para criar uma nova skill a partir de uma ideia bruta, evoluir, homologar, testar (evals Baseline vs. Treatment e Trigger Matrix) ou versionar uma habilidade existente, encadeando automaticamente expansao-contexto-adaptativa, aprimoramento-expansibilidade-agentes-skills, skill-creator e skill-auditor-refatorador-skills. Não use para auditoria isolada de catálogo (use skill-auditor-refatorador-skills) nem para desenvolvimento de software sem relação com skills.",
+      "tags": [
+        "skills",
+        "evals",
+        "ciclo-de-vida",
+        "governanca",
+        "pipeline-skillcraft",
+        "progressive-disclosure"
+      ],
+      "examples": [
+        "Executar a skill evoluir-skills no contexto atual"
+      ]
+    },
+    {
+      "id": "gap-analyzer-auditor",
+      "name": "gap-analyzer-auditor",
+      "description": "Auditor técnico e analista de brechas de processos em malha fechada (Closed-Loop Reflection). Inspeciona comandos, arquivos, traces e logs operacionais, identifica causas-raiz (RCA), separa fatos de inferências, propõe rotas alternativas e emite contrato de hand-off estruturado para retroalimentar o planejador de alto nível.",
+      "tags": [
+        "rca",
+        "closed-loop",
+        "hand-off",
+        "auditoria"
+      ],
+      "examples": [
+        "Executar a skill gap-analyzer-auditor no contexto atual"
+      ]
+    },
+    {
+      "id": "gdrive-auditoria-limpeza",
+      "name": "gdrive-auditoria-limpeza",
+      "description": "Audita e higieniza a unidade Google Drive (G:\\Meu Drive e MCP), detectando arquivos pesados (>100MB), duplicatas por hash e nome, pastas vazias orfas e executando simulacao segura de descarte com quarentena preventiva (Dry-run).",
+      "tags": [
+        "google-drive",
+        "limpeza",
+        "sha256",
+        "dry-run"
+      ],
+      "examples": [
+        "Executar a skill gdrive-auditoria-limpeza no contexto atual"
+      ]
+    },
+    {
+      "id": "gdrive-taxonomia-organizacao",
+      "name": "gdrive-taxonomia-organizacao",
+      "description": "Estrutura e categoriza arquivos e pastas no Google Drive (G:\\Meu Drive), aplicando a taxonomia canonica numerada real da maquina, padronizacao de nomes com datas ISO (YYYY-MM-DD), higienizacao de caracteres especiais e organizacao tematica sem perdas.",
+      "tags": [
+        "google-drive",
+        "taxonomia",
+        "datas-iso",
+        "organizacao"
+      ],
+      "examples": [
+        "Executar a skill gdrive-taxonomia-organizacao no contexto atual"
+      ]
+    },
+    {
+      "id": "high-level-context-planner",
+      "name": "high-level-context-planner",
+      "description": "Arquiteto estratégico e planejador de contexto de alto nível em malha fechada (Closed-Loop Reflection). Decompõe metas complexas em fases numeradas sequenciais com Fase 0 obrigatória, mapeia dependências, critérios de aceite Go/No-Go e consome o Hand-off Payload do gap-analyzer-auditor para replanejamento corretivo autônomo (Plano v2.0).",
+      "tags": [
+        "planejamento",
+        "fase-zero",
+        "closed-loop",
+        "replanning"
+      ],
+      "examples": [
+        "Executar a skill high-level-context-planner no contexto atual"
+      ]
+    },
+    {
+      "id": "manutencao-disco-windows",
+      "name": "manutencao-disco-windows",
+      "description": "Executa manutencao, triagem e higienizacao de pastas locais no Windows 11 (Downloads, Desktop, C:\\Users\\melki\\dev\\), isolando instaladores antigos, limpando residuos temporarios, organizando experimentos em dev\\sandbox\\ e sincronizando status de repositorios em dev\\repos\\ com simulacao preventiva.",
+      "tags": [
+        "windows-11",
+        "powershell",
+        "downloads",
+        "disco",
+        "dev-workspace"
+      ],
+      "examples": [
+        "Executar a skill manutencao-disco-windows no contexto atual"
+      ]
+    },
+    {
+      "id": "organizador-fluxo-arvore-arquivos",
+      "name": "organizador-fluxo-arvore-arquivos",
+      "description": "Transforma ideias brutas e requisitos de projetos/apps em fluxos visuais limpos (Mermaid), árvores de diretórios comentadas e planos de execução diretos, preservando o pedido original, mantendo histórico de versões e oferecendo exportação direta em arquivo único Markdown (.md) ou PDF formatado para evitar quebras.",
+      "tags": [
+        "mermaid",
+        "arvore-arquivos",
+        "fluxogramas",
+        "planejamento"
+      ],
+      "examples": [
+        "Executar a skill organizador-fluxo-arvore-arquivos no contexto atual"
+      ]
+    },
+    {
+      "id": "redator-tecnico-markdown",
+      "name": "redator-tecnico-markdown",
+      "description": "Redige relatorios executivos, notas tecnicas, atas de decisao e roadmaps estruturados em Markdown (.md) de alta fidelidade visual, com frontmatter YAML, caixas de alerta GitHub, tabelas ricas, padroes Google Style Guides (HTML/CSS, JSON, Python) e compatibilidade plena com Obsidian.",
+      "tags": [
+        "markdown",
+        "obsidian",
+        "google-styleguides",
+        "documentacao"
+      ],
+      "examples": [
+        "Executar a skill redator-tecnico-markdown no contexto atual"
+      ]
+    },
+    {
+      "id": "refatoracao-design-tatil-frontend",
+      "name": "refatoracao-design-tatil-frontend",
+      "description": "Executa a refatoracao e implementacao pratica de frontend por framework modular (React, Tailwind, HTML5/CSS, Vue), aplicando navegabilidade de alto padrao, menus descompactados com espacamento nobre, botoes ergonomicos com anti-squish, icones Lucide, tipografia refinada, elevacao tatil mineral e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide.",
+      "tags": [
+        "frontend",
+        "design-tatil",
+        "tailwind",
+        "refatoracao",
+        "anti-cobalto",
+        "multidimensional-2026"
+      ],
+      "examples": [
+        "Executar a skill refatoracao-design-tatil-frontend no contexto atual"
+      ]
+    },
+    {
+      "id": "refine-prompt",
+      "name": "refine-prompt",
+      "description": "Agente cognitivo de expansão, auditoria de factibilidade e refinamento de prompts e ideias (REFINE-PROMPT v3.0). Opera sob ancoragem temporal estrita (2026-10-03), pesquisa ativa em fontes primárias, taxonomia epistêmica ([FATO], [INFERÊNCIA], [LACUNA]), segurança Zero-Trust (OWASP LLM 2025/2026, MCP Spec 2026-07-28) e 3 módulos operacionais de saída (Resposta Direta, Artefato Plug-and-Play e Entrevista Socrática).",
+      "tags": [
+        "refine-prompt",
+        "zero-trust",
+        "epistemica",
+        "owasp-llm"
+      ],
+      "examples": [
+        "Executar a skill refine-prompt no contexto atual"
+      ]
+    },
+    {
+      "id": "skill-auditor-refatorador-skills",
+      "name": "skill-auditor-refatorador-skills",
+      "description": "Subagente auditor estático e refatorador de catálogo de habilidades (Estágio 4 do pipeline SkillCraft). Inspeciona pacotes de skills em busca de schemas incompletos, violações dos 3 Tiers (<500 linhas), falta de Trigger Eval Matrix (should-trigger vs near-misses), monólitos a desacoplar, scripts repetitivos em transcrições e discrepâncias com o Motor Multidimensional Tátil v2.6.0-2026 (22 temas, 4 tipografias, 5 geometrias), atualizando SKILL.md e changelogs. Não use para criar uma skill do zero a partir de uma ideia bruta (use evoluir-skills).",
+      "tags": [
+        "auditoria",
+        "refatoracao",
+        "desacoplamento",
+        "governanca-skills",
+        "trigger-matrix",
+        "design-tatil-2026"
+      ],
+      "examples": [
+        "Executar a skill skill-auditor-refatorador-skills no contexto atual"
+      ]
+    },
+    {
+      "id": "skill-orquestrador-planos-encadeados",
+      "name": "skill-orquestrador-planos-encadeados",
+      "description": "Orquestrador executivo de planos encadeados e modulares. Recebe planos decompostos em fases numeradas, mapeia as dependencias entre skills especialistas, gerencia o estado compartilhado sem poluicao de contexto, governa a aderência ao design tátil e paleta mineral do desenvolvedor e dispara a execucao sequencial com validacao de discrepancias a cada transicao.",
+      "tags": [
+        "orquestrador",
+        "planos-encadeados",
+        "workflow",
+        "multiagente"
+      ],
+      "examples": [
+        "Executar a skill skill-orquestrador-planos-encadeados no contexto atual"
+      ]
+    },
+    {
+      "id": "test-quality-auditor",
+      "name": "test-quality-auditor",
+      "description": "Audita a qualidade, determinismo e eficácia real de suítes de testes automatizados em 5 domínios modulares espelhados: Python (Pytest/Unittest), TypeScript/JS (Node/Vitest/Jest), Go (*_test.go / testing.T / ADK Go v2), Servidores/Clientes MCP (Model Context Protocol — JSON-RPC 2.0 / FastMCP / Stdio) e Harnesses de Governança & Evals (SemanticGuard, Policy Gates HITL, CheckpointStore e Eval-Driven Harness). Detecta a Ilusão do Build Verde (Green Build Illusion), disseca a montagem Arrange-Act-Assert (AAA), analisa falhas tautológicas (assert True, is not None, erros descartados com '_', t.Fatal em goroutines, handshake MCP incompleto, testes de Harness sem bloqueio de injeção ou sem transição CRITICAL e vazamento de estado), classifica testes no Dossiê de Qualidade (Níveis 1 a 4), aplica refatoração cirúrgica e executa módulos espelhados em evals/modules/*_evals.json gerando relatórios grading.json e benchmark.json.",
+      "tags": [
+        "test-quality",
+        "ast-auditor",
+        "go-testing",
+        "mcp-testing",
+        "harness-testing",
+        "mirrored-evals"
+      ],
+      "examples": [
+        "Executar a skill test-quality-auditor no contexto atual"
+      ]
+    }
+  ],
+  "signatures": [
+    {
+      "protected": {
+        "alg": "HS256",
+        "kid": "franklin-key-2026-v1",
+        "jku": "http://localhost:10999/public_keys.json",
+        "typ": "JOSE+JSON"
+      },
+      "signature": "c832772e775c772a452b0ff726b0898c2f459f0f798116f324cc117f1e229987"
+    }
+  ]
+}
