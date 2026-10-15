@@ -66,7 +66,7 @@ Para assegurar conformidade técnica rigorosa, a skill opera sob os seguintes in
 
 ## 🔗 Links Úteis no Workspace
 
-- [SKILL.md Principal](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/arquiteto-conteudo-solucoes/SKILL.md)
-- [Critérios de Auditoria](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/arquiteto-conteudo-solucoes/rules/criterios_auditoria.md)
-- [Diretrizes Especializadas](file:///c:/Users/melki/dev/franklin-quebragalho/.agents/skills/arquiteto-conteudo-solucoes/references/diretrizes_especializadas.md)
-- [Manifesto de Skills](file:///c:/Users/melki/dev/franklin-quebragalho/MY_SKILLS.md)
+- [SKILL.md Principal](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/arquiteto-conteudo-solucoes/SKILL.md)
+- [Critérios de Auditoria](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/arquiteto-conteudo-solucoes/rules/criterios_auditoria.md)
+- [Diretrizes Especializadas](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/arquiteto-conteudo-solucoes/references/diretrizes_especializadas.md)
+- [Manifesto de Skills](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md)

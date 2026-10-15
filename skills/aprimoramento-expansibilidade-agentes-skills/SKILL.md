@@ -1,123 +1,137 @@
 ---
 name: aprimoramento-expansibilidade-agentes-skills
 description: >-
-  Executa o diagnóstico, otimização de contexto, modularização e expansão de capacidade de Agentes de IA e arquivos SKILL.md. Deve ser ativada quando for necessário converter um agente monolítico em multi-agente, adicionar suporte a novas ferramentas/APIs, refatorar habilidades para despoluir o contexto ou otimizar pipelines de raciocínio (ReAct, CoT, Self-Refine).
+  Motor consultivo de arquitetura, expansibilidade (3 Tiers, Envelope Pattern, Context Forking, Memória em 3 Camadas, MCP/A2A) e ciclo de qualidade orientado a dados (Eval-Driven Iteration, Pass@k, FNR < 0.001, LLM-as-a-Judge Snorm, Trigger Optimization, GEPA/ADK e Densidade de Atenção Softmax) para Agentes de IA e SKILL.md. Use quando consultada pela evoluir-skills ou quando o usuário solicitar conversão de agente monolítico em multiagente, escalabilidade em Níveis 1 a 4, despoluição de janela de contexto ou engenharia de métricas de avaliação. Não use para criar pasta física de skill do zero sem passar pela evoluir-skills.
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "2.0.0"
   author: "SkillCraft & Melki"
-  category: "Arquitetura e Expansibilidade de Agentes"
-  updated_at: "2026-10-04"
+  category: "Arquitetura, Expansibilidade e Avaliação de Agentes"
+  updated_at: "2026-10-14"
   tags:
-    - "multiagente"
-    - "otimizacao-contexto"
-    - "cot"
-    - "react"
-version: 1.0.0
-updated_at: 2026-10-04
+    - "expansibilidade"
+    - "eval-driven"
+    - "pass-at-k"
+    - "envelope-pattern"
+    - "context-forking"
+    - "mcp-a2a"
+    - "progressive-disclosure"
+version: 2.0.0
+updated_at: 2026-10-14
 author: SkillCraft & Melki
-category: Arquitetura e Expansibilidade de Agentes
+category: Arquitetura, Expansibilidade e Avaliação de Agentes
 ---
 
-# Skill: Aprimoramento e Expansibilidade de Agentes e Skills
+# Aprimoramento, Expansibilidade e Avaliação de Agentes & Skills (`v2.0.0`) 🧠
 
-## Gatilhos de Ativação
-- Necessidade de refatorar prompts genéricos ou extensos em procedimentos operacionais repetíveis (`SKILL.md`).
-- Migração de sistemas simples de chat para arquiteturas baseadas em SDKs modulares (Google ADK, LangGraph, OpenAI Agents SDK, PydanticAI).
-- Ocorrência de alucinações de ferramentas, estouro de limite de contexto (*context window*) ou respostas superficiais em fluxos de trabalho complexos.
-- Solicitações para estruturar colaboração multi-agente (Orquestrador, Especialistas e Sub-agentes assíncronos).
+Skill consultiva de engenharia de sistemas agênticos (Estágio 2 do pipeline `evoluir-skills` e arquiteta de expansão para **Google ADK**, **Antigravity**, **MCP** e **A2A**). Substitui impressões subjetivas por métricas formais, divulgação progressiva em 3 camadas e desacoplamento estrutural.
 
-## Entradas Obrigatórias
-1. **Definição Atual do Agente ou Skill:** O código, arquivo `.md` ou instrução atual a ser expandida.
-2. **Objetivo do Aprimoramento:** Ex: Inclusão de novas ferramentas, redução de custos/tokens, transição para multi-agente, ou aumento de precisão cirúrgica.
-3. **Ambiente / Framework Alvo:** Ex: Google ADK (Python/Go/Node), LangGraph, OpenAI Agents SDK, ou arquivo `SKILL.md` puramente descritivo para LLMs nativos.
+> [!TIP]
+> **Referência Técnica Completa (Tier 3):** Para fórmulas matemáticas ($\text{Pass}@k$, $\text{FNR}$, $S_{\text{norm}}$, Softmax), schemas Pydantic do *Envelope Pattern* e a tabela completa dos 4 Níveis de Maturidade, consulte [`references/guia_expansibilidade_e_metricas_2026.md`](references/guia_expansibilidade_e_metricas_2026.md).
 
 ---
 
-## Fluxo Passo a Passo com Decisões Condicionais
-
-### Passo 1: Análise de Intenção e Auditoria de Contexto
-- Examine o agente/skill atual. Identifique instruções vagas, falta de restrições negativas, e acoplamento excessivo de funções no mesmo prompt.
-- **Regra de Decisão:** SE a instrução ultrapassar 1.500 tokens de regras estáticas, OBRIGATORIAMENTE segregue o conhecimento em arquivos secundários de referência ou sub-skills carregadas sob demanda.
-
-### Passo 2: Seleção e Arquitetura do Modelo de Expansão
-Avalie a complexidade do problema e escolha o padrão arquitetural:
-- **Padrão A (Single-Agent com Injeção Dinâmica de Habilidades):** Indicado para fluxos onde o agente atua sozinho, mas precisa de "guias de procedimentos" específicos em fases pontuais do atendimento.
-- **Padrão B (Orquestração Multi-Agente / Swarm):** Indicado para fluxos com múltiplos domínios de conhecimento (ex: Pesquisa + Redação + Validação de Código), onde cada sub-agente possui escopo e ferramentas dedicadas.
-
-### Passo 3: Engenharia de Contexto e Formatação Estruturada
-- Aplique o formato **CLAREZA** nas instruções do sistema (*System Instructions*):
-  - **[C] Contexto e Persona:** Definição clara do papel e escopo do especialista.
-  - **[L] Leitor / Nível Técnico:** Audiência da saída do agente.
-  - **[A] Ação Principal:** Protocolo claro de passos.
-  - **[R] Referências e Ferramentas:** Mapeamento de APIs e schemas tipados.
-  - **[E] Estrutura da Saída:** Formato rigoroso (JSON, Markdown executivo, Pydantic Schema).
-  - **[Z] Zonas de Risco:** O que o agente NUNCA deve fazer ou assumir.
-  - **[A] Avaliação de Qualidade:** Critérios formais para considerar a tarefa concluída.
-
-### Passo 4: Implementação do Loop de Raciocínio e Resiliência (ReAct / Self-Refine)
-- Injete no agente uma diretiva explícita de verificação metacognitiva antes da resposta final:
-  1. *Ação:* Executar ferramenta ou gerar raciocínio intermediário.
-  2. *Observação:* Avaliar os dados retornados.
-  3. *Self-Refine (Auto-Crítica):* Identificar 3 potenciais falhas ou omissões no rascunho.
-  4. *Ajuste:* Corrigir a saída antes da exibição final.
-
-### Passo 5: Tipagem Estrita de Ferramentas e Tratamento de Erros
-- Garanta que toda integração de ferramenta (*Tool Calling*) contenha:
-  - Descrições explícitas do uso e parâmetros obrigatórios vs. opcionais.
-  - Tratamento de exceção: Instrução explícita de como agir se a ferramenta falhar ou retornar dados vazios (evitando alucinações de dados fictícios).
+## 🎯 Quando Usar (Gatilhos de Ativação)
+- Como **Estágio 2 Consultivo** invocado automaticamente pela `evoluir-skills` ao projetar ou evoluir qualquer habilidade do catálogo.
+- Quando o usuário solicitar migração de um **Prompt Monolítico (Nível 1/2)** para uma arquitetura de **Context & Intent Engineering (Nível 3)** ou **Specification Engineering Corporativo (Nível 4)**.
+- Para diagnosticar degradação de atenção (*Context Drift* em 20–50 passos), excesso de regras (*over-constraining*), loops de ferramentas em `transcript.jsonl` ou falsos positivos/negativos de ativação.
+- Na implementação de **Google ADK** (`adk optimize` / GEPA), **Padrão Envelope**, **Context Forking (`context: fork`)**, **Memória em 3 Camadas** ou interoperabilidade **MCP / A2A**.
 
 ---
 
-## Decisões Condicionais de Implementação
-
-- **SE o objetivo for puramente descritivo (Prompt/Skill em Markdown):**
-  - Gere um arquivo `SKILL.md` autônomo contendo metadados de gatilhos (*triggers*), modelo de dados e exemplos de poucos disparos (*few-shot examples*).
-- **SE o objetivo for implementação em Código (ex: Google ADK / Python):**
-  - Escreva o código modularizando:
-    1. Arquivo de declaração de ferramentas (`tools.py`).
-    2. Arquivo de definição de sub-agentes especialistas (`agents.py`).
-    3. Arquivo orquestrador principal de loop (`main.py`).
+## 🚫 Limites, Exceções e Quando NÃO Usar
+- **Não usar** isoladamente para scaffolding físico de diretórios e atualização do `MY_SKILLS.md` sem o fluxo mestre da `evoluir-skills`.
+- **Não usar** para expandir prompts simples de turno único que não envolvam arquitetura de agentes ou skills (use `expansao-contexto-adaptativa`).
+- **Não usar** para auditoria cosmética/visual de frontend (use `analise-design-tatil-frontend`).
 
 ---
 
-## Modelo de Saída
+## 📥 Entradas Obrigatórias e Pré-requisitos
+1. **Alvo da Consultoria**: Definição atual do agente (Python/TS/ADK) ou contrato `SKILL.md` (ou escopo expandido vindo do Estágio 1).
+2. **Vetor de Escala ou Gargalo**: Otimização de contexto/latência, adição de ferramentas via Envelope/MCP, isolamento de subagentes ou desenho de suíte de avaliação (`evals.json`).
+3. **Nível de Maturidade Alvo**: Nível 3 (*Context & Intent Engineering*) ou Nível 4 (*Specification Engineering Corporativo*).
 
-### 1. Diagnóstico do Sistema Legado
-* **Pontos Fracos Identificados:** [Lista de gargalos de contexto, ambiguidade ou vulnerabilidades]
-* **Arquitetura Escolhida:** [Single-Agent + Skills OU Multi-Agente Swarm]
-* **Justificativa de Design:** [Explicação da escolha baseada na redução de latência e ganho de precisão]
+---
 
-### 2. Diagrama de Orquestração (Mermaid)
+## ⚙️ Processamento Passo a Passo: Os 2 Eixos de Engenharia
 
-```mermaid
-graph TD
-    User([Usuário / Sistema Caller]) --> Router[Agente Orquestrador]
-    Router -->|Determina Domínio| SubA[Sub-Agente / Skill Especialista A]
-    Router -->|Determina Domínio| SubB[Sub-Agente / Skill Especialista B]
-    SubA --> ToolsA[Ferramentas / APIs Dedicadas A]
-    SubB --> ToolsB[Ferramentas / APIs Dedicadas B]
-    SubA -->|Retorna Resultado| Router
-    SubB -->|Retorna Resultado| Router
-    Router -->|Aplica Self-Refine & Formatação| FinalOutput([Resposta Final Confiável])
-```
-
-### 3. Código do Componente Refatorado (`SKILL.md` ou Código de Produção)
+### Eixo 1: Critérios de Expansibilidade e Arquitetura Extensível (*Extensibility & Scaling*)
 
 ```text
-[Inserir o arquivo SKILL.md completo ou os blocos de código tipados em Python/ADK]
++-----------------------------------------------------------------------------------+
+|                        DIVULGAÇÃO PROGRESSIVA (3 TIERS)                           |
++-----------------------------------------------------------------------------------+
+| Tier 1: Catálogo (Início)        --> name + description (~50-100 tokens)          |
+| Tier 2: Ativação (Match)         --> Corpo SKILL.md (<5000 tokens / <500 linhas)  |
+| Tier 3: Execução (Sob demanda)   --> references/, scripts/, schemas Pydantic      |
++-----------------------------------------------------------------------------------+
+                                        │
+                                        ▼
++-----------------------------------------------------------------------------------+
+|                     ARQUITETURA DE EXECUÇÃO E ORQUESTRAÇÃO                        |
++-----------------------------------------------------------------------------------+
+| • Envelope Pattern (Action Routing)   --> Interface polimórfica mestre            |
+| • Context Forking (context: fork)     --> Subagentes isolados para tarefas longas |
+| • Barramento MCP + A2A (JSON-RPC 2.0) --> Desacoplamento de tools e Agent Cards   |
+| • Memória em 3 Camadas                --> Scratchpad | Sessão | Memory Bank (TTL) |
++-----------------------------------------------------------------------------------+
 ```
 
-### 4. Checklist de Qualidade e Segurança
+1. **Divulgação Progressiva Estrita (3 Tiers)**:
+   - **Tier 1 (Catálogo)**: Carrega apenas `name` e `description` (~50–100 tokens).
+   - **Tier 2 (Ativação)**: Injeta o corpo do `SKILL.md` ($< 5.000$ tokens / $< 500$ linhas) somente quando a skill é ativada.
+   - **Tier 3 (Execução sob demanda)**: `references/`, `scripts/`, `assets/` e schemas JSON/Pydantic só são lidos quando o passo ativo exigir.
+2. **Descentralização Modular e Padrão Envelope (*Envelope Pattern*)**:
+   - Abandone o prompt monolítico ("Parede de Complexidade").
+   - Em vez de dezenas de tools granulares poluindo o catálogo, exponha uma única interface mestre (**Envelope**) com `action: Literal[...]` e `params: dict`, despachando internamente para sub-esquemas Pydantic em tempo de execução.
+3. **Bifurcação de Contexto (`context: fork`) e Controle de Fronteira**:
+   - Tarefas longas de pesquisa, depuração ou tentativa-e-erro devem rodar em subagente isolado (`invoke_subagent` / `context: fork`), retornando ao orquestrador apenas o payload final assinado.
+   - O roteador de intenção opera sem acesso direto a ferramentas destrutivas (*boundary control*).
+4. **Arquitetura de Memória em 3 Camadas**:
+   - **Camada 1 (Scratchpad Transitório)**: Buffer Markdown para raciocínio imediato (CoT/ReAct).
+   - **Camada 2 (Estado de Sessão)**: Contexto transacional ativo da thread (`.context/CURRENT_STATE.md` / cache rápido).
+   - **Camada 3 (Memory Bank de Longo Prazo)**: Cofre Obsidian + MemPalace / banco vetorial/grafo com proveniência, TTL e integridade SHA-256.
+5. **Interoperabilidade (`MCP` + `A2A`) e Governança (`HITL`)**:
+   - Ferramentas desacopladas em servidores **MCP** (JSON-RPC 2.0 via stdio ou Streamable HTTP) e colaboração entre agentes via **A2A** (`/.well-known/agent-card.json`).
+   - Resolução determinística de colisão (`Escopo de Projeto > Escopo de Usuário`) e **Policy Gates HITL** obrigatórios para mutações destrutivas ou externas irreversíveis.
 
-* [ ] As ferramentas possuem tipos e descrições não ambíguas?
-* [ ] O limite de contexto foi preservado através da separação de responsabilidades?
-* [ ] O agente sabe como reagir caso uma ferramenta retorne um erro ou resultado nulo?
-* [ ] Foram incluídos guardrails contra vazamento de credenciais e ações destrutivas sem confirmação?
-* [ ] A saída está formatada estritamente conforme o contrato estipulado?
+---
 
-## Limites de Segurança
+### Eixo 2: Critérios de Aprimoramento e Ciclo de Qualidade (*Refinement & Evaluation*)
 
-* **Segurança Médica/Legal:** Agentes expandidos nestes domínios devem exigir anonimização de dados pessoais (LGPD/HIPAA) e incluir aviso explícito sobre a necessidade de supervisão profissional.
-* **Execução de Código:** Agentes que utilizam sandboxes para execução de scripts (Python/Bash) devem rodar em ambientes isolados com tempo limite (*timeout*) estrito e sem acesso irrestrito à rede interna.
-* **Validação de Permissões:** O agente orquestrador não pode conceder a um sub-agente permissões superiores às suas próprias autorizações originais.
+1. **Avaliação Estruturada (*Eval-Driven Iteration*) e Métricas Formais**:
+   - **Baseline vs. Treatment**: Executar `evals/evals.json` com a skill ativada vs. desativada (ou versão anterior), medindo o ganho real ($\Delta\text{Pass Rate}$) contra o custo de latência e tokens.
+   - **Estimador Não Enviesado $\text{Pass}@k$**: Medir a probabilidade de gerar ao menos 1 solução funcionalmente correta em $k$ amostras independentes.
+   - **Matriz de Confusão para Guardrails**: Em filtros de segurança/injeção com acesso de escrita, calibrar Precisão, Recall e exigir **Taxa de Falsos Negativos $\text{FNR} < 0.001$**.
+   - **Juízes `LLM-as-a-Judge` Normalizados ($S_{\text{norm}} \in [0, 100]$)**: Avaliar estrutura, tom e aderência com rubricas ortogonais ponderadas usando modelo de família distinta do gerador para evitar viés de autoavaliação.
+2. **Diagnóstico de Trajetórias (`transcript.jsonl`) e *Lean Instructions***:
+   - Inspecionar os logs passo a passo da sessão para detectar chamadas improdutivas ou loops.
+   - **Instruções baseadas no "Porquê"**: Substituir listas de regras rígidas ("SEMPRE faça X") por explicações causais enxutas, removendo restrições redundantes quando o pass rate estagnar (*over-constraining*).
+   - **Empacotamento em `scripts/`**: Extrair qualquer lógica ou parser que o agente reescreva repetidamente em runtime para scripts determinísticos na pasta `scripts/`.
+3. **Otimização do Gatilho de Ativação (*Trigger Optimization*)**:
+   - Construir matriz de consultas `should-trigger` (variando formalidade, erros de digitação, caminhos e complexidade) e `should-not-trigger` com **casos limítrofes (*near-misses*)** semanticamente próximos.
+   - Separar consultas em conjuntos de **Treino e Validação** com múltiplas execuções (*trigger rate*) para impedir overfitting da `description`.
+4. **Otimização Programática (`GEPA` / `adk optimize`) e Simulação Multiturno**:
+   - Utilizar otimizadores automáticos de prompt/descrição (como o algoritmo **GEPA** via `adk optimize` no Google ADK) guiados pelos relatórios de falha.
+   - Empregar simulação sintética de usuário multiturno com personas adversariais para testar recuperação de falhas.
+5. **Densidade de Atenção na Janela de Contexto (Softmax)**:
+   - Como a autoatenção distribui pesos via $\text{Softmax}(QK^T/\sqrt{d_k})$, tokens irrelevantes inflam a soma exponencial do denominador e diluem o foco nos guardrails. Elimine ruído para manter alta densidade informacional em jornadas de 20 a 50 passos.
+
+---
+
+## 📊 Matriz Resumo de Maturidade (Níveis 1 a 4)
+
+| Dimensão | Nível 1: Monolítico | Nível 2: Produto | Nível 3: Context & Intent Eng. | Nível 4: Specification Eng. |
+| :--- | :--- | :--- | :--- | :--- |
+| **Arquitetura** | Tudo no System Prompt | Instruções fixas do app | Perfil enxuto + `SKILL.md` + Tools | Grafo Multiagente + Spec Corpus |
+| **Contexto** | Envia tudo a cada turno | Janela estática com logs | **Divulgação Progressiva (3 Tiers)** | Filtros semânticos + Roteamento dinâmico |
+| **Qualidade** | Empírico ("parece bom") | Testes manuais avulsos | **Evals Baseline/Treatment + Pass@k** | CI/CD Contínuo + LLM-as-a-Judge ($S_{\text{norm}}$) |
+| **Integração** | Funções ad-hoc acopladas | Conectores proprietários | **Servidores MCP + SDKs padrão** | Barramento MCP + Protocolo A2A + Registry |
+
+---
+
+## 📤 Saídas e Entregáveis (Modelo de Saída)
+1. **Diagnóstico de Maturidade e Gargalos**: Classificação atual (Nível 1 a 4), análise de densidade atencional (Softmax) e falhas de trajetória/gatilho.
+2. **Arquitetura de Expansão Recomendada**: Divisão exata em **Tier 1 / Tier 2 / Tier 3**, especificação de **Envelope Pattern**, **Context Forking** e extração para `scripts/`.
+3. **Plano de Avaliação Empírica (`evals.json`)**: Definição do protocolo *Baseline vs. Treatment*, matriz de gatilhos (`should-trigger` vs `near-misses`) e metas de $\text{Pass}@k$ / $\text{FNR}$.
+4. **Artefato Refatorado (`SKILL.md` ou Código ADK/MCP)**: Implementação modular tipada pronta para homologação no Estágio 3/4 da `evoluir-skills`.

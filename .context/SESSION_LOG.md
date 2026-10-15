@@ -1,37 +1,28 @@
 # Checkpoint da Sessão: Franklin Quebra-Galho
 
-> **Data / Turno**: 2026-10-05 00:24 UTC  
+> **Data / Turno**: 2026-10-14  
 > **Nível de Persistência**: Nível 3 (Checkpoint de Sessão)  
-> **Ação Executada**: Organização de arquivos fora de escopo, higienização de resíduos de build e integração da Tool MCP `franklin_execute_dag`  
-> **Exit Code Comprovado**: `uv run pytest tests/test_server.py -v` -> 13 passed em 1.75s (ExitCode: 0)  
+> **Ação Executada**: Internalização do pacote `shared/`, alinhamento geral de caminhos com a máquina atual, remoção de 3 skills legadas redundantes e sincronização global (Repositório + Plugin Global + Google Drive)  
+> **Exit Code Comprovado**: `pytest tests/test_server.py -v` -> 15 passed (ExitCode: 0) e `validate_skills.py` -> 23/23 PASS (ExitCode: 0)  
 
 ---
 
 ## 1. Atividades Concluídas neste Turno
 
-1. **Remoção de Arquivos Duplicados Fora de Escopo**:
-   - `MY AGENTS.md` e `MY SKILL.md`: Removidos via `git rm` (eliminação de arquivos duplicados de conveniência com espaços no nome, mantendo os arquivos canônicos `MY_AGENTS.md` e `MY_SKILLS.md`).
-   - `google-drive-index-app/dist/`: Resíduo antigo de compilação removido com segurança.
-   - `.gitignore` atualizado para conter exclusão recursiva de `**/dist/` e `**/.sessions/`.
-   - `generate_workspace_index.py` aprimorado para ignorar `dist` e `.sessions` na árvore AST.
+1. **Internalização Standalone do Pacote `shared/`**:
+   - Criados `shared/tools/frontmatter_parser.py` e `shared/harness.py` (`SemanticGuard`, `evaluate_action_risk`, `CheckpointStore` em SQLite WAL).
+   - Atualizado `server.py` com bootstrap de `sys.path` e caminho real `EPIC_VOLTA_DIR = Path(r"C:\Users\melki\dev\repos\epic-volta")`.
+   - Refatorado `scripts/validate_skills.py` para reutilizar `shared.tools.frontmatter_parser`.
 
-2. **Integração do Motor DAG no Servidor FastMCP Global (`server.py`)**:
-   - Adicionada a ferramenta `@mcp.tool()` `franklin_execute_dag`:
-     * Suporte a despacho de planos via caminho de arquivo ou string JSON inline (`DAGExecutionPlan`).
-     * Execução tolerante a falhas chamando o CLI do `epic-volta` com `--json`.
-     * Suporte aos parâmetros `run_id`, `resume`, `timeout_seconds` e `db_path`.
-   - Documentação da ferramenta atualizada no `README.md`.
+2. **Padronização de Caminhos e Nomes Reais da Máquina**:
+   - Atualizadas as skills `curadoria-obsidian-vault` (`v1.1.0`), `manutencao-disco-windows` (`v1.1.0`), `gdrive-taxonomia-organizacao` (`v1.1.0`), `gdrive-auditoria-limpeza`, `redator-tecnico-markdown` (`v1.2.0`), `conversor-html-pdf`, `arquiteto-conteudo-solucoes` e `_template` (`v1.3.0`).
+   - Propagada a Seção 5 de `references/paleta_estilo_melki.md` para todas as 3 skills de frontend (`consultor`, `analise` e `refatoracao`).
+   - Atualizados os scripts `Iniciar-Franklin-MCP.cmd`, `Gerar-Novo-Projeto-Universal.cmd`, `scaffold-universal-app.ps1` e `standardize_skills_metadata.py`.
 
-3. **Evolução de Skills de Orquestração**:
-   - `skill-orquestrador-planos-encadeados`: Atualizado `SKILL.md` (passo 3) integrando despacho via `franklin_execute_dag` para planos no formato de grafo acíclico, sincronizado entre `.agents/skills/` e `skills/`.
+3. **Eliminação de Redundâncias**:
+   - Removidas as 3 skills legadas (`organizar-gdrive`, `organizar-local` e `gerar-docs-pdf`), o arquivo duplicado `arquiteto_de_conteudo_e_solucoes.md` na raiz e o diretório órfão `.agents/teamwork/`.
 
-4. **Validação Determinística**:
-   - `pytest tests/test_server.py -v`: **13/13 PASS** em 1.75s (incluindo testes de arquivo, JSON inline e entrada inválida para `franklin_execute_dag`).
-   - `python scripts/validate_skills.py`: **26/26 PASS (100%)**.
-   - Reindexação de AST do workspace executada com sucesso (`Tree Hash: 185fd0d3ae5c534c`).
-
----
-
-## 2. Próxima Ação Recomendada
-
-- O Franklin Quebra-Galho agora possui acesso direto ao motor de DAG do Epic-Volta via tool nativa MCP para despachar grafos complexos e concorrentes em segundo plano.
+4. **Sincronização Quádrupla e Validação**:
+   - Sincronizados `.agents/skills/`, `skills/`, `C:\Users\melki\.gemini\config\plugins\franklin-skills\skills` e `G:\Meu Drive\Franklin_Skills_Docs_2026`.
+   - `validate_skills.py`: **23/23 PASS (100%)**.
+   - `pytest tests/test_server.py -v`: **15/15 PASS (100%)**.

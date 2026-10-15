@@ -17,10 +17,10 @@
 - **Padrão de Comandos**: Sempre use sintaxe nativa do PowerShell (ex.: `Get-ChildItem`, `Test-Path`, `Move-Item`, `Copy-Item`). Nunca utilize comandos exclusivos de Bash sem adaptador.
 - **Localizações Chave**:
   - Google Drive montado: `G:\Meu Drive\`
-  - Notas & Base de Conhecimento: `C:\Users\melki\Documents\Obsidian Vault\`
-  - Pasta Raiz de Desenvolvimento: `C:\Users\melki\dev\`
-  - Scripts Utilitários: `C:\Users\melki\dev\scripts\` e `.\scripts\` deste workspace.
-  - Workspace Atual: `c:\Users\melki\dev\franklin-quebragalho` (Projeto: `franklin-quebra-galho`).
+  - Notas & Base de Conhecimento (Obsidian Vault): `C:\Users\melki\dev\notes\`
+  - Pasta Raiz de Desenvolvimento: `C:\Users\melki\dev\` (`repos\`, `sandbox\`, `tools\`, `notes\`)
+  - Scripts Utilitários: `C:\Users\melki\dev\tools\` e `.\scripts\` deste workspace.
+  - Workspace Atual: `c:\Users\melki\dev\repos\franklin-quebragalho` (Projeto: `franklin-quebragalho`).
 
 ---
 
@@ -60,7 +60,7 @@
   - `rules/`: Regras de corte estritas e critérios determinísticos falsificáveis (`criterios_auditoria.md`).
   - `scripts/`: Scripts executáveis auxiliares (PowerShell / Node).
   - `evals/`: Conjunto de testes estruturados (`evals.json`) com asserções reais (eliminando testes simulados no chat).
-- **Governança de Ciclo de Vida**: Toda skill criada ou modificada deve ter seu status (`💡 Ideia`, `🧪 Em Teste`, `✅ Validada`, `🚀 Produção`), versão SemVer e histórico atualizados no arquivo [MY_SKILLS.md](file:///c:/Users/melki/dev/franklin-quebragalho/MY_SKILLS.md).
+- **Governança de Ciclo de Vida**: Toda skill criada ou modificada deve ter seu status (`💡 Ideia`, `🧪 Em Teste`, `✅ Validada`, `🚀 Produção`), versão SemVer e histórico atualizados no arquivo [MY_SKILLS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md).
 
 ---
 

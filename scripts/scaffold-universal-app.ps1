@@ -8,7 +8,7 @@
 .PARAMETER ProjectName
     Nome da pasta e identificador do novo projeto.
 .PARAMETER DestinationPath
-    Diretório onde o projeto será instanciado. Padrão: C:\Users\melki\Projetos
+    Diretório onde o projeto será instanciado. Padrão: C:\Users\melki\dev\repos
 .PARAMETER InstallDeps
     Se especificado, roda 'npm install' automaticamente após o provisionamento.
 .PARAMETER InitGit
@@ -26,7 +26,7 @@ param (
     [string]$ProjectName,
 
     [Parameter(Mandatory = $false, Position = 1)]
-    [string]$DestinationPath = "C:\Users\melki\Projetos",
+    [string]$DestinationPath = "C:\Users\melki\dev\repos",
 
     [Parameter(Mandatory = $false)]
     [switch]$InstallDeps,

@@ -111,9 +111,29 @@ Cada tema reconfigura simultaneamente **4 eixos arquiteturais**:
 
 ---
 
-## 5. Suporte a TDAH e Ergonomia Cognitiva
+## 5. Minimalismo, Antipoluição Visual, UI/UX Intuitiva & Suporte a TDAH
 
-1. **Agrupamento Semântico e Caixas Delimitadas**: Não deixar informações flutuando sem contorno; cada bloco de dados deve habitar seu próprio cartão tátil.
-2. **Busca Rápida Centralizada (`Ctrl + K` / `⌘K`)**: Todo app deve ter Command Palette instantânea com filtro de temas e abas.
-3. **Feedbacks Físicos Imediatos**: Todo botão deve possuir `active:scale-95` ou `translateY(1px)` e blindagem anti-squish (`flex-shrink: 0; white-space: nowrap;`).
-4. **Proibição de Bloqueios Nativos**: Proibido o uso de `alert()` ou `confirm()` que travam o navegador; usar modais in-page ou toasts automáticos com auto-dismiss (`role="status" aria-live="polite"`).
+### 5.1. Regras Rígidas de UI/UX, Luz/Sombra e Antipoluição Visual (Obrigatórias em 100% dos Projetos)
+1. **Destaque por Sombra, Profundidade e Incidência de Luz (NÃO por Cor Hiperdestacada)**:
+   - O destaque de botões primários, abas ativas, badges e cartões deve nascer da **incidência de luz zenital** (`radial-gradient` no topo do card, `linear-gradient` nas teclas + `inset 0 1px 0` especular), **cavidades esculpidas** (`sunken wells` para inputs, trilhos de abas e pílulas) e **sombras físicas multicamadas** (oclusão + projeção).
+   - **Proibido** usar cores hiperdestacadas, textos/botões pintados de azul/verde vibrante ou neon para chamar atenção. A hierarquia é escultural e luminosa, não cromático-saturada.
+2. **Orçamento de Densidade por Card (Regra do 1+2 & Progressive Disclosure)**:
+   - Cada cartão deve exibir no máximo **1 ação primária clara** (tecla física iluminada) e **2 ações secundárias discretas**. Ações extras devem ficar recolhidas em um menu popover (`⋯`) ou aparecer sob demanda.
+   - Proibido empilhar 5 a 9 botões ou repetir emojis decorativos em cada botão de uma mesma grade.
+3. **Zero "Caixa dentro de Caixa" Desnecessária**:
+   - Separe metadados dentro do cartão usando tipografia (`font-mono`), espaço em branco (*whitespace* $\ge 30\%$) e divisórias sutis de `1px`. Reserve cavidades (`sunken wells`) para inputs de busca, trilhos de filtro e tags gravadas.
+4. **Escaneabilidade em 3 Segundos & Ergonomia TDAH**:
+   - Em até 3 segundos o usuário deve identificar: (1) onde está, (2) qual é o dado principal e (3) onde clicar.
+   - Busca rápida centralizada (`Ctrl + K` / `⌘K`), feedback físico imediato nos botões (`translateY(1px)`), blindagem anti-squish (`flex-shrink: 0; white-space: nowrap;`) e proibição de `alert()` / `confirm()` nativos (usar toasts silenciosos com `role="status" aria-live="polite"`).
+
+### 5.2. Preferências Flexíveis de Paleta e Temas (NÃO usar como camisa de força)
+1. **Autonomia de Materiais e Superfícies por Projeto**:
+   - Os 22 temas acima são um **repertório de preferência**, não uma obrigação de deixar todos os sistemas com a mesma cor. Varie as superfícies minerais (ardósia, titânio, basalto, calcário, papel algodão) de acordo com a alma do produto, mantendo sempre baixa saturação e relevo por luz e sombra.
+2. **Kit de 5 Temas Integrados com `localStorage` (Para Cockpits, Utilitários e Testes)**:
+   - Quando o projeto for um utilitário pessoal, dashboard de controle ou quando múltiplos temas forem desejados, inclua o seletor leve com persistência em `localStorage` contendo os **5 temas favoritos**:
+     1. `Tactile Matte`
+     2. `Phantom Obsidian 4K`
+     3. `Quiet Luxury Titanium`
+     4. `Steadfast Stainless`
+     5. `Warm Editorial Paper`
+

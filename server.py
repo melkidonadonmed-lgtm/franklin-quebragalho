@@ -31,6 +31,9 @@ mcp = FastMCP("Franklin Skills MCP")
 
 # Diretórios Canônicos do Workspace e Plugins Globais
 ROOT_DIR = Path(__file__).resolve().parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 AGENTS_SKILLS_DIR = ROOT_DIR / ".agents" / "skills"
 GLOBAL_PLUGIN_SKILLS_DIR = Path(r"C:\Users\melki\.gemini\config\plugins\franklin-skills\skills")
 
@@ -46,8 +49,7 @@ AGENTS_MD_PATH = ROOT_DIR / "AGENTS.md"
 MY_SKILLS_MD_PATH = ROOT_DIR / "MY_SKILLS.md"
 EPIC_VOLTA_DIR = ROOT_DIR.parent / "epic-volta"
 if not EPIC_VOLTA_DIR.exists():
-    EPIC_VOLTA_DIR = Path(r"C:\Users\melki\dev\agents\epic-volta")
-
+    EPIC_VOLTA_DIR = Path(r"C:\Users\melki\dev\repos\epic-volta")
 
 
 # -----------------------------------------------------------------------------
@@ -77,13 +79,10 @@ def _load_agents_map() -> Dict[str, str]:
         "design-interface-medica-minimalista": "FrontCraftMaster",
         "gdrive-auditoria-limpeza": "DriveMaster",
         "gdrive-taxonomia-organizacao": "DriveMaster",
-        "organizar-gdrive": "DriveMaster",
         "manutencao-disco-windows": "FileOpsLocal",
-        "organizar-local": "FileOpsLocal",
         "curadoria-obsidian-vault": "VaultMaster",
         "redator-tecnico-markdown": "DocMaker",
         "conversor-html-pdf": "DocMaker",
-        "gerar-docs-pdf": "DocMaker",
         "organizador-fluxo-arvore-arquivos": "DocMaker",
         "evoluir-skills": "SkillCraft",
         "skill-auditor-refatorador-skills": "SkillCraft",

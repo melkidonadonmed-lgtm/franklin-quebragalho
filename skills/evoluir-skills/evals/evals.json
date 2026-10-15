@@ -1,7 +1,26 @@
 [
   {
-    "eval_id": "eval-001-criacao-skill",
-    "prompt": "Crie uma nova skill de automação chamada monitor-disco.",
-    "expected_behavior": "Gera pasta canônica com SKILL.md, frontmatter válido, regras determinísticas e registro em MY_SKILLS.md."
+    "eval_id": "eval-001-pipeline-encadeado-criacao",
+    "prompt": "Tenho uma ideia geral: quero uma skill chamada monitor-processos-pesados para identificar processos que consomem muita RAM no Windows e gerar relatório.",
+    "trigger_type": "should_trigger",
+    "expected_behavior": "Aciona o pipeline de 4 estágios (1. expansao-contexto-adaptativa para estruturar a ideia; 2. aprimoramento-expansibilidade-agentes-skills para desenhar os 3 Tiers e extrair script PowerShell para scripts/; 3. skill-creator/_template para criar SKILL.md, rules/ e evals/; 4. skill-auditor-refatorador-skills + validate_skills.py para validar [PASS], espelhar em skills/ e atualizar MY_SKILLS.md)."
+  },
+  {
+    "eval_id": "eval-002-evolucao-eval-driven-iteration",
+    "prompt": "Evolua a skill organizar-local para a versão 1.1.0 adicionando testes Baseline vs. Treatment e consultas near-miss no evals.json.",
+    "trigger_type": "should_trigger",
+    "expected_behavior": "Atualiza evals/evals.json com matriz de gatilhos (should_trigger e should_not_trigger) e asserções determinísticas, incrementa a versão SemVer no frontmatter e em MY_SKILLS.md, sincroniza skills/organizar-local/ e aprova em validate_skills.py."
+  },
+  {
+    "eval_id": "eval-003-extracao-logica-repetitiva-scripts",
+    "prompt": "As transcrições de execução mostram que a skill sempre reescreve o mesmo parser de JSON do zero a cada chamada. Melhore essa skill.",
+    "trigger_type": "should_trigger",
+    "expected_behavior": "Extrai a lógica repetitiva para um utilitário em scripts/, enxuga o corpo do SKILL.md (Lean Instructions Tier 2) para referenciar o script sob demanda (Tier 3) e valida o pacote."
+  },
+  {
+    "eval_id": "eval-004-near-miss-negativo-auditoria-catalogo",
+    "prompt": "Apenas audite todas as 26 skills do repositório em modo diagnóstico para verificar se alguma viola a paleta anti-cobalto.",
+    "trigger_type": "should_not_trigger",
+    "expected_behavior": "Reconhece como near-miss negativo de criação/evolução e delega diretamente para skill-auditor-refatorador-skills em modo diagnostic_only."
   }
 ]

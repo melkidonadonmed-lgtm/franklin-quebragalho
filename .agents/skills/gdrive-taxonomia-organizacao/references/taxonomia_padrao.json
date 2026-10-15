@@ -1,35 +1,60 @@
 {
+  "drive_root": "G:/Meu Drive",
   "buckets": [
     {
-      "code": "01_Projetos",
-      "description": "Repositórios, códigos, especificações, deploys e wireframes",
-      "allowed_extensions": [".zip", ".tar.gz", ".md", ".json", ".yaml", ".sql"]
+      "code": "[01]Projetos",
+      "description": "Projetos específicos e pastas de aplicativos (usar -LiteralPath no PowerShell)",
+      "allowed_extensions": ["*"]
     },
     {
-      "code": "02_Documentos_Pessoais",
-      "description": "Certidões, identidades, passaportes, contratos de trabalho e saúde",
-      "allowed_extensions": [".pdf", ".docx", ".jpg", ".png"]
+      "code": "01_Modelos_Rapidos",
+      "description": "Modelos ágeis de receituários, atestados e condutas rápidas",
+      "allowed_extensions": [".md", ".docx", ".pdf", ".gdoc"]
     },
     {
-      "code": "03_Estudos_Cursos",
-      "description": "Livros, apostilas, artigos acadêmicos, notas de cursos e tutoriais",
-      "allowed_extensions": [".pdf", ".epub", ".docx", ".pptx"]
+      "code": "02_Protocolos_e_Medicamentos",
+      "description": "Guias farmacológicos, protocolos clínicos e posologias",
+      "allowed_extensions": [".pdf", ".md", ".docx", ".gdoc"]
     },
     {
-      "code": "04_Financeiro_Fiscal",
-      "description": "Notas fiscais, boletos, recibos, IRPF, informes de rendimentos e extratos",
-      "allowed_extensions": [".pdf", ".csv", ".xlsx", ".ofx"]
+      "code": "03_Medicina_Faculdade",
+      "description": "Materiais acadêmicos, aulas, slides e referências médicas",
+      "allowed_extensions": [".pdf", ".pptx", ".gslides", ".docx", ".gdoc"]
     },
     {
-      "code": "05_Midias_Assets",
-      "description": "Bancos de imagens, vetores, fotos, logotipos, fontes e kits de UI",
-      "allowed_extensions": [".png", ".jpg", ".svg", ".ai", ".psd", ".mp4"]
+      "code": "04_Workspace_e_Banco_de_Dados",
+      "description": "Aplicativos, acervos técnicos, briefings, cadernos Colab e AppSheets",
+      "allowed_extensions": [".md", ".json", ".ipynb", ".py", ".gdoc", ".gsheet"]
+    },
+    {
+      "code": "07_Gemini_Gems",
+      "description": "System prompts, Gems e personas customizadas de IA",
+      "allowed_extensions": [".md", ".txt", ".gdoc", ".json"]
+    },
+    {
+      "code": "09_ui_web_kits",
+      "description": "Kits de UI, referências de Design System Tátil e dossiês de skills",
+      "allowed_extensions": [".html", ".css", ".json", ".md", ".png", ".svg"]
+    },
+    {
+      "code": "10_Pessoal",
+      "description": "Documentos pessoais, certidões, contratos, laudos próprios e financeiro",
+      "allowed_extensions": [".pdf", ".docx", ".jpg", ".png", ".xlsx", ".gdoc", ".gsheet"]
+    },
+    {
+      "code": "16_Documentos_comp_SUS",
+      "description": "Formulários e planilhas oficiais do SUS (APAC, LME, SISREG, GAL, SISCAN)",
+      "allowed_extensions": [".pdf", ".xlsx", ".gsheet", ".docx", ".png"]
     },
     {
       "code": "99_Arquivo_Historico",
-      "description": "Arquivamento de projetos e documentos encerrados por ano",
+      "description": "Arquivamento de projetos e documentos encerrados por ano/versão",
       "allowed_extensions": ["*"]
     }
+  ],
+  "protected_folders": [
+    "15_chaves_api",
+    "Outros computadores"
   ],
   "date_format": "YYYY-MM-DD",
   "forbidden_characters": ["#", "%", "&", "{", "}", "\\", "<", ">", "*", "?", "/", "$", "!", "'", "\"", ":", "@"]

@@ -24,7 +24,7 @@ Este documento estabelece o modelo operacional, papéis e contratos de orquestra
 | **`FileOpsLocal`** | Manutenção de Pastas no Windows | PowerShell 7 (`pwsh`), `manutencao-disco-windows`, `Get-ChildItem`, `Move-Item` | Limpeza de Downloads, organização de Desktop, arquivamento de projetos em `dev/`. |
 | **`VaultMaster`** | Gestão do Obsidian Vault (PKM) | `curadoria-obsidian-vault`, Obsidian Vault, frontmatter YAML, links bidirecionais | Curadoria de notas, limpeza de anexos órfãos, integridade de metadados e tags. |
 | **`DocMaker`** | Criação e Conversão de Documentos | `redator-tecnico-markdown`, `conversor-html-pdf`, Edge/Chrome headless | Criação de notas técnicas, relatórios executivos, resumos em `.md` e geração de PDFs profissionais. |
-| **`SkillCraft`** | Engenharia e Evolução de Skills | `evoluir-skills`, `skill-auditor-refatorador-skills`, `_template`, [MY_SKILLS.md](file:///c:/Users/melki/dev/franklin-quebragalho/MY_SKILLS.md) | Desenvolvimento de novas habilidades para o Antigravity, testes práticos, versionamento e refatoração de prompts. |
+| **`SkillCraft`** | Engenharia e Evolução de Skills | `evoluir-skills`, `aprimoramento-expansibilidade-agentes-skills`, `skill-auditor-refatorador-skills`, `_template`, [MY_SKILLS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md) | Desenvolvimento de novas habilidades para o Antigravity, testes práticos, versionamento e refatoração de prompts. |
 | **`LoopPlanner`** | Orquestração Closed-Loop | `high-level-context-planner`, `gap-analyzer-auditor`, `skill-orquestrador-planos-encadeados` | Planejamento em malha fechada, decomposição em fases com Fase 0, RCA determinístico e replanejamento v2.0. |
 
 ---
@@ -49,6 +49,6 @@ Este documento estabelece o modelo operacional, papéis e contratos de orquestra
 
 ## 📚 Documentos Relacionados
 
-- [MY_AGENTS.md](file:///c:/Users/melki/dev/franklin-quebragalho/MY_AGENTS.md): Detalhamento dos perfis e prompts dos agentes.
-- [MY_SKILLS.md](file:///c:/Users/melki/dev/franklin-quebragalho/MY_SKILLS.md): Catálogo de skills disponíveis para os agentes.
-- [GEMINI.md](file:///c:/Users/melki/dev/franklin-quebragalho/GEMINI.md): Regras globais de ambiente e segurança.
+- [MY_AGENTS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_AGENTS.md): Detalhamento dos perfis e prompts dos agentes.
+- [MY_SKILLS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md): Catálogo de skills disponíveis para os agentes.
+- [GEMINI.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/GEMINI.md): Regras globais de ambiente e segurança.

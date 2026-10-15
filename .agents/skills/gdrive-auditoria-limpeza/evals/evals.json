@@ -3,7 +3,7 @@
     "eval_id": "TC-GDRIVE-LIMPEZA-01",
     "description": "Validação de detecção de arquivos pesados com simulação dry-run de quarentena.",
     "input": {
-      "target_drive_path": "G:/Meu Drive/03_Estudos",
+      "target_drive_path": "G:/Meu Drive/03_Medicina_Faculdade",
       "size_threshold_mb": 100
     },
     "expected_behavior": "Listar todos os arquivos acima de 100MB em tabela determinística com tamanho e caminho, sem executar nenhum comando destrutivo."
@@ -12,7 +12,7 @@
     "eval_id": "TC-GDRIVE-LIMPEZA-02",
     "description": "Validação de isolamento seguro de duplicatas em pasta com data ISO.",
     "input": {
-      "target_drive_path": "G:/Meu Drive/01_Projetos/backup",
+      "target_drive_path": "G:/Meu Drive/05_Banco_dados_apoio_backup",
       "duplicate_detection_mode": "hash_sha256"
     },
     "expected_behavior": "Calcular o hash SHA-256 dos itens com mesmo tamanho, confirmar duplicação idêntica e propor movimentação para _Quarentena_Descarte/YYYY-MM-DD/ com WhatIf."

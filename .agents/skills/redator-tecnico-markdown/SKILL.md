@@ -4,17 +4,17 @@ description: >-
   Redige relatorios executivos, notas tecnicas, atas de decisao e roadmaps estruturados em Markdown (.md) de alta fidelidade visual, com frontmatter YAML, caixas de alerta GitHub, tabelas ricas, padroes Google Style Guides (HTML/CSS, JSON, Python) e compatibilidade plena com Obsidian.
 license: MIT
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   author: "DocMaker & Melki"
   category: "Documentação Técnica e Redação Estruturada"
-  updated_at: "2026-10-04"
+  updated_at: "2026-10-14"
   tags:
     - "markdown"
     - "obsidian"
     - "google-styleguides"
     - "documentacao"
-version: 1.1.0
-updated_at: 2026-10-04
+version: 1.2.0
+updated_at: 2026-10-14
 author: DocMaker & Melki
 category: Documentação Técnica e Redação Estruturada
 ---
@@ -43,7 +43,7 @@ Ative e execute esta skill sempre que:
 
 - `topic_or_draft` (obrigatório): Tema, rascunho de texto, atas ou código a ser documentado.
 - `document_type` (opcional): `relatorio_executivo`, `nota_tecnica`, `adr_decisao`, `roadmap`, `guia_instalacao`. Padrão: `nota_tecnica`.
-- `output_path` (opcional): Destino do arquivo `.md` resultante (padrão: `C:\Users\melki\Documents\Obsidian Vault\00_Inbox\` ou diretório do projeto).
+- `output_path` (opcional): Destino do arquivo `.md` resultante (padrão: `C:\Users\melki\dev\notes\Inbox\` ou diretório `docs\` do projeto).
 - `frontmatter_metadata` (opcional): Dicionário de metadados adicionais (`tags`, `aliases`, `author`).
 
 ---

@@ -1,20 +1,20 @@
 ---
 name: auditoria-projetos-sistema
 description: >-
-  Audita a integridade estrutural, arquivos essenciais (README, CONTEXT, DESIGN, SPEC), higiene de repositório (.env, .gitignore, Git), orfandade de código, discrepâncias entre escopo documentado e executado, conformidade de UI/UX (temas, fontes, alvos de clique, nós de ação) e esteira visual automatizada via agent-browser (snapshots interativos, nós @eX e anotações visuais) com emissão de nota ponderada (0 a 100).
+  Audita a integridade estrutural, arquivos essenciais (AGENTS.md, README, CONTEXT, DESIGN, SPEC), higiene de repositório (.env, .gitignore, Git), orfandade de código, desacoplamento/tipagem/chunking, discrepâncias entre escopo documentado e executado, conformidade de UI/UX (temas, fontes, alvos de clique, nós de ação sem bagunça visual) e esteira visual automatizada via agent-browser (snapshots por aba/menu, nós @eX e anotações visuais) com emissão de nota ponderada (0 a 100).
 license: MIT
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   author: "Franklin-Main & Melki"
   category: "Auditoria Estrutural e Higiene de Repositório"
-  updated_at: "2026-10-04"
+  updated_at: "2026-10-14"
   tags:
     - "auditoria"
     - "agent-browser"
     - "higiene-repo"
     - "qualidade"
-version: 2.1.0
-updated_at: 2026-10-04
+version: 2.2.0
+updated_at: 2026-10-14
 author: Franklin-Main & Melki
 category: Auditoria Estrutural e Higiene de Repositório
 ---
@@ -25,7 +25,7 @@ category: Auditoria Estrutural e Higiene de Repositório
 ---
 
 ## 2. DESCRIÇÃO
-Esta skill implementa uma esteira de inspeção técnica e visual de alta fidelidade para repositórios modernos. Ela analisa a hierarquia física de pastas e arquivos de governança, identifica códigos e arquivos órfãos, confronta a promessa funcional da documentação contra a implementação real nos arquivos, avalia a coesão do Design System (discrepâncias de fontes, coerência de temas por componente e se os nós interativos realmente ativam ações funcionais) e disponibiliza um protocolo de captura sequencial de telas e inspeção do DOM vivo via **agent-browser** (com extração de snapshots interativos `@eX`, screenshots anotados para modelos de visão e teste de temas). O resultado é consolidado em um relatório formal com nota ponderada de 0 a 100, matriz de riscos e plano de ação imediato.
+Esta skill implementa uma esteira de inspeção técnica e visual de alta fidelidade para repositórios modernos. Ela analisa a hierarquia física de pastas e arquivos de governança (`AGENTS.md`, `README.md`, `DESIGN.md`), identifica códigos e arquivos órfãos, confronta a promessa funcional da documentação contra a implementação real nos arquivos, avalia a coesão do Design System (discrepâncias de fontes, coerência de temas por componente e se os nós interativos realmente ativam ações funcionais) e disponibiliza um protocolo de captura sequencial de telas e inspeção do DOM vivo via **agent-browser** (com extração de snapshots interativos `@eX` por aba/menu, screenshots anotados para modelos de visão e teste de temas). O resultado é consolidado em um relatório formal com nota ponderada de 0 a 100, matriz de riscos e plano de ação imediato.
 
 ---
 
@@ -63,19 +63,19 @@ O agente deve processar a auditoria em fases sequenciais para evitar saturação
 [Início da Auditoria]
 │
 ▼
-[Módulo 1: Governança Física & Git] ──► .env, .gitignore, pastas vitais
+[Módulo 1: Governança Física & Git] ──► AGENTS.md, .env, .gitignore, pastas vitais
 │
 ▼
 [Módulo 2: Coerência Documental]     ──► README/CONTEXT vs Código Real
 │
 ▼
-[Módulo 3: Qualidade & Orfandade]    ──► Arquivos mortos, exports sem uso
+[Módulo 3: Qualidade & Orfandade]    ──► Arquivos mortos, tipagem, desacoplamento e chunking
 │
 ▼
 [Módulo 4: UI/UX, Temas & Nós]       ──► Cores, Fontes, Handlers e agent-browser snapshot
 │
 ▼
-[Módulo 5: Esteira Visual agent-browser] ──► (Requer HITL) Prints anotados & Transições
+[Módulo 5: Esteira Visual agent-browser] ──► (Requer HITL) Snapshots de abas/menus & Anotações
 │
 ▼
 [Módulo 6: Integrações & MCP]        ──► Schemas, Tools, Conectores
@@ -89,9 +89,10 @@ O agente deve processar a auditoria em fases sequenciais para evitar saturação
 ### MÓDULO 1: GOVERNANÇA DE PASTAS, HIGIENE DE REPOSITÓRIO E GIT
 1. **Varredura de Estrutura Mínima Obrigatória:**
    - Conferir se existem os artefatos vitais de governança:
+     * `AGENTS.md` (contrato de agentes, subagentes e regras de execução do repositório).
      * `README.md` (instruções objetivas de instalação e inicialização).
      * `CONTEXT.md` (regras de negócio, fronteiras e restrições da IA).
-     * `DESIGN.md` (tokens visuais, paleta, componentes base — se houver UI).
+     * `DESIGN.md` (tokens visuais, paleta, componentes base — se houver UI; caso ausente, recomendar geração via skill `consultor-design-tatil-frontend` / `design-md`).
      * `SPEC.md` ou `TODO.md` (delimitação estrita do MVP atual).
      * `.env.example` (documentação de variáveis de ambiente sem segredos reais).
      * `.gitignore` (bloqueio estrito de `node_modules/`, `.env`, `.venv/`, `.next/`, `dist/`, caches locais).
@@ -123,8 +124,14 @@ O agente deve processar a auditoria em fases sequenciais para evitar saturação
 1. **Detecção de Código Morto e Orfandade:**
    - Rastrear arquivos `.ts`, `.tsx`, `.js`, `.py` presentes na árvore que nunca são importados no ponto de entrada (`index`, `app`, `main`).
    - Identificar funções exportadas que não possuem consumidores internos nem testes.
-2. **Análise de Arquitetura e Acoplamento:**
-   - Verificar se há separação entre camadas de Domínio/Regras de Negócio, Infraestrutura/APIs e Apresentação/UI.
+2. **Análise de Arquitetura, Tipagem, Chunking e Resiliência:**
+   - **Desacoplamento Limpo:** Separe estritamente Domínio (regras de negócio), Integração/Tools (I/O, APIs) e Apresentação. Funções com responsabilidade única.
+   - **Tipagem Estrita & Contratos:** Tipagem estática semântica (`pydantic.BaseModel` ou `dataclasses`), prevenindo dicionários genéricos e estruturas opacas.
+   - **Higienização em Chunking Estruturado:**
+     * Toda ingestão ou manipulação de texto bruto, logs ou RAG deve passar por sanitização antes do chunking (remoção de caracteres de controle, injeções pontuais e normalização de espaços).
+     * Quebra orientada a fronteiras sintáticas reais (parágrafos lógicos, AST/funções de código, blocos semânticos), nunca por corte cego de caracteres/tokens.
+     * Atribuição obrigatória de metadados mínimos por chunk (`source_id`, `chunk_index`, `byte_range`).
+   - **Resiliência Defensiva:** Tratamento de erros com exceções customizadas e mensagens acionáveis; proibido `except: pass` silencioso.
    - Detectar anti-padrões como: chamadas diretas de banco de dados ou `fetch` soltos no corpo de renderização de componentes, ausência de tratamento de erros `try/catch` e tipos `any` genéricos.
 
 ---
@@ -132,7 +139,8 @@ O agente deve processar a auditoria em fases sequenciais para evitar saturação
 ### MÓDULO 4: AUDITORIA DE UI/UX, DESIGN SYSTEM, TEMAS E NÓS DE AÇÃO
 1. **Auditoria Estática de Temas e Tokens:**
    - Mapear a paleta de cores usada em cada sessão (`Header`, `Sidebar`, `Main`, `Cards`, `Modals`).
-   - Identificar conflitos de tema: componentes com fundo claro forçado (`bg-white`) dentro de páginas configuradas para Dark Mode profundo, ou textos com contraste ilegível (reprovado na WCAG 2.1 AA).
+   - Identificar conflitos de tema: componentes com fundo claro forçado (`bg-white`) dentro de páginas configuradas para Dark Mode profundo, ou textos com contraste ilegível (reprovado na WCAG 2.1 AA/AAA).
+   - **Proibição de Poluição Visual:** Rejeitar bagunça visual ou interfaces artificialmente complicadas apenas para "parecerem complexas".
 2. **Discrepância Tipográfica (Fontes e Escalas):**
    - Identificar declared fonts vs. inline fonts: fontes carregadas pelo sistema vs. classes arbitrárias soltas no código (ex.: misturar semântica de `inter`, `roboto` e `font-mono` sem convenção).
    - Checar se a tipografia é fluida (uso de `rem` ou `clamp()`) ou se trava em `px` fixos que quebram em visualização mobile.
@@ -153,7 +161,7 @@ O agente deve processar a auditoria em fases sequenciais para evitar saturação
      * Proibição estrita de palavras espremidas na vertical (ex.: texto de botão quebrando letra por letra).
      * Truncamento inteligente em caminhos de arquivo, hashes e URLs (`text-overflow: ellipsis`, `white-space: nowrap`, `overflow: hidden`) preservando a ponta final com a extensão do arquivo ou com tooltip nativo (`title`).
      * Preservação de rótulos em botões com `white-space: nowrap`.
-   - **Tipografia e Ritmo Vertical:** Auditar escala tipográfica harmônica, `line-height` proporcional (1.3 a 1.6) e hierarquia semântica entre títulos, subtítulos, textos de apoio e dados monoespaçados.
+   - **Tipografia, Ritmo Vertical e Modularidade Dimensionável:** Auditar escala tipográfica harmônica, `line-height` proporcional (1.3 a 1.6), hierarquia semântica e modularidade UX/UI dimensionável.
 
 ---
 
@@ -189,12 +197,13 @@ O agente deve processar a auditoria em fases sequenciais para evitar saturação
      ```
    - O agente ou modelo multimodal de visão inspeciona a imagem anotada para conferir alinhamento de rótulos, contraste tátil e ausência de overlaps visuais.
 
-4. **Teste de Transições e Mutações de Estado:**
+4. **Teste de Transições, Abas e Menus (Snapshot Geral por Seção):**
    - Acionar nós interativos sequenciais via encadeamento:
      ```powershell
      agent-browser click @e1 && agent-browser wait 800 && agent-browser snapshot -i
      ```
    - Verificar se houve mutação de estado esperada (ex: modal aberto, rota alterada, feedback de toast visível) ou se ocorreu travamento visual.
+   - **Cobertura de Abas e Menus:** Em aplicações com múltiplas abas ou menus de navegação, capturar e validar ao menos um snapshot geral (`snapshot -i` / `screenshot`) de cada aba/menu principal.
 
 ---
 
@@ -212,11 +221,11 @@ A nota de maturidade técnica do projeto é calculada pela soma das 5 dimensões
 
 | Dimensão | Peso | Critério de Pontuação |
 | :--- | :--- | :--- |
-| **1. Governança e Arquitetura** | 20 pts | Presença de README, CONTEXT, SPEC, DESIGN, .env.example e .gitignore sem lixo. |
-| **2. Coerência Funcional** | 20 pts | O que o README descreve corresponde ao código real (zero funções fantasma/mock enganoso). |
-| **3. Qualidade de Código & Higiene** | 25 pts | Ausência de arquivos órfãos, tipagem forte, ausência de loops assíncronos e testes mínimos. |
-| **4. Ergonomia UI/UX & Acessibilidade** | 20 pts | Temas coerentes, contraste WCAG AA, fontes sem discrepâncias, nós interativos funcionais (validados via AST ou `agent-browser snapshot -i`). |
-| **5. Segurança e Protocolos (Git/MCP)** | 15 pts | Zero segredos comitados, schemas de entrada blindados, dependências seguras. |
+| **1. Governança e Arquitetura** | 20 pts | Presença de `AGENTS.md`, `README`, `CONTEXT`, `SPEC`, `DESIGN`, `.env.example` e `.gitignore` sem lixo. |
+| **2. Coerência Funcional** | 20 pts | O que o `README` descreve corresponde ao código real sem funções fantasma/mock enganoso (10 pts) + o código entrega a qualidade descrita (10 pts). |
+| **3. Qualidade de Código & Higiene** | 25 pts | Ausência de arquivos/código órfão ou inútil (10 pts), tipagem forte/desacoplamento/chunking (10 pts), ausência de loops assíncronos e testes mínimos (5 pts). |
+| **4. Ergonomia UI/UX & Acessibilidade** | 20 pts | Temas coerentes e contraste WCAG AA/AAA sem bagunça visual (10 pts) + fontes sem discrepâncias e nós interativos funcionais validados via AST ou `agent-browser snapshot -i` (10 pts). |
+| **5. Segurança e Protocolos (Git/MCP)** | 15 pts | `.gitignore`, `.env` e MCP usáveis, zero segredos comitados, schemas de entrada blindados e dependências seguras. |
 
 **Tabela de Classificação Final:**
 - **90 a 100 pts:** Nível Enterprise / Pronto para Produção.
