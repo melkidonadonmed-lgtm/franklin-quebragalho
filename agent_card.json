@@ -50,13 +50,14 @@
     {
       "id": "analise-design-tatil-frontend",
       "name": "analise-design-tatil-frontend",
-      "description": "Inspeciona e audita interfaces frontend (via agent-browser ou codigo estatico), analisa menus, sidebar, tipografia, fontes, icones, tamanho dos botoes, transicoes, layout, profundidade tatil e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide, emitindo um Relatorio Comparativo deterministico.",
+      "description": "Inspeciona e audita interfaces frontend (via agent-browser ou codigo estatico), orquestra os 4 subagentes de UI (Topologia 3+1: ui-shell-navigator, ui-controls-data, ui-motion-interaction, ui-deterministic-observer), analisa menus, sidebar, tipografia, fontes, icones, tamanho dos botoes, transicoes, layout, profundidade tatil e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide, emitindo um Relatorio Comparativo deterministico.",
       "tags": [
         "design-tatil",
         "auditoria-ui",
         "anti-cobalto",
         "ergonomia",
-        "multidimensional-2026"
+        "multidimensional-2026",
+        "subagentes-ui-3+1"
       ],
       "examples": [
         "Executar a skill analise-design-tatil-frontend no contexto atual"
@@ -94,12 +95,14 @@
     {
       "id": "arquitetura-design-implementacao-sistema",
       "name": "arquitetura-design-implementacao-sistema",
-      "description": "Executa o diagnóstico, design de navegabilidade/UX, especificação funcional e plano de implementação para produtos digitais e softwares, incorporando o Design System Tátil Melki, paleta mineral anti-cobalto, opções de arquétipos e matriz de discrepâncias com as preferências do desenvolvedor.",
+      "description": "Executa diagnóstico severo de MVP, arquitetura de navegabilidade comentada, aglomeração funcional por ilhas (Island UI/UX), especificação tipográfica linear, auditoria anti-hardcode e plano de implementação modular com score determinístico e histórico comparativo V1 vs V2 em HTML com metadados.",
       "tags": [
-        "especificacao-funcional",
-        "arquitetura",
-        "design-tatil",
-        "multidimensional-2026"
+        "navegabilidade",
+        "arquitetura-em-ilhas",
+        "auditoria-mvp",
+        "zero-hardcode",
+        "tipografia-linear",
+        "score-deterministico"
       ],
       "examples": [
         "Executar a skill arquitetura-design-implementacao-sistema no contexto atual"
@@ -138,13 +141,14 @@
     {
       "id": "consultor-design-tatil-frontend",
       "name": "consultor-design-tatil-frontend",
-      "description": "Analisa e mapeia interfaces frontend via agent-browser, avalia conformidade com o Design System Tátil Melki (profundidade de sombras, cards mais claros que o fundo, rim light e paleta mineral anti-cobalto), oferece opções interativas de melhorias visuais e funcionais com formulários de múltipla escolha ou mockups de referência, audita discrepâncias determinísticas e gera o documento canônico DESIGN.md.",
+      "description": "Analisa e mapeia interfaces frontend via agent-browser, coordena os 4 subagentes de UI (Topologia 3+1: ui-shell-navigator, ui-controls-data, ui-motion-interaction, ui-deterministic-observer), avalia conformidade com o Design System Tátil Melki (profundidade de sombras, cards mais claros que o fundo, rim light e paleta mineral anti-cobalto), oferece opções interativas de melhorias visuais e funcionais com formulários de múltipla escolha ou mockups de referência, audita discrepâncias determinísticas e gera o documento canônico DESIGN.md.",
       "tags": [
         "consultoria-ux",
         "design-tatil",
         "paleta-mineral",
         "design-md",
-        "multidimensional-2026"
+        "multidimensional-2026",
+        "subagentes-ui-3+1"
       ],
       "examples": [
         "Executar a skill consultor-design-tatil-frontend no contexto atual"
@@ -326,7 +330,7 @@
     {
       "id": "refatoracao-design-tatil-frontend",
       "name": "refatoracao-design-tatil-frontend",
-      "description": "Executa a refatoracao e implementacao pratica de frontend por framework modular (React, Tailwind, HTML5/CSS, Vue), aplicando navegabilidade de alto padrao, menus descompactados com espacamento nobre, botoes ergonomicos com anti-squish, icones Lucide, tipografia refinada, elevacao tatil mineral e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide.",
+      "description": "Executa a refatoracao e implementacao pratica de frontend por framework modular (React, Tailwind, HTML5/CSS, Vue), orquestrando em 3 ondas os 4 subagentes de UI (Topologia 3+1: ui-shell-navigator, ui-controls-data, ui-motion-interaction, ui-deterministic-observer), aplicando navegabilidade de alto padrao, menus descompactados com espacamento nobre, botoes ergonomicos com anti-squish, icones Lucide, tipografia refinada, elevacao tatil mineral e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide.",
       "tags": [
         "frontend",
         "design-tatil",
@@ -408,7 +412,7 @@
         "jku": "http://localhost:10999/public_keys.json",
         "typ": "JOSE+JSON"
       },
-      "signature": "c832772e775c772a452b0ff726b0898c2f459f0f798116f324cc117f1e229987"
+      "signature": "c3731b1dfb118cfdbc2a280e85aaffa082e715a25b6fc2a6693de2c0b31283e5"
     }
   ]
 }

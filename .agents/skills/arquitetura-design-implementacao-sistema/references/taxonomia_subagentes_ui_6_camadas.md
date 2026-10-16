@@ -34,16 +34,19 @@ A comunicação entre as 3 ondas no motor DAG do `epic-volta` ocorre sem compart
 
 ## 3. Como Acionar na Prática
 
-### Modo A: Execução do Plano DAG Determinístico (Franklin MCP ➔ Epic-Volta)
-```powershell
-# Via CLI do Epic-Volta
-uv --directory C:\Users\melki\dev\repos\epic-volta run python -m orchestrator.cli C:\Users\melki\dev\repos\franklin-quebragalho\plans\ui_composition_dag.json --run-id ui-comp-01
-```
-Ou diretamente pela tool MCP `franklin_execute_dag(plan_path_or_json="plans/ui_composition_dag.json", run_id="ui-comp-01")`.
+### Modo A: Modo Nativo Antigravity (`invoke_subagent` / `define_subagent`)
+Os 4 subagentes de UI (`ui-shell-navigator`, `ui-controls-data`, `ui-motion-interaction`, `ui-deterministic-observer`) são registrados nativamente em `<subagents>` (`Available subagents`) pelo plugin `franklin-skills` (com `enable_write_tools: true` e `enable_mcp_tools: true`). Para orquestrar as 3 ondas diretamente no Antigravity IDE/CLI:
+1. **Onda 1 (Estrutura e Navegação)**: Chame `invoke_subagent(TypeName="ui-shell-navigator", Task="...")` para produzir `layout_contract` e `navigation_contract`.
+2. **Onda 2 (Paralela — Controles/Dados e Motion/Gestos)**: Chame em paralelo `invoke_subagent(TypeName="ui-controls-data", Task="...")` e `invoke_subagent(TypeName="ui-motion-interaction", Task="...")` consumindo as regiões da Onda 1.
+3. **Onda 3 (Gatekeeper Determinístico)**: Chame `invoke_subagent(TypeName="ui-deterministic-observer", Task="...")` para auditar CWV, WCAG AA/AAA, DI/Tipagem e Física de Luz/Sombra (`[AUDIT-01]` a `[AUDIT-09]`).
+4. *Opcional*: Caso deseje instanciar um subagente customizado em tempo de execução com permissões explícitas de escrita, utilize `define_subagent(..., enable_write_tools=True, enable_mcp_tools=True)` antes de `invoke_subagent`.
 
-### Modo B: Invocação de Subagentes no Antigravity IDE (`define_subagent` + `invoke_subagent`)
-Ao refatorar ou construir uma interface complexa em qualquer repositório:
-1. Leia os contratos em `C:\Users\melki\dev\repos\franklin-quebragalho\agents\`.
-2. Invoque a **Onda 1** (`ui-shell-navigator`) para estruturar o layout e navegação.
-3. Invoque em paralelo a **Onda 2** (`ui-controls-data` + `ui-motion-interaction`).
-4. Finalize com a **Onda 3** (`ui-deterministic-observer`) para auditar CWV, WCAG AA/AAA, DI/Tipagem e Física de Luz/Sombra.
+### Modo B: Modo Motor DAG Assíncrono (`franklin_execute_dag` / `franklin_get_agents` / `epic-volta`)
+Para execução assíncrona em ondas com persistência SQLite WAL ou inspeção declarativa dos contratos:
+- **Via MCP (`franklin-skills`)**:
+  - `franklin_get_agents(agent_name="ui")` (ou individualmente `franklin_get_agents(agent_name="ui-shell-navigator")`) e `agent_spec_loader.py` para carregar os contratos declarativos.
+  - `franklin_execute_dag(plan_path_or_json="plans/ui_composition_dag.json", run_id="ui-comp-01")` (ou pelo alias curto `franklin_execute_dag(plan_path_or_json="ui")`).
+- **Via CLI do Epic-Volta**:
+  ```powershell
+  uv --directory C:\Users\melki\dev\repos\epic-volta run python -m orchestrator.cli C:\Users\melki\dev\repos\franklin-quebragalho\plans\ui_composition_dag.json --run-id ui-comp-01
+  ```

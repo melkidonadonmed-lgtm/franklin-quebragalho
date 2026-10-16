@@ -53,3 +53,11 @@ Este arquivo define os critérios objetivos, booleanos e falsificáveis aplicado
 - **Definição:** Ao ser acionada para consolidar a auditoria, a skill deve gerar o arquivo `DESIGN.md` completo com tokens, variáveis CSS, classes Tailwind e guia de componentes.
 - `[PASS]`: Arquivo `DESIGN.md` criado na raiz do projeto com todas as seções canônicas preenchidas.
 - `[FAIL]`: Ausência do arquivo `DESIGN.md` ou arquivo com placeholders genéricos não resolvidos.
+
+---
+
+## REGRA 8: Orquestração da Topologia 3+1 de Subagentes de UI
+- **Definição:** A consultoria deve coordenar as 3 ondas de diagnóstico (`ui-shell-navigator`, `ui-controls-data`, `ui-motion-interaction`) e consolidar o veredito determinístico pelo gatekeeper `ui-deterministic-observer` (`CLS < 0.1`, `INP < 200ms`, `LCP < 2.5s`, `prefers-reduced-motion`).
+- `[PASS]`: Matriz de diagnóstico contempla os 6 módulos da Topologia 3+1 validados pelo `ui-deterministic-observer`.
+- `[FAIL]`: Consultoria ignora a divisão modular das 3 ondas ou omite a validação determinística de métricas e acessibilidade.
+

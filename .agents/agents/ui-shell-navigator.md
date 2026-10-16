@@ -1,13 +1,25 @@
 ---
 name: ui-shell-navigator
+description: >-
+  Subagente especialista da Onda 1 (Topologia 3+1 FrontCraftMaster) para arquitetura visual,
+  particionamento em UI Islands (Micro-Frontends/SDUI), layouts responsivos sem Content Layout Shift
+  (CLS < 0.1), encapsulamento Shadow DOM/Border e sistemas de navegação hierárquica (MenuBar,
+  TabView lazy, TreeView assíncrono, Ctrl+K e foco direcional).
+version: "1.1.0"
 role: Especialista em Arquitetura Visual, Layout & Navegação (Onda 1)
 parent_persona: FrontCraftMaster
 wave: 1
 model: inherit
 workspace: inherit
+enable_write_tools: true
+enable_mcp_tools: true
 covered_modules:
   - "1. Arquitetura Visual e Layout (UI Islands, Layouts/Contêineres, Janelas/Molduras, Navegação Clean)"
   - "2. Navegação e Menus (Sistemas de Barra/Menu, Navegação Hierárquica e Abas)"
+mcp_servers:
+  - name: "franklin-skills"
+    type: "workspace"
+    scope: "read_only"
 ---
 
 # Subagente: `ui-shell-navigator` (Arquitetura Visual, Layout & Navegação)

@@ -1,13 +1,13 @@
 ---
 name: refatoracao-design-tatil-frontend
 description: >-
-  Executa a refatoracao e implementacao pratica de frontend por framework modular (React, Tailwind, HTML5/CSS, Vue), aplicando navegabilidade de alto padrao, menus descompactados com espacamento nobre, botoes ergonomicos com anti-squish, icones Lucide, tipografia refinada, elevacao tatil mineral e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide.
+  Executa a refatoracao e implementacao pratica de frontend por framework modular (React, Tailwind, HTML5/CSS, Vue), orquestrando em 3 ondas os 4 subagentes de UI (Topologia 3+1: ui-shell-navigator, ui-controls-data, ui-motion-interaction, ui-deterministic-observer), aplicando navegabilidade de alto padrao, menus descompactados com espacamento nobre, botoes ergonomicos com anti-squish, icones Lucide, tipografia refinada, elevacao tatil mineral e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide.
 license: MIT
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
   author: "FrontCraftMaster & Melki"
   category: "Implementação e Refatoração Frontend"
-  updated_at: "2026-10-14"
+  updated_at: "2026-10-16"
   tags:
     - "frontend"
     - "design-tatil"
@@ -15,8 +15,9 @@ metadata:
     - "refatoracao"
     - "anti-cobalto"
     - "multidimensional-2026"
-version: 1.2.0
-updated_at: 2026-10-14
+    - "subagentes-ui-3+1"
+version: 1.3.0
+updated_at: 2026-10-16
 author: FrontCraftMaster & Melki
 category: Implementação e Refatoração Frontend
 ---
@@ -80,6 +81,27 @@ A refatoração opera via módulos desacoplados de acordo com a stack técnica d
 - **Classes Utilitárias Táteis:** Injetar classes reutilizáveis em `kebab-case`:
   * `.btn-tactile`: `height: 44px; display: inline-flex; align-items: center; justify-content: center; padding: 0 1.25rem; font-weight: 500; border-radius: var(--radius-md, 14px); flex-shrink: 0; white-space: nowrap; transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);`
   * `.card-tactile`: `background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.08); border-top: 1px solid var(--rim-light); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35), 0 16px 36px -4px rgba(0, 0, 0, 0.65); border-radius: var(--radius-lg, 20px);`
+
+### 4.3. Orquestração em 3 Ondas com Subagentes de UI (`Topologia 3+1`)
+Para evitar colisões de DOM/CSS em refatorações de múltiplos componentes, divida a execução nas **3 Ondas** definidas em [`plans/ui_composition_dag.json`](../../plans/ui_composition_dag.json) e nos contratos em [`agents/`](../../agents/):
+1. **Onda 1 — [`ui-shell-navigator`](../../agents/ui-shell-navigator.md)**: Refatora a casca estrutural (*UI Islands*, Grid responsivo com reserva anti-CLS $< 0.1$, `Shadow DOM`/`Border`, `MenuBar`, `Sidebar >= 260px`, `TabView` lazy e atalho global `Ctrl+K`), produzindo `layout_contract` e `navigation_contract`.
+2. **Onda 2A (Paralela) — [`ui-controls-data`](../../agents/ui-controls-data.md)**: Refatora controles de entrada e ação ($\ge 44\times44\text{px}$, anti-squish `shrink-0 whitespace-nowrap`, Regra 1+2, `sunken wells`, validação WAI-ARIA inline), listas virtualizadas a $60\text{fps}$ e alertas `aria-live`, produzindo `controls_contract` e `data_feedback_contract`.
+3. **Onda 2B (Paralela) — [`ui-motion-interaction`](../../agents/ui-motion-interaction.md)**: Aplica transições aceleradas por GPU (`transform`/`opacity`, `ConnectedAnimation`, `active:scale-95`), proteção `@media (prefers-reduced-motion: reduce)` e suporte multi-input (`Touch/Pen/Mouse/Keyboard`), produzindo `motion_contract` e `interaction_contract`.
+4. **Onda 3 (Gatekeeper) — [`ui-deterministic-observer`](../../agents/ui-deterministic-observer.md)**: Audita o resultado integrado contra os 6 pilares (WCAG 2.1 AA/AAA, Core Web Vitals $\text{LCP}<2.5\text{s}/\text{INP}<200\text{ms}/\text{CLS}<0.1$, State Bus, Tipagem Estrita/DI Hilt, Testes e Física de Luz/Sombra) emitindo o checklist `[AUDIT-01..09]`.
+
+**Acionamento Prático:**
+- **Modo Nativo Antigravity (`invoke_subagent` / `define_subagent`)**: invocação direta dos subagentes registrados pelo plugin `franklin-skills` em `<subagents>` (`Available subagents`) em 3 ondas:
+  - **Onda 1**: `invoke_subagent(TypeName="ui-shell-navigator", Task="...")`
+  - **Onda 2 (Paralela)**: `invoke_subagent(TypeName="ui-controls-data", Task="...")` e `invoke_subagent(TypeName="ui-motion-interaction", Task="...")`
+  - **Onda 3 (Gatekeeper)**: `invoke_subagent(TypeName="ui-deterministic-observer", Task="...")`
+  - *Nota de Escrita*: Os manifestos `agents/ui-*.md` já declaram `enable_write_tools: true` e `enable_mcp_tools: true`; caso o host precise instanciar dinamicamente um subagente customizado com escrita habilitada, utilize `define_subagent(..., enable_write_tools=True, enable_mcp_tools=True)` ou aplique as mutações de código no agente principal guiado pelos contratos das Ondas 1 e 2.
+- **Modo Motor DAG Assíncrono (`franklin_execute_dag` / `franklin_get_agents` / `epic-volta`)**:
+  - `franklin_get_agents(agent_name="ui")` para carregar os contratos dos 4 subagentes.
+  - `franklin_execute_dag(plan_path_or_json="plans/ui_composition_dag.json", run_id="ui-refactor-01")` (ou alias `"ui"`) para executar o DAG assíncrono em 3 ondas.
+  - Terminal (Epic-Volta CLI):
+    ```powershell
+    uv --directory C:\Users\melki\dev\repos\epic-volta run python -m orchestrator.cli C:\Users\melki\dev\repos\franklin-quebragalho\plans\ui_composition_dag.json --run-id ui-refactor-01
+    ```
 
 ---
 

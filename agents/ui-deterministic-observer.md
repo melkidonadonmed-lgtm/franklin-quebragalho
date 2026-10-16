@@ -1,13 +1,25 @@
 ---
 name: ui-deterministic-observer
+description: >-
+  Subagente coordenador determinístico e Gatekeeper da Onda 3 (Topologia 3+1 FrontCraftMaster) para
+  orquestração de State Bus, fila de renderização prioritária e auditoria matemática nos 6 pilares:
+  Acessibilidade WCAG 2.1 AA/AAA, Core Web Vitals (LCP < 2.5s, INP < 200ms, CLS < 0.1) + Web Workers,
+  Tipagem Estrita/Injeção de Dependência (Hilt/DI), Testes Automatizados e Fidelidade Física de Luz/Sombra.
+version: "1.1.0"
 role: Coordenador Determinístico, State Bus & Auditor de Diretrizes (Onda 3 Gatekeeper)
 parent_persona: FrontCraftMaster
 wave: 3
 model: inherit
 workspace: inherit
+enable_write_tools: true
+enable_mcp_tools: true
 covered_modules:
   - "5.3 Coordenador Determinístico e Observador (Métricas de layout, dimensionamento e fila de renderização)"
   - "6. Diretrizes e Boas Práticas (Acessibilidade WCAG 2.1 AA/AAA, Core Web Vitals, State Bus, Tipagem/DI Hilt, Testes e Fidelidade Física de Luz/Sombra)"
+mcp_servers:
+  - name: "franklin-skills"
+    type: "workspace"
+    scope: "read_only"
 ---
 
 # Subagente: `ui-deterministic-observer` (Coordenador Determinístico & Gatekeeper 6D)

@@ -1,21 +1,22 @@
 ---
 name: analise-design-tatil-frontend
 description: >-
-  Inspeciona e audita interfaces frontend (via agent-browser ou codigo estatico), analisa menus, sidebar, tipografia, fontes, icones, tamanho dos botoes, transicoes, layout, profundidade tatil e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide, emitindo um Relatorio Comparativo deterministico.
+  Inspeciona e audita interfaces frontend (via agent-browser ou codigo estatico), orquestra os 4 subagentes de UI (Topologia 3+1: ui-shell-navigator, ui-controls-data, ui-motion-interaction, ui-deterministic-observer), analisa menus, sidebar, tipografia, fontes, icones, tamanho dos botoes, transicoes, layout, profundidade tatil e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide, emitindo um Relatorio Comparativo deterministico.
 license: MIT
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   author: "FrontCraftMaster & Melki"
   category: "Design System Tátil e Frontend"
-  updated_at: "2026-10-14"
+  updated_at: "2026-10-16"
   tags:
     - "design-tatil"
     - "auditoria-ui"
     - "anti-cobalto"
     - "ergonomia"
     - "multidimensional-2026"
-version: 1.1.0
-updated_at: 2026-10-14
+    - "subagentes-ui-3+1"
+version: 1.2.0
+updated_at: 2026-10-16
 author: FrontCraftMaster & Melki
 category: Design System Tátil e Frontend
 ---
@@ -109,22 +110,43 @@ A análise avalia rigorosamente os 10 pontos críticos de design tátil, motor m
 - **Indentação e Espaçamento:** Indentação consistente de 2 espaços por nível de bloco CSS.
 - **Uso de IDs para Estilo:** Reprovação do uso de seletores `#id` para estilização (usar exclusivamente classes).
 
+### 4.11. Orquestração do Esquadrão de Subagentes de UI (`Topologia 3+1`)
+Para auditorias completas ou interfaces complexas, esta skill aciona os **4 Subagentes Especialistas de UI** (`agents/ui-*.md`) em **3 Ondas determinísticas** via **Modo Nativo Antigravity (`invoke_subagent`)** ou **Modo Motor DAG Assíncrono (`franklin_execute_dag` / `franklin_get_agents` / `epic-volta`)**:
+1. **Onda 1 — [`ui-shell-navigator`](../../agents/ui-shell-navigator.md)**: Inspeciona Módulos 1 e 2 (*UI Islands*, Grid/SplitView, `Shadow DOM`, reservas anti-CLS $< 0.1$, `MenuBar`, `TabView` lazy, `TreeView` assíncrono e `Ctrl+K`), emitindo `layout_contract` e `navigation_contract`.
+2. **Onda 2A — [`ui-controls-data`](../../agents/ui-controls-data.md)**: Inspeciona Módulos 3 e 4 (alvos $\ge 44\times44\text{px}$, anti-squish, Regra 1+2, validação WAI-ARIA inline, virtualização de listas a $60\text{fps}$ e regiões `aria-live`), emitindo `controls_contract` e `data_feedback_contract`.
+3. **Onda 2B — [`ui-motion-interaction`](../../agents/ui-motion-interaction.md)**: Inspeciona Módulos 5.1 e 5.2 (animações GPU `transform`/`opacity`, `ConnectedAnimation`, proteção `prefers-reduced-motion` e paridade multi-input `Touch/Pen/Mouse/Keyboard`), emitindo `motion_contract` e `interaction_contract`.
+4. **Onda 3 (Gatekeeper) — [`ui-deterministic-observer`](../../agents/ui-deterministic-observer.md)**: Consome os contratos das Ondas 1 e 2 via `upstream_mapping` e audita os 9 itens determinísticos (`[AUDIT-01: SHELL-CLS]` a `[AUDIT-09: LIGHT-SHADOW]`).
+
+**Como invocar os subagentes na prática:**
+- **Modo Nativo Antigravity (`invoke_subagent`)**: invocação direta dos subagentes registrados pelo plugin `franklin-skills` em `<subagents>` (`Available subagents`) em 3 ondas:
+  - **Onda 1**: `invoke_subagent(TypeName="ui-shell-navigator", Task="...")`
+  - **Onda 2 (Paralela)**: `invoke_subagent(TypeName="ui-controls-data", Task="...")` e `invoke_subagent(TypeName="ui-motion-interaction", Task="...")`
+  - **Onda 3 (Gatekeeper)**: `invoke_subagent(TypeName="ui-deterministic-observer", Task="...")`
+- **Modo Motor DAG Assíncrono (`franklin_execute_dag` / `franklin_get_agents` / `epic-volta`)**:
+  - `franklin_get_agents(agent_name="ui")` (carrega os contratos dos 4 subagentes de UI) ou `franklin_get_agents(agent_name="ui-deterministic-observer")`.
+  - `franklin_execute_dag(plan_path_or_json="plans/ui_composition_dag.json", run_id="ui-audit-01")` (ou alias curto `franklin_execute_dag(plan_path_or_json="ui")`).
+  - Terminal (Epic-Volta CLI):
+    ```powershell
+    uv --directory C:\Users\melki\dev\repos\epic-volta run python -m orchestrator.cli C:\Users\melki\dev\repos\franklin-quebragalho\plans\ui_composition_dag.json --run-id ui-audit-01
+    ```
+
 ---
 
 ## 5. PROCESSO PASSO A PASSO (INSPEÇÃO E COMPARAÇÃO)
 
-### Passo 1: Varredura de Ambiente e DOM
-1. Se URL acessível, abrir a página e capturar a árvore de acessibilidade via `agent-browser`:
+### Passo 1: Varredura de Ambiente, DOM e Subagentes (`Topologia 3+1`)
+1. Acionar os 4 subagentes em 3 ondas via `invoke_subagent` (`TypeName="ui-shell-navigator"` ➔ `ui-controls-data` + `ui-motion-interaction` ➔ `ui-deterministic-observer`), ou carregar os contratos (`franklin_get_agents(agent_name="ui")`) / disparar a esteira DAG (`franklin_execute_dag(plan_path_or_json="ui")`) quando a análise abranger múltiplos módulos de UI.
+2. Se URL acessível, abrir a página e capturar a árvore de acessibilidade via `agent-browser`:
    ```powershell
    agent-browser open "[URL]"
    agent-browser wait 1500
    agent-browser snapshot -i
    ```
-2. Capturar telas em dark mode e light mode para inspeção de oclusão e contraste:
+3. Capturar telas em dark mode e light mode para inspeção de oclusão e contraste:
    ```powershell
    agent-browser --color-scheme dark screenshot --annotate
    ```
-3. Se arquivos estáticos, inspecionar folhas de estilo (`globals.css`, `tailwind.config.js`) e arquivos HTML/JSX/TSX.
+4. Se arquivos estáticos, inspecionar folhas de estilo (`globals.css`, `tailwind.config.js`) e arquivos HTML/JSX/TSX.
 
 ### Passo 2: Extração dos Parâmetros Reais
 Mapear os valores reais em uso:
@@ -136,8 +158,8 @@ Mapear os valores reais em uso:
 - Existência de classes `shrink-0`, `whitespace-nowrap`, `active:scale-95`.
 - Espaçamento de itens da sidebar e navbar.
 
-### Passo 3: Confronto com a Tabela Canônica de Preferências
-Atribuir status determinístico para cada um dos 10 critérios:
+### Passo 3: Confronto com a Tabela Canônica de Preferências e Checklist `[AUDIT-01..09]`
+Atribuir status determinístico para cada um dos 10 critérios e consolidar o veredito do `ui-deterministic-observer`:
 - `[PASS]`: Atende integralmente à diretriz.
 - `[FAIL]`: Viola a diretriz ou apresenta defeito visual/ergonômico/sintático.
 - `[UNVERIFIED]`: Não foi possível testar dinamicamente no momento da análise.

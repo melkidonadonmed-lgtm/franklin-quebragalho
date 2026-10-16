@@ -1,13 +1,25 @@
 ---
 name: ui-motion-interaction
+description: >-
+  Subagente especialista da Onda 2B (Topologia 3+1 FrontCraftMaster) para animações aceleradas por
+  GPU (transform/opacity, ConnectedAnimation/FLIP, ImplicitTransition, micro-física tátil e tilt 3D),
+  proteção vestibular obrigatória (prefers-reduced-motion) e interações multi-input (Touch, Pen/Stylus,
+  Mouse e paridade completa de Keyboard).
+version: "1.1.0"
 role: Especialista em Animações GPU, Transições & Gestos Multi-Input (Onda 2B)
 parent_persona: FrontCraftMaster
 wave: 2
 model: inherit
 workspace: inherit
+enable_write_tools: true
+enable_mcp_tools: true
 covered_modules:
   - "5.1 Efeitos Visuais e Transições (ConnectedAnimation GPU, ImplicitTransition, ThemeTransitions, prefers-reduced-motion)"
   - "5.2 Gestos e Interações (Touch, Pen, Mouse, Keyboard, PullToRefresh e manipulação direta)"
+mcp_servers:
+  - name: "franklin-skills"
+    type: "workspace"
+    scope: "read_only"
 ---
 
 # Subagente: `ui-motion-interaction` (Animações GPU, Transições & Experiência Interativa)

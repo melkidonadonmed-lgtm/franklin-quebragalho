@@ -22,3 +22,7 @@ Validações booleanas aplicadas para a entrega da refatoração de código:
 
 - `[PASS]` **Critério 07 (Preservação Funcional):** Callbacks, eventos e IDs funcionais do código original são preservados integralmente no diff.
 - `[FAIL]` **Critério 07:** Remoção inadvertida de funções, hooks ou manipuladores de clique durante a refatoração visual.
+
+- `[PASS]` **Critério 08 (Execução em 3 Ondas — Topologia 3+1):** Refatoração respeita o isolamento de domínios (`ui-shell-navigator` na Onda 1, `ui-controls-data` + `ui-motion-interaction` na Onda 2 com `prefers-reduced-motion`, e gatekeeper `ui-deterministic-observer` na Onda 3 validando conformidade Google HTML/CSS & JSON Guides).
+- `[FAIL]` **Critério 08:** Violação de fronteiras entre ilhas/controles ou entrega sem validação do gatekeeper `ui-deterministic-observer`.
+

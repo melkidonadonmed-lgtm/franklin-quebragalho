@@ -80,6 +80,9 @@
       "group_id": "state_checker_observer",
       "description": "Validação cruzada anti-alucinação na AST/código-fonte, eliminação de falsos positivos, consolidação do Escore Normalizado Global Snorm e geração do Relatório Final (w5 = 20%)",
       "dependencies": [
+        "wave1_static_sanitization",
+        "wave1_architecture_hardcoded",
+        "wave1_physics_3d_math",
         "wave2_deterministic_tests"
       ],
       "criticality": "HIGH",

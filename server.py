@@ -276,6 +276,14 @@ def _find_skill_dir(skill_name: str) -> Optional[Path]:
         "qa-testes": "test-quality-auditor",
         "arquitetura": "arquitetura-design-implementacao-sistema",
         "ilhas": "arquitetura-design-implementacao-sistema",
+        "frontend": "consultor-design-tatil-frontend",
+        "ui": "consultor-design-tatil-frontend",
+        "consultor-ui": "consultor-design-tatil-frontend",
+        "consultor-frontend": "consultor-design-tatil-frontend",
+        "analise-ui": "analise-design-tatil-frontend",
+        "analise-frontend": "analise-design-tatil-frontend",
+        "refatorar-ui": "refatoracao-design-tatil-frontend",
+        "refatoracao-frontend": "refatoracao-design-tatil-frontend",
     }
     if clean in quick_aliases:
         alias_target = SKILLS_ROOT / quick_aliases[clean]
@@ -624,12 +632,82 @@ def franklin_skills_validate(
     return "\n".join(lines)
 
 
+def _resolve_agents_dir() -> Path:
+    """Localiza o diretório de contratos de subagentes (agents/)."""
+    for candidate in (
+        ROOT_DIR / ".agents" / "agents",
+        ROOT_DIR / "agents",
+        Path(r"C:\Users\melki\.gemini\config\plugins\franklin-skills\agents"),
+        Path(r"C:\Users\melki\.gemini\config\agents"),
+        Path(r"C:\Users\melki\.gemini\agents"),
+    ):
+        if candidate.exists() and candidate.is_dir():
+            return candidate
+    return ROOT_DIR / "agents"
+
+
 @mcp.tool()
-def franklin_get_agents() -> str:
-    """Retorna o catálogo oficial dos 7 Subagentes Especialistas do Franklin Quebra-Galho e suas diretrizes."""
+def franklin_get_agents(agent_name: str = "") -> str:
+    """Retorna o catálogo oficial dos Subagentes Especialistas do Franklin Quebra-Galho ou o contrato detalhado de um subagente de UI (Topologia 3+1).
+    Args:
+        agent_name: Vazio para retornar o AGENTS.md completo; 'ui' ou '3+1' para retornar todos os 4 subagentes de UI;
+                    ou o nome/atalho do subagente ('ui-shell-navigator', 'ui-controls-data', 'ui-motion-interaction', 'ui-deterministic-observer').
+    """
+    clean = agent_name.strip().lower()
+    if not clean:
+        if AGENTS_MD_PATH.exists():
+            return AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace")
+        return "Arquivo AGENTS.md não encontrado na raiz do workspace."
+
+    agents_dir = _resolve_agents_dir()
+    ui_aliases = {
+        "shell": "ui-shell-navigator",
+        "navigator": "ui-shell-navigator",
+        "onda1": "ui-shell-navigator",
+        "wave1": "ui-shell-navigator",
+        "ui_shell_navigator": "ui-shell-navigator",
+        "controls": "ui-controls-data",
+        "data": "ui-controls-data",
+        "onda2a": "ui-controls-data",
+        "wave2a": "ui-controls-data",
+        "ui_controls_data": "ui-controls-data",
+        "motion": "ui-motion-interaction",
+        "interaction": "ui-motion-interaction",
+        "onda2b": "ui-motion-interaction",
+        "wave2b": "ui-motion-interaction",
+        "ui_motion_interaction": "ui-motion-interaction",
+        "observer": "ui-deterministic-observer",
+        "gatekeeper": "ui-deterministic-observer",
+        "onda3": "ui-deterministic-observer",
+        "wave3": "ui-deterministic-observer",
+        "ui_deterministic_observer": "ui-deterministic-observer",
+    }
+
+    if clean in ("ui", "3+1", "frontcraft", "frontcraftmaster", "all-ui", "subagentes-ui"):
+        ordered = [
+            "ui-shell-navigator.md",
+            "ui-controls-data.md",
+            "ui-motion-interaction.md",
+            "ui-deterministic-observer.md",
+        ]
+        parts = ["# Esquadrão de Subagentes de UI (`Topologia 3+1` sob `FrontCraftMaster`)\n"]
+        for fname in ordered:
+            fpath = agents_dir / fname
+            if fpath.exists():
+                parts.append(fpath.read_text(encoding="utf-8", errors="replace"))
+                parts.append("\n" + ("=" * 60) + "\n")
+        return "\n".join(parts)
+
+    target_stem = ui_aliases.get(clean, clean.removesuffix(".md"))
+    target_file = agents_dir / f"{target_stem}.md"
+    if target_file.exists():
+        return target_file.read_text(encoding="utf-8", errors="replace")
+
     if AGENTS_MD_PATH.exists():
-        return AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace")
-    return "Arquivo AGENTS.md não encontrado na raiz do workspace."
+        content = AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace")
+        if clean in content.lower():
+            return content
+    return f"Erro: Subagente '{agent_name}' não encontrado em {agents_dir}."
 
 
 @mcp.tool()
@@ -835,16 +913,42 @@ def franklin_execute_dag(
     resolved_plan_path: Optional[Path] = None
     temp_file: Optional[Path] = None
 
+    plan_aliases = {
+        "ui": ROOT_DIR / "plans" / "ui_composition_dag.json",
+        "frontend": ROOT_DIR / "plans" / "ui_composition_dag.json",
+        "3+1": ROOT_DIR / "plans" / "ui_composition_dag.json",
+        "ui_composition": ROOT_DIR / "plans" / "ui_composition_dag.json",
+        "ui_composition_dag": ROOT_DIR / "plans" / "ui_composition_dag.json",
+        "ui_composition_dag.json": ROOT_DIR / "plans" / "ui_composition_dag.json",
+        "physics": ROOT_DIR / "plans" / "physics_code_audit_dag.json",
+        "3d": ROOT_DIR / "plans" / "physics_code_audit_dag.json",
+        "fisica": ROOT_DIR / "plans" / "physics_code_audit_dag.json",
+        "physics_code_audit": ROOT_DIR / "plans" / "physics_code_audit_dag.json",
+        "physics_code_audit_dag": ROOT_DIR / "plans" / "physics_code_audit_dag.json",
+        "physics_code_audit_dag.json": ROOT_DIR / "plans" / "physics_code_audit_dag.json",
+        "sample": EPIC_VOLTA_DIR / "examples" / "sample_dag_plan.json",
+        "sample_dag_plan.json": EPIC_VOLTA_DIR / "examples" / "sample_dag_plan.json",
+    }
+
+    if plan_str.lower() in plan_aliases:
+        alias_candidate = plan_aliases[plan_str.lower()]
+        if alias_candidate.exists() and alias_candidate.is_file():
+            resolved_plan_path = alias_candidate.resolve()
+
     # 1. Verifica se é um arquivo existente
-    candidate_paths = [
-        Path(plan_str),
-        ROOT_DIR / plan_str,
-        EPIC_VOLTA_DIR / plan_str,
-    ]
-    for cp in candidate_paths:
-        if cp.exists() and cp.is_file():
-            resolved_plan_path = cp.resolve()
-            break
+    if not resolved_plan_path:
+        candidate_paths = [
+            Path(plan_str),
+            ROOT_DIR / plan_str,
+            ROOT_DIR / "plans" / plan_str,
+            EPIC_VOLTA_DIR / plan_str,
+            EPIC_VOLTA_DIR / "examples" / plan_str,
+            Path(r"C:\Users\melki\.gemini\plans") / plan_str,
+        ]
+        for cp in candidate_paths:
+            if cp.exists() and cp.is_file():
+                resolved_plan_path = cp.resolve()
+                break
 
     # 2. Se não for arquivo, tenta interpretar como JSON embutido
     if not resolved_plan_path:
@@ -1246,6 +1350,12 @@ def get_agents_resource() -> str:
     return "AGENTS.md não encontrado."
 
 
+@mcp.resource("skills://agent/{agent_name}")
+def get_agent_contract_resource(agent_name: str) -> str:
+    """Recurso passivo para leitura direta do contrato de um subagente (ex: ui-shell-navigator)."""
+    return franklin_get_agents(agent_name=agent_name)
+
+
 @mcp.resource("skills://skill/{skill_name}")
 def get_skill_resource(skill_name: str) -> str:
     """Recurso passivo para leitura direta do contrato SKILL.md de uma skill."""
@@ -1285,13 +1395,13 @@ Proceda com a execução seguindo a taxonomia determinística e as salvaguardas 
 
 @mcp.prompt("tactile_frontend_audit")
 def tactile_frontend_audit_prompt(component_or_url: str) -> str:
-    """Gera prompt para auditoria tátil de frontend sob os padrões do FrontCraftMaster."""
+    """Gera prompt para auditoria tátil de frontend sob os padrões do FrontCraftMaster e Topologia 3+1."""
     return f"""Atue como FrontCraftMaster e audite a seguinte interface/código: {component_or_url}.
-Avalie contra o Design System Tátil Melki:
-1. Menus claustrofóbicos vs descompactados (padding nobre, min 240px em sidebar).
-2. Botões ergonômicos (altura mínima 40px, padding horizontal generoso, micro-interação tátil).
+Coordene a Topologia 3+1 de Subagentes de UI (ui-shell-navigator, ui-controls-data, ui-motion-interaction, ui-deterministic-observer) via invoke_subagent (Modo Nativo Antigravity em 3 ondas) ou via franklin_get_agents(agent_name="ui") / franklin_execute_dag("plans/ui_composition_dag.json") (Modo Motor DAG Assíncrono) e avalie contra o Design System Tátil Melki:
+1. Menus claustrofóbicos vs descompactados (padding nobre, min 240px em sidebar, CLS < 0.1).
+2. Botões ergonômicos (altura mínima 44px, anti-squish shrink-0 whitespace-nowrap, micro-interação tátil).
 3. Paleta Mineral Anti-Cobalto (fundo ardósia/creme, acentos minerais, banimento de azul cobalto puro).
-4. Profundidade de sombras e elevação (Tactile Matte 4K).
+4. Profundidade de sombras e elevação (Tactile Matte 4K, luz zenital e cavidades sunken wells).
 Emita o Relatório Comparativo determinístico com marcadores [PASS], [FAIL] e notas explicativas.
 """
 

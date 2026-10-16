@@ -1,21 +1,22 @@
 ---
 name: consultor-design-tatil-frontend
 description: >-
-  Analisa e mapeia interfaces frontend via agent-browser, avalia conformidade com o Design System Tátil Melki (profundidade de sombras, cards mais claros que o fundo, rim light e paleta mineral anti-cobalto), oferece opções interativas de melhorias visuais e funcionais com formulários de múltipla escolha ou mockups de referência, audita discrepâncias determinísticas e gera o documento canônico DESIGN.md.
+  Analisa e mapeia interfaces frontend via agent-browser, coordena os 4 subagentes de UI (Topologia 3+1: ui-shell-navigator, ui-controls-data, ui-motion-interaction, ui-deterministic-observer), avalia conformidade com o Design System Tátil Melki (profundidade de sombras, cards mais claros que o fundo, rim light e paleta mineral anti-cobalto), oferece opções interativas de melhorias visuais e funcionais com formulários de múltipla escolha ou mockups de referência, audita discrepâncias determinísticas e gera o documento canônico DESIGN.md.
 license: MIT
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
   author: "FrontCraftMaster & Melki"
   category: "Consultoria de Design Tátil e UX"
-  updated_at: "2026-10-14"
+  updated_at: "2026-10-16"
   tags:
     - "consultoria-ux"
     - "design-tatil"
     - "paleta-mineral"
     - "design-md"
     - "multidimensional-2026"
-version: 1.2.0
-updated_at: 2026-10-14
+    - "subagentes-ui-3+1"
+version: 1.3.0
+updated_at: 2026-10-16
 author: FrontCraftMaster & Melki
 category: Consultoria de Design Tátil e UX
 ---
@@ -125,6 +126,22 @@ O subagente confronta ativamente a interface inspecionada contra as preferência
 | **DISC-06: SQUISH** | Anti-squish em botões e badges (`flex-shrink: 0; white-space: nowrap;`) | `[PASS] / [FAIL]` | Botões com texto quebrado verticalmente | Aplicar classes `shrink-0 whitespace-nowrap` |
 | **DISC-07: TDAH-UX** | Ergonomia cognitiva: busca rápida (`Ctrl+K`), sem alerts bloqueantes | `[PASS] / [FAIL]` | Uso de `window.alert()` nativo ou ausência de busca rápida | Implementar command bar rápida e toasts contextuais |
 | **DISC-08: SUPPLY** | Componentes modulares copy-paste (padrão shadcn/ui) em vez de pacotes opacos | `[PASS] / [FAIL]` | Dependência de frameworks pesados caixa-preta | Adotar componentes Tailwind/Radix desacoplados |
+
+### 4.5. Módulo de Orquestração dos Subagentes de UI (`Topologia 3+1`)
+Para conceber ou auditar a arquitetura visual do `DESIGN.md` em aplicações completas, acione o esquadrão de **4 Subagentes de UI** (`agents/ui-*.md`) em 3 ondas via **Modo Nativo Antigravity (`invoke_subagent`)** ou **Modo Motor DAG Assíncrono (`franklin_execute_dag` / `franklin_get_agents` / `epic-volta`)**:
+1. **Onda 1 (`ui-shell-navigator`)**: Define `layout_contract` (*UI Islands*, Grid/SplitView, `Shadow DOM`, $\text{CLS} < 0.1$) e `navigation_contract` (`MenuBar`, `TabView` lazy, `TreeView` assíncrono, `Ctrl+K`).
+2. **Onda 2A (`ui-controls-data`)**: Define `controls_contract` (botões $\ge 44\times44\text{px}$, anti-squish, Regra 1+2, WAI-ARIA inline) e `data_feedback_contract` (virtualização `ListView`/`ItemsView` a $60\text{fps}$, `aria-live`).
+3. **Onda 2B (`ui-motion-interaction`)**: Define `motion_contract` (`ConnectedAnimation` GPU, `prefers-reduced-motion`) e `interaction_contract` (`Touch/Pen/Mouse/Key`, `PullToRefresh`).
+4. **Onda 3 Gatekeeper (`ui-deterministic-observer`)**: Valida os 6 pilares de governança e emite o checklist `[AUDIT-01]` a `[AUDIT-09]` para inclusão no `DESIGN.md`.
+
+**Acionamento Prático:**
+- **Modo Nativo Antigravity (`invoke_subagent`)**: invocação direta dos subagentes registrados pelo plugin `franklin-skills` em `<subagents>` (`Available subagents`) em 3 ondas:
+  - **Onda 1**: `invoke_subagent(TypeName="ui-shell-navigator", Task="...")`
+  - **Onda 2 (Paralela)**: `invoke_subagent(TypeName="ui-controls-data", Task="...")` e `invoke_subagent(TypeName="ui-motion-interaction", Task="...")`
+  - **Onda 3 (Gatekeeper)**: `invoke_subagent(TypeName="ui-deterministic-observer", Task="...")`
+- **Modo Motor DAG Assíncrono (`franklin_execute_dag` / `franklin_get_agents` / `epic-volta`)**:
+  - MCP Tool: `franklin_get_agents(agent_name="ui")` ou `franklin_execute_dag(plan_path_or_json="plans/ui_composition_dag.json", run_id="ui-consult-01")` (ou alias `"ui"`).
+  - CLI Epic-Volta: `uv --directory C:\Users\melki\dev\repos\epic-volta run python -m orchestrator.cli C:\Users\melki\dev\repos\franklin-quebragalho\plans\ui_composition_dag.json --run-id ui-consult-01`.
 
 ---
 

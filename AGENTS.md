@@ -31,7 +31,7 @@ Este documento estabelece o modelo operacional, papéis e contratos de orquestra
 
 ## 🔄 Esquadrão de Subagentes de UI (`Topologia 3+1` sob `FrontCraftMaster`)
 
-Os 6 módulos de engenharia visual e interação ficam consolidados em **4 Subagentes Especialistas** na pasta [`agents/`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/agents/) e orquestrados em **3 ondas paralelas (Kahn)** via [`plans/ui_composition_dag.json`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/plans/ui_composition_dag.json) no Epic-Volta:
+Os 6 módulos de engenharia visual e interação ficam consolidados em **4 Subagentes Especialistas** na pasta [`agents/`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/agents/) e orquestrados em **3 ondas determinísticas** tanto pelo **Modo Nativo Antigravity (`invoke_subagent`)** quanto pelo **Modo Motor DAG Assíncrono (Kahn)** via [`plans/ui_composition_dag.json`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/plans/ui_composition_dag.json) no Epic-Volta:
 
 | Onda | Subagente (`agents/*.md`) | Módulos Cobertos | Entregável Determinístico (`upstream_mapping`) |
 | :---: | :--- | :--- | :--- |
@@ -47,9 +47,11 @@ Os 6 módulos de engenharia visual e interação ficam consolidados em **4 Subag
 1. **Triagem de Demanda**:
    O Franklin avalia se a tarefa pode ser executada em um único turno com ferramentas normais ou se demanda análise extensiva / pesquisa em segundo plano.
 
-2. **Uso de Subagentes (`invoke_subagent` / `franklin_execute_dag`)**:
-   - Para pesquisas longas ou exploração profunda no disco/Drive: invocar subagente `research` ou persona especializada.
-   - Para composições completas de UI/UX: disparar a esteira `3+1` lendo os contratos em `agents/*.md` ou executando `franklin_execute_dag("plans/ui_composition_dag.json")`.
+2. **Uso de Subagentes (`invoke_subagent` / `franklin_get_agents` / `franklin_execute_dag` / Epic-Volta CLI)**:
+   - Para pesquisas longas ou exploração profunda no disco/Drive: acionar a skill especialista ou persona correspondente.
+   - Para composições completas de UI/UX (`Topologia 3+1`):
+     - **Modo Nativo Antigravity (`invoke_subagent` / `define_subagent`)**: acionar os subagentes registrados pelo plugin `franklin-skills` em `<subagents>` em 3 ondas (`Onda 1`: `invoke_subagent(TypeName="ui-shell-navigator")`; `Onda 2` paralela: `invoke_subagent(TypeName="ui-controls-data")` e `invoke_subagent(TypeName="ui-motion-interaction")`; `Onda 3`: `invoke_subagent(TypeName="ui-deterministic-observer")`).
+     - **Modo Motor DAG Assíncrono (`franklin_execute_dag` / `franklin_get_agents` / `epic-volta`)**: carregar os contratos em `agents/*.md` via `franklin_get_agents(agent_name="ui")` e executar `franklin_execute_dag(plan_path_or_json="plans/ui_composition_dag.json")` (ou alias `"ui"`).
 
 3. **Validação e Entrega**:
    - Todo relatório de ação deve conter links clicáveis para os arquivos gerados ou pastas organizadas.

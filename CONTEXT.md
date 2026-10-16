@@ -15,6 +15,6 @@ O `franklin-quebragalho` é a incubadora central de habilidades agênticas (**Ag
 ## 2. Estado Operacional (Outubro/2026)
 1. **Autonomia Standalone (`shared/`)**: Contém `shared/harness.py` (`SemanticGuard`, `evaluate_action_risk`, `CheckpointStore` HITL), `shared/a2a_bridge.py` (`FranklinA2ATaskManager` + JCS/JWS HMAC-SHA256) e `shared/mcp_2026_advisor.py`.
 2. **Qualidade de Testes Nível 4 (`100.0/100`)**:
-   - **35/35 testes aprovados** em `pytest tests/ -q`.
+   - **38/38 testes aprovados** em `pytest tests/ -q`.
    - **25/25 skills validadas** em `python validate_skills.py`.
    - **20/20 casos de avaliação (`evals/evals.json`)** aprovados no `test-quality-auditor` v1.2.0 com espelhamento 1:1 dos 5 módulos analisadores (`python`, `ts_js`, `go`, `mcp`, `harness`).

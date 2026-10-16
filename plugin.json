@@ -1,0 +1,18 @@
+{
+  "name": "franklin-skills",
+  "displayName": "Franklin Quebra-Galho (Skills & UI Subagents Topologia 3+1)",
+  "version": "2.7.0",
+  "description": "Ecossistema de 25 Skills canônicas, 4 Subagentes Especialistas de UI (Topologia 3+1: ui-shell-navigator, ui-controls-data, ui-motion-interaction, ui-deterministic-observer), Planos DAG, Biblioteca Compartilhada (lib) e Documentação Técnica (doc), integrado ao motor assíncrono DAG do Epic-Volta.",
+  "directories": {
+    "skills": "skills",
+    "agents": "agents",
+    "plans": "plans",
+    "lib": "lib",
+    "doc": "doc"
+  },
+  "suggestedPrompts": [
+    "Orquestrar composição de UI nas 3 ondas do FrontCraftMaster (ui-shell-navigator, ui-controls-data, ui-motion-interaction e ui-deterministic-observer) via invoke_subagent ou franklin_execute_dag('plans/ui_composition_dag.json')",
+    "Auditar interface contra o Design System Tátil Melki, luz zenital, Regra 1+2 e Core Web Vitals",
+    "Validar integridade determinística das 25 skills e executar planos DAG (UI 3+1 e Física 3D) no Epic-Volta"
+  ]
+}

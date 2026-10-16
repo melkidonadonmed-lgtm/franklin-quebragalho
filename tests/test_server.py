@@ -322,3 +322,151 @@ def test_arquitetura_deterministic_scorer_v2() -> None:
     assert "[Exit Code: 0]" in scan_res
     assert '"icte_typography_structure": 100.0' in scan_res
 
+
+def test_frontend_skills_and_ui_subagents_integration() -> None:
+    """Valida a integração das skills de frontend com os 4 subagentes de UI (Topologia 3+1) e o loader declarativo."""
+    ui_dir = server._find_skill_dir("ui")
+    analise_dir = server._find_skill_dir("analise-ui")
+    refatorar_dir = server._find_skill_dir("refatorar-ui")
+    assert ui_dir is not None and ui_dir.name == "consultor-design-tatil-frontend"
+    assert analise_dir is not None and analise_dir.name == "analise-design-tatil-frontend"
+    assert refatorar_dir is not None and refatorar_dir.name == "refatoracao-design-tatil-frontend"
+
+    for skill_name in (
+        "analise-design-tatil-frontend",
+        "consultor-design-tatil-frontend",
+        "refatoracao-design-tatil-frontend",
+    ):
+        contract = server.franklin_skills_get(skill_name, section="contract")
+        assert "ui-shell-navigator" in contract
+        assert "ui-controls-data" in contract
+        assert "ui-motion-interaction" in contract
+        assert "ui-deterministic-observer" in contract
+        assert "franklin_execute_dag" in contract
+        assert "invoke_subagent" in contract
+
+    all_ui_agents = server.franklin_get_agents(agent_name="ui")
+    assert "ui-shell-navigator" in all_ui_agents
+    assert "ui-controls-data" in all_ui_agents
+    assert "ui-motion-interaction" in all_ui_agents
+    assert "ui-deterministic-observer" in all_ui_agents
+
+    shell_contract = server.franklin_get_agents(agent_name="shell")
+    assert "layout_contract" in shell_contract
+    observer_contract = server.get_agent_contract_resource("observer")
+    assert "[AUDIT-09: LIGHT-SHADOW]" in observer_contract
+
+    # Valida que agent_spec_loader.py carrega arquivos Markdown com YAML frontmatter
+    import importlib.util
+    import pytest
+
+    loader_path = (
+        server.SKILLS_ROOT
+        / "aprimoramento-expansibilidade-agentes-skills"
+        / "scripts"
+        / "agent_spec_loader.py"
+    )
+    spec = importlib.util.spec_from_file_location("agent_spec_loader", loader_path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    for agent_md in (
+        "ui-shell-navigator.md",
+        "ui-controls-data.md",
+        "ui-motion-interaction.md",
+        "ui-deterministic-observer.md",
+    ):
+        parsed_spec = module.load_agent_spec(str(server.ROOT_DIR / "agents" / agent_md), verbose=False)
+        assert parsed_spec["name"] == agent_md.removesuffix(".md")
+        assert parsed_spec["version"] == "1.1.0"
+        assert parsed_spec["enable_write_tools"] is True
+        assert parsed_spec["enable_mcp_tools"] is True
+        assert len(parsed_spec["description"]) > 20
+        assert len(parsed_spec["system_prompt"]) > 100
+
+    agents_doc = server.franklin_get_agents()
+    assert "invoke_subagent" in agents_doc
+
+    # Valida que agent_spec_loader.py funciona mesmo quando PyYAML (yaml=None) não está instalado
+    orig_yaml = module.yaml
+    try:
+        module.yaml = None
+        fallback_spec = module.load_agent_spec(
+            str(server.ROOT_DIR / "agents" / "ui-shell-navigator.md"), verbose=False
+        )
+        assert fallback_spec["name"] == "ui-shell-navigator"
+        assert fallback_spec["enable_write_tools"] is True
+        assert fallback_spec["enable_mcp_tools"] is True
+        assert len(fallback_spec["description"]) > 20
+        assert len(fallback_spec["covered_modules"]) == 2
+    finally:
+        module.yaml = orig_yaml
+
+    # Valida rejeição determinística de YAML frontmatter sem delimitador de fechamento '---'
+    with pytest.raises(ValueError, match="delimitador de fechamento '---' ausente"):
+        module.load_agent_spec("---\nname: broken-agent\nversion: 1.0.0\n\n# Corpo sem fechar frontmatter\n", verbose=False)
+
+    with pytest.raises(ValueError, match="não pode ser nulo"):
+        module.load_agent_spec("agent: null\n", verbose=False)
+
+
+def test_franklin_execute_dag_aliases_and_physics_plan(tmp_path: Path) -> None:
+    """Valida a execução por alias ('ui' e 'physics') e concorrência com resume=True no franklin_execute_dag."""
+    from concurrent.futures import ThreadPoolExecutor
+    import uuid
+
+    phys_db = tmp_path / "phys_test.db"
+    res_phys = json.loads(
+        server.franklin_execute_dag(
+            "physics",
+            run_id=f"test-phys-{uuid.uuid4().hex[:6]}",
+            db_path=str(phys_db),
+        )
+    )
+    assert res_phys["status"] == "COMPLETED"
+    assert res_phys["total_tasks"] == 5
+    assert res_phys["completed_tasks"] == 5
+    assert res_phys["results"]["wave3_state_checker_observer"]["snorm_global"] == 100.0
+
+    # Execução concorrente de 2 subprocessos DAG compartilhando o mesmo db_path e run_id com resume=True
+    shared_ui_db = tmp_path / "concurrent_ui.db"
+    shared_run_id = f"test-ui-conc-{uuid.uuid4().hex[:6]}"
+
+    def _run_ui() -> dict[str, object]:
+        raw = server.franklin_execute_dag(
+            "ui",
+            run_id=shared_run_id,
+            resume=True,
+            db_path=str(shared_ui_db),
+        )
+        return json.loads(raw)
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = [pool.submit(_run_ui), pool.submit(_run_ui)]
+        conc_results = [f.result() for f in futures]
+
+    for res_ui in conc_results:
+        assert res_ui["status"] == "COMPLETED"
+        assert res_ui["completed_tasks"] == 4
+        assert res_ui["results"]["wave3_deterministic_observer"]["final_status"] == "PASS"
+
+
+def test_gemini_ecosystem_directories() -> None:
+    """Valida se os diretórios solicitados em C:\\Users\\melki\\.gemini estão criados e sincronizados."""
+    gemini_root = Path(r"C:\Users\melki\.gemini")
+    for sub in ("lib", "doc", "docs", "plugins", "agents", "plans"):
+        target = gemini_root / sub
+        assert target.exists() and target.is_dir(), f"Diretório ausente: {target}"
+
+    assert (server.ROOT_DIR / "plugin.json").exists()
+    assert (gemini_root / "agents" / "ui-shell-navigator.md").exists()
+    assert (gemini_root / "config" / "agents" / "ui-shell-navigator.md").exists()
+    assert (gemini_root / "plans" / "ui_composition_dag.json").exists()
+    assert (gemini_root / "lib" / "agent_spec_loader.py").exists()
+    assert (gemini_root / "doc" / "AGENTS.md").exists()
+    assert (gemini_root / "docs" / "agent_card.json").exists()
+    assert (gemini_root / "plugins" / "franklin-skills" / "plugin.json").exists()
+
+
+

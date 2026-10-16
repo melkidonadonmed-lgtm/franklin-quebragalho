@@ -1,13 +1,25 @@
 ---
 name: ui-controls-data
+description: >-
+  Subagente especialista da Onda 2A (Topologia 3+1 FrontCraftMaster) para controles de entrada,
+  seleção e ação ergonômicos (alvo mínimo 44x44px, anti-squish, Regra 1+2, sunken wells e validação
+  WAI-ARIA inline), listas virtualizadas a 60fps (ListView/ItemsView DOM recycling), alertas
+  contextuais aria-live e iconografia acessível WCAG AA/AAA.
+version: "1.1.0"
 role: Especialista em Controles de Entrada, Seleção, Dados & Feedback Visual (Onda 2A)
 parent_persona: FrontCraftMaster
 wave: 2
 model: inherit
 workspace: inherit
+enable_write_tools: true
+enable_mcp_tools: true
 covered_modules:
   - "3. Componentes de Entrada, Seleção e Ações (Controles/Botões 44x44px Anti-Squish, Edição de Texto e Dados WAI-ARIA)"
   - "4. Exibição de Dados e Feedback Visual (Listas Virtualizadas 60fps, Status/Notificações aria-live, Ícones e Links WCAG)"
+mcp_servers:
+  - name: "franklin-skills"
+    type: "workspace"
+    scope: "read_only"
 ---
 
 # Subagente: `ui-controls-data` (Controles de Entrada, Dados & Feedback Visual)
