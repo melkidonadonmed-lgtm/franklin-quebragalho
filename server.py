@@ -763,7 +763,10 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
         ("rag", "dado", "chunk", "jsonl", "vetor", "memoria", "obsidian", "nota", "vault"),
         "🧠 Dados AI-Ready, RAG & Curadoria Obsidian Vault",
         ["curadoria-obsidian-vault", "context-sentinel", "auditoria-projetos-sistema"],
-        [("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Sanitização de texto, deduplicação SHA-256 e chunking com byte_range")],
+        [
+            ("curadoria-obsidian-vault", "vault_hygiene_scanner.py", "Scanner determinístico de Active Drift, Open Loops, Monólitos (>25KB) e Wikilinks"),
+            ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Sanitização de texto, deduplicação SHA-256 e chunking com byte_range"),
+        ],
         "N/A (Execução direta via script)",
         "Preservação de parágrafos lógicos, metadados source_id + byte_range e proteção absoluta da pasta .obsidian/.",
     ),

@@ -93,11 +93,10 @@ Para notas em `Projetos/Ativos/<Projeto>.md`, exigir também `type: projeto`, `s
 
 ## 5. PROCESSO PASSO A PASSO (EXECUÇÃO DE CURADORIA)
 
-### Passo 1: Leitura da Árvore de Notas e Paridade de Projetos
-Mapear todos os arquivos `.md` ignorando `.obsidian/`:
+### Passo 1: Varredura Determinística (`vault_hygiene_scanner.py`) e Paridade de Projetos
+Disparar o scanner determinístico reconstruído do `obsidian-mind` (detecta *Active Drift*, *Open Loops* $\ge 14$ dias, notas monolíticas $>25\text{KB}$, pressão em `Inbox/`, `[[Wikilinks]]` quebrados, guarda *Never-Expose* Case-Insensitive Windows e gera `report_key` SHA-256 anti-nagging):
 ```powershell
-$vault = "C:\Users\melki\dev\notes"
-$notas = Get-ChildItem -Path $vault -Filter *.md -Recurse | Where-Object { $_.FullName -notmatch '\\\.obsidian\\' }
+uv run python skills/curadoria-obsidian-vault/scripts/vault_hygiene_scanner.py --json
 pwsh "C:\Users\melki\dev\tools\check-vault-projects.ps1"
 ```
 
@@ -106,11 +105,11 @@ pwsh "C:\Users\melki\dev\tools\check-vault-projects.ps1"
 2. Verificar ocorrência do nome de cada anexo em `![[arquivo]]` ou `![](arquivo)` nas notas `.md`.
 3. Anexos sem correspondência são listados como órfãos para realocação segura em `Arquivo/_anexos_orfaos/`.
 
-### Passo 3: Auditoria de Links e Frontmatter
-Identificar notas sem cabeçalho YAML (`title`, `date`, `tags`) e `[[Wikilinks]]` órfãos.
+### Passo 3: Auditoria de Links, Frontmatter e Monólitos (>25KB)
+Identificar notas sem cabeçalho YAML (`title`, `date`, `tags`), `[[Wikilinks]]` órfãos e notas monolíticas que pedem *split* (nunca *trim*).
 
 ### Passo 4: Relatório, Realocação Segura e Sincronização MemPalace
-Apresentar o diagnóstico determinístico (`[PASS]` / `[FAIL]`), aplicar correções aprovadas e executar `mempalace mine "C:\Users\melki\dev\notes"`.
+Apresentar o diagnóstico determinístico (`[PASS]` / `[FAIL]`) com `report_key` canônico, aplicar correções aprovadas e executar `mempalace mine "C:\Users\melki\dev\notes"`.
 
 ---
 
