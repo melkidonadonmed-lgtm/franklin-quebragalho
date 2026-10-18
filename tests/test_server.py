@@ -86,7 +86,7 @@ def test_skills_validate_deterministic() -> None:
 
 
 def test_get_agents() -> None:
-    """Valida a extração do catálogo de subagentes e da Topologia 3+1 de UI."""
+    """Valida a extração do catálogo de subagentes, Topologia Multi-Repo (5 Camadas) e Topologia 3+1 de UI."""
     res = server.franklin_get_agents()
     assert "FrontCraftMaster" in res
     assert "DriveMaster" in res
@@ -96,6 +96,22 @@ def test_get_agents() -> None:
     assert "ui-controls-data" in res
     assert "ui-motion-interaction" in res
     assert "ui-deterministic-observer" in res
+
+    eco_res = server.franklin_get_agents(agent_name="ecosystem")
+    assert "Topologia Interativa de Agentes Multi-Repo" in eco_res
+    assert "Camada 0" in eco_res
+    assert "code-acceptability-auditor" in eco_res
+    assert "agent-hub.ps1" in eco_res
+
+    persona_res = server.franklin_get_agents(agent_name="skillcraft")
+    assert "SkillCraft" in persona_res
+    assert "code-acceptability-auditor" in persona_res
+
+    assert server._find_skill_dir("code-auditor") is not None
+    assert server._find_skill_dir("design") is not None
+    assert server._find_skill_dir("code-architect") is not None
+    assert server._find_skill_dir("ui-testing") is not None
+
 
 
 def test_run_skill_script_security() -> None:

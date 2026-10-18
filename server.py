@@ -95,6 +95,9 @@ def _load_agents_map() -> Dict[str, str]:
         "refatoracao-design-tatil-frontend": "FrontCraftMaster",
         "consultor-design-tatil-frontend": "FrontCraftMaster",
         "design-interface-medica-minimalista": "FrontCraftMaster",
+        "design-md": "FrontCraftMaster",
+        "frontend-code-architect": "FrontCraftMaster",
+        "frontend-testing-auditor": "FrontCraftMaster",
         "gdrive-auditoria-limpeza": "DriveMaster",
         "gdrive-taxonomia-organizacao": "DriveMaster",
         "manutencao-disco-windows": "FileOpsLocal",
@@ -105,6 +108,7 @@ def _load_agents_map() -> Dict[str, str]:
         "evoluir-skills": "SkillCraft",
         "skill-auditor-refatorador-skills": "SkillCraft",
         "aprimoramento-expansibilidade-agentes-skills": "SkillCraft",
+        "code-acceptability-auditor": "SkillCraft",
         "test-quality-auditor": "SkillCraft",
         "high-level-context-planner": "LoopPlanner",
         "gap-analyzer-auditor": "LoopPlanner",
@@ -115,7 +119,8 @@ def _load_agents_map() -> Dict[str, str]:
         "code-quality-audit-3d-physics": "Franklin-Main",
         "context-sentinel": "Franklin-Main",
         "refine-prompt": "Franklin-Main",
-        "_template": "Franklin-Main",
+        "_template": "SkillCraft",
+        "template-skill": "SkillCraft",
     }
 
     if AGENTS_MD_PATH.exists():
@@ -271,11 +276,20 @@ def _find_skill_dir(skill_name: str) -> Optional[Path]:
         "medico": "design-interface-medica-minimalista",
         "template": "_template",
         "sentinel": "context-sentinel",
+        "code-auditor": "code-acceptability-auditor",
+        "acceptability": "code-acceptability-auditor",
+        "ast-auditor": "code-acceptability-auditor",
         "test-auditor": "test-quality-auditor",
         "evals": "test-quality-auditor",
         "qa-testes": "test-quality-auditor",
         "arquitetura": "arquitetura-design-implementacao-sistema",
         "ilhas": "arquitetura-design-implementacao-sistema",
+        "design": "design-md",
+        "design.md": "design-md",
+        "code-architect": "frontend-code-architect",
+        "atomic-ui": "frontend-code-architect",
+        "ui-testing": "frontend-testing-auditor",
+        "frontend-auditor": "frontend-testing-auditor",
         "frontend": "consultor-design-tatil-frontend",
         "ui": "consultor-design-tatil-frontend",
         "consultor-ui": "consultor-design-tatil-frontend",
@@ -648,9 +662,10 @@ def _resolve_agents_dir() -> Path:
 
 @mcp.tool()
 def franklin_get_agents(agent_name: str = "") -> str:
-    """Retorna o catálogo oficial dos Subagentes Especialistas do Franklin Quebra-Galho ou o contrato detalhado de um subagente de UI (Topologia 3+1).
+    """Retorna o catálogo oficial dos Subagentes Especialistas do Franklin Quebra-Galho, a Topologia Multi-Repo (5 Camadas) ou o contrato detalhado de um subagente de UI (Topologia 3+1).
     Args:
-        agent_name: Vazio para retornar o AGENTS.md completo; 'ui' ou '3+1' para retornar todos os 4 subagentes de UI;
+        agent_name: Vazio para retornar o AGENTS.md completo; 'ecosystem'/'matrix'/'topology' para a topologia de agentes nos 13 repos;
+                    'ui' ou '3+1' para retornar todos os 4 subagentes de UI; nome da persona ('skillcraft', 'loopplanner', 'drivemaster', etc.);
                     ou o nome/atalho do subagente ('ui-shell-navigator', 'ui-controls-data', 'ui-motion-interaction', 'ui-deterministic-observer').
     """
     clean = agent_name.strip().lower()
@@ -658,6 +673,30 @@ def franklin_get_agents(agent_name: str = "") -> str:
         if AGENTS_MD_PATH.exists():
             return AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace")
         return "Arquivo AGENTS.md não encontrado na raiz do workspace."
+
+    if clean in ("ecosystem", "topology", "matrix", "all", "multi-repo", "repos"):
+        skills = _get_all_skills_data()
+        by_persona: Dict[str, List[str]] = {}
+        for s in skills:
+            by_persona.setdefault(s["persona"], []).append(s["name"])
+        lines = [
+            "# ⚡ Topologia Interativa de Agentes Multi-Repo (5 Camadas • 13 Repositórios)\n",
+            "## 1. Camadas de Execução e Custo Cognitivo",
+            "- **Camada 0 (Bússola & Heartbeat Zero-LLM — 0 tokens)**: `franklin_smart_compass()`, `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1`, `POST /rpc` (`mesh/heartbeat` em `adk-tests`).",
+            "- **Camada 1 (Orquestração & Loop Fechado)**: `Franklin-Main` (Execução Direta) e `LoopPlanner` (`high-level-context-planner` Fase 0 -> `skill-orquestrador-planos-encadeados` -> `gap-analyzer-auditor`).",
+            "- **Camada 2 (Esquadrão Frontend Soft Tactile `DESIGN.md v4.5-soft` — Topologia 3+1)**: `FrontCraftMaster` + `ui-shell-navigator` (Onda 1) -> `ui-controls-data` + `ui-motion-interaction` (Onda 2) -> `ui-deterministic-observer` (Onda 3 Gatekeeper `AUDIT-VIS-01 >= 90`).",
+            "- **Camada 3 (Gatekeepers Determinísticos AST/Pass@k — 0 tokens)**: `SkillCraft` (`code-acceptability-auditor` Score >= 75, `test-quality-auditor`), `3D Physics Auditor` (`franklin_execute_dag('physics')`) e `dispatch_skill_deterministic_tests` (Go Eval Harness).",
+            "- **Camada 4 (Malha Multiagente Cloud/Web & Clínica)**: `adk-tests` (`mesh_hybrid_orchestrator`, `self_healing_specialist`, `customer_issue_reviewer`, `AgyCalcCluster`), `epic-volta` (`DAGEngine` Kahn + `MCPBridgeAgent` + `ContextSentinel`), `mcp-web-agents` (Gateway 4+1 + `watchdogBridge.ts`) e `PCM`/`scoreboard` (`prescmed-clinical-reviewer`).\n",
+            "## 2. Personas Especialistas & Skills Vinculadas (`franklin-quebragalho`)",
+        ]
+        for p_name, s_list in sorted(by_persona.items()):
+            lines.append(f"- **`{p_name}`** ({len(s_list)} skills): `{', '.join(sorted(s_list))}`")
+        lines.append("\n## 3. Comandos Interativos de 1 Clique")
+        lines.append("- **Terminal Hub Interativo**: `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1`")
+        lines.append("- **Executar DAG UI (3 Ondas)**: `franklin_execute_dag(plan_path_or_json='ui')`")
+        lines.append("- **Executar DAG Física 3D (3 Ondas)**: `franklin_execute_dag(plan_path_or_json='physics')`")
+        lines.append("- **Auditar Código Python (AST)**: `franklin_run_skill_script(skill_name='code-auditor', script_name='code_acceptability_auditor.py', args=['--self-test'])`")
+        return "\n".join(lines)
 
     agents_dir = _resolve_agents_dir()
     ui_aliases = {
@@ -703,6 +742,12 @@ def franklin_get_agents(agent_name: str = "") -> str:
     if target_file.exists():
         return target_file.read_text(encoding="utf-8", errors="replace")
 
+    my_agents_path = ROOT_DIR / "MY_AGENTS.md"
+    if my_agents_path.exists():
+        my_agents_text = my_agents_path.read_text(encoding="utf-8", errors="replace")
+        if clean in my_agents_text.lower():
+            return my_agents_text
+
     if AGENTS_MD_PATH.exists():
         content = AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace")
         if clean in content.lower():
@@ -741,7 +786,7 @@ def franklin_smart_compass(
         linear_guardrail = "Foco em zero alocação no hot-loop (GC), multiplicação por dt e guarda contra NaN (sem burocracia de docstrings em helpers matemáticos)."
     elif any(k in q for k in ("medic", "saude", "clin", "prontuario", "receit", "calculadora", "paciente")):
         profile_title = "🩺 Software Médico & SaaS Clínico Minimalista"
-        recommended_skills = ["design-interface-medica-minimalista", "arquitetura-design-implementacao-sistema", "consultor-design-tatil-frontend"]
+        recommended_skills = ["design-interface-medica-minimalista", "arquitetura-design-implementacao-sistema", "consultor-design-tatil-frontend", "frontend-testing-auditor"]
         ready_scripts = [
             ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria adaptativa FrontierCode (Tipagem, Bare Except, Segurança)"),
             ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Sanitização e chunking SHA-256 para diretrizes clínicas/RAG"),
@@ -749,8 +794,15 @@ def franklin_smart_compass(
         dag_plan = "plans/ui_composition_dag.json"
         linear_guardrail = "Zero dados identificáveis de pacientes fora de .env, contraste WCAG AA/AAA, paleta mineral sem cobalto neon e tipagem estrita."
     elif any(k in q for k in ("ui", "ux", "front", "tela", "botao", "menu", "css", "tailwind", "react", "design")):
-        profile_title = "🎨 Engenharia de Interface & Design System Tátil Melki (22 Temas)"
-        recommended_skills = ["consultor-design-tatil-frontend", "analise-design-tatil-frontend", "refatoracao-design-tatil-frontend"]
+        profile_title = "🎨 Engenharia de Interface & Design System Tátil Melki (`DESIGN.md v4.5-soft` • 4 Presets + 28 Temas)"
+        recommended_skills = [
+            "consultor-design-tatil-frontend",
+            "analise-design-tatil-frontend",
+            "refatoracao-design-tatil-frontend",
+            "design-md",
+            "frontend-code-architect",
+            "frontend-testing-auditor",
+        ]
         ready_scripts = [
             ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Verificação rápida de código sem engessamento"),
         ]
@@ -764,26 +816,37 @@ def franklin_smart_compass(
         ]
         dag_plan = "N/A (Execução direta via script)"
         linear_guardrail = "Preservação de parágrafos lógicos, metadados source_id + byte_range e proteção absoluta da pasta .obsidian/."
-    elif any(k in q for k in ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra")):
-        profile_title = "🤖 Arquitetura de Agentes, Declarative YAML Spec & Skills"
-        recommended_skills = ["evoluir-skills", "aprimoramento-expansibilidade-agentes-skills", "high-level-context-planner", "gap-analyzer-auditor"]
+    elif any(k in q for k in ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra", "test", "auditor")):
+        profile_title = "🤖 Arquitetura de Agentes, Declarative YAML Spec, Qualidade AST & Skills (29 Canônicas)"
+        recommended_skills = [
+            "evoluir-skills",
+            "aprimoramento-expansibilidade-agentes-skills",
+            "code-acceptability-auditor",
+            "test-quality-auditor",
+            "high-level-context-planner",
+            "gap-analyzer-auditor",
+        ]
         ready_scripts = [
             ("aprimoramento-expansibilidade-agentes-skills", "agent_spec_loader.py", "Carregador Declarative YAML Agent Spec com Zero-Config Defaults"),
-            ("workspace", "validate_skills.py", "Validador determinístico das 24 skills canônicas"),
+            ("code-acceptability-auditor", "code_acceptability_auditor.py", "Auditor estático AST + Pydantic v2 (Segurança, Tipagem, Quality Score >= 75)"),
+            ("test-quality-auditor", "test_quality_auditor.py", "Auditor de qualidade de suítes de testes em 5 módulos (Py/TS/Go/MCP/Harness)"),
+            ("workspace", "validate_skills.py", "Validador determinístico das 29 skills canônicas"),
         ]
         dag_plan = "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json"
         linear_guardrail = "Divulgação progressiva em 3 Tiers (<500 linhas no SKILL.md), Zero-Config Defaults no YAML e validação cruzada."
     else:
-        profile_title = "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto)"
+        profile_title = "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 29 Skills)"
         recommended_skills = [
             "arquiteto-conteudo-solucoes",
             "auditoria-projetos-sistema",
+            "code-acceptability-auditor",
             "code-quality-audit-3d-physics",
             "consultor-design-tatil-frontend",
             "evoluir-skills",
         ]
         ready_scripts = [
             ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (detecta sozinho se é código Geral ou 3D)"),
+            ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST pré-commit de segurança e tipagem Python (Score >= 75)"),
             ("code-quality-audit-3d-physics", "state_checker_observer.py", "Observador Pydantic com filtro anti-alucinação AST e nota Snorm"),
             ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Pipeline de sanitização e chunking JSONL para RAG"),
             ("aprimoramento-expansibilidade-agentes-skills", "agent_spec_loader.py", "Instanciação declarativa de agentes via YAML"),
@@ -812,6 +875,10 @@ def franklin_smart_compass(
             f"### 3. Planos DAG Disponíveis: `{dag_plan}`",
             f"### 4. Qualidade Linear Sem Engessar (Regra de Bolso):",
             f"> {linear_guardrail}",
+            "",
+            "### 5. Central Interativa no Terminal (1-Clique):",
+            "- `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1` (Menu interativo de agentes, portas e 13 repositórios)",
+            "- `franklin_get_agents(agent_name='ecosystem')` (Mapa completo das 5 camadas de agentes)",
         ]
     )
     return "\n".join(lines)

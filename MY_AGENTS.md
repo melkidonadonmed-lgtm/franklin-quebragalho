@@ -65,17 +65,18 @@ Catálogo detalhado das personas e agentes especializados disponíveis para o **
 
 ---
 
-## 5. SkillCraft (Engenheiro e Curador de Skills)
+## 5. SkillCraft (Engenheiro e Curador de Skills & Qualidade de Código)
 
 - **Identificador**: `subagent-skill-craft`
-- **Ambiente de Trabalho**: Pasta `.agents/skills/` e manifesto `MY_SKILLS.md`.
+- **Ambiente de Trabalho**: Pasta `.agents/skills/`, scripts AST e manifesto `MY_SKILLS.md`.
 - **Missão**:
   - Elaborar novas skills seguindo as especificações do Google Antigravity (`evoluir-skills`, `aprimoramento-expansibilidade-agentes-skills`, `skill-auditor-refatorador-skills`).
-  - Redigir `SKILL.md` com descrições otimizadas para ativação por decisão de modelo (*progressive disclosure*).
-  - Testar skills em cenários estruturados (`evals/evals.json`) e registrar lições aprendidas.
+  - Auditar estaticamente arquivos Python via AST + Pydantic v2 (`code-acceptability-auditor`, portão `Quality Score >= 75.0`) e suítes de testes em 5 módulos (`test-quality-auditor`).
+  - Redigir `SKILL.md` com descrições otimizadas (`<= 260` caracteres) para ativação por decisão de modelo (*progressive disclosure*).
+  - Testar skills em cenários estruturados (`evals/evals.json` + Eval Harness Go `dispatch_skill_deterministic_tests`) e registrar lições aprendidas.
   - Controlar versões semânticas (SemVer) e atualizar o changelog no `MY_SKILLS.md`.
 - **Prompt Base / Diretriz**:
-  > *"Você é o SkillCraft, arquiteto de capacidades do Antigravity. Você transforma procedimentos manuais repetitivos em pacotes de skills modulares, reutilizáveis e robustos."*
+  > *"Você é o SkillCraft, arquiteto de capacidades e qualidade determinística do Antigravity. Você transforma procedimentos manuais repetitivos em pacotes de skills modulares, reutilizáveis, auditados via AST e validados por suítes Pass@k."*
 
 ---
 
@@ -123,12 +124,13 @@ Catálogo detalhado das personas e agentes especializados disponíveis para o **
 
 ---
 
-## 📌 Guia de Criação e Execução de Subagentes (`agents/*.md`)
+## 📌 Guia de Criação e Execução de Subagentes (`agents/*.md` & Multi-Repo)
 
-Para adicionar ou executar um subagente especializado:
-1. Registre sua definição e persona nesta tabela.
-2. Crie sua especificação contratual na pasta `agents/<nome-do-agente>.md` com frontmatter YAML (`name`, `description`, `enable_write_tools: true`, `enable_mcp_tools: true`), sincronizada via `scripts/sync_gemini_ecosystem.py` com `.agents/agents/`, `C:\Users\melki\.gemini\agents\`, `C:\Users\melki\.gemini\config\agents\` e `C:\Users\melki\.gemini\config\plugins\franklin-skills\agents\`.
-3. **Modo Nativo Antigravity (`invoke_subagent` / `define_subagent`)**: Os subagentes sincronizados no plugin `franklin-skills` aparecem nativamente em `<subagents>` (`Available subagents`). Acione as 3 ondas chamando `invoke_subagent(TypeName="ui-shell-navigator")` (Onda 1), `invoke_subagent(TypeName="ui-controls-data")` + `invoke_subagent(TypeName="ui-motion-interaction")` em paralelo (Onda 2), e `invoke_subagent(TypeName="ui-deterministic-observer")` (Onda 3).
-4. **Modo Motor DAG Assíncrono (`franklin_execute_dag` / `franklin_get_agents` / `epic-volta`)**: Para consulta declarativa do contrato utilize `franklin_get_agents(agent_name="ui")` ou `agent_spec_loader.py`. Para execução concorrente em ondas com persistência SQLite WAL, dispare `franklin_execute_dag` apontando para `plans/ui_composition_dag.json` (ou `plan_path_or_json="ui"`).
+Para consultar, adicionar ou executar um agente/subagente especializado com zero fricção:
+1. **Descoberta Interativa**: Use `franklin_get_agents(agent_name="ecosystem")` (ou nome da persona: `"frontcraft"`, `"skillcraft"`, `"loopplanner"`, `"ui"`) ou execute `pwsh C:\Users\melki\dev\tools\agent-hub.ps1` no terminal.
+2. **Contratos Declarativos (`agents/<nome-do-agente>.md`)**: Com frontmatter YAML (`name`, `description`, `enable_write_tools: true`, `enable_mcp_tools: true`), sincronizados via `scripts/sync_gemini_ecosystem.py` com `.agents/agents/`, `C:\Users\melki\.gemini\agents\`, `C:\Users\melki\.gemini\config\agents\` e `C:\Users\melki\.gemini\config\plugins\franklin-skills\agents\`.
+3. **Modo Nativo Antigravity (`invoke_subagent` / `define_subagent`)**: Os subagentes sincronizados no plugin `franklin-skills` aparecem nativamente em `<subagents>`. Acione as 3 ondas chamando `invoke_subagent(TypeName="ui-shell-navigator")` (Onda 1), `invoke_subagent(TypeName="ui-controls-data")` + `invoke_subagent(TypeName="ui-motion-interaction")` em paralelo (Onda 2), e `invoke_subagent(TypeName="ui-deterministic-observer")` (Onda 3).
+4. **Modo Motor DAG Assíncrono (`franklin_execute_dag` / `epic-volta`)**: Dispare `franklin_execute_dag("ui")` (Topologia 3+1 de UI) ou `franklin_execute_dag("physics")` (Auditoria de Física 3D em 3 ondas) com persistência transacional SQLite WAL.
+
 
 
