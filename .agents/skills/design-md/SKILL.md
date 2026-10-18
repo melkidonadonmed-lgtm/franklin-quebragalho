@@ -1,7 +1,7 @@
 ---
 name: design-md
 description: >-
-  Sintetiza e gera o contrato canônico DESIGN.md (v4.5-soft — Minimalist Impact, Nexus Bento & Soft Tactile Architecture) na raiz de qualquer projeto frontend (local React/Next.js/Vite/HTML ou via Google Stitch MCP), documentando a economia tonal 60-30-10, as 4+1 camadas de elevação (surface-canvas, surface-inset, surface-flat, surface-raised 135° e surface-contrast Terrixa), a Sidebar Tátil com tracker de ícone (surface-inset), os 8 kits Soft UI, Design Atômico em 5 camadas (frontend-code-architect v4.0), auditoria FSM/Axe (frontend-testing-auditor v2.5) e paleta anti-cobalto (Cerulean/Ocean Sapphire #0284C7 / #1E6091).
+  Sintetiza e gera o contrato canônico DESIGN.md (v4.5-soft — Minimalist Impact, Nexus Bento & Soft Tactile Architecture) na raiz de projetos frontend, documentando economia tonal 60-30-10, 4+1 camadas de elevação 135°, 8 kits Soft UI, Design Atômico em 5 camadas e paleta anti-cobalto.
 version: "4.5.0"
 license: MIT
 metadata:

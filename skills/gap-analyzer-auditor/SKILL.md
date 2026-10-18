@@ -57,31 +57,30 @@ Esta skill **DEVE** ser acionada nas seguintes circunstâncias:
 
 ---
 
-## 4. Diretrizes Canônicas de Design e Preferências Melki (Padrão Franklin 2026)
+## 4. Diretrizes Canônicas de Design e Preferências Melki (`DESIGN.md v4.5-soft`)
 
 Sempre que a auditoria gerar relatórios visuais, painéis de monitoramento, tabelas formatadas ou documentação técnica para o desenvolvedor, a skill aplica os 4 módulos canônicos:
 
-### Módulo 1: Paleta de Cores Canônica (Ardósia/Creme & Acentos Minerais)
-- **Dark Mode**: Canvas Ardósia Grafite (`#0B101B`), Cartões Elevados (`#162033`) e divisores translúcidos (`rgba(255, 255, 255, 0.08)`).
-- **Light Mode**: Canvas Creme Suave (`#FDFEE9`, `#F8F7F2`) ou Polar Sand (`#EEF2F6`) com Cartões em Branco Puro (`#FFFFFF`).
-- **Acentos Minerais Autorizados**: Petroleum Blue (`#2B4C7E`), Slate Navy (`#203657`), Ouro Champanhe (`#D4AF37`), Sage Clínico (`#2D6A4F`) e Amber Matte (`#925C18`).
-- ❌ **Banimento Anti-Cobalto**: É expressamente proibido o uso de azul cobalto puro (`#0044FF`, `#233DFF`, `#1D4ED8`) ou cores fluorescentes saturadas em gráficos ou badges de alerta.
+### Módulo 1: Paleta de Cores Canônica (Economia Tonal 60-30-10 & Acentos Minerais)
+- **Dark Mode (`obsidian`)**: Canvas (`#12151B` / `#090B10`), Cartões Elevados (`#181D26` / `#141824`) e Cavidade (`#0D1016`).
+- **Light Mode (`slate` / `moss` / `sapphire`)**: Canvas (`#F1F4F8`, `#F4F3EC`, `#F5F4EE`) com Cavidades `surface-inset` (`#E5E9F0`) e Âncora Terrixa (`#1E293B`).
+- **Acentos Minerais Autorizados**: Cerulean Sapphire (`#0284C7`), Ocean Sapphire (`#1E6091`), Mineral Ice (`#38BDF8`), Forest Moss (`#174930`), Clinical Emerald (`#059669`) e Ouro Champanhe (`#D4AF37`).
+- ❌ **Banimento Anti-Cobalto**: É expressamente proibido o uso de azul cobalto puro (`#0044FF`, `#0057FF`, `#233DFF`, `#1D4ED8`) ou cores fluorescentes saturadas em gráficos ou badges de alerta.
 
-### Módulo 2: Diretrizes de Design Tátil e Composição Visual (Tactile Matte 4K)
-- **Anti-Glassmorphism**: Proibido o uso de vidros translúcidos borrados (`backdrop-filter: blur`) e contornos neon brilhantes.
-- **Regra de Ouro da Profundidade**: No dark mode, os blocos de diagnóstico e cartões devem ser estritamente mais claros que o fundo (`L_card > L_canvas`).
-- **Sombras Físicas Multicamadas**: Combinação de sombra de contato curta com projeção difusa ampla em relatórios renderizados.
-- **Rim Light Zenital**: Chanfro óptico superior mineral (`border-top: 1px solid rgba(255, 255, 255, 0.14)`).
+### Módulo 2: Diretrizes de Design Tátil e Composição Visual (`Minimalist Impact & Soft UI 135°`)
+- **Anti-Glassmorphism & Zero Bordas Duras**: Proibido o uso de vidros translúcidos borrados (`backdrop-filter: blur`), contornos neon brilhantes e bordas duras de `1px`.
+- **Regra de Ouro da Profundidade**: No dark mode, os blocos de diagnóstico e cartões devem ser estritamente mais claros que o fundo ($L_{\text{card}} > L_{\text{canvas}}$).
+- **Iluminação Direcional a 135°**: Elevação `.ui-card-soft` (`8px 8px 20px rgba(166,180,200,0.42), -8px -8px 20px rgba(255,255,255,0.95)`) e cavidades `surface-inset`.
 - **Anti-Squish em Badges e Tabelas**: Uso de `flex-shrink: 0;` e `white-space: nowrap;` em células de status e identificadores.
 
 ### Módulo 3: Opções das Preferências do Desenvolvedor
-- **Estruturação Modular**: Formulação de alternativas de solução alinhadas com o ecossistema open-source copy-paste (**shadcn/ui**, **Radix UI**, **Lucide Icons**).
+- **Estruturação Modular**: Formulação de alternativas de solução alinhadas com o ecossistema open-source copy-paste (**shadcn/ui**, **Radix UI**, **Lucide Icons**) e Design Atômico em 5 camadas (`frontend-code-architect` v4.0).
 - **Consulta Interativa via `ask_question`**: Quando houver trade-offs arquiteturais significativos entre a correção imediata e a estrutural.
 
 ### Módulo 4: Matriz de Detecção de Discrepâncias com as Preferências
 - Avaliação determinística dos relatórios técnicos e recomendações geradas:
-  * `[PASS / FAIL]` **Ausência de Cobalto Neon**: Relatórios sem azuis elétricos ofuscantes.
-  * `[PASS / FAIL]` **Profundidade no Dark Mode**: Contraste adequado entre superfícies elevadas e fundo.
+  * `[PASS / FAIL]` **Ausência de Cobalto Neon (`AUDIT-VIS-01`)**: Relatórios sem azuis elétricos ofuscantes.
+  * `[PASS / FAIL]` **Profundidade e Luz 135°**: Contraste adequado entre superfícies elevadas e fundo sem `blur()`.
   * `[PASS / FAIL]` **Segregação de Fatos**: Classificação rigorosa sem alucinação de dados.
   * `[PASS / FAIL]` **Contrato Estruturado**: Presença mandatória do payload YAML de hand-off.
 

@@ -54,13 +54,19 @@ Motor **Forward Builder & TDD** da esteira `SkillCraft`. Seu papel exclusivo é 
 
 ---
 
+## 📥 Entradas e Pré-requisitos
+- `skill_idea_or_slug` (obrigatório): Descrição da ideia bruta ou nome (`slug`) da skill existente a evoluir.
+- `target_domain` (opcional): Domínio técnico ou operacional da skill.
+
+---
+
 ## 🔄 Fluxo de Execução em 3 Passos (Forward Builder)
 
 ### Passo 1: Desambiguação e Contrato de Intenção (`expansao-contexto-adaptativa`)
 Extraia do pedido bruto:
 1. **Slug canônico**: `a-z0-9-` (máx. 64 caracteres), idêntico ao nome do diretório.
 2. **Fronteira de Ativação (Tier 1)**:
-   - `description` em 3ª pessoa ($\le 1024$ caracteres) declarando explicitamente **quando usar** e **quando NÃO usar** (*near-misses* para evitar colisão de Softmax com skills vizinhas).
+   - `description` em 3ª pessoa ($\le 300$ caracteres recomendado, máx. 1024) declarando explicitamente **quando usar** e **quando NÃO usar** (*near-misses* para evitar colisão de Softmax com skills vizinhas).
 3. **Separação Cognitivo vs. Determinístico**:
    - O que exige julgamento contextual fica nas instruções do `SKILL.md` (Tier 2, $< 500$ linhas, escrito com foco causal no *"Porquê"* e sem regras maiúsculas redundantes).
    - O que for tabela estática ou schema extenso vai para `references/` (Tier 3).
@@ -81,7 +87,7 @@ Gere ou atualize a árvore física em `.agents/skills/<slug>/`:
 ```
 
 > [!IMPORTANT]
-> Se a skill gerar interfaces, HTML/CSS ou relatórios visuais, inclua a referência aos **4 Módulos Táteis Melki (`v2.6.0-2026`)** conforme o `_template` e valide com `skill-auditor-refatorador-skills`.
+> Se a skill gerar interfaces, HTML/CSS ou relatórios visuais, inclua a referência aos **4 Módulos Táteis Melki (`DESIGN.md v4.5-soft`)** conforme o `_template` e valide com `skill-auditor-refatorador-skills`.
 
 ### Passo 3: Despacho Determinístico de Testes (`adk-go-mcp`) e Espelhamento
 1. **Despacho para o Harness Determinístico em Go**:

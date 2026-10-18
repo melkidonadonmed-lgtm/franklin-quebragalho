@@ -1,6 +1,6 @@
-# Diretrizes do Design System Tátil, Minimalist Impact & Multidimensional Melki (`v4.5-soft` / `v2.6.0-2026`)
+# Diretrizes do Design System Tátil, Minimalist Impact & Multidimensional Melki (`DESIGN.md v4.5-soft`)
 
-Este documento contém o cânone visual consolidado do **Minimalist Impact & Soft Tactile Architecture (`DESIGN.md v4.5-soft`)** e do **FrontCraft Studio (`v2.6.0-2026`)**: a Regra 60-30-10 Tonal, a Pilha de 4+1 Camadas com Iluminação Direcional a 135°, os **4 Presets Soft UI (Zero Cobalto)**, os **8 Kits de Componentes Soft UI** e o catálogo de **22 temas minerais homologados**.
+Este documento contém o cânone visual consolidado do **Minimalist Impact & Soft Tactile Architecture (`DESIGN.md v4.5-soft`)**: a Regra 60-30-10 Tonal, a Pilha de 4+1 Camadas com Iluminação Direcional a 135°, os **4 Presets Soft UI (Zero Cobalto)**, os **8 Kits de Componentes Soft UI** e o catálogo de **22 temas minerais homologados**.
 
 ---
 
@@ -41,7 +41,7 @@ Este documento contém o cânone visual consolidado do **Minimalist Impact & Sof
 
 ---
 
-## 3. Catálogo Oficial dos 22 Temas Homologados (`v2.6.0-2026`)
+## 3. Catálogo Oficial dos 22 Temas Minerais Homologados (`DESIGN.md v4.5-soft`)
 
 ### 3.1. As 10 Paletas Canônicas Oficiais Melki (`canonical`)
 | # | Tema | Canvas | Card | Acento | Tipografia & Raio | Aplicação |

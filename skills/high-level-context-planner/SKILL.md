@@ -57,29 +57,29 @@ Esta skill **DEVE** ser acionada nas seguintes circunstâncias:
 
 ---
 
-## 4. Diretrizes Canônicas de Design e Preferências Melki (Padrão Franklin 2026)
+## 4. Diretrizes Canônicas de Design e Preferências Melki (`DESIGN.md v4.5-soft`)
 
 Sempre que o planejamento envolver entregas de interfaces, arquiteturas frontend, painéis de controle ou relatórios visuais, a skill embute os 4 módulos canônicos:
 
-### Módulo 1: Paleta de Cores Canônica (Ardósia/Creme & Acentos Minerais)
-- **Dark Mode**: Canvas Ardósia Grafite (`#0B101B`), Cartões Elevados (`#162033`) e divisores translúcidos (`rgba(255, 255, 255, 0.08)`).
-- **Light Mode**: Canvas Creme Suave (`#FDFEE9`, `#F8F7F2`) ou Polar Sand (`#EEF2F6`) com Cartões em Branco Puro (`#FFFFFF`).
-- **Acentos Minerais Autorizados**: Petroleum Blue (`#2B4C7E`), Slate Navy (`#203657`), Ouro Champanhe (`#D4AF37`), Sage Clínico (`#2D6A4F`) e Amber Matte (`#925C18`).
-- ❌ **Banimento Anti-Cobalto**: Proibição terminante de azul cobalto puro (`#0044FF`, `#233DFF`, `#1D4ED8`) em wireframes, dashboards ou componentes propostos no plano.
+### Módulo 1: Paleta de Cores Canônica (Economia Tonal 60-30-10 & Acentos Minerais)
+- **Dark Mode (`obsidian`)**: Canvas (`#12151B` / `#090B10`), Cartões Elevados (`#181D26` / `#141824`) e Cavidade (`#0D1016`).
+- **Light Mode (`slate` / `moss` / `sapphire`)**: Canvas (`#F1F4F8`, `#F4F3EC`, `#F5F4EE`) com Cavidades `surface-inset` (`#E5E9F0`) e Âncora Terrixa (`#1E293B`).
+- **Acentos Minerais Autorizados**: Cerulean Sapphire (`#0284C7`), Ocean Sapphire (`#1E6091`), Mineral Ice (`#38BDF8`), Forest Moss (`#174930`), Clinical Emerald (`#059669`) e Ouro Champanhe (`#D4AF37`).
+- ❌ **Banimento Anti-Cobalto**: Proibição terminante de azul cobalto puro (`#0044FF`, `#0057FF`, `#233DFF`, `#1D4ED8`) em wireframes, dashboards ou componentes propostos no plano.
 
-### Módulo 2: Diretrizes de Design Tátil e Composição Visual (Tactile Matte 4K)
-- **Anti-Glassmorphism**: Banimento de vidros translúcidos borrados (`backdrop-filter: blur`) e gradientes neon em interfaces planejadas.
-- **Regra de Ouro da Profundidade**: Em planos de frontend, os cartões devem ser estritamente mais claros que o fundo (`L_card > L_canvas`).
-- **Sombras Físicas e Rim Light**: Especificação mandatória de relevo tátil com micro-chanfro óptico zenital (`border-top: 1px solid rgba(255, 255, 255, 0.14)`).
+### Módulo 2: Diretrizes de Design Tátil e Composição Visual (`Minimalist Impact & Soft UI 135°`)
+- **Anti-Glassmorphism & Zero Bordas Duras**: Banimento de vidros translúcidos borrados (`backdrop-filter: blur`), gradientes neon e bordas duras de `1px` em interfaces planejadas.
+- **Regra de Ouro da Profundidade**: Em planos de frontend, os cartões devem ser estritamente mais claros que o fundo ($L_{\text{card}} > L_{\text{canvas}}$).
+- **Iluminação Direcional a 135°**: Especificação mandatória de relevo `.ui-card-soft` (`8px 8px 20px rgba(166,180,200,0.42), -8px -8px 20px rgba(255,255,255,0.95)`) e cavidades `surface-inset`.
 - **Anti-Squish**: Requisito explícito de proteção anti-deformação em botões e badges (`flex-shrink: 0; white-space: nowrap;`).
 
 ### Módulo 3: Mapeamento de Opções das Preferências do Desenvolvedor
-- **Prioridade para o Ecossistema shadcn/ui**: Todo plano envolvendo UI prioriza bibliotecas modulares "copy-paste" (**shadcn/ui**, **Radix UI**, **Lucide Icons**).
+- **Prioridade para o Ecossistema shadcn/ui & Design Atômico**: Todo plano envolvendo UI prioriza bibliotecas modulares "copy-paste" (**shadcn/ui**, **Radix UI**, **Lucide Icons**) estruturadas nas 5 camadas do `frontend-code-architect` (`v4.0`).
 - **Bifurcações com `ask_question`**: Quando houver alternativas concorrentes de arquitetura, incluir paradas controladas com formulários de múltipla escolha.
 
 ### Módulo 4: Matriz de Detecção de Discrepâncias com as Preferências
 - Checklist determinístico que governa as fases planejadas:
-  * `[PASS / FAIL]` **Ausência de Cobalto Neon**: A esteira planejada veta azuis elétricos.
+  * `[PASS / FAIL]` **Ausência de Cobalto Neon (`AUDIT-VIS-01`)**: A esteira planejada veta azuis elétricos.
   * `[PASS / FAIL]` **Fase 0 Obrigatória**: Presença de alinhamento e pré-requisitos antes do código.
   * `[PASS / FAIL]` **Critérios Go/No-Go Falsificáveis**: Regras determinísticas de transição de fase.
   * `[PASS / FAIL]` **Prevenção de Sobre-Engenharia (KISS)**: Sem servidores mockados ou stacks web pesadas quando primitivas locais bastam.

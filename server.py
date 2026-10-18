@@ -755,7 +755,7 @@ def franklin_smart_compass(
             ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Verificação rápida de código sem engessamento"),
         ]
         dag_plan = "plans/ui_composition_dag.json"
-        linear_guardrail = "Alvos >= 44x44px anti-squish (flex-shrink: 0), L_card > L_canvas no dark mode, luz zenital e zero azul cobalto (#0044FF)."
+        linear_guardrail = "Alvos >= 44x44px anti-squish (flex-shrink: 0), L_card > L_canvas no dark mode, Iluminação 135° (DESIGN.md v4.5-soft) e zero azul cobalto (#0044FF)."
     elif any(k in q for k in ("rag", "dado", "chunk", "jsonl", "vetor", "memoria", "obsidian", "nota", "vault")):
         profile_title = "🧠 Dados AI-Ready, RAG & Curadoria Obsidian Vault"
         recommended_skills = ["curadoria-obsidian-vault", "context-sentinel", "auditoria-projetos-sistema"]
@@ -1401,7 +1401,7 @@ Coordene a Topologia 3+1 de Subagentes de UI (ui-shell-navigator, ui-controls-da
 1. Menus claustrofóbicos vs descompactados (padding nobre, min 240px em sidebar, CLS < 0.1).
 2. Botões ergonômicos (altura mínima 44px, anti-squish shrink-0 whitespace-nowrap, micro-interação tátil).
 3. Paleta Mineral Anti-Cobalto (fundo ardósia/creme, acentos minerais, banimento de azul cobalto puro).
-4. Profundidade de sombras e elevação (Tactile Matte 4K, luz zenital e cavidades sunken wells).
+4. Profundidade de sombras e elevação (Iluminação 135°, .ui-card-soft e cavidades surface-inset — DESIGN.md v4.5-soft).
 Emita o Relatório Comparativo determinístico com marcadores [PASS], [FAIL] e notas explicativas.
 """
 

@@ -40,11 +40,11 @@ Para assegurar validações rigorosas e erradicar auditorias fictícias ou simul
 
 ---
 
-### Regra 5: Conformidade com os 4 Módulos Táteis Melki (`v2.6.0-2026`)
-- **Critério**: Em skills que geram UI, HTML ou relatórios visuais, há conformidade com o catálogo de 22 temas, banimento de cobalto/glassmorphism, `L_card > L_canvas`, 4 presets tipográficos e 5 geometrias?
+### Regra 5: Conformidade com os 4 Módulos Táteis Melki (`DESIGN.md v4.5-soft`)
+- **Critério**: Em skills que geram UI, HTML ou relatórios visuais, há conformidade com os 4 Presets Soft UI + 22 temas minerais, banimento de cobalto/glassmorphism/bordas 1px, iluminação 135° (`.ui-card-soft`, `surface-inset`), `L_card > L_canvas`, 4 presets tipográficos e 5 geometrias?
 - **Classificação**:
   - Aderência integral aos 4 módulos -> `[PASS]`
-  - Violação de paleta, ausência de relevo ou omissão de opções -> `[FAIL: Discrepância com o Design System Tátil v2.6.0-2026]`
+  - Violação de paleta, ausência de relevo 135° ou omissão de opções -> `[FAIL: Discrepância com o Design System Tátil DESIGN.md v4.5-soft]`
 
 ---
 

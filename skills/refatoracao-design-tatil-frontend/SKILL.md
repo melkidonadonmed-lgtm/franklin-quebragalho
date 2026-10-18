@@ -79,7 +79,7 @@ Motor de **Execução de Código e Modularização** (**Fase 3**) da esteira Fro
    ```
 
 ### Passo 1: Onda 1 — Casca Estrutural, Bento Grid & Sidebar Tátil (`ui-shell-navigator`)
-Acione `invoke_subagent(TypeName="ui-shell-navigator", ...)` na camada `components/layout/` e `components/bento/`:
+Acione `invoke_subagent(TypeName="ui-shell-navigator", ...)` ou `franklin_execute_dag("plans/ui_composition_dag.json")` na camada `components/layout/` e `components/bento/`:
 - **Matriz Bento de 12 Colunas**: `grid-cols-12 gap-7` (`col-span-8` + `col-span-4`), reservas anti-CLS (`CLS < 0.1`) e zero bordas duras de `1px`.
 - **Tactile Companion Sidebar (`#sidebar-active-tracker`)**: Sidebar expandida `272px` (colapsável para `92px` modo ícones) com berço escavado `surface-inset` e barra vertical de `4px` (`var(--accent-point)`) acompanhando o ícone ativo via `IntersectionObserver`, mais atalho `Ctrl+K`.
 - **Inversão Tonal Terrixa (`.terrixa-notched`)**: Destaque de cards âncora via `surface-contrast` (`#1E293B`) e recorte chanfrado `28px` em vez de neon.

@@ -48,7 +48,7 @@ Motor consultivo e organizador estrutural (**Fase 2**) da esteira Frontend Melki
 ## 📥 Entradas Obrigatórias e Pré-requisitos
 - `project_root_path` (obrigatório): Caminho raiz do projeto frontend.
 - `missing_structure_report` (opcional): Lista de pastas/arquivos faltantes detectados na Fase 1.
-- `archetype_preference` (opcional, padrão `slate`): Um dos **4 Presets Soft UI (`v4.5-soft`)** ou dos **22 temas homologados (`v2.6.0-2026`)**.
+- `archetype_preference` (opcional, padrão `slate`): Um dos **4 Presets Soft UI (`DESIGN.md v4.5-soft`)** ou dos **22 temas minerais homologados**.
 
 ---
 
@@ -92,9 +92,9 @@ Com base na árvore raiz do projeto, crie imediatamente o que estiver ausente:
    - `components/ui/` (`SoftCard.tsx`, botões `.ui-btn-tactile`, badges `.badge-soft`, inputs `surface-inset`), `components/bento/` e `components/layout/`.
    - `config/tokens.ts` e `types/index.ts`.
 
-### Passo 3: Mockup de Referência e Hand-off para a Fase 3
+### Passo 3: Mockup de Referência e Hand-off para a Fase 3 (`Topologia 3+1`)
 - Gere `.context/mockup_tatil_referencia.html` baseado em `skills/design-md/references/design_md_v4_5_studio.html` quando solicitado.
-- Entregue o contrato pronto para execução pela **`refatoracao-design-tatil-frontend`** (Fase 3).
+- Prepare o contrato de execução para a **`refatoracao-design-tatil-frontend`** (Fase 3), orquestrando os 4 subagentes (`ui-shell-navigator`, `ui-controls-data`, `ui-motion-interaction`, `ui-deterministic-observer`) via `invoke_subagent` ou `franklin_execute_dag("plans/ui_composition_dag.json")`.
 
 ---
 

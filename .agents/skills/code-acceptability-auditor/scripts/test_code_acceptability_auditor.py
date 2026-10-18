@@ -36,11 +36,9 @@ def test_clean_typed_code_is_approved() -> None:
 
 def test_detects_hardcoded_secret_and_eval_and_shell_true() -> None:
     auditor = CodeAcceptabilityAuditor()
-    fake_prefix = "sk" + "-live-"
-    fake_secret = fake_prefix + "9876543210abcdef123456"
     code = (
         "import subprocess\n"
-        f"API_KEY = '{fake_secret}'\n"
+        "API_KEY = 'sk-live-9876543210abcdef123456'\n"
         "def run_unsafe(cmd: str) -> None:\n"
         "    eval(cmd)\n"
         "    subprocess.run(cmd, shell=True)\n"

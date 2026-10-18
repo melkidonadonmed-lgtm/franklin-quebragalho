@@ -57,31 +57,32 @@ Esta skill **DEVE** ser acionada nas seguintes circunstâncias:
 
 ---
 
-## 5. Governança Canônica de Design e Preferências Melki nos Planos Encadeados
+## 5. Governança Canônica de Design e Preferências Melki nos Planos Encadeados (`DESIGN.md v4.5-soft`)
 
 Em todas as transições de fase e consolidações de entregáveis, o orquestrador aplica os 4 módulos canônicos:
 
-### 5.1. Módulo de Governança de Paleta de Cores nos Fluxos
+### 5.1. Módulo de Governança de Paleta de Cores nos Fluxos (Economia 60-30-10)
 - **Propagação de Tokens Minerais:** O orquestrador injeta no payload de transição (`references/schema_transicao_contexto.json`) os tokens cromáticos canônicos:
-  * Canvas Ardósia Grafite (`#0B101B`), Superfície Elevada (`#162033`), Fundo Claro (`#FDFEE9`/`#EEF2F6`).
-  * Acentos autorizados: Petroleum Blue (`#2B4C7E`), Slate Navy (`#203657`), Ouro Champanhe (`#D4AF37`), Sage Clínico (`#2D6A4F`).
-- **Intercepção Anti-Cobalto:** Bloqueio imediato de qualquer entregável intermediário que utilize azul cobalto ofuscante (`#0044FF`, `#233DFF`, `#1D4ED8`) ou neons fluorescentes.
+  * Light Mode (`slate` / `moss` / `sapphire`): Canvas (`#F1F4F8` / `#F4F3EC` / `#F5F4EE`), Cavidade `surface-inset` (`#E5E9F0`), Âncora Terrixa (`#1E293B`).
+  * Dark Mode (`obsidian`): Canvas (`#12151B` / `#090B10`), Superfície Elevada (`#181D26` / `#141824`), Cavidade (`#0D1016`).
+  * Acentos autorizados: Cerulean Sapphire (`#0284C7`), Ocean Sapphire (`#1E6091`), Mineral Ice (`#38BDF8`), Forest Moss (`#174930`), Clinical Emerald (`#059669`) e Ouro Champanhe (`#D4AF37`).
+- **Intercepção Anti-Cobalto:** Bloqueio imediato de qualquer entregável intermediário que utilize azul cobalto ofuscante (`#0044FF`, `#0057FF`, `#233DFF`, `#1D4ED8`) ou neons fluorescentes.
 
-### 5.2. Módulo de Design Tátil para Artefatos e Painéis do Fluxo
+### 5.2. Módulo de Design Tátil para Artefatos e Painéis do Fluxo (`Soft UI 135°`)
 - **Qualidade Visual dos Entregáveis da Cadeia:** Todo artefato visual, painel de monitoramento, dashboard ou mockup gerado pelas skills do fluxo deve:
-  * Respeitar a Regra de Ouro da profundidade no dark mode (`L_card > L_canvas`).
-  * Conter sombras físicas multicamadas (contato + projeção difusa) e rim light zenital mineral.
-  * Banir categoricamente vidros translúcidos com blur excessivo (`backdrop-filter: blur`) e elementos neon reflexivos.
+  * Respeitar a Regra de Ouro da profundidade no dark mode ($L_{\text{card}} > L_{\text{canvas}}$).
+  * Conter iluminação direcional dupla a 135° (`.ui-card-soft`), cavidades escavadas (`surface-inset`) e zero bordas duras de `1px`.
+  * Banir categoricamente vidros translúcidos com blur (`backdrop-filter: blur`) e elementos neon reflexivos.
   * Conter classes de proteção anti-squish em botões e badges (`flex-shrink: 0; white-space: nowrap;`).
 
 ### 5.3. Módulo de Opções das Preferências na Tomada de Decisão do Fluxo
-- **Pontos de Decisão com `ask_question`:** Em bifurcações de rota técnica ou visual, o orquestrador aciona a ferramenta `ask_question` oferecendo opções pré-configuradas baseadas nos 5 arquétipos canônicos do Melki (*Tactile Matte Minimalist*, *Phantom Obsidian 4K*, *Luxury Deep Blue*, *Gilded Navy Heritage*, *Polar Sand Light*).
-- **Adoção do Padrão shadcn/ui:** Garantir que quando a esteira demandar novas bibliotecas de UI, priorize componentes de código aberto "copy-paste" (shadcn/ui, Radix UI, Lucide Icons, Tailwind UI) em vez de pacotes opacos monolíticos.
+- **Pontos de Decisão com `ask_question`:** Em bifurcações de rota técnica ou visual, o orquestrador aciona a ferramenta `ask_question` oferecendo opções pré-configuradas baseadas nos 4 Presets Soft UI (`Nexus Slate Cerulean`, `Moss`, `Soft Sapphire`, `Obsidian Dark`) e 22 temas minerais.
+- **Adoção do Padrão shadcn/ui & Design Atômico:** Garantir que quando a esteira demandar novas bibliotecas de UI, priorize componentes de código aberto "copy-paste" (shadcn/ui, Radix UI, Lucide Icons, Tailwind CSS) em 5 camadas de Design Atômico (`frontend-code-architect` v4.0).
 
 ### 5.4. Módulo de Portão de Qualidade e Matriz de Discrepâncias
 - Na conclusão de cada fase que gere artefatos de interface ou documentação de arquitetura, o orquestrador executa o portão de qualidade com marcadores determinísticos:
-  * `[DISC-PALETA]` `[PASS / FAIL]`: Cores minerais sem cobalto neon.
-  * `[DISC-RELEVO]` `[PASS / FAIL]`: Cartões elevados com sombras multicamadas e rim light.
+  * `[DISC-PALETA]` `[PASS / FAIL]`: Cores minerais 60-30-10 sem cobalto neon (`AUDIT-VIS-01`).
+  * `[DISC-RELEVO]` `[PASS / FAIL]`: Cartões `.ui-card-soft` com iluminação 135° e cavidades `surface-inset` sem bordas duras.
   * `[DISC-RESILIENCIA]` `[PASS / FAIL]`: Botões e badges protegidos com anti-squish.
   * `[DISC-SUPPLY]` `[PASS / FAIL]`: Stack modular alinhada com as preferências do Melki.
 - Se qualquer item for reprovado (`[FAIL]`), a transição para a próxima fase é pausada para 1 ciclo de auto-correção.

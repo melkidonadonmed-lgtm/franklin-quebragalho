@@ -1,6 +1,6 @@
 {
   "name": "Franklin Quebra-Galho (A2A + MCP Orchestrator)",
-  "description": "Orquestrador multiagente e catálogo de 25 Skills canônicas (Python, TS/JS, Go, MCP, Harness e Design Tátil) com suporte nativo a Agent2Agent (A2A v1.0) e Model Context Protocol (MCP).",
+  "description": "Orquestrador multiagente e catálogo de 29 Skills canônicas (Python, TS/JS, Go, MCP, Harness e Design Tátil) com suporte nativo a Agent2Agent (A2A v1.0) e Model Context Protocol (MCP).",
   "supportedInterfaces": [
     {
       "url": "http://localhost:10999",
@@ -66,7 +66,7 @@
     {
       "id": "aprimoramento-expansibilidade-agentes-skills",
       "name": "aprimoramento-expansibilidade-agentes-skills",
-      "description": "Arquiteto de sistemas multiagentes em código (Google ADK Go/Python/TS, MCP Spec 2026-07-28, Protocolo A2A, Envelope Pattern, Context Forking, Theranostic Confidence Gate, Provenance HMAC e Memória em 3 Camadas). Use quando o usuário pedir para projetar, escalar ou otimizar a arquitetura de agentes de software, pipelines determinísticos (Gate Chain / Sandbox Go), roteadores híbridos ou suítes de avaliação de agentes (Pass@k, FNR < 0.001, GEPA). Não use para criar ou refatorar arquivos SKILL.md do catálogo de skills (use evoluir-skills ou skill-auditor-refatorador-skills).",
+      "description": "Arquiteto de sistemas multiagentes (Google ADK Go/Python/TS, MCP Spec 2026-07-28, A2A, Envelope Pattern, Context Forking e Theranostic Gate). Use para projetar ou escalar agentes de software, pipelines determinísticos e suítes Pass@k/GEPA; não use para editar SKILL.md do catálogo.",
       "tags": [
         "arquitetura-agentes",
         "google-adk",
@@ -120,6 +120,22 @@
       ],
       "examples": [
         "Executar a skill auditoria-projetos-sistema no contexto atual"
+      ]
+    },
+    {
+      "id": "code-acceptability-auditor",
+      "name": "code-acceptability-auditor",
+      "description": "Audita estaticamente arquivos Python via AST contra falhas de segurança (segredos hardcoded, eval/exec, shell=True), ausência de type hints, except silencioso e funções longas (>60 linhas). Use antes de commits/PRs para calcular o Quality Score (0-100) e validar critérios de aceite.",
+      "tags": [
+        "ast",
+        "python-audit",
+        "security",
+        "type-hints",
+        "pre-commit",
+        "quality-gate"
+      ],
+      "examples": [
+        "Executar a skill code-acceptability-auditor no contexto atual"
       ]
     },
     {
@@ -216,7 +232,7 @@
     {
       "id": "design-md",
       "name": "design-md",
-      "description": "Sintetiza e gera o contrato canônico DESIGN.md (v4.5-soft — Minimalist Impact, Nexus Bento & Soft Tactile Architecture) na raiz de qualquer projeto frontend (local React/Next.js/Vite/HTML ou via Google Stitch MCP), documentando a economia tonal 60-30-10, as 4+1 camadas de elevação (surface-canvas, surface-inset, surface-flat, surface-raised 135° e surface-contrast Terrixa), a Sidebar Tátil com tracker de ícone (surface-inset), os 8 kits Soft UI, Design Atômico em 5 camadas (frontend-code-architect v4.0), auditoria FSM/Axe (frontend-testing-auditor v2.5) e paleta anti-cobalto (Cerulean/Ocean Sapphire #0284C7 / #1E6091).",
+      "description": "Sintetiza e gera o contrato canônico DESIGN.md (v4.5-soft — Minimalist Impact, Nexus Bento & Soft Tactile Architecture) na raiz de projetos frontend, documentando economia tonal 60-30-10, 4+1 camadas de elevação 135°, 8 kits Soft UI, Design Atômico em 5 camadas e paleta anti-cobalto.",
       "tags": [
         "design-md",
         "minimalist-impact",
@@ -405,7 +421,7 @@
     {
       "id": "skill-auditor-refatorador-skills",
       "name": "skill-auditor-refatorador-skills",
-      "description": "Cirurgião estrutural, desacoplador de monólitos e auditor determinístico de catálogo de skills. Use quando o usuário pedir para auditar skills existentes, enxugar uma skill acima de 500 linhas (movendo tabelas para references/ e código repetitivo de transcript.jsonl para scripts/), dividir uma skill monolítica em sub-skills, calibrar gatilhos com falsos positivos/negativos ou auditar os 4 Módulos Táteis Melki (v2.6.0-2026) nas skills de UI. Não use para criar uma skill nova do zero a partir de uma ideia bruta (use evoluir-skills).",
+      "description": "Cirurgião estrutural, desacoplador de monólitos e auditor determinístico de catálogo de skills. Use quando o usuário pedir para auditar skills existentes, enxugar uma skill acima de 500 linhas, dividir uma skill monolítica em sub-skills, calibrar gatilhos ou auditar os 4 Módulos Táteis Melki (DESIGN.md v4.5-soft) nas skills de UI. Não use para criar uma skill nova do zero (use evoluir-skills).",
       "tags": [
         "auditoria-skills",
         "refatoracao-cirurgica",
@@ -434,7 +450,7 @@
     {
       "id": "test-quality-auditor",
       "name": "test-quality-auditor",
-      "description": "Audita a qualidade, determinismo e eficácia real de suítes de testes automatizados em 5 domínios modulares espelhados: Python (Pytest/Unittest), TypeScript/JS (Node/Vitest/Jest), Go (*_test.go / testing.T / ADK Go v2), Servidores/Clientes MCP (Model Context Protocol — JSON-RPC 2.0 / FastMCP / Stdio) e Harnesses de Governança & Evals (SemanticGuard, Policy Gates HITL, CheckpointStore e Eval-Driven Harness). Detecta a Ilusão do Build Verde (Green Build Illusion), disseca a montagem Arrange-Act-Assert (AAA), analisa falhas tautológicas (assert True, is not None, erros descartados com '_', t.Fatal em goroutines, handshake MCP incompleto, testes de Harness sem bloqueio de injeção ou sem transição CRITICAL e vazamento de estado), classifica testes no Dossiê de Qualidade (Níveis 1 a 4), aplica refatoração cirúrgica e executa módulos espelhados em evals/modules/*_evals.json gerando relatórios grading.json e benchmark.json.",
+      "description": "Executa auditoria de qualidade, determinismo e eficácia de suítes de testes com 5 módulos (Python, TS/JS, Go, MCP JSON-RPC e Harnesses/Evals). Detecta Green Build Illusion, falhas AAA e asserções tautológicas, classifica testes (Níveis 1-4) e gera grading.json.",
       "tags": [
         "test-quality",
         "ast-auditor",
@@ -456,7 +472,7 @@
         "jku": "http://localhost:10999/public_keys.json",
         "typ": "JOSE+JSON"
       },
-      "signature": "f1b5e84eda489069f1ce9959e8b271a116c6e235fb482e5073221a4f331f2798"
+      "signature": "2582aa64f5533564251abe638133a6c6460d412005cfafd2c78df47ff3b1342c"
     }
   ]
 }

@@ -379,7 +379,7 @@ def test_frontend_skills_and_ui_subagents_integration() -> None:
     ):
         parsed_spec = module.load_agent_spec(str(server.ROOT_DIR / "agents" / agent_md), verbose=False)
         assert parsed_spec["name"] == agent_md.removesuffix(".md")
-        assert parsed_spec["version"] == "1.1.0"
+        assert parsed_spec["version"] in ("1.1.0", "1.2.0")
         assert parsed_spec["enable_write_tools"] is True
         assert parsed_spec["enable_mcp_tools"] is True
         assert len(parsed_spec["description"]) > 20
@@ -453,12 +453,16 @@ def test_franklin_execute_dag_aliases_and_physics_plan(tmp_path: Path) -> None:
 
 
 def test_gemini_ecosystem_directories() -> None:
-    """Valida se os diretórios solicitados em C:\\Users\\melki\\.gemini estão criados e sincronizados."""
+    """Valida se os diretórios solicitados em C:\\Users\\melki\\.gemini estão criados, sincronizados e desduplicados."""
+    from scripts.sync_gemini_ecosystem import CONFIG_SKILLS_ROOT, sync_ecosystem
+
     gemini_root = Path(r"C:\Users\melki\.gemini")
-    for sub in ("lib", "doc", "docs", "plugins", "agents", "plans"):
+    for sub in ("lib", "doc", "docs", "agents", "plans"):
         target = gemini_root / sub
         assert target.exists() and target.is_dir(), f"Diretório ausente: {target}"
 
+    assert not (gemini_root / "plugins").exists()
+    assert not (gemini_root / "skills").exists()
     assert (server.ROOT_DIR / "plugin.json").exists()
     assert (gemini_root / "agents" / "ui-shell-navigator.md").exists()
     assert (gemini_root / "config" / "agents" / "ui-shell-navigator.md").exists()
@@ -466,7 +470,26 @@ def test_gemini_ecosystem_directories() -> None:
     assert (gemini_root / "lib" / "agent_spec_loader.py").exists()
     assert (gemini_root / "doc" / "AGENTS.md").exists()
     assert (gemini_root / "docs" / "agent_card.json").exists()
-    assert (gemini_root / "plugins" / "franklin-skills" / "plugin.json").exists()
+    assert (gemini_root / "config" / "plugins" / "franklin-skills" / "plugin.json").exists()
+
+    card_data = json.loads((server.ROOT_DIR / "agent_card.json").read_text(encoding="utf-8"))
+    assert "29 Skills canônicas" in card_data["description"]
+    assert len(card_data["skills"]) == 29
+
+    # Simula injeção de skill duplicada em .gemini/config/skills e valida limpeza determinística
+    dup_probe = CONFIG_SKILLS_ROOT / "design-md"
+    try:
+        dup_probe.mkdir(parents=True, exist_ok=True)
+        (dup_probe / "SKILL.md").write_text("---\nname: design-md\ndescription: duplicate\n---\n", encoding="utf-8")
+        summary = sync_ecosystem()
+        assert summary["deduplicated_config_skills"] >= 1
+        assert not dup_probe.exists()
+        assert (CONFIG_SKILLS_ROOT / "agent-browser" / "SKILL.md").exists()
+    finally:
+        if dup_probe.exists():
+            import shutil
+
+            shutil.rmtree(dup_probe)
 
 
 

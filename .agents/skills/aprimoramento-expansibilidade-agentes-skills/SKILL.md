@@ -1,7 +1,7 @@
 ---
 name: aprimoramento-expansibilidade-agentes-skills
 description: >-
-  Arquiteto de sistemas multiagentes em código (Google ADK Go/Python/TS, MCP Spec 2026-07-28, Protocolo A2A, Envelope Pattern, Context Forking, Theranostic Confidence Gate, Provenance HMAC e Memória em 3 Camadas). Use quando o usuário pedir para projetar, escalar ou otimizar a arquitetura de agentes de software, pipelines determinísticos (Gate Chain / Sandbox Go), roteadores híbridos ou suítes de avaliação de agentes (Pass@k, FNR < 0.001, GEPA). Não use para criar ou refatorar arquivos SKILL.md do catálogo de skills (use evoluir-skills ou skill-auditor-refatorador-skills).
+  Arquiteto de sistemas multiagentes (Google ADK Go/Python/TS, MCP Spec 2026-07-28, A2A, Envelope Pattern, Context Forking e Theranostic Gate). Use para projetar ou escalar agentes de software, pipelines determinísticos e suítes Pass@k/GEPA; não use para editar SKILL.md do catálogo.
 license: MIT
 metadata:
   version: "2.1.0"

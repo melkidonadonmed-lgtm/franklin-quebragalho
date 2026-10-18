@@ -1,7 +1,7 @@
 # ESPECIFICAÇÃO TÉCNICA (`SPEC.md`) — `franklin-quebragalho`
 
 ## 1. Visão Geral do Sistema
-O `franklin-quebragalho` provê o servidor MCP (`franklin-skills`), o barramento **Agent2Agent (`A2A v1.0`)** assinado via JWS e o repositório mestre das **25 Agent Skills** em arquitetura de 3 camadas (*Progressive Disclosure*).
+O `franklin-quebragalho` provê o servidor MCP (`franklin-skills`), o barramento **Agent2Agent (`A2A v1.0`)** assinado via JWS e o repositório mestre das **29 Agent Skills** em arquitetura de 3 camadas (*Progressive Disclosure*).
 
 ---
 
@@ -19,7 +19,7 @@ O `franklin-quebragalho` provê o servidor MCP (`franklin-skills`), o barramento
 ---
 
 ## 3. Catálogo das 13 Ferramentas MCP (`franklin-skills`)
-1. `franklin_skills_list` — Lista as 25 skills (Tier 1: `name` + `description`).
+1. `franklin_skills_list` — Lista as 29 skills (Tier 1: `name` + `description`).
 2. `franklin_skills_get` — Carrega o contrato completo `SKILL.md` (Tier 2) e inventário de `scripts/` e `references/` (Tier 3).
 3. `franklin_skills_search` — Busca textual e por tags no catálogo de skills.
 4. `franklin_skills_validate` — Valida frontmatter YAML e limite `<500` linhas em todas as skills.

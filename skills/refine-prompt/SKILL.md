@@ -67,38 +67,36 @@ Esta skill **DEVE** ser acionada nas seguintes circunstâncias:
 
 ---
 
-## 5. Diretrizes Canônicas de Design e Preferências Melki (Padrão Franklin 2026)
+## 5. Diretrizes Canônicas de Design e Preferências Melki (`DESIGN.md v4.5-soft`)
 
 Sempre que o refinamento de prompt ou a especificação técnica resultante envolver interfaces de usuário, painéis web, dashboards, CLI formatada ou relatórios visuais, a skill aplica rigorosamente os 4 módulos de governança:
 
-### Módulo 1: Paleta de Cores Canônica (Ardósia/Creme & Acentos Minerais)
-- **Dark Mode**: Canvas Ardósia Grafite (`#0B101B` / `#090B10`), Cartões Elevados (`#162033` / `#141B2D`) e divisores sutis (`rgba(255, 255, 255, 0.08)`).
-- **Light Mode**: Canvas Creme Suave (`#FDFEE9`, `#F8F7F2`) ou Polar Sand (`#EEF2F6`) com Cartões em Branco Puro (`#FFFFFF`).
-- **Acentos Minerais Autorizados**: Petroleum Blue (`#2B4C7E`), Slate Navy (`#203657`), Ouro Champanhe (`#D4AF37`), Sage Clínico (`#2D6A4F`) e Amber Matte (`#925C18`).
-- ❌ **Banimento Anti-Cobalto**: É terminantemente proibido o uso de azul cobalto puro (`#0044FF`, `#233DFF`, `#1D4ED8`) ou cores fluorescentes ácidas.
+### Módulo 1: Paleta de Cores Canônica (Economia Tonal 60-30-10 & Acentos Minerais)
+- **Dark Mode (`obsidian`)**: Canvas (`#12151B` / `#090B10`), Cartões Elevados (`#181D26` / `#141824`), Cavidade (`#0D1016`) e $L_{\text{card}} > L_{\text{canvas}}$.
+- **Light Mode (`slate` / `moss` / `sapphire`)**: Canvas (`#F1F4F8`, `#F4F3EC`, `#F5F4EE`), Cavidades `surface-inset` (`#E5E9F0`) e Âncora Terrixa (`#1E293B`).
+- **Acentos Minerais Autorizados**: Cerulean Sapphire (`#0284C7`), Ocean Sapphire (`#1E6091`), Mineral Ice (`#38BDF8`), Forest Moss (`#174930`), Clinical Emerald (`#059669`) e Ouro Champanhe (`#D4AF37`).
+- ❌ **Banimento Anti-Cobalto**: É terminantemente proibido o uso de azul cobalto puro (`#0044FF`, `#0057FF`, `#233DFF`, `#1D4ED8`) ou cores fluorescentes ácidas.
 
-### Módulo 2: Diretrizes de Design Tátil e Composição Visual (Tactile Matte 4K)
-- **Anti-Glassmorphism**: Proibido o uso de vidros translúcidos difusos (`backdrop-filter: blur`) e contornos neon.
-- **Regra de Ouro da Profundidade**: No dark mode, os cartões são estritamente mais claros que o fundo (`L_card > L_canvas`).
-- **Sombras Físicas Multicamadas**: Combinação de sombra de contato (`0 2px 4px rgba(0, 0, 0, 0.4)`) com sombra difusa (`0 10px 25px -4px rgba(0, 0, 0, 0.65)`).
-- **Rim Light Zenital**: Chanfro óptico mineral no topo (`border-top: 1px solid rgba(255, 255, 255, 0.14)`).
+### Módulo 2: Diretrizes de Design Tátil e Composição Visual (`Minimalist Impact & Soft UI 135°`)
+- **Anti-Glassmorphism & Zero Bordas Duras**: Proibido o uso de vidros translúcidos difusos (`backdrop-filter: blur`), contornos neon e bordas duras de `1px` em containers Bento.
+- **Regra de Ouro da Profundidade**: No dark mode, os cartões são estritamente mais claros que o fundo ($L_{\text{card}} > L_{\text{canvas}}$).
+- **Iluminação Direcional a 135° (`.ui-card-soft` / `surface-inset`)**: Dupla sombra física em 135° (`8px 8px 20px rgba(166,180,200,0.42), -8px -8px 20px rgba(255,255,255,0.95)`) e cavidades escavadas `surface-inset` (`inset 4px 4px 10px ...`).
 - **Anti-Squish**: Classes obrigatórias em botões e badges (`flex-shrink: 0; white-space: nowrap;`).
-- **Ergonomia e TDAH**: Busca rápida centralizada (`Ctrl+K`), feedbacks cinestésicos (`active:scale-95`) e ausência de `alert()` nativo.
+- **Ergonomia e TDAH**: Busca rápida centralizada (`Ctrl+K`), tracker de ícone na sidebar (`#sidebar-active-tracker`), feedbacks cinestésicos (`--ease-spring`) e ausência de `alert()` nativo.
 
 ### Módulo 3: Opções das Preferências do Desenvolvedor
-- **Componentes Copy-Paste (Open Source)**: Preferência absoluta para o ecossistema modular **shadcn/ui**, **Radix UI**, **Lucide Icons** e **Tailwind UI**.
-- **Arquétipos Aprovados**: Compatibilidade com os arquétipos *Tactile Matte Minimalist* (padrão Melki), *Phantom Obsidian 4K*, *Luxury Deep Blue*, *Gilded Navy Heritage* e *Polar Sand Light*.
+- **Componentes Copy-Paste (Open Source)**: Preferência absoluta para o ecossistema modular **shadcn/ui**, **Radix UI**, **Lucide Icons** e **Tailwind CSS** estruturado em 5 camadas de Design Atômico (`frontend-code-architect` v4.0).
+- **Presets Homologados**: Compatibilidade com os 4 Presets Soft UI (`Nexus Slate Cerulean`, `Moss`, `Soft Sapphire`, `Obsidian Dark`) e os 22 temas minerais.
 - **Consulta Estruturada via `ask_question`**: Para decisões de design ou bifurcações funcionais no Módulo 3.
 
 ### Módulo 4: Matriz de Detecção de Discrepâncias com as Preferências
 - Checklist determinístico que avalia todo entregável visual ou arquitetural gerado:
-  * `[PASS / FAIL]` **Ausência de Cobalto Neon**: Livre de azuis elétricos saturados.
-  * `[PASS / FAIL]` **Profundidade no Dark Mode**: Cartões mais claros que o canvas.
-  * `[PASS / FAIL]` **Sombras Multicamadas**: Elementos elevados possuem relevo físico calibrado.
-  * `[PASS / FAIL]` **Fio de Luz Superior**: Presença de rim-light zenital nos cartões.
-  * `[PASS / FAIL]` **Superfície Sólida Fosca**: Ausência de vidros borrados e neons fluorescentes.
+  * `[PASS / FAIL]` **Ausência de Cobalto Neon (`AUDIT-VIS-01`)**: Livre de azuis elétricos saturados (`#0044FF`, `#1D4ED8`).
+  * `[PASS / FAIL]` **Profundidade no Dark Mode**: Cartões mais claros que o canvas ($L_{\text{card}} > L_{\text{canvas}}$).
+  * `[PASS / FAIL]` **Iluminação Direcional 135°**: Elevação `.ui-card-soft` e cavidade `surface-inset` sem bordas duras.
+  * `[PASS / FAIL]` **Superfície Sólida Fosca**: Ausência de `backdrop-filter: blur` e neons fluorescentes.
   * `[PASS / FAIL]` **Anti-Squish Ativo**: Botões e tags impedem deformação vertical.
-  * `[PASS / FAIL]` **Padrão Modular**: Código baseado no modelo copy-paste (shadcn/ui).
+  * `[PASS / FAIL]` **Padrão Modular**: Código baseado em Design Atômico e modelo copy-paste (`shadcn/ui`).
 
 ---
 

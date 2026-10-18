@@ -82,26 +82,6 @@ class SkillFailureAuditor:
     def __init__(self, skill_name: str) -> None:
         self.skill_name = skill_name
 
-    def _build_recommendations(
-        self, breakdown: Dict[str, int], delta: BaselineVsTreatmentDelta
-    ) -> List[str]:
-        recs: List[str] = []
-        if breakdown["routing_false_negative"] > 0:
-            recs.append("Amplie o escopo da 'description' no SKILL.md para capturar gatilhos implícitos e paráfrases.")
-        if breakdown["routing_false_positive"] > 0:
-            recs.append("Adicione termos de exclusão e delimite a fronteira da skill contra near-misses.")
-        if breakdown["instruction_ambiguity"] > 0:
-            recs.append("Simplifique o corpo das instruções em SKILL.md; substitua regras declarativas por procedimentos com exemplos.")
-        if breakdown["context_poisoning"] > 0:
-            recs.append("Exija validação rigorosa de saídas intermediárias e delimite dados em tags estruturadas (<context>).")
-        if breakdown["silent_degradation"] > 0:
-            recs.append("Remova validações e passos redundantes do SKILL.md para evitar consumo desnecessário de tokens.")
-        if delta.pass_rate_delta <= 0:
-            recs.append("ALERTA CRÍTICO: A skill não apresentou ganho de qualidade em relação à baseline sem a skill. Redesenhe o fluxo.")
-        if not recs:
-            recs.append("A skill apresenta alta robustez e superou a baseline sem falhas detectadas.")
-        return recs
-
     def audit_cases(self, test_cases: List[FailureTestCase]) -> SkillFailureAuditReport:
         total = len(test_cases)
         if total == 0:
@@ -109,6 +89,7 @@ class SkillFailureAuditor:
 
         successful = sum(1 for c in test_cases if c.failure_type == "none" and c.with_skill_pass)
         failed = total - successful
+
         breakdown: Dict[str, int] = {
             "routing_false_negative": 0,
             "routing_false_positive": 0,
@@ -117,17 +98,26 @@ class SkillFailureAuditor:
             "silent_degradation": 0,
             "assertion_failure": 0,
         }
-        fallback_attempts = sum(1 for c in test_cases if c.fallback_triggered)
-        fallback_successes = sum(1 for c in test_cases if c.fallback_triggered and c.fallback_success)
+
+        fallback_attempts = 0
+        fallback_successes = 0
+
         for c in test_cases:
             if c.failure_type != "none":
                 breakdown[c.failure_type] = breakdown.get(c.failure_type, 0) + 1
+            if c.fallback_triggered:
+                fallback_attempts += 1
+                if c.fallback_success:
+                    fallback_successes += 1
 
         fallback_rate = (fallback_successes / fallback_attempts) if fallback_attempts > 0 else 1.0
+
         pass_with = sum(1 for c in test_cases if c.with_skill_pass) / total
         pass_without = sum(1 for c in test_cases if c.without_skill_pass) / total
+
         avg_tokens_with = sum(c.tokens_with_skill for c in test_cases) / total
         avg_tokens_without = sum(c.tokens_without_skill for c in test_cases) / total
+
         avg_dur_with = sum(c.duration_ms_with_skill for c in test_cases) / total
         avg_dur_without = sum(c.duration_ms_without_skill for c in test_cases) / total
 
@@ -142,6 +132,24 @@ class SkillFailureAuditor:
             avg_duration_ms_without_skill=round(avg_dur_without, 1),
             duration_delta_ms=round(avg_dur_with - avg_dur_without, 1),
         )
+
+        recs: List[str] = []
+        if breakdown["routing_false_negative"] > 0:
+            recs.append("Amplie o escopo da 'description' no SKILL.md para capturar gatilhos implícitos e paráfrases.")
+        if breakdown["routing_false_positive"] > 0:
+            recs.append("Adicione termos de exclusão e delimite a fronteira da skill contra near-misses.")
+        if breakdown["instruction_ambiguity"] > 0:
+            recs.append("Simplifique o corpo das instruções em SKILL.md; substitua regras declarativas por procedimentos com exemplos.")
+        if breakdown["context_poisoning"] > 0:
+            recs.append("Exija validação rigorosa de saídas intermediárias e delimite dados em tags estruturadas (<context>).")
+        if breakdown["silent_degradation"] > 0:
+            recs.append("Remova validações e passos redundantes do SKILL.md para evitar consumo desnecessário de tokens.")
+        if delta.pass_rate_delta <= 0:
+            recs.append("ALERTA CRÍTICO: A skill não apresentou ganho de qualidade em relação à baseline sem a skill. Redesenhe o fluxo.")
+
+        if not recs:
+            recs.append("A skill apresenta alta robustez e superou a baseline sem falhas detectadas.")
+
         return SkillFailureAuditReport(
             skill_name=self.skill_name,
             total_test_cases=total,
@@ -150,7 +158,7 @@ class SkillFailureAuditor:
             failure_breakdown=breakdown,
             fallback_effectiveness_rate=round(fallback_rate, 4),
             benchmark_delta=delta,
-            recommendations=self._build_recommendations(breakdown, delta),
+            recommendations=recs,
         )
 
 

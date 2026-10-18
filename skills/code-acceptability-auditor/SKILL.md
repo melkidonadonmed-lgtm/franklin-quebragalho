@@ -1,7 +1,7 @@
 ---
 name: code-acceptability-auditor
 description: >-
-  Audita estaticamente arquivos de código Python via AST em busca de violações de segurança (chaves/tokens hardcodeados, eval/exec, subprocess shell=True), ausência de type hints, tratamento de erros genérico ou silencioso (except: pass), erros de sintaxe e funções longas (> 60 linhas). Use antes de git commit, revisão de PR ou entrega de código Python para calcular o Quality Score (0-100) e validar critérios de aceite. Não use para auditoria de qualidade de suítes de testes unitários (use test-quality-auditor), sistemas de Física 3D/WebGL (use code-quality-audit-3d-physics) ou dúvidas teóricas de sintaxe.
+  Audita estaticamente arquivos Python via AST contra falhas de segurança (segredos hardcoded, eval/exec, shell=True), ausência de type hints, except silencioso e funções longas (>60 linhas). Use antes de commits/PRs para calcular o Quality Score (0-100) e validar critérios de aceite.
 license: MIT
 compatibility: Python 3.11+, Pydantic 2.x, Git
 metadata:

@@ -14,8 +14,8 @@ Validações booleanas aplicadas para a entrega da refatoração de código:
 - `[PASS]` **Critério 04 (Ícones Lucide Padronizados):** Ícones convertidos para Lucide com espessura uniforme (`stroke-width` entre 1.5 e 2px).
 - `[FAIL]` **Critério 04:** Persistência de ícones heterogêneos de diferentes pacotes com espessuras de traço incompatíveis.
 
-- `[PASS]` **Critério 05 (Profundidade e Rim-Light):** Injeção de sombras multicamadas e fio de luz superior (`border-top: 1px solid rgba(255,255,255,0.14)` ou equivalente) em cards.
-- `[FAIL]` **Critério 05:** Cards sem relevo físico ou com sombra única dura sem oclusão de contato.
+- `[PASS]` **Critério 05 (Iluminação Direcional 135° — `DESIGN.md v4.5-soft`):** Injeção de sombras direcionais a 135° (`.ui-card-soft`), cavidades escavadas (`surface-inset`) e zero bordas duras de `1px` em cards Bento.
+- `[FAIL]` **Critério 05:** Cards sem relevo físico 135°, uso de `backdrop-filter: blur()` ou bordas duras de `1px`.
 
 - `[PASS]` **Critério 06 (Ausência de Cobalto Neon):** Zero ocorrências de azul cobalto puro (`#0044FF`, `#233DFF`, `#1D4ED8`) nos arquivos refatorados.
 - `[FAIL]` **Critério 06:** Presença de classes ou estilos com azul cobalto saturado.

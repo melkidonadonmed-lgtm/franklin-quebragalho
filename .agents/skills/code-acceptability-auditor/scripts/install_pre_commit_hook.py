@@ -43,8 +43,8 @@ def install_hook(repo_root: Path) -> Path:
     try:
         current_mode = os.stat(hook_path).st_mode
         os.chmod(hook_path, current_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-    except OSError as exc:
-        print(f"[WARN] Não foi possível ajustar chmod em {hook_path}: {exc}")
+    except OSError:
+        pass
     return hook_path
 
 

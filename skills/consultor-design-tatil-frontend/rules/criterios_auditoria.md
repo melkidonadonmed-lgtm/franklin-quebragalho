@@ -21,10 +21,10 @@ Este arquivo define os critérios objetivos, booleanos e falsificáveis aplicado
 
 ---
 
-## REGRA 3: Fio de Luz Mineral Superior (Rim Light)
-- **Definição:** Cartões e botões elevados devem possuir uma borda superior translúcida ou gradiente linear horizontal que simule o reflexo óptico de luz de topo.
-- `[PASS]`: Presença de `border-top: 1px solid rgba(255, 255, 255, alpha)` ou pseudo-elemento `::after` com gradiente reflexivo.
-- `[FAIL]`: Ausência de qualquer acabamento de micro-bisel ou rim-light no topo de componentes elevados.
+## REGRA 3: Iluminação Direcional a 135° e Zero Bordas Duras (`DESIGN.md v4.5-soft`)
+- **Definição:** Cartões (`.ui-card-soft`) e controles elevados devem possuir iluminação direcional dupla a 135° (`--soft-shadow-main` + `--soft-shadow-light`) e cavidades `surface-inset`, sem bordas duras de `1px` nem `backdrop-filter: blur()`.
+- `[PASS]`: Presença de iluminação 135° (`.ui-card-soft` / `surface-inset`) sem bordas duras de `1px`.
+- `[FAIL]`: Uso de `backdrop-filter: blur()`, bordas duras de `1px` em containers Bento ou ausência de elevação tonal 135°.
 
 ---
 

@@ -69,4 +69,4 @@ Atuar como agente supervisor e auditor matemático da esteira de UI: orquestrar 
 - `[AUDIT-06: A11Y-WCAG]` (`AUDIT-A11Y-01/02`) `[PASS / FAIL]`: `jest-axe` 0 violações, contraste $\ge 4.5:1$ e foco sem neon.
 - `[AUDIT-07: CWV-WORKERS]` `[PASS / FAIL]`: $\text{LCP} < 2.5\text{s}$, $\text{INP} < 200\text{ms}$, $\text{CLS} < 0.1$.
 - `[AUDIT-08: FSM-SEC-TESTS]` (`AUDIT-STATE-01/02` + `AUDIT-SEC-01`) `[PASS / FAIL]`: Transições FSM determinísticas, bloqueio XSS e suíte Jest/Vitest ativa.
-- `[AUDIT-09: SOFT-TONAL-135]` (`AUDIT-VIS-01`) `[PASS / FAIL]`: Iluminação 135° (`.ui-card-soft`), zero `backdrop-filter: blur`, zero bordas 1px e **zero azul cobalto** (`Score` 0–100 calculado).
+- `[AUDIT-09: LIGHT-SHADOW]` / `[AUDIT-09: SOFT-TONAL-135]` (`AUDIT-VIS-01`) `[PASS / FAIL]`: Iluminação 135° (`.ui-card-soft`), zero `backdrop-filter: blur`, zero bordas 1px e **zero azul cobalto** (`Score` 0–100 calculado).

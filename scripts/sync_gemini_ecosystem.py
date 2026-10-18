@@ -21,7 +21,7 @@ if str(ROOT_DIR) not in sys.path:
 
 GEMINI_ROOT = Path(r"C:\Users\melki\.gemini")
 CONFIG_PLUGIN_ROOT = GEMINI_ROOT / "config" / "plugins" / "franklin-skills"
-DIRECT_PLUGIN_ROOT = GEMINI_ROOT / "plugins" / "franklin-skills"
+CONFIG_SKILLS_ROOT = GEMINI_ROOT / "config" / "skills"
 
 
 def _copy_tree(src: Path, dst: Path) -> int:
@@ -45,13 +45,12 @@ def _copy_tree(src: Path, dst: Path) -> int:
 
 
 def sync_ecosystem() -> dict[str, int | str]:
-    """Executa a sincronização completa e regenera o AgentCard assinado."""
+    """Executa a sincronização completa, higieniza duplicatas e regenera o AgentCard assinado."""
     # 1. Criar diretórios solicitados em C:\Users\melki\.gemini e no plugin franklin-skills
     required_gemini_dirs = [
         GEMINI_ROOT / "lib",
         GEMINI_ROOT / "doc",
         GEMINI_ROOT / "docs",
-        GEMINI_ROOT / "plugins",
         GEMINI_ROOT / "agents",
         GEMINI_ROOT / "config" / "agents",
         GEMINI_ROOT / "plans",
@@ -64,10 +63,54 @@ def sync_ecosystem() -> dict[str, int | str]:
     for d in required_gemini_dirs:
         d.mkdir(parents=True, exist_ok=True)
 
+    # Remover pastas legadas redundantes caso existam (.gemini/plugins e .gemini/skills)
+    for legacy_dir in (GEMINI_ROOT / "plugins", GEMINI_ROOT / "skills"):
+        if legacy_dir.exists():
+            shutil.rmtree(legacy_dir)
+
     # 2. Sincronizar Skills: skills/ -> .agents/skills/ e config/plugins/franklin-skills/skills/
     skills_src = ROOT_DIR / "skills"
     skills_agents_count = _copy_tree(skills_src, ROOT_DIR / ".agents" / "skills")
     skills_plugin_count = _copy_tree(skills_src, CONFIG_PLUGIN_ROOT / "skills")
+
+    # 2.1 Remover de .gemini/config/skills qualquer skill que já exista em franklin-quebragalho/skills/ ou em plugins
+    deduplicated_config_skills = 0
+    if CONFIG_SKILLS_ROOT.exists() and skills_src.exists():
+        canonical_skill_names = {
+            p.name for p in skills_src.iterdir() if p.is_dir() and (p / "SKILL.md").exists()
+        }
+        plugins_dir = GEMINI_ROOT / "config" / "plugins"
+        if plugins_dir.exists():
+            for p_skill in plugins_dir.glob("*/skills/*/SKILL.md"):
+                canonical_skill_names.add(p_skill.parent.name)
+        for name in canonical_skill_names:
+            dup_dir = CONFIG_SKILLS_ROOT / name
+            if dup_dir.exists() and dup_dir.is_dir():
+                shutil.rmtree(dup_dir)
+                deduplicated_config_skills += 1
+
+    # 2.2 Manter C:\Users\melki\.agents\ sincronizado sem duplicatas de plugins ou skills migradas
+    user_agents_root = Path(r"C:\Users\melki\.agents")
+    user_agents_skills = user_agents_root / "skills"
+    if user_agents_skills.exists():
+        plugins_dir = GEMINI_ROOT / "config" / "plugins"
+        plugin_skill_names = (
+            {p.parent.name for p in plugins_dir.glob("*/skills/*/SKILL.md")}
+            if plugins_dir.exists()
+            else set()
+        )
+        migrated_or_dup = plugin_skill_names | {"microsoft-foundry", "reverse-engineer-anything"}
+        for s_dir in list(user_agents_skills.iterdir()):
+            if not s_dir.is_dir():
+                continue
+            if s_dir.name in migrated_or_dup:
+                shutil.rmtree(s_dir)
+            elif (CONFIG_SKILLS_ROOT / s_dir.name).exists():
+                _copy_tree(CONFIG_SKILLS_ROOT / s_dir.name, s_dir)
+    mem_proto_src = GEMINI_ROOT / "config" / "plugins" / "mempalace" / "rules" / "memory-protocol.md"
+    mem_proto_dst = user_agents_root / "rules" / "memory-protocol.md"
+    if mem_proto_src.exists() and mem_proto_dst.parent.exists():
+        shutil.copy2(mem_proto_src, mem_proto_dst)
 
     # 3. Sincronizar Subagentes (Topologia 3+1): agents/ -> .agents/agents/, plugin/agents/, .gemini/agents/ e .gemini/config/agents/
     agents_src = ROOT_DIR / "agents"
@@ -136,19 +179,16 @@ def sync_ecosystem() -> dict[str, int | str]:
         if manifest_src.exists():
             shutil.copy2(manifest_src, CONFIG_PLUGIN_ROOT / manifest_name)
 
-    # 9. Espelhar config/plugins/franklin-skills -> .gemini/plugins/franklin-skills
-    direct_plugin_count = _copy_tree(CONFIG_PLUGIN_ROOT, DIRECT_PLUGIN_ROOT)
-
     return {
         "status": "SYNCHRONIZED",
         "skills_synced_to_agents": skills_agents_count,
         "skills_synced_to_plugin": skills_plugin_count,
+        "deduplicated_config_skills": deduplicated_config_skills,
         "agents_synced": agents_gemini_count,
         "agents_config_synced": agents_config_count,
         "plans_synced": plans_gemini_count,
         "lib_files_synced": lib_gemini_count,
         "doc_files_synced": doc_copied,
-        "direct_plugin_files_synced": direct_plugin_count,
         "agent_card_local_check": (agents_local_count == agents_plugin_count),
     }
 

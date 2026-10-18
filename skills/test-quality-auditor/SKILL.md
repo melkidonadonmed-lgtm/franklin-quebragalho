@@ -1,7 +1,7 @@
 ---
 name: test-quality-auditor
 description: >-
-  Audita a qualidade, determinismo e eficácia real de suítes de testes automatizados em 5 domínios modulares espelhados: Python (Pytest/Unittest), TypeScript/JS (Node/Vitest/Jest), Go (*_test.go / testing.T / ADK Go v2), Servidores/Clientes MCP (Model Context Protocol — JSON-RPC 2.0 / FastMCP / Stdio) e Harnesses de Governança & Evals (SemanticGuard, Policy Gates HITL, CheckpointStore e Eval-Driven Harness). Detecta a Ilusão do Build Verde (Green Build Illusion), disseca a montagem Arrange-Act-Assert (AAA), analisa falhas tautológicas (assert True, is not None, erros descartados com '_', t.Fatal em goroutines, handshake MCP incompleto, testes de Harness sem bloqueio de injeção ou sem transição CRITICAL e vazamento de estado), classifica testes no Dossiê de Qualidade (Níveis 1 a 4), aplica refatoração cirúrgica e executa módulos espelhados em evals/modules/*_evals.json gerando relatórios grading.json e benchmark.json.
+  Executa auditoria de qualidade, determinismo e eficácia de suítes de testes com 5 módulos (Python, TS/JS, Go, MCP JSON-RPC e Harnesses/Evals). Detecta Green Build Illusion, falhas AAA e asserções tautológicas, classifica testes (Níveis 1-4) e gera grading.json.
 license: MIT
 metadata:
   version: "1.2.0"
@@ -127,23 +127,23 @@ uv run python .agents/skills/test-quality-auditor/scripts/test_quality_auditor.p
 
 ---
 
-## 🎨 Diretrizes Canônicas de Design e Preferências Melki (Padrão Franklin 2026)
+## 🎨 Diretrizes Canônicas de Design e Preferências Melki (`DESIGN.md v4.5-soft`)
 
 Sempre que esta skill gerar relatórios visuais, dashboards HTML de cobertura/qualidade ou artefatos de interface, aplique obrigatoriamente os 4 módulos canônicos:
 
-### Módulo 1: Física de Luz/Sombra e Superfícies Minerais
-- **Destaque por Luz, Sombra e Profundidade (NÃO por Cor Hiperdestacada):** Indicadores, botões e cards destacam-se por **incidência de luz zenital** (`linear-gradient` especular no topo + `inset 0 1px 0`), **cavidades esculpidas** (`sunken wells`) e **sombras multicamadas**, nunca por cores neon.
-- **Autonomia de Superfícies Minerais:** Tons neutros sóbrios (ardósia, titânio, basalto, papel algodão) mantendo `L_card > L_canvas` no dark mode.
-- ❌ **Banimento Anti-Cobalto:** Proibido azul cobalto puro (`#0044FF`, `#233DFF`, `#1D4ED8`).
+### Módulo 1: Economia Tonal 60-30-10, Iluminação 135° e Superfícies Minerais (`DESIGN.md v4.5-soft`)
+- **Pilha de Elevação Tonal (4+1 Camadas):** Indicadores, botões e cards destacam-se por **iluminação direcional dupla a 135°** (`.ui-card-soft`: `8px 8px 20px rgba(166,180,200,0.42), -8px -8px 20px rgba(255,255,255,0.95)`), **cavidades escavadas** (`surface-inset` `#E5E9F0`) e **inversão tonal Terrixa** (`#1E293B`), nunca por cores neon ou blur.
+- **Autonomia de Superfícies Minerais & Azuis Serenos:** Canvas neutro (`#F1F4F8` Light / `#12151B` Dark), mantendo $L_{\text{card}} > L_{\text{canvas}}$ no dark mode, com acentos minerais (`Cerulean Sapphire #0284C7`, `Ocean Sapphire #1E6091`, `Mineral Ice #38BDF8`, `Forest Moss #174930`).
+- ❌ **Banimento Anti-Cobalto & Anti-Glassmorphism (`AUDIT-VIS-01`):** Proibido azul cobalto puro (`#0044FF`, `#0057FF`, `#233DFF`, `#1D4ED8`), `backdrop-filter: blur()` e bordas duras de `1px`.
 
-### Módulo 2: Minimalismo, Regra 1+2 e Composição Visual (Tactile Matte 4K)
+### Módulo 2: Minimalist Impact, Regra 1+2 e Composição Visual (`Soft UI 135°`)
 - **Orçamento de Densidade (Regra 1+2):** No máximo **1 ação primária** e **2 secundárias** visíveis por card.
-- **Zero "Caixa dentro de Caixa":** Separe metadados de auditoria com tipografia, espaço livre ($\ge 30\%$) e divisórias sutis de `1px`.
-- **Anti-Squish e Ergonomia TDAH:** Hierarquia escaneável em 3 segundos, badges com `flex-shrink: 0; white-space: nowrap;` e zero `alert()` bloqueante.
+- **Zero "Caixa dentro de Caixa" & Zero Bordas Duras:** Separe metadados de auditoria com tipografia, espaço livre ($\ge 30\%$) e camadas tonais (`surface-flat` / `surface-inset`), sem bordas duras de `1px`.
+- **Anti-Squish e Ergonomia TDAH:** Hierarquia escaneável em 3 segundos, badges com `flex-shrink: 0; white-space: nowrap;` ($\ge 44\text{px}$) e zero `alert()` bloqueante.
 
 ### Módulo 3: Mapeamento de Opções e Preferências Pessoais do Desenvolvedor
 - **Consulta Estruturada via `ask_question`:** Apenas em decisões destrutivas ou ambiguidades críticas (máx. 1–2 perguntas).
-- **5 Temas em `localStorage` (Quando em Cockpits HTML):** *Tactile Matte*, *Phantom Obsidian 4K*, *Quiet Luxury Titanium*, *Steadfast Stainless* e *Warm Editorial Paper*.
+- **Presets Soft UI & Temas Minerais (`localStorage`):** *Nexus Slate Cerulean* (`#0284C7`), *Moss & Calm* (`#174930`), *Soft Sapphire* (`#1E6091`), *Obsidian Dark* (`#38BDF8`), *Tactile Matte*, *Phantom Obsidian 4K*, *Quiet Luxury Titanium*, *Steadfast Stainless* e *Warm Editorial Paper*.
 - **Arquitetura de Código:** Separação limpa em módulos de responsabilidade única (`<300` linhas cada): Domínio (`models.py`), Analisadores (`python_ast_auditor.py`, `ts_js_auditor.py`, `go_test_auditor.py`, `mcp_test_auditor.py`, `harness_test_auditor.py`), Evals (`eval_harness.py`) e CLI (`test_quality_auditor.py`), com espelhamento 1:1 em `evals/modules/*_evals.json`.
 
 ### Módulo 4: Matriz de Detecção de Discrepâncias com as Preferências
