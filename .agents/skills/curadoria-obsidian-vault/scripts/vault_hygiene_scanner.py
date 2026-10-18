@@ -157,7 +157,7 @@ def _inspect_note(
         report.oversized_notes.append({"path": rel, "sizeKb": round(stat.st_size / 1000, 1)})
 
     age_days = int((now_s - stat.st_mtime) // 86_400)
-    if "Arquivo/" not in rel and age_days >= OPEN_LOOP_DAYS:
+    if "Arquivo/" not in rel and not p.name.upper().startswith("README") and age_days >= OPEN_LOOP_DAYS:
         loops = count_open_loops(raw)
         if loops > 0 and len(report.open_loops) < OPEN_LOOP_CAP:
             report.open_loops.append({"path": rel, "ageDays": age_days, "openItems": loops})
@@ -192,7 +192,10 @@ def scan_vault_hygiene(
 
     inbox_dir = vault / "Inbox"
     if inbox_dir.is_dir():
-        inbox_notes = [f for f in inbox_dir.glob("*.md") if f.is_file()]
+        inbox_notes = [
+            f for f in inbox_dir.glob("*.md")
+            if f.is_file() and not f.name.upper().startswith("README")
+        ]
         if inbox_notes:
             oldest = max(int((now_s - f.stat().st_mtime) // 86_400) for f in inbox_notes)
             report.inbox_pressure = {"count": len(inbox_notes), "oldestDays": oldest}
