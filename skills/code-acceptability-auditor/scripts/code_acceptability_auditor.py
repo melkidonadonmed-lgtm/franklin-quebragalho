@@ -391,7 +391,10 @@ def main() -> int:
     parser.add_argument("--dir", type=str, help="Diretório para varredura recursiva de arquivos .py")
     parser.add_argument("--min-score", type=float, default=75.0, help="Quality Score mínimo (padrão: 75.0)")
     parser.add_argument("--json", action="store_true", help="Emitir saída em JSON puro")
+    parser.add_argument("--self-test", action="store_true", help="Executar auto-auditoria determinística do motor AST")
     args = parser.parse_args()
+    if args.self_test and not args.file and not args.dir:
+        args.file = str(Path(__file__).resolve())
 
     auditor = CodeAcceptabilityAuditor(min_quality_score=args.min_score)
 

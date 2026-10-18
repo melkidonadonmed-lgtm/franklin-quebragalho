@@ -106,11 +106,35 @@ def test_get_agents() -> None:
     persona_res = server.franklin_get_agents(agent_name="skillcraft")
     assert "SkillCraft" in persona_res
     assert "code-acceptability-auditor" in persona_res
+    assert "DriveMaster (Curador Cloud)" not in persona_res
 
-    assert server._find_skill_dir("code-auditor") is not None
-    assert server._find_skill_dir("design") is not None
-    assert server._find_skill_dir("code-architect") is not None
-    assert server._find_skill_dir("ui-testing") is not None
+    missing_res = server.franklin_get_agents(agent_name="subagente_inexistente_xyz")
+    assert "Erro: Subagente 'subagente_inexistente_xyz' não encontrado" in missing_res
+
+    agents_map = server._load_agents_map()
+    assert agents_map.get("EcosystemMatrix") == "Franklin-Main"
+    assert agents_map.get("code-acceptability-auditor") == "SkillCraft"
+    assert "2" not in agents_map.values()
+    assert "3" not in agents_map.values()
+    assert "4" not in agents_map.values()
+
+    code_auditor_dir = server._find_skill_dir("code-auditor")
+    design_dir = server._find_skill_dir("design")
+    architect_dir = server._find_skill_dir("code-architect")
+    ui_testing_dir = server._find_skill_dir("ui-testing")
+    assert getattr(code_auditor_dir, "name", "") == "code-acceptability-auditor"
+    assert getattr(design_dir, "name", "") == "design-md"
+    assert getattr(architect_dir, "name", "") == "frontend-code-architect"
+    assert getattr(ui_testing_dir, "name", "") == "frontend-testing-auditor"
+
+    self_test_out = server.franklin_run_skill_script(
+        skill_name="code-auditor",
+        script_name="code_acceptability_auditor.py",
+        args=["--self-test"],
+    )
+    assert "[Exit Code: 0]" in self_test_out
+    assert "[PASS]" in self_test_out
+
 
 
 
@@ -489,8 +513,11 @@ def test_gemini_ecosystem_directories() -> None:
     assert (gemini_root / "config" / "plugins" / "franklin-skills" / "plugin.json").exists()
 
     card_data = json.loads((server.ROOT_DIR / "agent_card.json").read_text(encoding="utf-8"))
-    assert "29 Skills canônicas" in card_data["description"]
-    assert len(card_data["skills"]) == 29
+    expected_skill_ids = sorted(
+        d.name for d in server.SKILLS_ROOT.iterdir() if d.is_dir() and not d.name.startswith("_") and (d / "SKILL.md").exists()
+    )
+    assert f"{len(expected_skill_ids)} Skills canônicas" in card_data["description"]
+    assert sorted(s["id"] for s in card_data["skills"]) == expected_skill_ids
 
     # Simula injeção de skill duplicada em .gemini/config/skills e valida limpeza determinística
     dup_probe = CONFIG_SKILLS_ROOT / "design-md"

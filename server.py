@@ -23,8 +23,8 @@ if not hasattr(typing, "no_type_check_decorator"):
 try:
     import beartype.claw
     beartype.claw.beartype_this_package = lambda *a, **kw: None  # type: ignore[assignment]
-except Exception:
-    pass
+except ImportError as _beartype_err:
+    _ = _beartype_err
 
 from fastmcp import FastMCP
 
@@ -87,59 +87,101 @@ CHECKPOINTS_FILE = SESSIONS_DIR / "harness_checkpoints.json"
 harness_store = CheckpointStore(CHECKPOINTS_FILE)
 a2a_task_manager = FranklinA2ATaskManager(SKILLS_ROOT, harness_store)
 
+CANONICAL_PERSONA_MAPPING: Dict[str, str] = {
+    "analise-design-tatil-frontend": "FrontCraftMaster",
+    "refatoracao-design-tatil-frontend": "FrontCraftMaster",
+    "consultor-design-tatil-frontend": "FrontCraftMaster",
+    "design-interface-medica-minimalista": "FrontCraftMaster",
+    "design-md": "FrontCraftMaster",
+    "frontend-code-architect": "FrontCraftMaster",
+    "frontend-testing-auditor": "FrontCraftMaster",
+    "gdrive-auditoria-limpeza": "DriveMaster",
+    "gdrive-taxonomia-organizacao": "DriveMaster",
+    "manutencao-disco-windows": "FileOpsLocal",
+    "curadoria-obsidian-vault": "VaultMaster",
+    "redator-tecnico-markdown": "DocMaker",
+    "conversor-html-pdf": "DocMaker",
+    "organizador-fluxo-arvore-arquivos": "DocMaker",
+    "evoluir-skills": "SkillCraft",
+    "skill-auditor-refatorador-skills": "SkillCraft",
+    "aprimoramento-expansibilidade-agentes-skills": "SkillCraft",
+    "code-acceptability-auditor": "SkillCraft",
+    "test-quality-auditor": "SkillCraft",
+    "high-level-context-planner": "LoopPlanner",
+    "gap-analyzer-auditor": "LoopPlanner",
+    "skill-orquestrador-planos-encadeados": "LoopPlanner",
+    "arquiteto-conteudo-solucoes": "Franklin-Main",
+    "arquitetura-design-implementacao-sistema": "Franklin-Main",
+    "auditoria-projetos-sistema": "Franklin-Main",
+    "code-quality-audit-3d-physics": "Franklin-Main",
+    "context-sentinel": "Franklin-Main",
+    "refine-prompt": "Franklin-Main",
+    "_template": "SkillCraft",
+    "template-skill": "SkillCraft",
+    "EcosystemMatrix": "Franklin-Main",
+}
+
+QUICK_SKILL_ALIASES: Dict[str, str] = {
+    "3d": "code-quality-audit-3d-physics",
+    "fisica": "code-quality-audit-3d-physics",
+    "fisica-3d": "code-quality-audit-3d-physics",
+    "physics": "code-quality-audit-3d-physics",
+    "pdf": "conversor-html-pdf",
+    "conversor-pdf": "conversor-html-pdf",
+    "obsidian": "curadoria-obsidian-vault",
+    "vault": "curadoria-obsidian-vault",
+    "drive-limpeza": "gdrive-auditoria-limpeza",
+    "drive-taxonomia": "gdrive-taxonomia-organizacao",
+    "disco": "manutencao-disco-windows",
+    "windows": "manutencao-disco-windows",
+    "medica": "design-interface-medica-minimalista",
+    "medico": "design-interface-medica-minimalista",
+    "template": "_template",
+    "sentinel": "context-sentinel",
+    "code-auditor": "code-acceptability-auditor",
+    "acceptability": "code-acceptability-auditor",
+    "ast-auditor": "code-acceptability-auditor",
+    "test-auditor": "test-quality-auditor",
+    "evals": "test-quality-auditor",
+    "qa-testes": "test-quality-auditor",
+    "arquitetura": "arquitetura-design-implementacao-sistema",
+    "ilhas": "arquitetura-design-implementacao-sistema",
+    "design": "design-md",
+    "design.md": "design-md",
+    "code-architect": "frontend-code-architect",
+    "atomic-ui": "frontend-code-architect",
+    "ui-testing": "frontend-testing-auditor",
+    "frontend-auditor": "frontend-testing-auditor",
+    "frontend": "consultor-design-tatil-frontend",
+    "ui": "consultor-design-tatil-frontend",
+    "consultor-ui": "consultor-design-tatil-frontend",
+    "consultor-frontend": "consultor-design-tatil-frontend",
+    "analise-ui": "analise-design-tatil-frontend",
+    "analise-frontend": "analise-design-tatil-frontend",
+    "refatorar-ui": "refatoracao-design-tatil-frontend",
+    "refatoracao-frontend": "refatoracao-design-tatil-frontend",
+}
+
 
 def _load_agents_map() -> Dict[str, str]:
     """Mapeia cada skill à sua persona especialista correspondente via AGENTS.md."""
-    mapping = {
-        "analise-design-tatil-frontend": "FrontCraftMaster",
-        "refatoracao-design-tatil-frontend": "FrontCraftMaster",
-        "consultor-design-tatil-frontend": "FrontCraftMaster",
-        "design-interface-medica-minimalista": "FrontCraftMaster",
-        "design-md": "FrontCraftMaster",
-        "frontend-code-architect": "FrontCraftMaster",
-        "frontend-testing-auditor": "FrontCraftMaster",
-        "gdrive-auditoria-limpeza": "DriveMaster",
-        "gdrive-taxonomia-organizacao": "DriveMaster",
-        "manutencao-disco-windows": "FileOpsLocal",
-        "curadoria-obsidian-vault": "VaultMaster",
-        "redator-tecnico-markdown": "DocMaker",
-        "conversor-html-pdf": "DocMaker",
-        "organizador-fluxo-arvore-arquivos": "DocMaker",
-        "evoluir-skills": "SkillCraft",
-        "skill-auditor-refatorador-skills": "SkillCraft",
-        "aprimoramento-expansibilidade-agentes-skills": "SkillCraft",
-        "code-acceptability-auditor": "SkillCraft",
-        "test-quality-auditor": "SkillCraft",
-        "high-level-context-planner": "LoopPlanner",
-        "gap-analyzer-auditor": "LoopPlanner",
-        "skill-orquestrador-planos-encadeados": "LoopPlanner",
-        "arquiteto-conteudo-solucoes": "Franklin-Main",
-        "arquitetura-design-implementacao-sistema": "Franklin-Main",
-        "auditoria-projetos-sistema": "Franklin-Main",
-        "code-quality-audit-3d-physics": "Franklin-Main",
-        "context-sentinel": "Franklin-Main",
-        "refine-prompt": "Franklin-Main",
-        "_template": "SkillCraft",
-        "template-skill": "SkillCraft",
-    }
-
+    mapping = dict(CANONICAL_PERSONA_MAPPING)
     if AGENTS_MD_PATH.exists():
         try:
             content = AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace")
-            # Extração de padrões em tabelas do Markdown
             for line in content.splitlines():
                 if "|" in line and "`" in line:
                     parts = [p.strip() for p in line.split("|")]
                     if len(parts) >= 5:
-                        persona_match = re.search(r"\*\*`?([a-zA-Z0-9_\-]+)`?\*\*", parts[1])
+                        persona_match = re.search(r"^\*\*`([A-Za-z][A-Za-z0-9_\-]+)`\*\*$", parts[1])
                         if persona_match:
                             persona = persona_match.group(1)
                             skills_in_line = re.findall(r"`([a-zA-Z0-9_\-]+)`", parts[3])
                             for s in skills_in_line:
-                                mapping[s] = persona
-        except Exception:
-            pass
-
+                                if s in mapping or (SKILLS_ROOT / s).is_dir():
+                                    mapping[s] = persona
+        except OSError as exc:
+            _ = exc
     return mapping
 
 
@@ -158,10 +200,9 @@ def _load_status_map() -> Dict[str, str]:
                     skill_match = re.search(r"\*\*`([a-zA-Z0-9_\-]+)`\*\*", parts[1])
                     if skill_match:
                         skill_name = skill_match.group(1)
-                        status_str = parts[3].strip()
-                        status_map[skill_name] = status_str
-    except Exception:
-        pass
+                        status_map[skill_name] = parts[3].strip()
+    except OSError as exc:
+        _ = exc
 
     return status_map
 
@@ -178,7 +219,6 @@ def _collect_skill_data(skill_dir: Path) -> Optional[Dict[str, Any]]:
         name = meta.get("name", skill_dir.name)
         version = meta.get("version", "v1.0.0")
         description = meta.get("description", "")
-
         if not description:
             lines = [l.strip() for l in body.splitlines() if l.strip() and not l.startswith("#")]
             description = lines[0] if lines else "Skill sem descrição detalhada."
@@ -187,33 +227,18 @@ def _collect_skill_data(skill_dir: Path) -> Optional[Dict[str, Any]]:
         evals_file = skill_dir / "evals" / "evals.json"
         ref_dir = skill_dir / "references"
         scripts_dir = skill_dir / "scripts"
+        scripts_list = [f.name for f in scripts_dir.iterdir() if f.is_file()] if scripts_dir.is_dir() else []
+        ref_list = [f.name for f in ref_dir.iterdir() if f.is_file()] if ref_dir.is_dir() else []
 
-        scripts_list: List[str] = []
-        if scripts_dir.exists() and scripts_dir.is_dir():
-            scripts_list = [f.name for f in scripts_dir.iterdir() if f.is_file()]
-
-        ref_list: List[str] = []
-        if ref_dir.exists() and ref_dir.is_dir():
-            ref_list = [f.name for f in ref_dir.iterdir() if f.is_file()]
-
-        # Tags inferidas
-        tags = set()
-        for token in [name, skill_dir.name, description]:
-            words = re.findall(r"[a-zA-Z0-9_\-]+", token.lower())
-            tags.update(words)
-
+        tags = {w for tok in (name, skill_dir.name, description) for w in re.findall(r"[a-zA-Z0-9_\-]+", tok.lower())}
         agents_map = _load_agents_map()
         status_map = _load_status_map()
-
-        persona = agents_map.get(skill_dir.name, agents_map.get(name, "Franklin-Main"))
-        status = status_map.get(skill_dir.name, status_map.get(name, "✅ Validada"))
-
         return {
             "name": name,
             "directory": skill_dir.name,
             "version": version,
-            "status": status,
-            "persona": persona,
+            "status": status_map.get(skill_dir.name, status_map.get(name, "✅ Validada")),
+            "persona": agents_map.get(skill_dir.name, agents_map.get(name, "Franklin-Main")),
             "description": description,
             "path": str(skill_file),
             "has_rules": rules_file.exists(),
@@ -222,9 +247,9 @@ def _collect_skill_data(skill_dir: Path) -> Optional[Dict[str, Any]]:
             "references": ref_list,
             "has_scripts": bool(scripts_list),
             "scripts": scripts_list,
-            "tags": sorted(list(tags)),
+            "tags": sorted(tags),
         }
-    except Exception:
+    except (OSError, ValueError, KeyError):
         return None
 
 
@@ -253,68 +278,58 @@ def _find_skill_dir(skill_name: str) -> Optional[Path]:
         return exact_path
 
     dirs = [d for d in SKILLS_ROOT.iterdir() if d.is_dir()]
-    # 1. Correspondência exata case-insensitive
     for d in dirs:
         if d.name.lower() == clean:
             return d
 
-    # 2. Mapa de atalhos cognitivos rápidos (para não precisar lembrar nomes longos)
-    quick_aliases = {
-        "3d": "code-quality-audit-3d-physics",
-        "fisica": "code-quality-audit-3d-physics",
-        "fisica-3d": "code-quality-audit-3d-physics",
-        "physics": "code-quality-audit-3d-physics",
-        "pdf": "conversor-html-pdf",
-        "conversor-pdf": "conversor-html-pdf",
-        "obsidian": "curadoria-obsidian-vault",
-        "vault": "curadoria-obsidian-vault",
-        "drive-limpeza": "gdrive-auditoria-limpeza",
-        "drive-taxonomia": "gdrive-taxonomia-organizacao",
-        "disco": "manutencao-disco-windows",
-        "windows": "manutencao-disco-windows",
-        "medica": "design-interface-medica-minimalista",
-        "medico": "design-interface-medica-minimalista",
-        "template": "_template",
-        "sentinel": "context-sentinel",
-        "code-auditor": "code-acceptability-auditor",
-        "acceptability": "code-acceptability-auditor",
-        "ast-auditor": "code-acceptability-auditor",
-        "test-auditor": "test-quality-auditor",
-        "evals": "test-quality-auditor",
-        "qa-testes": "test-quality-auditor",
-        "arquitetura": "arquitetura-design-implementacao-sistema",
-        "ilhas": "arquitetura-design-implementacao-sistema",
-        "design": "design-md",
-        "design.md": "design-md",
-        "code-architect": "frontend-code-architect",
-        "atomic-ui": "frontend-code-architect",
-        "ui-testing": "frontend-testing-auditor",
-        "frontend-auditor": "frontend-testing-auditor",
-        "frontend": "consultor-design-tatil-frontend",
-        "ui": "consultor-design-tatil-frontend",
-        "consultor-ui": "consultor-design-tatil-frontend",
-        "consultor-frontend": "consultor-design-tatil-frontend",
-        "analise-ui": "analise-design-tatil-frontend",
-        "analise-frontend": "analise-design-tatil-frontend",
-        "refatorar-ui": "refatoracao-design-tatil-frontend",
-        "refatoracao-frontend": "refatoracao-design-tatil-frontend",
-    }
-    if clean in quick_aliases:
-        alias_target = SKILLS_ROOT / quick_aliases[clean]
+    if clean in QUICK_SKILL_ALIASES:
+        alias_target = SKILLS_ROOT / QUICK_SKILL_ALIASES[clean]
         if alias_target.exists():
             return alias_target
 
-    # 3. Substring unívoca (se apenas 1 pasta contiver o termo buscado)
     sub_matches = [d for d in dirs if clean in d.name.lower()]
-    if len(sub_matches) == 1:
-        return sub_matches[0]
-
-    return None
+    return sub_matches[0] if len(sub_matches) == 1 else None
 
 
 # -----------------------------------------------------------------------------
-# Ferramentas MCP (Tools)
+# Ferramentas MCP (Tools) e Helpers Modulares (SRP <= 60 linhas)
 # -----------------------------------------------------------------------------
+def _filter_skills_catalog(
+    skills: List[Dict[str, Any]],
+    status: str,
+    persona: str,
+    search: str,
+) -> List[Dict[str, Any]]:
+    """Filtra a lista de skills por status, persona e termo textual."""
+    filtered: List[Dict[str, Any]] = []
+    status_low = status.lower()
+    persona_low = persona.lower()
+    term = search.strip().lower()
+    for s in skills:
+        if status_low != "all" and status_low not in s["status"].lower():
+            continue
+        if persona_low != "all" and persona_low not in s["persona"].lower():
+            continue
+        if term and term not in s["name"].lower() and term not in s["description"].lower():
+            continue
+        filtered.append(s)
+    return filtered
+
+
+def _format_skill_components(s: Dict[str, Any]) -> str:
+    """Formata o resumo de componentes modulares de uma skill."""
+    comps: List[str] = []
+    if s["has_rules"]:
+        comps.append("Rules [PASS/FAIL]")
+    if s["has_references"]:
+        comps.append(f"{len(s['references'])} Ref(s)")
+    if s["has_evals"]:
+        comps.append("Evals")
+    if s["has_scripts"]:
+        comps.append(f"{len(s['scripts'])} Script(s)")
+    return ", ".join(comps) if comps else "Apenas Contrato"
+
+
 @mcp.tool()
 def franklin_skills_list(
     status: str = "all",
@@ -333,53 +348,44 @@ def franklin_skills_list(
     if not skills:
         return f"Nenhuma skill encontrada no diretório: {SKILLS_ROOT}"
 
-    filtered = []
-    for s in skills:
-        # Filtro de status
-        if status.lower() != "all":
-            if status.lower() not in s["status"].lower():
-                continue
-
-        # Filtro de persona
-        if persona.lower() != "all":
-            if persona.lower() not in s["persona"].lower():
-                continue
-
-        # Filtro de busca textual
-        if search.strip():
-            term = search.strip().lower()
-            if term not in s["name"].lower() and term not in s["description"].lower():
-                continue
-
-        filtered.append(s)
-
+    filtered = _filter_skills_catalog(skills, status, persona, search)
     if format.lower() == "json":
         return json.dumps(filtered, indent=2, ensure_ascii=False)
 
-    # Renderização em Markdown estruturado e limpo
     lines = [
         f"### 📦 Catálogo de Skills do Franklin Quebra-Galho ({len(filtered)}/{len(skills)} ativas)\n",
         f"> **Diretório Raiz**: `{SKILLS_ROOT}`\n",
         "| Skill | Versão | Status | Subagente Especialista | Componentes Modulares |",
         "| :--- | :---: | :---: | :--- | :--- |",
     ]
-
     for s in filtered:
-        comps = []
-        if s["has_rules"]:
-            comps.append("Rules [PASS/FAIL]")
-        if s["has_references"]:
-            comps.append(f"{len(s['references'])} Ref(s)")
-        if s["has_evals"]:
-            comps.append("Evals")
-        if s["has_scripts"]:
-            comps.append(f"{len(s['scripts'])} Script(s)")
-        comp_str = ", ".join(comps) if comps else "Apenas Contrato"
-
+        comp_str = _format_skill_components(s)
         lines.append(f"| **`{s['name']}`** | `{s['version']}` | {s['status']} | `{s['persona']}` | {comp_str} |")
 
     lines.append("\n**Dica de Uso**: Utilize `franklin_skills_get(skill_name)` para ler o contrato da skill ou `franklin_skills_search(query)` para encontrar a skill exata.")
     return "\n".join(lines)
+
+
+def _build_full_skill_package(skill_dir: Path) -> str:
+    """Concatena contrato, rules, evals e referências de uma pasta de skill."""
+    skill_file = skill_dir / "SKILL.md"
+    rules_file = skill_dir / "rules" / "criterios_auditoria.md"
+    evals_file = skill_dir / "evals" / "evals.json"
+    ref_dir = skill_dir / "references"
+    parts = [f"# PACOTE COMPLETO: {skill_dir.name.upper()}\n"]
+    if skill_file.exists():
+        parts.extend(["## 1. Contrato Operacional (SKILL.md)", skill_file.read_text(encoding="utf-8", errors="replace"), "\n" + ("=" * 50) + "\n"])
+    if rules_file.exists():
+        parts.extend(["## 2. Regras e Critérios de Auditoria (rules/criterios_auditoria.md)", rules_file.read_text(encoding="utf-8", errors="replace"), "\n" + ("=" * 50) + "\n"])
+    if evals_file.exists():
+        parts.extend(["## 3. Testes Estruturados (evals/evals.json)", evals_file.read_text(encoding="utf-8", errors="replace"), "\n" + ("=" * 50) + "\n"])
+    if ref_dir.exists() and any(ref_dir.iterdir()):
+        parts.append("## 4. Documentos de Referência (references/)")
+        for f in sorted(ref_dir.iterdir()):
+            if f.is_file():
+                parts.extend([f"### Referência: `{f.name}`", f.read_text(encoding="utf-8", errors="replace")])
+        parts.append("\n" + ("=" * 50) + "\n")
+    return "\n".join(parts)
 
 
 @mcp.tool()
@@ -390,93 +396,64 @@ def franklin_skills_get(
     """Recupera as instruções, regras ou dados de uma skill com suporte a divulgação progressiva.
     Args:
         skill_name: Nome exato ou aproximado da skill (ex: 'arquiteto-conteudo-solucoes', 'conversor-html-pdf', 'gdrive-auditoria-limpeza').
-        section: Seção para carregamento granular:
-                 - 'contract': Apenas o SKILL.md enxuto (Ideal para preservar Token Budget).
-                 - 'rules': Apenas os critérios determinísticos de auditoria (rules/criterios_auditoria.md).
-                 - 'references': Lista e conteúdos dos manuais de referência (references/).
-                 - 'evals': Suíte de testes estruturados (evals/evals.json).
-                 - 'scripts': Lista dos scripts executáveis disponíveis.
-                 - 'all': Pacote completo da skill concatenado.
+        section: Seção para carregamento granular ('contract', 'rules', 'references', 'evals', 'scripts', 'all').
     """
     skill_dir = _find_skill_dir(skill_name)
     if not skill_dir:
-        # Sugestões próximas
         all_names = [d.name for d in SKILLS_ROOT.iterdir() if d.is_dir()]
         suggestions = difflib.get_close_matches(skill_name, all_names, n=3, cutoff=0.4)
         sug_text = f" Sugestões: {', '.join(suggestions)}" if suggestions else ""
         return f"Erro: Skill '{skill_name}' não encontrada em {SKILLS_ROOT}.{sug_text}"
 
-    skill_file = skill_dir / "SKILL.md"
-    rules_file = skill_dir / "rules" / "criterios_auditoria.md"
-    evals_file = skill_dir / "evals" / "evals.json"
-    ref_dir = skill_dir / "references"
-    scripts_dir = skill_dir / "scripts"
-
     sec = section.strip().lower()
-
     if sec == "contract":
-        if not skill_file.exists():
-            return f"Erro: SKILL.md ausente na pasta {skill_dir.name}."
-        return skill_file.read_text(encoding="utf-8", errors="replace")
-
-    elif sec == "rules":
-        if not rules_file.exists():
-            return f"A skill '{skill_dir.name}' não possui arquivo dedicado de regras (rules/criterios_auditoria.md)."
-        return rules_file.read_text(encoding="utf-8", errors="replace")
-
-    elif sec == "evals":
-        if not evals_file.exists():
-            return f"A skill '{skill_dir.name}' não possui arquivo de evals (evals/evals.json)."
-        return evals_file.read_text(encoding="utf-8", errors="replace")
-
-    elif sec == "references":
+        skill_file = skill_dir / "SKILL.md"
+        return skill_file.read_text(encoding="utf-8", errors="replace") if skill_file.exists() else f"Erro: SKILL.md ausente na pasta {skill_dir.name}."
+    if sec == "rules":
+        rules_file = skill_dir / "rules" / "criterios_auditoria.md"
+        return rules_file.read_text(encoding="utf-8", errors="replace") if rules_file.exists() else f"A skill '{skill_dir.name}' não possui arquivo dedicado de regras (rules/criterios_auditoria.md)."
+    if sec == "evals":
+        evals_file = skill_dir / "evals" / "evals.json"
+        return evals_file.read_text(encoding="utf-8", errors="replace") if evals_file.exists() else f"A skill '{skill_dir.name}' não possui arquivo de evals (evals/evals.json)."
+    if sec == "references":
+        ref_dir = skill_dir / "references"
         if not ref_dir.exists() or not any(ref_dir.iterdir()):
             return f"A skill '{skill_dir.name}' não possui referências adicionais (references/)."
         parts = [f"### Referências da Skill `{skill_dir.name}`:\n"]
         for f in sorted(ref_dir.iterdir()):
             if f.is_file():
-                parts.append(f"#### Arquivo: `{f.name}`")
-                parts.append(f.read_text(encoding="utf-8", errors="replace"))
-                parts.append("\n" + ("-" * 40) + "\n")
+                parts.extend([f"#### Arquivo: `{f.name}`", f.read_text(encoding="utf-8", errors="replace"), "\n" + ("-" * 40) + "\n"])
         return "\n".join(parts)
-
-    elif sec == "scripts":
+    if sec == "scripts":
+        scripts_dir = skill_dir / "scripts"
         if not scripts_dir.exists() or not any(scripts_dir.iterdir()):
             return f"A skill '{skill_dir.name}' não possui scripts executáveis próprios (scripts/)."
-        parts = [f"### Scripts da Skill `{skill_dir.name}`:\n"]
-        for f in sorted(scripts_dir.iterdir()):
-            if f.is_file():
-                parts.append(f"- **`{f.name}`** ({f.stat().st_size} bytes)")
-        return "\n".join(parts)
-
-    elif sec == "all":
-        parts = [f"# PACOTE COMPLETO: {skill_dir.name.upper()}\n"]
-        if skill_file.exists():
-            parts.append("## 1. Contrato Operacional (SKILL.md)")
-            parts.append(skill_file.read_text(encoding="utf-8", errors="replace"))
-            parts.append("\n" + ("=" * 50) + "\n")
-
-        if rules_file.exists():
-            parts.append("## 2. Regras e Critérios de Auditoria (rules/criterios_auditoria.md)")
-            parts.append(rules_file.read_text(encoding="utf-8", errors="replace"))
-            parts.append("\n" + ("=" * 50) + "\n")
-
-        if evals_file.exists():
-            parts.append("## 3. Testes Estruturados (evals/evals.json)")
-            parts.append(evals_file.read_text(encoding="utf-8", errors="replace"))
-            parts.append("\n" + ("=" * 50) + "\n")
-
-        if ref_dir.exists() and any(ref_dir.iterdir()):
-            parts.append("## 4. Documentos de Referência (references/)")
-            for f in sorted(ref_dir.iterdir()):
-                if f.is_file():
-                    parts.append(f"### Referência: `{f.name}`")
-                    parts.append(f.read_text(encoding="utf-8", errors="replace"))
-            parts.append("\n" + ("=" * 50) + "\n")
-
-        return "\n".join(parts)
-
+        return "\n".join([f"### Scripts da Skill `{skill_dir.name}`:\n"] + [f"- **`{f.name}`** ({f.stat().st_size} bytes)" for f in sorted(scripts_dir.iterdir()) if f.is_file()])
+    if sec == "all":
+        return _build_full_skill_package(skill_dir)
     return f"Seção '{section}' inválida. Opções: 'contract', 'rules', 'references', 'evals', 'scripts', 'all'."
+
+
+def _score_skill_query(s: Dict[str, Any], clean_q: str, terms: List[str]) -> int:
+    """Calcula a pontuação de relevância de uma skill para uma consulta textual."""
+    score = 0
+    name_lower = s["name"].lower()
+    desc_lower = s["description"].lower()
+    persona_lower = s["persona"].lower()
+    if clean_q in name_lower:
+        score += 50
+    if clean_q in desc_lower:
+        score += 30
+    for t in terms:
+        if t in name_lower:
+            score += 15
+        if t in s["tags"]:
+            score += 10
+        if t in desc_lower:
+            score += 5
+        if t in persona_lower:
+            score += 8
+    return score
 
 
 @mcp.tool()
@@ -495,52 +472,74 @@ def franklin_skills_search(
         return "Por favor, forneça termos de busca válidos."
 
     skills = _get_all_skills_data()
-    scored = []
-
-    for s in skills:
-        score = 0
-        name_lower = s["name"].lower()
-        desc_lower = s["description"].lower()
-        persona_lower = s["persona"].lower()
-
-        # Correspondência de frase completa
-        if clean_q in name_lower:
-            score += 50
-        if clean_q in desc_lower:
-            score += 30
-
-        # Correspondência por tokens
-        for t in terms:
-            if t in name_lower:
-                score += 15
-            if t in s["tags"]:
-                score += 10
-            if t in desc_lower:
-                score += 5
-            if t in persona_lower:
-                score += 8
-
-        if score > 0:
-            scored.append((score, s))
-
+    scored = [(sc, s) for s in skills if (sc := _score_skill_query(s, clean_q, terms)) > 0]
     scored.sort(key=lambda x: x[0], reverse=True)
     top_matches = scored[:limit]
 
     if not top_matches:
         return f"Nenhuma skill encontrada para '{query}'. Use 'franklin_skills_list()' para inspecionar todas as opções."
 
-    output = [
-        f"### 🎯 Recomendações de Skills para: \"{query}\"\n",
-    ]
-
+    output = [f"### 🎯 Recomendações de Skills para: \"{query}\"\n"]
     for rank, (score, s) in enumerate(top_matches, start=1):
-        output.append(f"#### {rank}. **`{s['name']}`** (Relevância: {score} pts)")
-        output.append(f"- **Subagente Recomendado**: `{s['persona']}`")
-        output.append(f"- **Status**: {s['status']} | **Versão**: `{s['version']}`")
-        output.append(f"- **Descrição**: {s['description']}")
-        output.append(f"- **Comando para ler**: `franklin_skills_get(skill_name='{s['name']}')`\n")
-
+        output.extend([
+            f"#### {rank}. **`{s['name']}`** (Relevância: {score} pts)",
+            f"- **Subagente Recomendado**: `{s['persona']}`",
+            f"- **Status**: {s['status']} | **Versão**: `{s['version']}`",
+            f"- **Descrição**: {s['description']}",
+            f"- **Comando para ler**: `franklin_skills_get(skill_name='{s['name']}')`\n",
+        ])
     return "\n".join(output)
+
+
+REQUIRED_SKILL_SECTIONS: List[Tuple[str, str]] = [
+    (r"(#|##)\s+.*(Gatilhos|Quando Usar|Propósito|Proposito|Missão|Missao)", "Gatilhos / Quando Usar"),
+    (r"(#|##)\s+.*(Entradas|Pr[eé]-requisitos|Par[aâ]metros)", "Entradas / Pré-requisitos"),
+    (r"(#|##)\s+.*(Processamento|Passo a Passo|Fluxo|Execução|Execucao)", "Processamento / Fluxo"),
+    (r"(#|##)\s+.*(Saídas|Saidas|Entregáveis|Entregaveis|Modelo de Saída|Modelo de Saida)", "Saídas / Entregáveis"),
+    (r"(#|##)\s+.*(Exceções|Excecoes|Limites|Quando N[AÃ]O Usar)", "Exceções / Limites"),
+]
+
+
+def _validate_single_skill_dir(s_dir: Path) -> List[str]:
+    """Valida a conformidade contratual, frontmatter, rules e evals de uma pasta de skill."""
+    errs: List[str] = []
+    skill_file = s_dir / "SKILL.md"
+    if not skill_file.exists():
+        return ["Arquivo SKILL.md inexistente"]
+
+    try:
+        content = skill_file.read_text(encoding="utf-8")
+        meta, body = _parse_frontmatter(content)
+        if not meta:
+            errs.append("Frontmatter YAML ausente ou malformado")
+        for req in ("name", "description", "version"):
+            if req not in meta or not meta[req]:
+                errs.append(f"Campo obrigatório '{req}' ausente no frontmatter")
+        if "name" in meta and meta["name"] != s_dir.name:
+            if not (s_dir.name == "_template" and meta["name"] == "template-skill"):
+                errs.append(f"Nome no frontmatter ('{meta['name']}') difere da pasta ('{s_dir.name}')")
+        for sec_pattern, sec_name in REQUIRED_SKILL_SECTIONS:
+            if not re.search(sec_pattern, body, re.IGNORECASE):
+                errs.append(f"Seção obrigatória ausente: {sec_name}")
+
+        rules_file = s_dir / "rules" / "criterios_auditoria.md"
+        if rules_file.exists():
+            rules_text = rules_file.read_text(encoding="utf-8")
+            if "[PASS]" not in rules_text or ("[FAIL]" not in rules_text and "[FAIL:" not in rules_text):
+                errs.append("rules/criterios_auditoria.md deve conter marcadores [PASS] e [FAIL]")
+
+        evals_file = s_dir / "evals" / "evals.json"
+        if evals_file.exists():
+            try:
+                evals_data = json.loads(evals_file.read_text(encoding="utf-8"))
+                evals_list = evals_data.get("evals", []) if isinstance(evals_data, dict) else (evals_data if isinstance(evals_data, list) else [])
+                if not isinstance(evals_list, list) or len(evals_list) == 0:
+                    errs.append("evals.json deve conter uma lista não-vazia de testes")
+            except (OSError, json.JSONDecodeError, ValueError, TypeError) as e:
+                errs.append(f"Sintaxe JSON inválida em evals.json: {e}")
+    except (OSError, ValueError, KeyError) as e:
+        errs.append(f"Erro ao analisar arquivo: {e}")
+    return errs
 
 
 @mcp.tool()
@@ -549,9 +548,8 @@ def franklin_skills_validate(
 ) -> str:
     """Executa auditoria determinística de conformidade estrutural, contratual e semântica das skills.
     Args:
-        target_skill: Nome de uma skill específica para validar, ou vazio para validar todas as 26 skills.
+        target_skill: Nome de uma skill específica para validar, ou vazio para validar todas as 29 skills.
     """
-    skills_to_validate: List[Path] = []
     if target_skill.strip():
         found = _find_skill_dir(target_skill.strip())
         if not found:
@@ -560,89 +558,28 @@ def franklin_skills_validate(
     else:
         skills_to_validate = sorted([d for d in SKILLS_ROOT.iterdir() if d.is_dir()])
 
-    total = 0
     passed = 0
     failures: Dict[str, List[str]] = {}
-
-    required_sections = [
-        (r"(#|##)\s+.*(Gatilhos|Quando Usar|Propósito|Proposito|Missão|Missao)", "Gatilhos / Quando Usar"),
-        (r"(#|##)\s+.*(Entradas|Pr[eé]-requisitos|Par[aâ]metros)", "Entradas / Pré-requisitos"),
-        (r"(#|##)\s+.*(Processamento|Passo a Passo|Fluxo|Execução|Execucao)", "Processamento / Fluxo"),
-        (r"(#|##)\s+.*(Saídas|Saidas|Entregáveis|Entregaveis|Modelo de Saída|Modelo de Saida)", "Saídas / Entregáveis"),
-        (r"(#|##)\s+.*(Exceções|Excecoes|Limites|Quando N[AÃ]O Usar)", "Exceções / Limites"),
-    ]
-
     for s_dir in skills_to_validate:
-        total += 1
-        errs: List[str] = []
-        skill_file = s_dir / "SKILL.md"
-
-        if not skill_file.exists():
-            errs.append("Arquivo SKILL.md inexistente")
-        else:
-            try:
-                content = skill_file.read_text(encoding="utf-8")
-                meta, body = _parse_frontmatter(content)
-                if not meta:
-                    errs.append("Frontmatter YAML ausente ou malformado")
-                for req in ["name", "description", "version"]:
-                    if req not in meta or not meta[req]:
-                        errs.append(f"Campo obrigatório '{req}' ausente no frontmatter")
-
-                if "name" in meta and meta["name"] != s_dir.name:
-                    if not (s_dir.name == "_template" and meta["name"] == "template-skill"):
-                        errs.append(f"Nome no frontmatter ('{meta['name']}') difere da pasta ('{s_dir.name}')")
-
-                for sec_pattern, sec_name in required_sections:
-                    if not re.search(sec_pattern, body, re.IGNORECASE):
-                        errs.append(f"Seção obrigatória ausente: {sec_name}")
-
-                # Checagem de rules/criterios_auditoria.md
-                rules_file = s_dir / "rules" / "criterios_auditoria.md"
-                if rules_file.exists():
-                    rules_text = rules_file.read_text(encoding="utf-8")
-                    if "[PASS]" not in rules_text or ("[FAIL]" not in rules_text and "[FAIL:" not in rules_text):
-                        errs.append("rules/criterios_auditoria.md deve conter marcadores [PASS] e [FAIL]")
-
-                # Checagem de evals/evals.json
-                evals_file = s_dir / "evals" / "evals.json"
-                if evals_file.exists():
-                    try:
-                        evals_data = json.loads(evals_file.read_text(encoding="utf-8"))
-                        if isinstance(evals_data, dict) and "evals" in evals_data:
-                            evals_list = evals_data["evals"]
-                        elif isinstance(evals_data, list):
-                            evals_list = evals_data
-                        else:
-                            evals_list = []
-                        if not isinstance(evals_list, list) or len(evals_list) == 0:
-                            errs.append("evals.json deve conter uma lista não-vazia de testes")
-                    except Exception as e:
-                        errs.append(f"Sintaxe JSON inválida em evals.json: {e}")
-
-            except Exception as e:
-                errs.append(f"Erro ao analisar arquivo: {e}")
-
+        errs = _validate_single_skill_dir(s_dir)
         if errs:
             failures[s_dir.name] = errs
         else:
             passed += 1
 
+    total = len(skills_to_validate)
     lines = [
         "=== AUDITORIA DETERMINÍSTICA DE SKILLS DO FRANKLIN ===",
         f"Total Inspecionado: {total} | Aprovadas: {passed} | Falhas: {len(failures)}",
         "-" * 60,
     ]
-
     if failures:
         lines.append("[STATUS]: REPROVADO COM INCONFORMIDADES\n")
         for s_name, err_list in failures.items():
             lines.append(f"[FAIL] {s_name}:")
-            for err in err_list:
-                lines.append(f"   ↳ {err}")
+            lines.extend([f"   ↳ {err}" for err in err_list])
     else:
         lines.append("[STATUS]: 100% PASS - TODAS AS SKILLS EM CONFORMIDADE DETERMINÍSTICA")
-
     return "\n".join(lines)
 
 
@@ -660,6 +597,98 @@ def _resolve_agents_dir() -> Path:
     return ROOT_DIR / "agents"
 
 
+UI_SUBAGENT_ALIASES: Dict[str, str] = {
+    "shell": "ui-shell-navigator",
+    "navigator": "ui-shell-navigator",
+    "onda1": "ui-shell-navigator",
+    "wave1": "ui-shell-navigator",
+    "ui_shell_navigator": "ui-shell-navigator",
+    "controls": "ui-controls-data",
+    "data": "ui-controls-data",
+    "onda2a": "ui-controls-data",
+    "wave2a": "ui-controls-data",
+    "ui_controls_data": "ui-controls-data",
+    "motion": "ui-motion-interaction",
+    "interaction": "ui-motion-interaction",
+    "onda2b": "ui-motion-interaction",
+    "wave2b": "ui-motion-interaction",
+    "ui_motion_interaction": "ui-motion-interaction",
+    "observer": "ui-deterministic-observer",
+    "gatekeeper": "ui-deterministic-observer",
+    "onda3": "ui-deterministic-observer",
+    "wave3": "ui-deterministic-observer",
+    "ui_deterministic_observer": "ui-deterministic-observer",
+}
+
+PERSONA_ALIASES: Dict[str, str] = {
+    "franklin": "Franklin-Main",
+    "franklin-main": "Franklin-Main",
+    "main": "Franklin-Main",
+    "drivemaster": "DriveMaster",
+    "drive": "DriveMaster",
+    "subagent-drive-master": "DriveMaster",
+    "fileopslocal": "FileOpsLocal",
+    "fileops": "FileOpsLocal",
+    "subagent-file-ops-local": "FileOpsLocal",
+    "docmaker": "DocMaker",
+    "subagent-doc-maker": "DocMaker",
+    "skillcraft": "SkillCraft",
+    "subagent-skill-craft": "SkillCraft",
+    "frontcraftmaster": "FrontCraftMaster",
+    "frontcraft": "FrontCraftMaster",
+    "subagent-frontcraft-master": "FrontCraftMaster",
+    "vaultmaster": "VaultMaster",
+    "subagent-vault-master": "VaultMaster",
+    "loopplanner": "LoopPlanner",
+    "subagent-loop-planner": "LoopPlanner",
+}
+
+
+def _render_ecosystem_topology() -> str:
+    """Renderiza a topologia interativa de agentes em 5 camadas e 29 skills."""
+    skills = _get_all_skills_data()
+    by_persona: Dict[str, List[str]] = {}
+    for s in skills:
+        by_persona.setdefault(s["persona"], []).append(s["name"])
+    lines = [
+        "# ⚡ Topologia Interativa de Agentes Multi-Repo (5 Camadas • 13 Repositórios)\n",
+        "## 1. Camadas de Execução e Custo Cognitivo",
+        "- **Camada 0 (Bússola & Heartbeat Zero-LLM — 0 tokens)**: `franklin_smart_compass()`, `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1`, `POST /rpc` (`mesh/heartbeat` em `adk-tests`).",
+        "- **Camada 1 (Orquestração & Loop Fechado)**: `Franklin-Main` (Execução Direta) e `LoopPlanner` (`high-level-context-planner` Fase 0 -> `skill-orquestrador-planos-encadeados` -> `gap-analyzer-auditor`).",
+        "- **Camada 2 (Esquadrão Frontend Soft Tactile `DESIGN.md v4.5-soft` — Topologia 3+1)**: `FrontCraftMaster` + `ui-shell-navigator` (Onda 1) -> `ui-controls-data` + `ui-motion-interaction` (Onda 2) -> `ui-deterministic-observer` (Onda 3 Gatekeeper `AUDIT-VIS-01 >= 90`).",
+        "- **Camada 3 (Gatekeepers Determinísticos AST/Pass@k — 0 tokens)**: `SkillCraft` (`code-acceptability-auditor` Score >= 75, `test-quality-auditor`), `3D Physics Auditor` (`franklin_execute_dag('physics')`) e `dispatch_skill_deterministic_tests` (Go Eval Harness).",
+        "- **Camada 4 (Malha Multiagente Cloud/Web & Clínica)**: `adk-tests` (`mesh_hybrid_orchestrator`, `self_healing_specialist`, `customer_issue_reviewer`, `AgyCalcCluster`), `epic-volta` (`DAGEngine` Kahn + `MCPBridgeAgent` + `ContextSentinel`), `mcp-web-agents` (Gateway 4+1 + `watchdogBridge.ts`) e `PCM`/`scoreboard` (`prescmed-clinical-reviewer`).\n",
+        "## 2. Personas Especialistas & Skills Vinculadas (`franklin-quebragalho`)",
+    ]
+    for p_name, s_list in sorted(by_persona.items()):
+        lines.append(f"- **`{p_name}`** ({len(s_list)} skills): `{', '.join(sorted(s_list))}`")
+    lines.extend([
+        "\n## 3. Comandos Interativos de 1 Clique",
+        "- **Terminal Hub Interativo**: `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1`",
+        "- **Executar DAG UI (3 Ondas)**: `franklin_execute_dag(plan_path_or_json='ui')`",
+        "- **Executar DAG Física 3D (3 Ondas)**: `franklin_execute_dag(plan_path_or_json='physics')`",
+        "- **Auditar Código Python (AST)**: `franklin_run_skill_script(skill_name='code-auditor', script_name='code_acceptability_auditor.py', args=['--self-test'])`",
+    ])
+    return "\n".join(lines)
+
+
+def _extract_persona_details(canonical_persona: str) -> str:
+    """Extrai a seção dedicada de uma persona de MY_AGENTS.md e anexa suas skills ativas."""
+    my_agents_path = ROOT_DIR / "MY_AGENTS.md"
+    section_text = ""
+    if my_agents_path.exists():
+        raw = my_agents_path.read_text(encoding="utf-8", errors="replace")
+        header_term = "Franklin Quebra-Galho" if canonical_persona == "Franklin-Main" else canonical_persona
+        chunks = re.split(r"\n---\n", raw)
+        for ch in chunks:
+            if header_term.lower() in ch.lower() and "## " in ch:
+                section_text = ch.strip()
+                break
+    skills = [s["name"] for s in _get_all_skills_data() if s["persona"].lower() == canonical_persona.lower()]
+    skills_block = f"\n\n### Skills Vinculadas a `{canonical_persona}` ({len(skills)}):\n- `" + "`, `".join(sorted(skills)) + "`" if skills else ""
+    return (section_text or f"## Persona: {canonical_persona}") + skills_block
+
+
 @mcp.tool()
 def franklin_get_agents(agent_name: str = "") -> str:
     """Retorna o catálogo oficial dos Subagentes Especialistas do Franklin Quebra-Galho, a Topologia Multi-Repo (5 Camadas) ou o contrato detalhado de um subagente de UI (Topologia 3+1).
@@ -670,89 +699,109 @@ def franklin_get_agents(agent_name: str = "") -> str:
     """
     clean = agent_name.strip().lower()
     if not clean:
-        if AGENTS_MD_PATH.exists():
-            return AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace")
-        return "Arquivo AGENTS.md não encontrado na raiz do workspace."
+        return AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace") if AGENTS_MD_PATH.exists() else "Arquivo AGENTS.md não encontrado na raiz do workspace."
 
     if clean in ("ecosystem", "topology", "matrix", "all", "multi-repo", "repos"):
-        skills = _get_all_skills_data()
-        by_persona: Dict[str, List[str]] = {}
-        for s in skills:
-            by_persona.setdefault(s["persona"], []).append(s["name"])
-        lines = [
-            "# ⚡ Topologia Interativa de Agentes Multi-Repo (5 Camadas • 13 Repositórios)\n",
-            "## 1. Camadas de Execução e Custo Cognitivo",
-            "- **Camada 0 (Bússola & Heartbeat Zero-LLM — 0 tokens)**: `franklin_smart_compass()`, `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1`, `POST /rpc` (`mesh/heartbeat` em `adk-tests`).",
-            "- **Camada 1 (Orquestração & Loop Fechado)**: `Franklin-Main` (Execução Direta) e `LoopPlanner` (`high-level-context-planner` Fase 0 -> `skill-orquestrador-planos-encadeados` -> `gap-analyzer-auditor`).",
-            "- **Camada 2 (Esquadrão Frontend Soft Tactile `DESIGN.md v4.5-soft` — Topologia 3+1)**: `FrontCraftMaster` + `ui-shell-navigator` (Onda 1) -> `ui-controls-data` + `ui-motion-interaction` (Onda 2) -> `ui-deterministic-observer` (Onda 3 Gatekeeper `AUDIT-VIS-01 >= 90`).",
-            "- **Camada 3 (Gatekeepers Determinísticos AST/Pass@k — 0 tokens)**: `SkillCraft` (`code-acceptability-auditor` Score >= 75, `test-quality-auditor`), `3D Physics Auditor` (`franklin_execute_dag('physics')`) e `dispatch_skill_deterministic_tests` (Go Eval Harness).",
-            "- **Camada 4 (Malha Multiagente Cloud/Web & Clínica)**: `adk-tests` (`mesh_hybrid_orchestrator`, `self_healing_specialist`, `customer_issue_reviewer`, `AgyCalcCluster`), `epic-volta` (`DAGEngine` Kahn + `MCPBridgeAgent` + `ContextSentinel`), `mcp-web-agents` (Gateway 4+1 + `watchdogBridge.ts`) e `PCM`/`scoreboard` (`prescmed-clinical-reviewer`).\n",
-            "## 2. Personas Especialistas & Skills Vinculadas (`franklin-quebragalho`)",
-        ]
-        for p_name, s_list in sorted(by_persona.items()):
-            lines.append(f"- **`{p_name}`** ({len(s_list)} skills): `{', '.join(sorted(s_list))}`")
-        lines.append("\n## 3. Comandos Interativos de 1 Clique")
-        lines.append("- **Terminal Hub Interativo**: `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1`")
-        lines.append("- **Executar DAG UI (3 Ondas)**: `franklin_execute_dag(plan_path_or_json='ui')`")
-        lines.append("- **Executar DAG Física 3D (3 Ondas)**: `franklin_execute_dag(plan_path_or_json='physics')`")
-        lines.append("- **Auditar Código Python (AST)**: `franklin_run_skill_script(skill_name='code-auditor', script_name='code_acceptability_auditor.py', args=['--self-test'])`")
-        return "\n".join(lines)
+        return _render_ecosystem_topology()
 
     agents_dir = _resolve_agents_dir()
-    ui_aliases = {
-        "shell": "ui-shell-navigator",
-        "navigator": "ui-shell-navigator",
-        "onda1": "ui-shell-navigator",
-        "wave1": "ui-shell-navigator",
-        "ui_shell_navigator": "ui-shell-navigator",
-        "controls": "ui-controls-data",
-        "data": "ui-controls-data",
-        "onda2a": "ui-controls-data",
-        "wave2a": "ui-controls-data",
-        "ui_controls_data": "ui-controls-data",
-        "motion": "ui-motion-interaction",
-        "interaction": "ui-motion-interaction",
-        "onda2b": "ui-motion-interaction",
-        "wave2b": "ui-motion-interaction",
-        "ui_motion_interaction": "ui-motion-interaction",
-        "observer": "ui-deterministic-observer",
-        "gatekeeper": "ui-deterministic-observer",
-        "onda3": "ui-deterministic-observer",
-        "wave3": "ui-deterministic-observer",
-        "ui_deterministic_observer": "ui-deterministic-observer",
-    }
-
-    if clean in ("ui", "3+1", "frontcraft", "frontcraftmaster", "all-ui", "subagentes-ui"):
-        ordered = [
-            "ui-shell-navigator.md",
-            "ui-controls-data.md",
-            "ui-motion-interaction.md",
-            "ui-deterministic-observer.md",
-        ]
+    if clean in ("ui", "3+1", "all-ui", "subagentes-ui"):
+        ordered = ("ui-shell-navigator.md", "ui-controls-data.md", "ui-motion-interaction.md", "ui-deterministic-observer.md")
         parts = ["# Esquadrão de Subagentes de UI (`Topologia 3+1` sob `FrontCraftMaster`)\n"]
         for fname in ordered:
             fpath = agents_dir / fname
             if fpath.exists():
-                parts.append(fpath.read_text(encoding="utf-8", errors="replace"))
-                parts.append("\n" + ("=" * 60) + "\n")
+                parts.extend([fpath.read_text(encoding="utf-8", errors="replace"), "\n" + ("=" * 60) + "\n"])
         return "\n".join(parts)
 
-    target_stem = ui_aliases.get(clean, clean.removesuffix(".md"))
+    target_stem = UI_SUBAGENT_ALIASES.get(clean, clean.removesuffix(".md"))
     target_file = agents_dir / f"{target_stem}.md"
     if target_file.exists():
         return target_file.read_text(encoding="utf-8", errors="replace")
 
-    my_agents_path = ROOT_DIR / "MY_AGENTS.md"
-    if my_agents_path.exists():
-        my_agents_text = my_agents_path.read_text(encoding="utf-8", errors="replace")
-        if clean in my_agents_text.lower():
-            return my_agents_text
+    if clean in PERSONA_ALIASES:
+        return _extract_persona_details(PERSONA_ALIASES[clean])
 
-    if AGENTS_MD_PATH.exists():
-        content = AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace")
-        if clean in content.lower():
-            return content
     return f"Erro: Subagente '{agent_name}' não encontrado em {agents_dir}."
+
+
+COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[str, str, str]], str, str]] = [
+    (
+        ("3d", "fisica", "physics", "three", "webgl", "babylon", "shader", "quaternion", "fps"),
+        "📐 Física 3D, Computação Gráfica & Simulação Numérica",
+        ["code-quality-audit-3d-physics", "auditoria-projetos-sistema"],
+        [
+            ("code-quality-audit-3d-physics", "state_checker_observer.py", "Roda as 3 ondas (AST + Testes Pass@10 + Observador Pydantic Snorm)"),
+            ("code-quality-audit-3d-physics", "static_ast_parser.py", "Analisador AST Python (12 regras + 5 sub-dimensões de física)"),
+            ("code-quality-audit-3d-physics", "js_ts_ast_parser.js", "Analisador JS/TS para Three.js/WebGL (alocação em loop, dt, Euler)"),
+            ("code-quality-audit-3d-physics", "physics_test_runner.py", "Runner de 5 baterias dinâmicas (60 vs 120Hz, Energia, NaN, CCD, Pass@10)"),
+        ],
+        "plans/physics_code_audit_dag.json",
+        "Foco em zero alocação no hot-loop (GC), multiplicação por dt e guarda contra NaN (sem burocracia de docstrings em helpers matemáticos).",
+    ),
+    (
+        ("medic", "saude", "clin", "prontuario", "receit", "calculadora", "paciente"),
+        "🩺 Software Médico & SaaS Clínico Minimalista",
+        ["design-interface-medica-minimalista", "arquitetura-design-implementacao-sistema", "consultor-design-tatil-frontend", "frontend-testing-auditor"],
+        [
+            ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria adaptativa FrontierCode (Tipagem, Bare Except, Segurança)"),
+            ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Sanitização e chunking SHA-256 para diretrizes clínicas/RAG"),
+        ],
+        "plans/ui_composition_dag.json",
+        "Zero dados identificáveis de pacientes fora de .env, contraste WCAG AA/AAA, paleta mineral sem cobalto neon e tipagem estrita.",
+    ),
+    (
+        ("ui", "ux", "front", "tela", "botao", "menu", "css", "tailwind", "react", "design"),
+        "🎨 Engenharia de Interface & Design System Tátil Melki (`DESIGN.md v4.5-soft` • 4 Presets + 28 Temas)",
+        ["consultor-design-tatil-frontend", "analise-design-tatil-frontend", "refatoracao-design-tatil-frontend", "design-md", "frontend-code-architect", "frontend-testing-auditor"],
+        [("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Verificação rápida de código sem engessamento")],
+        "plans/ui_composition_dag.json",
+        "Alvos >= 44x44px anti-squish (flex-shrink: 0), L_card > L_canvas no dark mode, Iluminação 135° (DESIGN.md v4.5-soft) e zero azul cobalto (#0044FF).",
+    ),
+    (
+        ("rag", "dado", "chunk", "jsonl", "vetor", "memoria", "obsidian", "nota", "vault"),
+        "🧠 Dados AI-Ready, RAG & Curadoria Obsidian Vault",
+        ["curadoria-obsidian-vault", "context-sentinel", "auditoria-projetos-sistema"],
+        [("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Sanitização de texto, deduplicação SHA-256 e chunking com byte_range")],
+        "N/A (Execução direta via script)",
+        "Preservação de parágrafos lógicos, metadados source_id + byte_range e proteção absoluta da pasta .obsidian/.",
+    ),
+    (
+        ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra", "test", "auditor"),
+        "🤖 Arquitetura de Agentes, Declarative YAML Spec, Qualidade AST & Skills (29 Canônicas)",
+        ["evoluir-skills", "aprimoramento-expansibilidade-agentes-skills", "code-acceptability-auditor", "test-quality-auditor", "high-level-context-planner", "gap-analyzer-auditor"],
+        [
+            ("aprimoramento-expansibilidade-agentes-skills", "agent_spec_loader.py", "Carregador Declarative YAML Agent Spec com Zero-Config Defaults"),
+            ("code-acceptability-auditor", "code_acceptability_auditor.py", "Auditor estático AST + Pydantic v2 (Segurança, Tipagem, Quality Score >= 75)"),
+            ("test-quality-auditor", "test_quality_auditor.py", "Auditor de qualidade de suítes de testes em 5 módulos (Py/TS/Go/MCP/Harness)"),
+            ("workspace", "validate_skills.py", "Validador determinístico das 29 skills canônicas"),
+        ],
+        "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json",
+        "Divulgação progressiva em 3 Tiers (<500 linhas no SKILL.md), Zero-Config Defaults no YAML e validação cruzada.",
+    ),
+]
+
+
+def _resolve_compass_profile(
+    q: str,
+) -> Tuple[str, List[str], List[Tuple[str, str, str]], str, str]:
+    """Seleciona o perfil cognitivo, skills recomendadas, scripts prontos e plano DAG conforme a intenção."""
+    for keywords, title, rec_skills, scripts, dag_plan, guardrail in COMPASS_PROFILE_RULES:
+        if any(k in q for k in keywords):
+            return title, rec_skills, scripts, dag_plan, guardrail
+    return (
+        "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 29 Skills)",
+        ["arquiteto-conteudo-solucoes", "auditoria-projetos-sistema", "code-acceptability-auditor", "code-quality-audit-3d-physics", "consultor-design-tatil-frontend", "evoluir-skills"],
+        [
+            ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (detecta sozinho se é código Geral ou 3D)"),
+            ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST pré-commit de segurança e tipagem Python (Score >= 75)"),
+            ("code-quality-audit-3d-physics", "state_checker_observer.py", "Observador Pydantic com filtro anti-alucinação AST e nota Snorm"),
+            ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Pipeline de sanitização e chunking JSONL para RAG"),
+            ("aprimoramento-expansibilidade-agentes-skills", "agent_spec_loader.py", "Instanciação declarativa de agentes via YAML"),
+        ],
+        "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json",
+        "Portão gradual: bloqueia apenas falhas críticas/altas (Hard Gate) e trata estilo/docstrings como sugestões leves (Soft Advisory).",
+    )
 
 
 @mcp.tool()
@@ -762,97 +811,12 @@ def franklin_smart_compass(
     """Bússola Cognitiva (TDAH-Friendly): Descobre automaticamente o que você já tem pronto no ecossistema
     (Skills, Scripts executáveis, Planos DAG e Guardrails Adaptativos) para qualquer ideia ou pasta de projeto.
 
-    Ideal para quando você muda de contexto ou inicia um projeto novo e não quer lembrar nomes de ferramentas
-    ou seguir rituais engessados.
-
     Args:
-        intent_or_path: Descrição livre do que você quer fazer (ex: 'app médico', 'motor 3d threejs',
-                        'limpar dados rag', 'organizar drive') ou caminho de uma pasta/arquivo.
+        intent_or_path: Descrição livre do que você quer fazer ou caminho de uma pasta/arquivo.
     """
     skills = _get_all_skills_data()
     q = intent_or_path.strip().lower()
-
-    # Detectar perfil dominante sem engessar
-    if any(k in q for k in ("3d", "fisica", "physics", "three", "webgl", "babylon", "shader", "quaternion", "fps")):
-        profile_title = "📐 Física 3D, Computação Gráfica & Simulação Numérica"
-        recommended_skills = ["code-quality-audit-3d-physics", "auditoria-projetos-sistema"]
-        ready_scripts = [
-            ("code-quality-audit-3d-physics", "state_checker_observer.py", "Roda as 3 ondas (AST + Testes Pass@10 + Observador Pydantic Snorm)"),
-            ("code-quality-audit-3d-physics", "static_ast_parser.py", "Analisador AST Python (12 regras + 5 sub-dimensões de física)"),
-            ("code-quality-audit-3d-physics", "js_ts_ast_parser.js", "Analisador JS/TS para Three.js/WebGL (alocação em loop, dt, Euler)"),
-            ("code-quality-audit-3d-physics", "physics_test_runner.py", "Runner de 5 baterias dinâmicas (60 vs 120Hz, Energia, NaN, CCD, Pass@10)"),
-        ]
-        dag_plan = "plans/physics_code_audit_dag.json"
-        linear_guardrail = "Foco em zero alocação no hot-loop (GC), multiplicação por dt e guarda contra NaN (sem burocracia de docstrings em helpers matemáticos)."
-    elif any(k in q for k in ("medic", "saude", "clin", "prontuario", "receit", "calculadora", "paciente")):
-        profile_title = "🩺 Software Médico & SaaS Clínico Minimalista"
-        recommended_skills = ["design-interface-medica-minimalista", "arquitetura-design-implementacao-sistema", "consultor-design-tatil-frontend", "frontend-testing-auditor"]
-        ready_scripts = [
-            ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria adaptativa FrontierCode (Tipagem, Bare Except, Segurança)"),
-            ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Sanitização e chunking SHA-256 para diretrizes clínicas/RAG"),
-        ]
-        dag_plan = "plans/ui_composition_dag.json"
-        linear_guardrail = "Zero dados identificáveis de pacientes fora de .env, contraste WCAG AA/AAA, paleta mineral sem cobalto neon e tipagem estrita."
-    elif any(k in q for k in ("ui", "ux", "front", "tela", "botao", "menu", "css", "tailwind", "react", "design")):
-        profile_title = "🎨 Engenharia de Interface & Design System Tátil Melki (`DESIGN.md v4.5-soft` • 4 Presets + 28 Temas)"
-        recommended_skills = [
-            "consultor-design-tatil-frontend",
-            "analise-design-tatil-frontend",
-            "refatoracao-design-tatil-frontend",
-            "design-md",
-            "frontend-code-architect",
-            "frontend-testing-auditor",
-        ]
-        ready_scripts = [
-            ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Verificação rápida de código sem engessamento"),
-        ]
-        dag_plan = "plans/ui_composition_dag.json"
-        linear_guardrail = "Alvos >= 44x44px anti-squish (flex-shrink: 0), L_card > L_canvas no dark mode, Iluminação 135° (DESIGN.md v4.5-soft) e zero azul cobalto (#0044FF)."
-    elif any(k in q for k in ("rag", "dado", "chunk", "jsonl", "vetor", "memoria", "obsidian", "nota", "vault")):
-        profile_title = "🧠 Dados AI-Ready, RAG & Curadoria Obsidian Vault"
-        recommended_skills = ["curadoria-obsidian-vault", "context-sentinel", "auditoria-projetos-sistema"]
-        ready_scripts = [
-            ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Sanitização de texto, deduplicação SHA-256 e chunking com byte_range"),
-        ]
-        dag_plan = "N/A (Execução direta via script)"
-        linear_guardrail = "Preservação de parágrafos lógicos, metadados source_id + byte_range e proteção absoluta da pasta .obsidian/."
-    elif any(k in q for k in ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra", "test", "auditor")):
-        profile_title = "🤖 Arquitetura de Agentes, Declarative YAML Spec, Qualidade AST & Skills (29 Canônicas)"
-        recommended_skills = [
-            "evoluir-skills",
-            "aprimoramento-expansibilidade-agentes-skills",
-            "code-acceptability-auditor",
-            "test-quality-auditor",
-            "high-level-context-planner",
-            "gap-analyzer-auditor",
-        ]
-        ready_scripts = [
-            ("aprimoramento-expansibilidade-agentes-skills", "agent_spec_loader.py", "Carregador Declarative YAML Agent Spec com Zero-Config Defaults"),
-            ("code-acceptability-auditor", "code_acceptability_auditor.py", "Auditor estático AST + Pydantic v2 (Segurança, Tipagem, Quality Score >= 75)"),
-            ("test-quality-auditor", "test_quality_auditor.py", "Auditor de qualidade de suítes de testes em 5 módulos (Py/TS/Go/MCP/Harness)"),
-            ("workspace", "validate_skills.py", "Validador determinístico das 29 skills canônicas"),
-        ]
-        dag_plan = "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json"
-        linear_guardrail = "Divulgação progressiva em 3 Tiers (<500 linhas no SKILL.md), Zero-Config Defaults no YAML e validação cruzada."
-    else:
-        profile_title = "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 29 Skills)"
-        recommended_skills = [
-            "arquiteto-conteudo-solucoes",
-            "auditoria-projetos-sistema",
-            "code-acceptability-auditor",
-            "code-quality-audit-3d-physics",
-            "consultor-design-tatil-frontend",
-            "evoluir-skills",
-        ]
-        ready_scripts = [
-            ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (detecta sozinho se é código Geral ou 3D)"),
-            ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST pré-commit de segurança e tipagem Python (Score >= 75)"),
-            ("code-quality-audit-3d-physics", "state_checker_observer.py", "Observador Pydantic com filtro anti-alucinação AST e nota Snorm"),
-            ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Pipeline de sanitização e chunking JSONL para RAG"),
-            ("aprimoramento-expansibilidade-agentes-skills", "agent_spec_loader.py", "Instanciação declarativa de agentes via YAML"),
-        ]
-        dag_plan = "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json"
-        linear_guardrail = "Portão gradual: bloqueia apenas falhas críticas/altas (Hard Gate) e trata estilo/docstrings como sugestões leves (Soft Advisory)."
+    profile_title, recommended_skills, ready_scripts, dag_plan, linear_guardrail = _resolve_compass_profile(q)
 
     lines = [
         f"## 🧭 Bússola Cognitiva Franklin — {profile_title}",
@@ -867,21 +831,37 @@ def franklin_smart_compass(
     lines.append("\n### 2. Scripts Executáveis Prontos (Sem precisar recriar do zero):")
     for sk, sc_name, desc in ready_scripts:
         lines.append(f"- **`{sc_name}`** (Skill: `{sk}`) — {desc}")
-        lines.append(f"  ↳ Disparo rápido: `franklin_run_skill_script(skill_name='{sk}', script_name='{sc_name}')`")
+        lines.append(f"  ↳ Disparo rápido: `franklin_run_skill_script(skill_name='{sk}', script_name='{sc_name}', args=['--self-test'])`")
 
-    lines.extend(
-        [
-            "",
-            f"### 3. Planos DAG Disponíveis: `{dag_plan}`",
-            f"### 4. Qualidade Linear Sem Engessar (Regra de Bolso):",
-            f"> {linear_guardrail}",
-            "",
-            "### 5. Central Interativa no Terminal (1-Clique):",
-            "- `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1` (Menu interativo de agentes, portas e 13 repositórios)",
-            "- `franklin_get_agents(agent_name='ecosystem')` (Mapa completo das 5 camadas de agentes)",
-        ]
-    )
+    lines.extend([
+        "",
+        f"### 3. Planos DAG Disponíveis: `{dag_plan}`",
+        "### 4. Qualidade Linear Sem Engessar (Regra de Bolso):",
+        f"> {linear_guardrail}",
+        "",
+        "### 5. Central Interativa no Terminal (1-Clique):",
+        "- `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1` (Menu interativo de agentes, portas e 13 repositórios)",
+        "- `franklin_get_agents(agent_name='ecosystem')` (Mapa completo das 5 camadas de agentes)",
+    ])
     return "\n".join(lines)
+
+
+def _build_script_command(script_path: Path, args: Optional[List[str]]) -> Optional[List[str]]:
+    """Monta a lista de argumentos de comando segura conforme a extensão do script."""
+    suffix = script_path.suffix.lower()
+    if suffix == ".py":
+        cmd = [sys.executable, str(script_path)]
+    elif suffix == ".js":
+        cmd = ["node", str(script_path)]
+    elif suffix == ".ps1":
+        cmd = ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script_path)]
+    elif suffix in (".cmd", ".bat"):
+        cmd = ["cmd.exe", "/c", str(script_path)]
+    else:
+        return None
+    if args:
+        cmd.extend(args)
+    return cmd
 
 
 @mcp.tool()
@@ -913,21 +893,9 @@ def franklin_run_skill_script(
     if not script_path.exists():
         return f"Erro: Script '{script_name}' não existe em {target_dir}."
 
-    # Determina o interpretador
-    cmd: List[str] = []
-    if script_path.suffix.lower() == ".py":
-        cmd = [sys.executable, str(script_path)]
-    elif script_path.suffix.lower() == ".js":
-        cmd = ["node", str(script_path)]
-    elif script_path.suffix.lower() == ".ps1":
-        cmd = ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script_path)]
-    elif script_path.suffix.lower() == ".cmd" or script_path.suffix.lower() == ".bat":
-        cmd = ["cmd.exe", "/c", str(script_path)]
-    else:
+    cmd = _build_script_command(script_path, args)
+    if not cmd:
         return f"Erro: Extensão de script '{script_path.suffix}' não suportada para execução direta."
-
-    if args:
-        cmd.extend(args)
 
     try:
         res = subprocess.run(
@@ -942,44 +910,15 @@ def franklin_run_skill_script(
         out = res.stdout.strip()
         if res.stderr:
             out += "\n--- STDERR ---\n" + res.stderr.strip()
-        status_code = f"[Exit Code: {res.returncode}]"
-        return f"{status_code}\n{out if out else '(Script executado sem retorno textual)'}"
+        return f"[Exit Code: {res.returncode}]\n{out if out else '(Script executado sem retorno textual)'}"
     except subprocess.TimeoutExpired:
         return f"Erro: Execução excedeu o tempo limite de {timeout_seconds} segundos."
-    except Exception as e:
+    except (OSError, ValueError, RuntimeError) as e:
         return f"Erro ao executar script: {e}"
 
 
-@mcp.tool()
-def franklin_execute_dag(
-    plan_path_or_json: str,
-    run_id: str = "",
-    resume: bool = False,
-    timeout_seconds: float = 0,
-    db_path: str = ""
-) -> str:
-    """Executa um plano de orquestração em grafo acíclico dirigido (DAG) via motor do Epic-Volta.
-
-    Despacha o plano com ordenação topológica (Kahn), concorrência por ondas,
-    projeção de campos upstream por dot-notation e persistência transacional SQLite WAL.
-
-    Args:
-        plan_path_or_json: Caminho para o arquivo JSON do plano ou string JSON contendo o DAGExecutionPlan.
-        run_id: Identificador único opcional da execução (essencial para retomar execuções com resume=True).
-        resume: Se True, retoma a execução sem reexecutar nós já concluídos no SQLite.
-        timeout_seconds: Tempo limite global da execução em segundos (0 para sem limite).
-        db_path: Caminho do banco SQLite de persistência (padrão: .sessions/dag_cli.db do epic-volta).
-    """
-    if not EPIC_VOLTA_DIR.exists():
-        return json.dumps({
-            "status": "FAILED",
-            "error": f"Repositório Epic-Volta não encontrado em {EPIC_VOLTA_DIR}."
-        }, ensure_ascii=False)
-
-    plan_str = plan_path_or_json.strip()
-    resolved_plan_path: Optional[Path] = None
-    temp_file: Optional[Path] = None
-
+def _resolve_dag_plan_file(plan_str: str) -> Tuple[Optional[Path], Optional[Path], Optional[str]]:
+    """Resolve o arquivo de plano DAG por alias, caminho existente ou JSON inline temporário."""
     plan_aliases = {
         "ui": ROOT_DIR / "plans" / "ui_composition_dag.json",
         "frontend": ROOT_DIR / "plans" / "ui_composition_dag.json",
@@ -996,62 +935,60 @@ def franklin_execute_dag(
         "sample": EPIC_VOLTA_DIR / "examples" / "sample_dag_plan.json",
         "sample_dag_plan.json": EPIC_VOLTA_DIR / "examples" / "sample_dag_plan.json",
     }
-
     if plan_str.lower() in plan_aliases:
         alias_candidate = plan_aliases[plan_str.lower()]
-        if alias_candidate.exists() and alias_candidate.is_file():
-            resolved_plan_path = alias_candidate.resolve()
+        if alias_candidate.is_file():
+            return alias_candidate.resolve(), None, None
 
-    # 1. Verifica se é um arquivo existente
-    if not resolved_plan_path:
-        candidate_paths = [
-            Path(plan_str),
-            ROOT_DIR / plan_str,
-            ROOT_DIR / "plans" / plan_str,
-            EPIC_VOLTA_DIR / plan_str,
-            EPIC_VOLTA_DIR / "examples" / plan_str,
-            Path(r"C:\Users\melki\.gemini\plans") / plan_str,
-        ]
-        for cp in candidate_paths:
-            if cp.exists() and cp.is_file():
-                resolved_plan_path = cp.resolve()
-                break
+    for cp in (
+        Path(plan_str),
+        ROOT_DIR / plan_str,
+        ROOT_DIR / "plans" / plan_str,
+        EPIC_VOLTA_DIR / plan_str,
+        EPIC_VOLTA_DIR / "examples" / plan_str,
+        Path(r"C:\Users\melki\.gemini\plans") / plan_str,
+    ):
+        if cp.exists() and cp.is_file():
+            return cp.resolve(), None, None
 
-    # 2. Se não for arquivo, tenta interpretar como JSON embutido
-    if not resolved_plan_path:
-        try:
-            parsed = json.loads(plan_str)
-            if not isinstance(parsed, dict):
-                return json.dumps({
-                    "status": "INVALID_PLAN",
-                    "error": "O payload JSON deve ser um objeto compatível com DAGExecutionPlan."
-                }, ensure_ascii=False)
+    try:
+        parsed = json.loads(plan_str)
+        if not isinstance(parsed, dict):
+            return None, None, json.dumps({"status": "INVALID_PLAN", "error": "O payload JSON deve ser um objeto compatível com DAGExecutionPlan."}, ensure_ascii=False)
+        import uuid
+        temp_dir = ROOT_DIR / ".sessions" / "temp_plans"
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        temp_file = temp_dir / f"plan_{uuid.uuid4().hex[:8]}.json"
+        temp_file.write_text(json.dumps(parsed, indent=2, ensure_ascii=False), encoding="utf-8")
+        return temp_file.resolve(), temp_file, None
+    except json.JSONDecodeError as exc:
+        return None, None, json.dumps({"status": "FILE_NOT_FOUND_OR_INVALID_JSON", "error": f"Não foi possível localizar o arquivo nem interpretar como JSON válido: {exc}"}, ensure_ascii=False)
 
-            temp_dir = ROOT_DIR / ".sessions" / "temp_plans"
-            temp_dir.mkdir(parents=True, exist_ok=True)
-            import uuid
-            temp_file = temp_dir / f"plan_{uuid.uuid4().hex[:8]}.json"
-            temp_file.write_text(json.dumps(parsed, indent=2, ensure_ascii=False), encoding="utf-8")
-            resolved_plan_path = temp_file.resolve()
-        except json.JSONDecodeError as exc:
-            return json.dumps({
-                "status": "FILE_NOT_FOUND_OR_INVALID_JSON",
-                "error": f"Não foi possível localizar o arquivo nem interpretar como JSON válido: {exc}"
-            }, ensure_ascii=False)
 
-    # 3. Monta comando CLI via uv
-    cmd = [
-        "uv",
-        "--directory",
-        str(EPIC_VOLTA_DIR),
-        "run",
-        "python",
-        "-m",
-        "orchestrator.cli",
-        str(resolved_plan_path),
-        "--json"
-    ]
+@mcp.tool()
+def franklin_execute_dag(
+    plan_path_or_json: str,
+    run_id: str = "",
+    resume: bool = False,
+    timeout_seconds: float = 0,
+    db_path: str = ""
+) -> str:
+    """Executa um plano de orquestração em grafo acíclico dirigido (DAG) via motor do Epic-Volta.
+    Args:
+        plan_path_or_json: Caminho para o arquivo JSON do plano, alias ('ui', 'physics') ou string JSON.
+        run_id: Identificador único opcional da execução.
+        resume: Se True, retoma a execução sem reexecutar nós já concluídos no SQLite.
+        timeout_seconds: Tempo limite global da execução em segundos (0 para sem limite).
+        db_path: Caminho do banco SQLite de persistência.
+    """
+    if not EPIC_VOLTA_DIR.exists():
+        return json.dumps({"status": "FAILED", "error": f"Repositório Epic-Volta não encontrado em {EPIC_VOLTA_DIR}."}, ensure_ascii=False)
 
+    resolved_plan_path, temp_file, err_json = _resolve_dag_plan_file(plan_path_or_json.strip())
+    if err_json or not resolved_plan_path:
+        return err_json or json.dumps({"status": "FAILED", "error": "Plano inválido."}, ensure_ascii=False)
+
+    cmd = ["uv", "--directory", str(EPIC_VOLTA_DIR), "run", "python", "-m", "orchestrator.cli", str(resolved_plan_path), "--json"]
     if run_id.strip():
         cmd.extend(["--run-id", run_id.strip()])
     if resume:
@@ -1074,30 +1011,31 @@ def franklin_execute_dag(
         stdout = res.stdout.strip()
         if res.returncode == 0:
             return stdout if stdout else json.dumps({"status": "COMPLETED", "note": "Sem saída stdout"}, ensure_ascii=False)
-        else:
-            stderr = res.stderr.strip()
-            return stdout if stdout.startswith("{") else json.dumps({
-                "status": "FAILED",
-                "exit_code": res.returncode,
-                "stdout": stdout,
-                "stderr": stderr
-            }, ensure_ascii=False)
+        return stdout if stdout.startswith("{") else json.dumps({"status": "FAILED", "exit_code": res.returncode, "stdout": stdout, "stderr": res.stderr.strip()}, ensure_ascii=False)
     except subprocess.TimeoutExpired:
-        return json.dumps({
-            "status": "TIMEOUT",
-            "error": f"Execução do DAG excedeu o limite de {timeout_seconds} segundos."
-        }, ensure_ascii=False)
-    except Exception as e:
-        return json.dumps({
-            "status": "EXECUTION_ERROR",
-            "error": str(e)
-        }, ensure_ascii=False)
+        return json.dumps({"status": "TIMEOUT", "error": f"Execução do DAG excedeu o limite de {timeout_seconds} segundos."}, ensure_ascii=False)
+    except (OSError, ValueError, RuntimeError) as e:
+        return json.dumps({"status": "EXECUTION_ERROR", "error": str(e)}, ensure_ascii=False)
     finally:
-        if temp_file and temp_file.exists():
-            try:
-                temp_file.unlink()
-            except OSError:
-                pass
+        if temp_file:
+            temp_file.unlink(missing_ok=True)
+
+
+def _match_best_skill_for_harness(combined_query: str) -> Tuple[str, str]:
+    """Identifica a skill e persona mais aderentes à intenção para o Harness HITL."""
+    best_skill: Optional[Dict[str, Any]] = None
+    max_score = 0
+    for s in _get_all_skills_data():
+        score = 20 if s["name"].lower() in combined_query else 0
+        for tag in s.get("tags", []):
+            if len(tag) > 3 and tag.lower() in combined_query:
+                score += len(tag)
+        if score > max_score:
+            max_score = score
+            best_skill = s
+    if best_skill:
+        return best_skill["name"], best_skill["persona"]
+    return "franklin-main", "Franklin-Main"
 
 
 @mcp.tool()
@@ -1106,28 +1044,11 @@ def franklin_harness_guard(
     proposed_tool_or_action: str = "",
     session_id: str = "default",
 ) -> str:
-    """Aplica o Harness de Governança Determinística e Human-in-the-Loop antes de executar ações.
-
-    Avalia a intenção da tarefa e a ferramenta proposta contra o ecossistema de 26 Skills do Franklin:
-    1. Executa sanitização semântica preventiva contra injeções de prompt e tokens maliciosos.
-    2. Aplica Divulgação Progressiva: identifica a Skill mais adequada e suas regras de corte.
-    3. Avalia o nível de risco: se a intenção ou ferramenta envolver mutações destrutivas no disco ou Drive
-       (Remove-Item, deleção, expurgo, format, descarte), classifica como CRITICAL, pausa a execução
-       e cria um Checkpoint persistente pendente de aprovação humana.
-    4. Se for operação de leitura/segura (análise, auditoria, conversão, Get-ChildItem), classifica como
-       LOW e retorna AUTHORIZED com as diretrizes da Skill.
-
-    Args:
-        task_intent: O que se pretende realizar em linguagem natural.
-        proposed_tool_or_action: Ferramenta MCP, script ou comando de terminal pretendido.
-        session_id: Identificador da sessão para rastreabilidade de checkpoint.
-
-    Returns:
-        JSON com status ('AUTHORIZED'|'APPROVAL_REQUIRED'|'BLOCKED'), riskLevel, activeSkill, reason, instructions, checkpointId.
+    """Aplica o Harness de Governança Determinística e Human-in-the-Loop antes de executar ações
+    contra o ecossistema de 29 Skills do Franklin.
     """
     import uuid
 
-    # 1. Sanitização Semântica
     try:
         clean_intent = SemanticGuard.sanitize_input(task_intent)
         clean_action = SemanticGuard.sanitize_input(proposed_tool_or_action) if proposed_tool_or_action else ""
@@ -1139,31 +1060,9 @@ def franklin_harness_guard(
             "instructions": "Execução terminantemente bloqueada pelo SemanticGuard fora da janela do LLM."
         }, indent=2, ensure_ascii=False)
 
-    # 2. Resolução Progressiva de Skills entre as 26 skills reais
-    skills = _get_all_skills_data()
-    combined_query = f"{clean_intent} {clean_action}".lower()
-
-    best_skill: dict[str, Any] | None = None
-    max_score = 0
-    for s in skills:
-        score = 0
-        name = s["name"].lower()
-        if name in combined_query:
-            score += 20
-        for tag in s.get("tags", []):
-            if len(tag) > 3 and tag.lower() in combined_query:
-                score += len(tag)
-        if score > max_score:
-            max_score = score
-            best_skill = s
-
-    active_skill_name = best_skill["name"] if best_skill else "franklin-main"
-    persona = best_skill["persona"] if best_skill else "Franklin-Main"
-
-    # 3. Avaliação Determinística de Risco
+    active_skill_name, persona = _match_best_skill_for_harness(f"{clean_intent} {clean_action}".lower())
     risk_level, risk_reason = evaluate_action_risk(f"{clean_intent} {clean_action}")
 
-    # 4. Ação Crítica: Pausa Operacional e Checkpoint Durável (HITL)
     if risk_level == RiskLevel.CRITICAL:
         chk_id = f"chk-{uuid.uuid4().hex[:8]}"
         harness_store.create(
@@ -1190,18 +1089,30 @@ def franklin_harness_guard(
             )
         }, indent=2, ensure_ascii=False)
 
-    # 5. Ação Segura: Autorização Imediata
     return json.dumps({
         "status": "AUTHORIZED",
         "riskLevel": "LOW",
         "activeSkill": active_skill_name,
         "persona": persona,
         "reason": risk_reason,
-        "instructions": (
-            f"Operação segura autorizada pelo Harness sob a persona {persona}. "
-            f"Siga os procedimentos e salvaguardas da skill '{active_skill_name}'."
-        )
+        "instructions": f"Operação segura autorizada pelo Harness sob a persona {persona}. Siga os procedimentos e salvaguardas da skill '{active_skill_name}'."
     }, indent=2, ensure_ascii=False)
+
+
+def _mutate_checkpoint_status(checkpoint_id: str, target_status: str, notes: str) -> str:
+    """Aprova ou rejeita um checkpoint no CheckpointStore."""
+    if not checkpoint_id:
+        return json.dumps({"error": f"checkpoint_id é obrigatório para status '{target_status}'"}, ensure_ascii=False)
+    default_note = "Aprovado pelo operador" if target_status == "APPROVED" else "Rejeitado pelo operador"
+    rec = harness_store.update_status(checkpoint_id, status=target_status, notes=notes or default_note)
+    if not rec:
+        return json.dumps({"error": f"Checkpoint '{checkpoint_id}' não encontrado"}, ensure_ascii=False)
+    msg = (
+        f"Ação '{rec.proposed_action}' foi APROVADA pelo operador humano. A execução pode prosseguir."
+        if target_status == "APPROVED"
+        else f"Ação '{rec.proposed_action}' foi VETADA pelo operador humano. A execução está cancelada."
+    )
+    return json.dumps({"status": target_status, "checkpointId": checkpoint_id, "message": msg, "record": rec.to_dict()}, indent=2, ensure_ascii=False)
 
 
 @mcp.tool()
@@ -1212,65 +1123,23 @@ def franklin_harness_checkpoint(
     approved: bool = False,
     notes: str = ""
 ) -> str:
-    """Gerencia checkpoints de governança e aprovações humanas no ecossistema do Franklin.
-
-    Args:
-        action: 'list' (listar checkpoints pendentes), 'get' (detalhes de um ID), 'approve' (aprovar ação retida), 'reject' (vetar ação), 'clear' (limpar histórico).
-        session_id: Filtro de sessão opcional para a listagem.
-        checkpoint_id: ID do checkpoint alvo (ex: 'chk-a1b2c3d4').
-        approved: True quando ação for 'approve'.
-        notes: Justificativa ou notas do operador humano.
-
-    Returns:
-        JSON com a lista de pendências ou confirmação da deliberação humana.
-    """
+    """Gerencia checkpoints de governança e aprovações humanas no ecossistema do Franklin."""
+    _ = approved
     act = action.strip().lower()
-
     if act == "list":
         pending = harness_store.list(status="PENDING", session_id=session_id if session_id != "all" else None)
-        return json.dumps({
-            "totalPending": len(pending),
-            "checkpoints": [r.to_dict() for r in pending]
-        }, indent=2, ensure_ascii=False)
-
+        return json.dumps({"totalPending": len(pending), "checkpoints": [r.to_dict() for r in pending]}, indent=2, ensure_ascii=False)
     if act == "get":
         if not checkpoint_id:
             return json.dumps({"error": "checkpoint_id é obrigatório para a ação 'get'"}, ensure_ascii=False)
         rec = harness_store.get(checkpoint_id)
-        if not rec:
-            return json.dumps({"error": f"Checkpoint '{checkpoint_id}' não encontrado"}, ensure_ascii=False)
-        return json.dumps(rec.to_dict(), indent=2, ensure_ascii=False)
-
+        return json.dumps(rec.to_dict(), indent=2, ensure_ascii=False) if rec else json.dumps({"error": f"Checkpoint '{checkpoint_id}' não encontrado"}, ensure_ascii=False)
     if act == "approve":
-        if not checkpoint_id:
-            return json.dumps({"error": "checkpoint_id é obrigatório para aprovação"}, ensure_ascii=False)
-        rec = harness_store.update_status(checkpoint_id, status="APPROVED", notes=notes or "Aprovado pelo operador")
-        if not rec:
-            return json.dumps({"error": f"Checkpoint '{checkpoint_id}' não encontrado"}, ensure_ascii=False)
-        return json.dumps({
-            "status": "APPROVED",
-            "checkpointId": checkpoint_id,
-            "message": f"Ação '{rec.proposed_action}' foi APROVADA pelo operador humano. A execução pode prosseguir.",
-            "record": rec.to_dict()
-        }, indent=2, ensure_ascii=False)
-
+        return _mutate_checkpoint_status(checkpoint_id, "APPROVED", notes)
     if act == "reject":
-        if not checkpoint_id:
-            return json.dumps({"error": "checkpoint_id é obrigatório para rejeição"}, ensure_ascii=False)
-        rec = harness_store.update_status(checkpoint_id, status="REJECTED", notes=notes or "Rejeitado pelo operador")
-        if not rec:
-            return json.dumps({"error": f"Checkpoint '{checkpoint_id}' não encontrado"}, ensure_ascii=False)
-        return json.dumps({
-            "status": "REJECTED",
-            "checkpointId": checkpoint_id,
-            "message": f"Ação '{rec.proposed_action}' foi VETADA pelo operador humano. A execução está cancelada.",
-            "record": rec.to_dict()
-        }, indent=2, ensure_ascii=False)
-
+        return _mutate_checkpoint_status(checkpoint_id, "REJECTED", notes)
     if act == "clear":
-        count = harness_store.clear()
-        return json.dumps({"status": "CLEARED", "removedCount": count}, indent=2, ensure_ascii=False)
-
+        return json.dumps({"status": "CLEARED", "removedCount": harness_store.clear()}, indent=2, ensure_ascii=False)
     return json.dumps({"error": f"Ação '{action}' inválida. Use: list, get, approve, reject ou clear."}, ensure_ascii=False)
 
 
