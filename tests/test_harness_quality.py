@@ -208,3 +208,62 @@ def test_mirrored_eval_modules_parity_and_execution() -> None:
         assert mod_stat["pass_rate"] == 1.0, f"Módulo espelhado {mod_name} falhou"
         assert Path(mod_stat["grading_path"]).exists()
         assert Path(mod_stat["benchmark_path"]).exists()
+
+
+def test_harness2_recursive_engine_and_library(tmp_path: Path) -> None:
+    """Valida a reconstrução do Google Research Harness² (SurfaceSpec, autotrigger, R=4k/P=3k e ExperienceLibrary)."""
+    from shared.harness import (
+        FRANKLIN_SURFACE,
+        ExperienceLibrary,
+        assert_tree_has_no_grader_verdicts,
+        autotrigger_skills,
+        simulate_propose_probe_compose,
+        validate_harness_tree,
+    )
+
+    # 1. Árvore com skill sem trigger line em AGENTS.md -> autotrigger repara e valida
+    tree = {
+        "AGENTS.md": "# Franklin Agent\nFollow core rules.\n",
+        ".agents/skills/doc_review/SKILL.md": "---\nname: doc_review\ndescription: Review clinical documents.\n---\nRun python scripts/check_doc.py",
+        "scripts/check_doc.py": "print('ok')\n",
+    }
+    repaired = autotrigger_skills(FRANKLIN_SURFACE, tree)
+    assert repaired == ["doc_review"]
+    census = validate_harness_tree(FRANKLIN_SURFACE, tree)
+    assert census["skills"] == 1
+    assert census["scripts"] == 1
+
+    # 2. Bloqueio Answer-Free contra vazamento de gabarito/grader
+    with pytest.raises(ValueError, match="Grader verdict"):
+        assert_tree_has_no_grader_verdicts({"AGENTS.md": "Optimize what the grader expects here"})
+
+    # 3. Loop Propose-Probe-Compose nos modos 'agg' (parallel) e 'seq' (sequential) com k=2 -> R=8, P=6
+    res_agg = simulate_propose_probe_compose("task-01", tree, mode="agg", k=2)
+    assert res_agg["ledger"]["R"] == 8 and res_agg["ledger"]["P"] == 6
+    assert res_agg["finals"] == ["agg1", "agg2"]
+
+    res_seq = simulate_propose_probe_compose("task-01", tree, mode="seq", k=2)
+    assert res_seq["ledger"]["R"] == 8 and res_seq["ledger"]["P"] == 6
+    assert res_seq["finals"] == ["c1", "c2"]
+
+    # 4. Persistência na ExperienceLibrary (Harnessing-Level Recursion)
+    lib = ExperienceLibrary(root=tmp_path / "library", domain="clinical_audit")
+    entry_dir = lib.add_experience(
+        "task-01",
+        tree,
+        cue="When auditing clinical records",
+        lesson="Run scripts/check_doc.py before emitting report",
+        evidence="Probe inv1 caught missing header fields",
+    )
+    assert (entry_dir / "EXPERIENCE.md").exists()
+    assert (lib.domain_dir / "INDEX.md").exists()
+
+    # 5. Despacho integrado via franklin_harness_checkpoint (dispatch_harness2_action)
+    from shared.harness import dispatch_harness2_action
+
+    v_out = json.loads(dispatch_harness2_action("validate_tree", json.dumps({"tree": tree}), tmp_path) or "{}")
+    assert v_out["status"] == "VALID"
+    e_out = json.loads(dispatch_harness2_action("evolve", json.dumps({"task_id": "t-1", "k": 1, "mode": "agg", "tree": tree}), tmp_path) or "{}")
+    assert e_out["status"] == "COMPLETED" and e_out["ledger"]["R"] == 4
+
+

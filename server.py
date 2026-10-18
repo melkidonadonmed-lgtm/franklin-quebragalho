@@ -78,6 +78,7 @@ from shared.harness import (
     RiskLevel,
     SecurityViolationError,
     SemanticGuard,
+    dispatch_harness2_action,
     evaluate_action_risk,
 )
 from shared.mcp_2026_advisor import evaluate_mcp_2026_architecture
@@ -1123,9 +1124,12 @@ def franklin_harness_checkpoint(
     approved: bool = False,
     notes: str = ""
 ) -> str:
-    """Gerencia checkpoints de governança e aprovações humanas no ecossistema do Franklin."""
+    """Gerencia checkpoints de governança HITL e sub-ações recursivas Harness² (validate_tree, evolve, record_experience)."""
     _ = approved
     act = action.strip().lower()
+    h2_res = dispatch_harness2_action(act, notes, SESSIONS_DIR)
+    if h2_res is not None:
+        return h2_res
     if act == "list":
         pending = harness_store.list(status="PENDING", session_id=session_id if session_id != "all" else None)
         return json.dumps({"totalPending": len(pending), "checkpoints": [r.to_dict() for r in pending]}, indent=2, ensure_ascii=False)
@@ -1140,7 +1144,7 @@ def franklin_harness_checkpoint(
         return _mutate_checkpoint_status(checkpoint_id, "REJECTED", notes)
     if act == "clear":
         return json.dumps({"status": "CLEARED", "removedCount": harness_store.clear()}, indent=2, ensure_ascii=False)
-    return json.dumps({"error": f"Ação '{action}' inválida. Use: list, get, approve, reject ou clear."}, ensure_ascii=False)
+    return json.dumps({"error": f"Ação '{action}' inválida. Use: list, get, approve, reject, clear, validate_tree, evolve ou record_experience."}, ensure_ascii=False)
 
 
 @mcp.tool()

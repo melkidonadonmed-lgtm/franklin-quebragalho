@@ -199,3 +199,81 @@ class CheckpointStore:
         count = len(records)
         self._save_all([])
         return count
+
+
+# Re-exportação dos motores recursivos Harness² (Google Research arXiv:2610.14224)
+from shared.harness2_engine import (  # noqa: E402, F401
+    FRANKLIN_SURFACE,
+    ExperienceLibrary,
+    RecursionLedger,
+    SurfaceSpec,
+    assert_tree_has_no_grader_verdicts,
+    assign_anonymous_ids,
+    autotrigger_skills,
+    diff_summary,
+    is_allowed_path,
+    normalize_rel,
+    simulate_propose_probe_compose,
+    tree_diversity,
+    validate_harness_tree,
+)
+
+
+def dispatch_harness2_action(
+    action: str,
+    notes_json: str,
+    sessions_dir: Path,
+) -> Optional[str]:
+    """Despacha sub-ações do Harness² ('validate_tree', 'evolve', 'record_experience') via JSON em notes."""
+    act = action.strip().lower()
+    if act not in ("validate_tree", "evolve", "record_experience"):
+        return None
+    try:
+        payload = json.loads(notes_json) if notes_json.strip().startswith("{") else {}
+    except json.JSONDecodeError as exc:
+        return json.dumps({"error": f"Payload JSON inválido em notes: {exc}"}, ensure_ascii=False)
+
+    tree = payload.get("tree") or {"AGENTS.md": "# Franklin Agent\nFollow core rules.\n"}
+    if act == "validate_tree":
+        try:
+            repaired = autotrigger_skills(FRANKLIN_SURFACE, tree)
+            census = validate_harness_tree(FRANKLIN_SURFACE, tree)
+            return json.dumps(
+                {"status": "VALID", "repaired_triggers": repaired, "census": census, "tree": tree},
+                indent=2,
+                ensure_ascii=False,
+            )
+        except ValueError as exc:
+            return json.dumps({"status": "INVALID", "error": str(exc)}, indent=2, ensure_ascii=False)
+
+    if act == "evolve":
+        task_id = str(payload.get("task_id", "task-default"))
+        mode = str(payload.get("mode", "agg"))
+        k = int(payload.get("k", 1))
+        try:
+            res = simulate_propose_probe_compose(task_id, tree, mode=mode, k=k)
+            return json.dumps({"status": "COMPLETED", **res}, indent=2, ensure_ascii=False)
+        except (ValueError, AssertionError) as exc:
+            return json.dumps({"status": "FAILED", "error": str(exc)}, indent=2, ensure_ascii=False)
+
+    domain = str(payload.get("domain", "general"))
+    task_id = str(payload.get("task_id", "task-default"))
+    lib = ExperienceLibrary(root=sessions_dir / "experience_library", domain=domain)
+    try:
+        entry_dir = lib.add_experience(
+            task_id,
+            tree,
+            cue=str(payload.get("cue", "")),
+            lesson=str(payload.get("lesson", "")),
+            evidence=str(payload.get("evidence", "")),
+            why=str(payload.get("why", "")),
+        )
+        return json.dumps(
+            {"status": "RECORDED", "domain": domain, "entry_dir": str(entry_dir)},
+            indent=2,
+            ensure_ascii=False,
+        )
+    except ValueError as exc:
+        return json.dumps({"status": "REJECTED", "error": str(exc)}, indent=2, ensure_ascii=False)
+
+
