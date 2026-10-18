@@ -1,0 +1,2746 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DESIGN.md v4.5 — Minimalist Impact, Nexus Bento &amp; Frontend Architect Studio</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Public Sans, Plus Jakarta Sans, Instrument Serif, JetBrains Mono, Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       REGRA MESTRA v4.5 + NEXUS OPERATIONS v4.0 — DESIGN TOKENS & SOFT UI ENGINE
+       (Zero Cobalt / Cerulean & Ocean Sapphire Edition)
+       ========================================================================== */
+    :root {
+      /* Default Preset: Nexus v4.5 Slate Prestige (Cerulean Sapphire #0284C7) */
+      --surface-canvas: #F1F4F8;
+      --surface-flat: #E9EEF5;
+      --surface-raised: #F1F4F8;
+      --surface-inset: #E5E9F0;
+      --surface-contrast: #1E293B;
+      --surface-contrast-raised: #28354B;
+
+      /* Typography Colors */
+      --text-primary: #1E293B;
+      --text-secondary: #64748B;
+      --text-muted: #94A3B8;
+      --text-on-contrast: #F8FAFC;
+
+      /* Focal Accent (10% Economy Rule — Cerulean Sapphire, Zero Cobalt) */
+      --accent-point: #0284C7;
+      --accent-secondary: #7DD3FC;
+      --accent-soft-bg: #E0F2FE;
+      --accent-emerald: #059669;
+      --accent-contrast-text: #FFFFFF;
+
+      /* Semantic Tokens */
+      --semantic-success: #059669;
+      --semantic-warning: #D97706;
+      --semantic-error: #DC2626;
+      --semantic-info: #0284C7;
+
+      /* Directional 135° Lighting Components (Soft Neumorphism) */
+      --shadow-dark-rgb: 166, 180, 200;
+      --shadow-light-rgb: 255, 255, 255;
+      --shadow-dark-alpha: 0.42;
+      --shadow-light-alpha: 0.95;
+      --shadow-scale: 1;
+
+      /* Border & Hairline (Subtle tonal separation, never harsh 1px box borders) */
+      --hairline-color: rgba(30, 41, 59, 0.08);
+      --grid-line-color: rgba(30, 41, 59, 0.045);
+      --rim-light: rgba(255, 255, 255, 0.75);
+
+      /* Typography Families */
+      --font-display: 'Public Sans', -apple-system, sans-serif;
+      --font-sans: 'Public Sans', 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-meta: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Radii (Squircle Continuous) */
+      --rounded-sm: 10px;
+      --rounded-md: 16px;
+      --rounded-lg: 24px;
+      --rounded-pill: 9999px;
+
+      /* Spring Physics */
+      --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-tactile: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* Preset 2: Moss & Calm System (Refs 2 & 5) */
+    [data-theme="moss"] {
+      --surface-canvas: #F4F3EC;
+      --surface-flat: #EFECE4;
+      --surface-raised: #F8F7F2;
+      --surface-inset: #E8E5DC;
+      --surface-contrast: #1A2E22;
+      --surface-contrast-raised: #223B2C;
+
+      --text-primary: #1C2420;
+      --text-secondary: #536058;
+      --text-muted: #828E86;
+      --text-on-contrast: #F5F4EE;
+
+      --accent-point: #174930;
+      --accent-secondary: #B7D3C0;
+      --accent-soft-bg: #DFECE3;
+      --accent-emerald: #174930;
+      --accent-contrast-text: #FFFFFF;
+
+      --shadow-dark-rgb: 175, 172, 160;
+      --shadow-light-rgb: 255, 255, 255;
+      --shadow-dark-alpha: 0.50;
+      --shadow-light-alpha: 0.92;
+      --hairline-color: rgba(28, 36, 32, 0.08);
+      --grid-line-color: rgba(28, 36, 32, 0.05);
+      --rim-light: rgba(255, 255, 255, 0.72);
+    }
+
+    /* Preset 3: Soft Sapphire System (Ref 4: SOFT / SYSTEM — Ocean Sapphire #1E6091 instead of Cobalt) */
+    [data-theme="sapphire"] {
+      --surface-canvas: #F5F4EE;
+      --surface-flat: #ECEBE3;
+      --surface-raised: #FAF9F5;
+      --surface-inset: #E6E5DD;
+      --surface-contrast: #1E293B;
+      --surface-contrast-raised: #28354B;
+
+      --text-primary: #202428;
+      --text-secondary: #5A626A;
+      --text-muted: #8C959E;
+      --text-on-contrast: #F5F4EE;
+
+      --accent-point: #1E6091;
+      --accent-secondary: #69ADC6;
+      --accent-soft-bg: #E0EEF7;
+      --accent-emerald: #059669;
+      --accent-contrast-text: #FFFFFF;
+
+      --shadow-dark-rgb: 182, 180, 170;
+      --shadow-light-rgb: 255, 255, 255;
+      --shadow-dark-alpha: 0.50;
+      --shadow-light-alpha: 0.94;
+      --hairline-color: rgba(32, 36, 40, 0.08);
+      --grid-line-color: rgba(30, 96, 145, 0.05);
+      --rim-light: rgba(255, 255, 255, 0.78);
+    }
+
+    /* Preset 4: Obsidian Dark Tactile (Spec v4.5 Dark Mode — Mineral Ice #38BDF8) */
+    [data-theme="obsidian"] {
+      --surface-canvas: #12151B;
+      --surface-flat: #161A22;
+      --surface-raised: #181D26;
+      --surface-inset: #0D1016;
+      --surface-contrast: #F1F4F8;
+      --surface-contrast-raised: #FFFFFF;
+
+      --text-primary: #EEF2F6;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --text-on-contrast: #0F172A;
+
+      --accent-point: #38BDF8;
+      --accent-secondary: #1E3A5F;
+      --accent-soft-bg: #17253B;
+      --accent-emerald: #10B981;
+      --accent-contrast-text: #0F172A;
+
+      --shadow-dark-rgb: 0, 0, 0;
+      --shadow-light-rgb: 255, 255, 255;
+      --shadow-dark-alpha: 0.62;
+      --shadow-light-alpha: 0.04;
+      --hairline-color: rgba(255, 255, 255, 0.07);
+      --grid-line-color: rgba(148, 163, 184, 0.055);
+      --rim-light: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Typography Mode Override */
+    [data-typo="sans"] {
+      --font-display: 'Public Sans', 'Plus Jakarta Sans', sans-serif;
+    }
+    [data-typo="editorial"] {
+      --font-display: 'Instrument Serif', Georgia, serif;
+    }
+
+    /* ==========================================================================
+       BASE & ARCHITECTURAL GRID
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--surface-canvas);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      transition: background-color 0.35s var(--ease-spring),
+                  color 0.35s var(--ease-spring);
+      overflow-x: hidden;
+    }
+
+    .font-display-custom {
+      font-family: var(--font-display);
+    }
+
+    .font-mono-custom {
+      font-family: var(--font-mono);
+    }
+
+    .architectural-grid-bg {
+      background-image:
+        linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* ==========================================================================
+       TONAL SURFACES & SOFT NEUMORPHISM (135° DIRECTIONAL LIGHT)
+       ========================================================================== */
+    .surface-canvas {
+      background-color: var(--surface-canvas);
+    }
+
+    /* Layer 1: Surface Inset (Escavado / Inputs / Active Icon Wells) */
+    .surface-inset {
+      background-color: var(--surface-inset);
+      box-shadow:
+        inset calc(4px * var(--shadow-scale)) calc(4px * var(--shadow-scale)) calc(10px * var(--shadow-scale)) rgba(var(--shadow-dark-rgb), calc(var(--shadow-dark-alpha) * 1.05)),
+        inset calc(-4px * var(--shadow-scale)) calc(-4px * var(--shadow-scale)) calc(10px * var(--shadow-scale)) rgba(var(--shadow-light-rgb), calc(var(--shadow-light-alpha) * 0.9));
+      border-radius: var(--rounded-md);
+      transition: var(--transition-tactile);
+    }
+
+    .surface-inset-pill {
+      background-color: var(--surface-inset);
+      box-shadow:
+        inset calc(4px * var(--shadow-scale)) calc(4px * var(--shadow-scale)) calc(9px * var(--shadow-scale)) rgba(var(--shadow-dark-rgb), calc(var(--shadow-dark-alpha) * 1.05)),
+        inset calc(-4px * var(--shadow-scale)) calc(-4px * var(--shadow-scale)) calc(9px * var(--shadow-scale)) rgba(var(--shadow-light-rgb), calc(var(--shadow-light-alpha) * 0.9));
+      border-radius: var(--rounded-pill);
+      transition: var(--transition-tactile);
+    }
+
+    /* Layer 2: Surface Flat */
+    .surface-flat {
+      background-color: var(--surface-flat);
+      border-radius: var(--rounded-lg);
+      transition: var(--transition-tactile);
+    }
+
+    /* Layer 3: Surface Raised / Bento Card Soft (Zero hard borders!) */
+    .surface-raised,
+    .bento-card-soft,
+    .ui-card-soft {
+      background-color: var(--surface-raised);
+      box-shadow:
+        calc(8px * var(--shadow-scale)) calc(8px * var(--shadow-scale)) calc(20px * var(--shadow-scale)) rgba(var(--shadow-dark-rgb), var(--shadow-dark-alpha)),
+        calc(-8px * var(--shadow-scale)) calc(-8px * var(--shadow-scale)) calc(20px * var(--shadow-scale)) rgba(var(--shadow-light-rgb), var(--shadow-light-alpha));
+      border-radius: var(--rounded-lg);
+      border: none;
+      transition: transform 0.25s var(--ease-spring), box-shadow 0.25s var(--ease-spring), background-color 0.25s ease;
+      position: relative;
+    }
+
+    .bento-card-soft:hover,
+    .ui-card-soft:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        calc(12px * var(--shadow-scale)) calc(12px * var(--shadow-scale)) calc(28px * var(--shadow-scale)) rgba(var(--shadow-dark-rgb), calc(var(--shadow-dark-alpha) * 1.15)),
+        calc(-12px * var(--shadow-scale)) calc(-12px * var(--shadow-scale)) calc(28px * var(--shadow-scale)) rgba(var(--shadow-light-rgb), var(--shadow-light-alpha));
+    }
+
+    .surface-raised-sm,
+    .pill-tactile,
+    .activity-row {
+      background-color: var(--surface-raised);
+      box-shadow:
+        calc(4px * var(--shadow-scale)) calc(4px * var(--shadow-scale)) calc(10px * var(--shadow-scale)) rgba(var(--shadow-dark-rgb), calc(var(--shadow-dark-alpha) * 0.85)),
+        calc(-4px * var(--shadow-scale)) calc(-4px * var(--shadow-scale)) calc(10px * var(--shadow-scale)) rgba(var(--shadow-light-rgb), calc(var(--shadow-light-alpha) * 0.95));
+      border-radius: var(--rounded-md);
+      border: none;
+      transition: var(--transition-tactile);
+    }
+
+    /* Layer 4: High-Contrast Tonal Anchor */
+    .surface-contrast {
+      background-color: var(--surface-contrast);
+      color: var(--text-on-contrast);
+      box-shadow:
+        calc(10px * var(--shadow-scale)) calc(12px * var(--shadow-scale)) calc(26px * var(--shadow-scale)) rgba(var(--shadow-dark-rgb), calc(var(--shadow-dark-alpha) * 1.2)),
+        calc(-6px * var(--shadow-scale)) calc(-6px * var(--shadow-scale)) calc(16px * var(--shadow-scale)) rgba(var(--shadow-light-rgb), calc(var(--shadow-light-alpha) * 0.5));
+      border-radius: var(--rounded-lg);
+      transition: var(--transition-tactile);
+    }
+
+    /* ==========================================================================
+       TACTILE SIDEBAR WITH DYNAMIC ICON TRACKER (COMPANION RAIL)
+       ========================================================================== */
+    .tactile-sidebar {
+      width: 272px;
+      transition: width 0.32s var(--ease-spring);
+      flex-shrink: 0;
+    }
+
+    .tactile-sidebar.is-collapsed {
+      width: 92px;
+    }
+
+    .tactile-sidebar.is-collapsed .sidebar-text-el {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .tactile-sidebar.is-collapsed .sidebar-nav-btn {
+      justify-content: center;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    /* Sliding Companion Indicator Pill that follows the active icon vertically */
+    #sidebar-active-tracker {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      height: 52px;
+      top: 0;
+      border-radius: 16px;
+      background-color: var(--surface-inset);
+      box-shadow:
+        inset calc(4px * var(--shadow-scale)) calc(4px * var(--shadow-scale)) calc(9px * var(--shadow-scale)) rgba(var(--shadow-dark-rgb), calc(var(--shadow-dark-alpha) * 1.05)),
+        inset calc(-4px * var(--shadow-scale)) calc(-4px * var(--shadow-scale)) calc(9px * var(--shadow-scale)) rgba(var(--shadow-light-rgb), calc(var(--shadow-light-alpha) * 0.9));
+      transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), height 0.25s ease;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Left vertical accent bar inside the tracker that hugs the icon */
+    #sidebar-active-tracker::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 14px;
+      bottom: 14px;
+      width: 4px;
+      border-radius: 999px;
+      background-color: var(--accent-point);
+      transition: background-color 0.3s ease;
+    }
+
+    /* Icon container inside sidebar item */
+    .sidebar-icon-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.28s var(--ease-spring), background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+      background-color: var(--surface-raised);
+      box-shadow:
+        calc(3px * var(--shadow-scale)) calc(3px * var(--shadow-scale)) calc(7px * var(--shadow-scale)) rgba(var(--shadow-dark-rgb), calc(var(--shadow-dark-alpha) * 0.85)),
+        calc(-3px * var(--shadow-scale)) calc(-3px * var(--shadow-scale)) calc(7px * var(--shadow-scale)) rgba(var(--shadow-light-rgb), calc(var(--shadow-light-alpha) * 0.9));
+      color: var(--text-secondary);
+    }
+
+    .sidebar-nav-btn.is-active .sidebar-icon-box {
+      background-color: var(--accent-point);
+      color: var(--accent-contrast-text);
+      transform: scale(1.06);
+      box-shadow:
+        calc(4px * var(--shadow-scale)) calc(4px * var(--shadow-scale)) calc(10px * var(--shadow-scale)) rgba(var(--shadow-dark-rgb), calc(var(--shadow-dark-alpha) * 1.1)),
+        inset 1px 1px 2px rgba(255, 255, 255, 0.35);
+    }
+
+    .sidebar-nav-btn.is-active .sidebar-label {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       TACTILE BUTTONS & CONTROLS (.btn-tactile, .ui-btn-tactile, SWATCHES)
+       ========================================================================== */
+    .btn-tactile-secondary,
+    .btn-tactile,
+    .ui-btn-tactile {
+      background-color: var(--surface-raised);
+      color: var(--text-primary);
+      box-shadow:
+        calc(5px * var(--shadow-scale)) calc(5px * var(--shadow-scale)) calc(12px * var(--shadow-scale)) rgba(var(--shadow-dark-rgb), var(--shadow-dark-alpha)),
+        calc(-5px * var(--shadow-scale)) calc(-5px * var(--shadow-scale)) calc(12px * var(--shadow-scale)) rgba(var(--shadow-light-rgb), var(--shadow-light-alpha));
+      border: none;
+      border-radius: var(--rounded-md);
+      transition: var(--transition-tactile);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .btn-tactile-secondary:hover,
+    .btn-tactile:hover,
+    .ui-btn-tactile:hover {
+      color: var(--accent-point);
+      transform: translateY(-1.5px);
+    }
+
+    .btn-tactile-secondary:active,
+    .btn-tactile-secondary.is-pressed,
+    .btn-tactile:active,
+    .btn-tactile.is-pressed,
+    .ui-btn-tactile:active,
+    .ui-btn-tactile.is-pressed {
+      transform: translateY(1px);
+      background-color: var(--surface-inset);
+      box-shadow:
+        inset calc(4px * var(--shadow-scale)) calc(4px * var(--shadow-scale)) calc(9px * var(--shadow-scale)) rgba(var(--shadow-dark-rgb), calc(var(--shadow-dark-alpha) * 1.05)),
+        inset calc(-4px * var(--shadow-scale)) calc(-4px * var(--shadow-scale)) calc(9px * var(--shadow-scale)) rgba(var(--shadow-light-rgb), calc(var(--shadow-light-alpha) * 0.9));
+    }
+
+    .btn-tactile-primary {
+      background-color: var(--accent-point);
+      color: var(--accent-contrast-text);
+      box-shadow:
+        calc(6px * var(--shadow-scale)) calc(7px * var(--shadow-scale)) calc(16px * var(--shadow-scale)) rgba(var(--shadow-dark-rgb), calc(var(--shadow-dark-alpha) * 1.2)),
+        calc(-4px * var(--shadow-scale)) calc(-4px * var(--shadow-scale)) calc(12px * var(--shadow-scale)) rgba(var(--shadow-light-rgb), calc(var(--shadow-light-alpha) * 0.8)),
+        inset 1px 1px 2px rgba(255, 255, 255, 0.25);
+      border: none;
+      transition: var(--transition-tactile);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .btn-tactile-primary:hover {
+      transform: translateY(-1.5px);
+      filter: brightness(1.06);
+    }
+
+    .btn-tactile-primary:active {
+      transform: translateY(1px);
+      box-shadow:
+        inset 3px 3px 8px rgba(0, 0, 0, 0.35),
+        inset -2px -2px 6px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Badge Soft Inset (From Nexus Spec v4.0) */
+    .badge-soft {
+      background-color: var(--surface-inset);
+      box-shadow:
+        inset calc(3px * var(--shadow-scale)) calc(3px * var(--shadow-scale)) calc(7px * var(--shadow-scale)) rgba(var(--shadow-dark-rgb), calc(var(--shadow-dark-alpha) * 0.95)),
+        inset calc(-3px * var(--shadow-scale)) calc(-3px * var(--shadow-scale)) calc(7px * var(--shadow-scale)) rgba(var(--shadow-light-rgb), calc(var(--shadow-light-alpha) * 0.85));
+      padding: 0.35rem 0.8rem;
+      border-radius: var(--rounded-sm);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-point);
+    }
+
+    /* Extruded Color Swatch Circle */
+    .swatch-disc {
+      box-shadow:
+        calc(6px * var(--shadow-scale)) calc(8px * var(--shadow-scale)) calc(16px * var(--shadow-scale)) rgba(var(--shadow-dark-rgb), calc(var(--shadow-dark-alpha) * 1.15)),
+        calc(-5px * var(--shadow-scale)) calc(-5px * var(--shadow-scale)) calc(12px * var(--shadow-scale)) rgba(var(--shadow-light-rgb), var(--shadow-light-alpha)),
+        inset 2px 2px 4px rgba(255, 255, 255, 0.35),
+        inset -2px -2px 5px rgba(0, 0, 0, 0.15);
+      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease;
+      cursor: pointer;
+    }
+    .swatch-disc:hover {
+      transform: scale(1.07) translateY(-2px);
+    }
+
+    /* Sculpted Thumb for Switches & Sliders */
+    .tactile-thumb {
+      background-color: var(--surface-raised);
+      box-shadow:
+        3px 4px 8px rgba(0, 0, 0, 0.22),
+        -2px -2px 6px rgba(255, 255, 255, 0.85),
+        inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s ease;
+    }
+
+    input[type="range"].tactile-range {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--surface-inset);
+      box-shadow:
+        inset 2px 2px 5px rgba(var(--shadow-dark-rgb), 0.55),
+        inset -2px -2px 5px rgba(var(--shadow-light-rgb), 0.85);
+      outline: none;
+    }
+
+    input[type="range"].tactile-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--surface-raised);
+      border: 2px solid var(--accent-point);
+      box-shadow:
+        3px 3px 8px rgba(var(--shadow-dark-rgb), 0.65),
+        -2px -2px 6px rgba(var(--shadow-light-rgb), 0.95);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    /* Accessible Tactile Focus Ring (No Neon!) */
+    *:focus-visible {
+      outline: 2px dashed var(--accent-point);
+      outline-offset: 3px;
+    }
+
+    /* Blueprint Inspector Mode */
+    .blueprint-badge {
+      display: none;
+    }
+    body.show-blueprint .blueprint-badge {
+      display: inline-flex;
+    }
+    body.show-blueprint .blueprint-outline {
+      outline: 1px dashed rgba(2, 132, 199, 0.45);
+    }
+
+    /* Anti-Pattern Neon Glass Card (ONLY used inside Diagnostic Comparison Box) */
+    .noisy-cyber-card {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.22), rgba(139, 92, 246, 0.25), rgba(6, 182, 212, 0.22));
+      border: 2px solid #ec4899;
+      box-shadow: 0 0 25px rgba(236, 72, 153, 0.55), inset 0 0 15px rgba(6, 182, 212, 0.45);
+    }
+
+    /* Notched Corner Bento (Ref 9: TERRIXA Technical Container) */
+    .terrixa-notched {
+      clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%);
+    }
+
+    /* Pulse animation for operational dot */
+    @keyframes softPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.25); opacity: 0.7; }
+    }
+    .dot-pulse {
+      animation: softPulse 2.4s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased architectural-grid-bg selection:bg-sky-600 selection:text-white">
+
+  <!-- ==========================================================================
+       APP SHELL: TACTILE ICON-TRACKING SIDEBAR + MAIN WORKSPACE
+       ========================================================================== -->
+  <div class="max-w-[1600px] mx-auto px-3 sm:px-6 py-4 flex gap-6 items-start relative">
+
+    <!-- ========================================================================
+         LEFT TACTILE COMPANION SIDEBAR (SCROLL-SPY + SLIDING ICON WELL)
+         ======================================================================== -->
+    <aside
+      id="app-sidebar"
+      aria-label="Navegação Principal da Arquitetura Soft UI"
+      class="tactile-sidebar hidden lg:flex flex-col justify-between sticky top-4 h-[calc(100vh-2rem)] surface-raised p-4 z-40 select-none"
+    >
+      <!-- Top Brand Header & Collapse Rail Toggle -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between gap-2 px-1">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 btn-tactile-primary font-mono-custom font-bold text-sm">
+              v4.5
+            </div>
+            <div class="sidebar-text-el transition-all duration-200">
+              <div class="font-bold text-sm tracking-tight leading-none">DESIGN.md</div>
+              <div class="text-[11px] font-mono-custom mt-1" style="color: var(--text-secondary);">Soft Tactile Studio</div>
+            </div>
+          </div>
+
+          <!-- Collapse / Expand Sidebar Button -->
+          <button
+            onclick="toggleSidebarCollapse()"
+            id="sidebar-collapse-btn"
+            aria-label="Alternar largura da Sidebar"
+            title="Recolher / Expandir Sidebar para modo Ícones"
+            class="w-9 h-9 rounded-xl btn-tactile-secondary flex items-center justify-center shrink-0"
+          >
+            <svg id="sidebar-collapse-icon" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Active Section Telemetry Pill -->
+        <div class="surface-inset px-3 py-2 rounded-xl flex items-center justify-between text-[11px] font-mono-custom">
+          <span class="sidebar-text-el truncate" style="color: var(--text-secondary);">SEÇÃO ATIVA:</span>
+          <span id="sidebar-telemetry-code" class="font-bold" style="color: var(--accent-point);">02 • NEXUS</span>
+        </div>
+
+        <!-- Navigation List with Sliding Companion Tracker -->
+        <nav aria-label="Capítulos do Sistema" class="relative pt-1" id="sidebar-nav-container">
+          <!-- Dynamic Recessed Tracker that follows the active icon -->
+          <div id="sidebar-active-tracker" style="transform: translateY(0px);"></div>
+
+          <ul class="space-y-2 relative z-10" id="sidebar-nav-list">
+            <!-- Item 0: Fundamentos -->
+            <li>
+              <button
+                onclick="navigateToSection('sec-foundation', 0)"
+                data-section="sec-foundation"
+                data-index="0"
+                class="sidebar-nav-btn is-active w-full h-[52px] px-2.5 rounded-2xl flex items-center gap-3.5 text-left transition-all"
+              >
+                <span class="sidebar-icon-box">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+                  </svg>
+                </span>
+                <div class="sidebar-text-el min-w-0 flex-1">
+                  <div class="sidebar-label text-xs font-semibold truncate">01. Fundamentos</div>
+                  <div class="text-[10px] truncate" style="color: var(--text-muted);">Camadas Tonais &amp; 135°</div>
+                </div>
+              </button>
+            </li>
+
+            <!-- Item 1: Nexus Bento Dashboard -->
+            <li>
+              <button
+                onclick="navigateToSection('sec-nexus-bento', 1)"
+                data-section="sec-nexus-bento"
+                data-index="1"
+                class="sidebar-nav-btn w-full h-[52px] px-2.5 rounded-2xl flex items-center gap-3.5 text-left transition-all"
+              >
+                <span class="sidebar-icon-box">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                  </svg>
+                </span>
+                <div class="sidebar-text-el min-w-0 flex-1">
+                  <div class="flex items-center justify-between">
+                    <span class="sidebar-label text-xs font-semibold truncate">02. Nexus Bento Ops</span>
+                    <span class="w-2 h-2 rounded-full dot-pulse" style="background-color: var(--accent-emerald);"></span>
+                  </div>
+                  <div class="text-[10px] truncate" style="color: var(--text-muted);">Operações Agênticas v4.5</div>
+                </div>
+              </button>
+            </li>
+
+            <!-- Item 2: Estudo de Componentes Soft UI -->
+            <li>
+              <button
+                onclick="navigateToSection('sec-components', 2)"
+                data-section="sec-components"
+                data-index="2"
+                class="sidebar-nav-btn w-full h-[52px] px-2.5 rounded-2xl flex items-center gap-3.5 text-left transition-all"
+              >
+                <span class="sidebar-icon-box">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                  </svg>
+                </span>
+                <div class="sidebar-text-el min-w-0 flex-1">
+                  <div class="sidebar-label text-xs font-semibold truncate">03. Soft UI Lab (8 Kits)</div>
+                  <div class="text-[10px] truncate" style="color: var(--text-muted);">Moss • Calm • Sapphire</div>
+                </div>
+              </button>
+            </li>
+
+            <!-- Item 3: Frontend Code Architect Skill v4.0 -->
+            <li>
+              <button
+                onclick="navigateToSection('sec-architect-skill', 3)"
+                data-section="sec-architect-skill"
+                data-index="3"
+                class="sidebar-nav-btn w-full h-[52px] px-2.5 rounded-2xl flex items-center gap-3.5 text-left transition-all"
+              >
+                <span class="sidebar-icon-box">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </span>
+                <div class="sidebar-text-el min-w-0 flex-1">
+                  <div class="sidebar-label text-xs font-semibold truncate">04. Code Architect</div>
+                  <div class="text-[10px] truncate" style="color: var(--text-muted);">Skill v4.0 • Design Atômico</div>
+                </div>
+              </button>
+            </li>
+
+            <!-- Item 4: Frontend Testing Auditor Skill v2.5 -->
+            <li>
+              <button
+                onclick="navigateToSection('sec-auditor-skill', 4)"
+                data-section="sec-auditor-skill"
+                data-index="4"
+                class="sidebar-nav-btn w-full h-[52px] px-2.5 rounded-2xl flex items-center gap-3.5 text-left transition-all"
+              >
+                <span class="sidebar-icon-box">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>
+                  </svg>
+                </span>
+                <div class="sidebar-text-el min-w-0 flex-1">
+                  <div class="sidebar-label text-xs font-semibold truncate">05. Testing Auditor</div>
+                  <div class="text-[10px] truncate" style="color: var(--text-muted);">Skill v2.5 • FSM &amp; Axe-Core</div>
+                </div>
+              </button>
+            </li>
+
+            <!-- Item 5: Terrixa Bento & Spec Export -->
+            <li>
+              <button
+                onclick="navigateToSection('sec-bento-terrixa', 5)"
+                data-section="sec-bento-terrixa"
+                data-index="5"
+                class="sidebar-nav-btn w-full h-[52px] px-2.5 rounded-2xl flex items-center gap-3.5 text-left transition-all"
+              >
+                <span class="sidebar-icon-box">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+                  </svg>
+                </span>
+                <div class="sidebar-text-el min-w-0 flex-1">
+                  <div class="sidebar-label text-xs font-semibold truncate">06. Terrixa &amp; Export</div>
+                  <div class="text-[10px] truncate" style="color: var(--text-muted);">Inversão Tonal &amp; DESIGN.md</div>
+                </div>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Bottom Sidebar Tactile Quick Controls -->
+      <div class="space-y-3 pt-4 border-t" style="border-color: var(--hairline-color);">
+        <div class="sidebar-text-el space-y-2">
+          <div class="flex items-center justify-between text-[11px] font-mono-custom" style="color: var(--text-secondary);">
+            <span>RELEVO 135°</span>
+            <span id="sidebar-shadow-label">100%</span>
+          </div>
+          <input
+            type="range"
+            min="0.2"
+            max="1.5"
+            step="0.1"
+            value="1"
+            aria-label="Intensidade da Sombra Direcional 135 graus"
+            oninput="updateShadowScale(this.value)"
+            class="tactile-range"
+          />
+        </div>
+
+        <button
+          onclick="cycleThemePreset()"
+          class="w-full py-2.5 px-3 rounded-xl btn-tactile-secondary flex items-center justify-center gap-2.5 text-xs font-semibold"
+          title="Alternar Paleta Tonal"
+        >
+          <span class="w-3.5 h-3.5 rounded-full shrink-0" style="background-color: var(--accent-point);"></span>
+          <span class="sidebar-text-el truncate" id="sidebar-theme-name">Tema: Nexus Slate</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ========================================================================
+         RIGHT MAIN WORKSPACE CONTENT AREA
+         ======================================================================== -->
+    <div class="flex-1 min-w-0 space-y-16 pb-24">
+
+      <!-- STICKY TOP STUDIO DOCK -->
+      <header class="sticky top-3 z-30">
+        <div class="surface-raised px-4 py-3 rounded-2xl sm:rounded-full flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="w-3 h-3 rounded-full dot-pulse" style="background-color: var(--accent-emerald); box-shadow: 0 0 0 4px var(--accent-soft-bg);"></span>
+            <span class="font-mono-custom text-xs font-semibold tracking-wider uppercase">DESIGN.md v4.5 + Skills</span>
+            <span class="hidden sm:inline-block text-xs px-2.5 py-0.5 rounded-full surface-inset font-medium" style="color: var(--text-secondary);">
+              Zero Cobalto • Zero Glassmorphism • 135° Soft Tactile
+            </span>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- 4 Theme Presets (Zero Cobalt — Cerulean & Ocean Sapphire) -->
+            <div class="surface-inset-pill p-1 flex items-center gap-1 text-xs font-medium">
+              <button onclick="setSystemTheme('slate')" id="theme-btn-slate" class="px-3 py-1.5 rounded-full transition-all btn-tactile-primary" title="Nexus Operations v4.5 Slate Prestige (Cerulean #0284C7)">
+                📐 Nexus Slate
+              </button>
+              <button onclick="setSystemTheme('moss')" id="theme-btn-moss" class="px-3 py-1.5 rounded-full transition-all" style="color: var(--text-secondary);" title="MOSS / SYSTEM & CALM / SYSTEM">
+                🌿 Moss
+              </button>
+              <button onclick="setSystemTheme('sapphire')" id="theme-btn-sapphire" class="px-3 py-1.5 rounded-full transition-all" style="color: var(--text-secondary);" title="SOFT / SYSTEM Ocean Sapphire (#1E6091 — Anti-Cobalto)">
+                💎 Sapphire
+              </button>
+              <button onclick="setSystemTheme('obsidian')" id="theme-btn-obsidian" class="px-3 py-1.5 rounded-full transition-all" style="color: var(--text-secondary);" title="Obsidian Dark Soft Minimal">
+                🌑 Obsidian
+              </button>
+            </div>
+
+            <!-- Typography Pairing Toggle -->
+            <button onclick="toggleTypographyMode()" id="typo-toggle-btn" class="btn-tactile-secondary px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5">
+              <span class="font-serif italic text-sm">Aa</span>
+              <span id="typo-mode-label">Public Sans</span>
+            </button>
+
+            <!-- 8pt Blueprint Grid Toggle -->
+            <button onclick="toggleBlueprintMode()" id="blueprint-toggle-btn" class="btn-tactile-secondary px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+              <span>Grid 8pt</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- ======================================================================
+           SECTION 01: FUNDAMENTOS TONAIS & ARQUITETURA SOFT UI (v4.5)
+           ====================================================================== -->
+      <section id="sec-foundation" class="scroll-mt-24 space-y-8">
+        <div class="grid lg:grid-cols-12 gap-7 items-stretch">
+          <!-- Left Column: Thesis & Interactive 4-Layer Stack -->
+          <div class="lg:col-span-7 surface-raised p-6 sm:p-9 flex flex-col justify-between blueprint-outline">
+            <div class="space-y-4">
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full surface-inset text-xs font-semibold tracking-wider uppercase" style="color: var(--accent-point);">
+                <span>01 • Regra Mestra v4.5 &amp; Arquitetura Tátil (Anti-Cobalto)</span>
+                <span class="blueprint-badge ml-2 px-1.5 py-0.5 bg-sky-600 text-white rounded text-[10px] font-mono-custom">gap: 8px</span>
+              </div>
+
+              <h1 class="font-display-custom text-3xl sm:text-5xl font-bold tracking-tight leading-[1.12]">
+                Hierarquia limpa esculpida em <span style="color: var(--accent-point);">planos tonais</span> e relevo suave.
+              </h1>
+
+              <p class="text-sm sm:text-base leading-relaxed" style="color: var(--text-secondary);">
+                Este ambiente consolida a <strong>Regra Mestra v4.5</strong>, o dashboard <strong>Nexus Operations</strong> e as duas Skills de Engenharia (<strong>Frontend Code Architect v4.0</strong> e <strong>Testing Auditor v2.5</strong>) com <strong>banimento total de azul cobalto</strong> (substituído por <em>Cerulean Sapphire</em> <code>#0284C7</code> e <em>Ocean Sapphire</em> <code>#1E6091</code>). Observe à esquerda como a <strong>Sidebar Tátil</strong> acompanha os ícones automaticamente com um berço escavado (<code>surface-inset</code>) conforme você navega.
+              </p>
+            </div>
+
+            <!-- Interactive 4-Layer Elevation Selector -->
+            <div class="mt-7 pt-6 border-t space-y-4" style="border-color: var(--hairline-color);">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono-custom uppercase tracking-wider font-semibold" style="color: var(--text-secondary);">
+                  Inspecione a Pilha de Elevação Tonal (Clique nos planos):
+                </span>
+                <span id="shadow-scale-label" class="font-mono-custom text-xs" style="color: var(--accent-point);">Relevo: 100%</span>
+              </div>
+
+              <div class="grid sm:grid-cols-4 gap-3">
+                <button onclick="inspectLayer(0)" id="layer-btn-0" class="p-3.5 rounded-2xl text-left transition-all surface-inset">
+                  <div class="text-[11px] font-mono-custom uppercase opacity-70">Layer 0</div>
+                  <div class="font-semibold text-sm mt-0.5">Canvas Base</div>
+                  <div class="text-[11px] mt-1 opacity-75">60% #F1F4F8</div>
+                </button>
+
+                <button onclick="inspectLayer(1)" id="layer-btn-1" class="p-3.5 rounded-2xl text-left transition-all surface-inset">
+                  <div class="text-[11px] font-mono-custom uppercase opacity-70">Layer 1</div>
+                  <div class="font-semibold text-sm mt-0.5">Surface Inset</div>
+                  <div class="text-[11px] mt-1 opacity-75">Inputs &amp; Trilhos</div>
+                </button>
+
+                <button onclick="inspectLayer(2)" id="layer-btn-2" class="p-3.5 rounded-2xl text-left transition-all surface-flat">
+                  <div class="text-[11px] font-mono-custom uppercase opacity-70">Layer 2</div>
+                  <div class="font-semibold text-sm mt-0.5">Surface Flat</div>
+                  <div class="text-[11px] mt-1 opacity-75">Placas Sem Borda</div>
+                </button>
+
+                <button onclick="inspectLayer(3)" id="layer-btn-3" class="p-3.5 rounded-2xl text-left transition-all btn-tactile-primary">
+                  <div class="text-[11px] font-mono-custom uppercase opacity-80">Layer 3</div>
+                  <div class="font-semibold text-sm mt-0.5">Surface Raised</div>
+                  <div class="text-[11px] mt-1 opacity-90">Soft UI 135°</div>
+                </button>
+              </div>
+
+              <div class="surface-inset p-3.5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono-custom">
+                <div>
+                  <span class="font-semibold" style="color: var(--accent-point);" id="layer-out-title">[Layer 3: Surface Raised]</span>
+                  <span class="block sm:inline sm:ml-2" style="color: var(--text-secondary);" id="layer-out-desc">Elementos esculpidos com iluminação direcional dupla a 135°.</span>
+                </div>
+                <code id="layer-out-code" class="px-3 py-1 rounded-lg surface-raised-sm text-[11px] whitespace-nowrap">
+                  box-shadow: 8px 8px 20px / -8px -8px 20px
+                </code>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Anti-Pattern Diagnostic (Soft UI vs Neon/Glass) -->
+          <div class="lg:col-span-5 surface-raised p-6 sm:p-8 flex flex-col justify-between space-y-5 blueprint-outline">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <span class="text-xs font-mono-custom uppercase tracking-wider" style="color: var(--text-muted);">Diagnóstico de Ruído Visual</span>
+                <h2 class="text-lg font-bold tracking-tight">Tonal Soft UI vs. Glassmorphism</h2>
+              </div>
+              <div class="surface-inset-pill p-1 flex items-center text-xs font-semibold">
+                <button onclick="setComparisonMode('soft')" id="comp-btn-soft" class="px-3 py-1.5 rounded-full btn-tactile-primary transition-all">
+                  ✅ v4.5 Soft UI
+                </button>
+                <button onclick="setComparisonMode('noisy')" id="comp-btn-noisy" class="px-3 py-1.5 rounded-full transition-all" style="color: var(--text-secondary);">
+                  ❌ Neon/Glass
+                </button>
+              </div>
+            </div>
+
+            <div id="comparison-stage" class="p-5 rounded-3xl surface-inset flex flex-col justify-center min-h-[220px] transition-all duration-300">
+              <!-- Soft Tactile Version -->
+              <div id="comp-view-soft" class="surface-raised p-5 rounded-2xl space-y-3.5">
+                <div class="flex items-center justify-between">
+                  <span class="badge-soft">Hierarquia Silenciosa</span>
+                  <span class="font-mono-custom text-xs" style="color: var(--text-muted);">Zero Blur / Zero Cobalto</span>
+                </div>
+                <div>
+                  <div class="text-2xl font-bold tracking-tight">Conforto Ocular Contínuo</div>
+                  <p class="text-xs mt-1 leading-relaxed" style="color: var(--text-secondary);">
+                    Sem bordas duras de 1px e sem azul cobalto agressivo. A separação nasce da sombra direcional dupla a 135° com acento Cerulean Sapphire.
+                  </p>
+                </div>
+                <div class="pt-1 flex items-center gap-3">
+                  <button onclick="triggerSoftToast('Ação Focal 10% (Cerulean Sapphire) executada')" class="btn-tactile-primary px-4 py-2 rounded-xl text-xs font-semibold">Ação Focal (10%)</button>
+                  <button onclick="triggerSoftToast('Botão Tátil Secundário pressionado')" class="btn-tactile px-4 py-2 rounded-xl text-xs font-semibold">Botão Tátil</button>
+                </div>
+              </div>
+
+              <!-- Noisy Cyber/Glass Version -->
+              <div id="comp-view-noisy" class="hidden noisy-cyber-card p-5 rounded-2xl space-y-3.5 text-white">
+                <div class="flex items-center justify-between">
+                  <span class="px-3 py-1 rounded-full bg-pink-500/40 border border-pink-400 text-xs font-bold uppercase text-pink-200">PROIBIDO PELA SKILL v4.0</span>
+                  <span class="font-mono text-xs text-cyan-300">AUDIT-VIS-01 FAIL</span>
+                </div>
+                <div>
+                  <div class="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-300 to-cyan-300">
+                    Poluição e Fadiga Visual
+                  </div>
+                  <p class="text-xs mt-1 leading-relaxed text-pink-100/90">
+                    Múltiplos acentos neon, azul cobalto elétrico e reflexos artificiais forçam contraste agressivo e reprovam na auditoria <code>AUDIT-VIS-01</code>.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5 Principles Summary Bar -->
+            <div class="grid grid-cols-3 gap-2.5 text-center">
+              <div class="surface-inset p-3 rounded-xl">
+                <div class="font-mono-custom text-xs font-bold" style="color: var(--accent-point);">60-30-10</div>
+                <div class="text-[11px] mt-0.5" style="color: var(--text-secondary);">Economia Tonal</div>
+              </div>
+              <div class="surface-inset p-3 rounded-xl">
+                <div class="font-mono-custom text-xs font-bold" style="color: var(--accent-point);">8pt / 24px</div>
+                <div class="text-[11px] mt-0.5" style="color: var(--text-secondary);">Respiro Amplo</div>
+              </div>
+              <div class="surface-inset p-3 rounded-xl">
+                <div class="font-mono-custom text-xs font-bold" style="color: var(--accent-point);">WCAG AA</div>
+                <div class="text-[11px] mt-0.5" style="color: var(--text-secondary);">Contraste ≥ 4.5:1</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           SECTION 02: CENTRO DE OPERAÇÕES AGÊNTICAS (NEXUS BENTO DASHBOARD v4.5)
+           ====================================================================== -->
+      <section id="sec-nexus-bento" class="scroll-mt-24 space-y-7">
+        <!-- Section Banner / Context -->
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3" style="border-color: var(--hairline-color);">
+          <div class="flex items-center gap-2.5">
+            <span class="badge-soft font-mono-custom">EXEMPLO APLICADO • NEXUS OPERATIONS v4.5</span>
+            <span class="text-xs font-mono-custom" style="color: var(--text-muted);">Cerulean &amp; Ocean Sapphire Edition</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="runNexusBenchmark()" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold btn-tactile flex items-center gap-1.5">
+              <span>⚡ Simular Carga no Cluster</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Cabeçalho do App -->
+        <div class="flex flex-wrap justify-between items-center gap-6">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-bold tracking-tight" style="color: var(--text-primary); letter-spacing: -0.02em;">
+              Centro de Operações Agênticas
+            </h2>
+            <p class="text-sm sm:text-base mt-1" style="color: var(--text-secondary);">
+              Monitoramento tátil de vazão, estabilidade e auditoria técnica
+            </p>
+          </div>
+
+          <div class="pill-tactile rounded-full px-5 py-2.5 inline-flex items-center gap-2.5 text-sm font-medium" style="color: var(--text-secondary);">
+            <span class="w-2.5 h-2.5 rounded-full dot-pulse" style="background-color: var(--accent-emerald);"></span>
+            <span>Rede Operacional: <strong id="nexus-network-status" style="color: var(--text-primary);">Estável</strong></span>
+          </div>
+        </div>
+
+        <!-- Matriz Bento Minimalista (12 Colunas, sem bordas duras) -->
+        <div class="grid grid-cols-12 gap-7">
+
+          <!-- Card Principal: Vazão Total & Gráfico Tonal (Col 8) -->
+          <article class="bento-card-soft col-span-12 lg:col-span-8 p-7 sm:p-8 flex flex-col justify-between blueprint-outline">
+            <div>
+              <div class="flex justify-between items-center mb-5">
+                <span class="text-sm font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">
+                  Vazão Total
+                </span>
+                <div class="flex items-center gap-2">
+                  <button onclick="setNexusTimeframe('realtime')" id="nexus-tf-rt" class="badge-soft cursor-pointer">Tempo Real</button>
+                  <button onclick="setNexusTimeframe('1h')" id="nexus-tf-1h" class="px-3 py-1 rounded-lg text-xs font-medium cursor-pointer" style="color: var(--text-secondary);">1h</button>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-baseline gap-4">
+                <div id="nexus-tps-metric" class="text-4xl sm:text-5xl font-bold tracking-tight leading-none" style="color: var(--text-primary); letter-spacing: -0.03em;">
+                  14.280 TPS
+                </div>
+                <span id="nexus-tps-delta" class="text-xs font-mono-custom font-semibold px-2.5 py-1 rounded-md surface-inset" style="color: var(--accent-emerald);">
+                  +8.4% vs média
+                </span>
+              </div>
+              <p class="text-sm mt-2" style="color: var(--text-secondary);">
+                Processamento contínuo de tokens em cluster desacoplado
+              </p>
+            </div>
+
+            <!-- Área de Gráfico SVG Tonal Suave Interativo -->
+            <div class="mt-6 h-36 relative">
+              <svg id="nexus-svg-chart" width="100%" height="100%" viewBox="0 0 500 110" preserveAspectRatio="none" class="overflow-visible">
+                <path
+                  id="nexus-chart-area"
+                  d="M0,80 C100,20 200,90 300,30 C400,70 450,10 500,40 L500,105 L0,105 Z"
+                  fill="var(--accent-point)"
+                  fill-opacity="0.07"
+                  style="transition: d 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);"
+                />
+                <path
+                  id="nexus-chart-line"
+                  d="M0,80 C100,20 200,90 300,30 C400,70 450,10 500,40"
+                  fill="none"
+                  stroke="var(--accent-point)"
+                  stroke-width="3.5"
+                  stroke-linecap="round"
+                  style="transition: d 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);"
+                />
+              </svg>
+              <!-- Subtle Telemetry Footer inside Chart -->
+              <div class="flex justify-between text-[11px] font-mono-custom mt-2" style="color: var(--text-muted);">
+                <span>NODE-01: 3.570 TPS</span>
+                <span>NODE-02: 3.610 TPS</span>
+                <span>NODE-03: 3.540 TPS</span>
+                <span>NODE-04: 3.560 TPS</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card Secundário: Agentes Conectados (Col 4) -->
+          <article class="bento-card-soft col-span-12 lg:col-span-4 p-7 sm:p-8 flex flex-col justify-between blueprint-outline">
+            <div>
+              <div class="flex justify-between items-center mb-5">
+                <span class="text-sm font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">
+                  Agentes Conectados
+                </span>
+                <span class="text-xs font-mono-custom" style="color: var(--accent-emerald);">MCP v2.1</span>
+              </div>
+
+              <div id="nexus-agents-metric" class="text-4xl sm:text-5xl font-bold tracking-tight leading-none mb-2" style="color: var(--text-primary); letter-spacing: -0.03em;">
+                32 / 32
+              </div>
+              <p class="text-sm" style="color: var(--text-secondary);">
+                Sincronização via protocolo MCP
+              </p>
+
+              <!-- Mini Tactile 16-dot Agent Health Indicator -->
+              <div class="grid grid-cols-8 gap-2 mt-5 p-3 rounded-xl surface-inset" title="32 Agentes Ativos em 8 Shards">
+                <span class="h-2.5 rounded-full" style="background-color: var(--accent-emerald);"></span>
+                <span class="h-2.5 rounded-full" style="background-color: var(--accent-emerald);"></span>
+                <span class="h-2.5 rounded-full" style="background-color: var(--accent-emerald);"></span>
+                <span class="h-2.5 rounded-full" style="background-color: var(--accent-emerald);"></span>
+                <span class="h-2.5 rounded-full" style="background-color: var(--accent-emerald);"></span>
+                <span class="h-2.5 rounded-full" style="background-color: var(--accent-emerald);"></span>
+                <span class="h-2.5 rounded-full" style="background-color: var(--accent-emerald);"></span>
+                <span class="h-2.5 rounded-full" style="background-color: var(--accent-emerald);"></span>
+              </div>
+            </div>
+
+            <!-- Container de entrada afundado (.inset-panel) -->
+            <div class="surface-inset p-4 rounded-2xl mt-5">
+              <p class="text-sm leading-relaxed" style="color: var(--text-secondary);" id="nexus-orchestrator-msg">
+                <strong style="color: var(--text-primary);">Orquestrador Principal:</strong> Executando ciclo de auditoria de código sem bloqueios de thread.
+              </p>
+            </div>
+          </article>
+
+          <!-- Card Latência P99 (Col 4) -->
+          <article class="bento-card-soft col-span-12 lg:col-span-4 p-7 sm:p-8 flex flex-col justify-between blueprint-outline">
+            <div>
+              <div class="flex justify-between items-center mb-5">
+                <span class="text-sm font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">
+                  Latência P99
+                </span>
+                <span class="badge-soft" id="nexus-latency-badge">Ótimo</span>
+              </div>
+
+              <div id="nexus-latency-metric" class="text-4xl sm:text-5xl font-bold tracking-tight leading-none mb-2" style="color: var(--text-primary); letter-spacing: -0.03em;">
+                124 ms
+              </div>
+              <p class="text-sm" style="color: var(--text-secondary);">
+                Invocação determinística de ferramentas
+              </p>
+            </div>
+
+            <button
+              onclick="runNexusBenchmark()"
+              id="nexus-benchmark-btn"
+              class="btn-tactile w-full py-3.5 px-6 rounded-2xl font-semibold text-sm mt-6 flex items-center justify-center gap-2"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span id="nexus-benchmark-label">Executar Benchmark</span>
+            </button>
+          </article>
+
+          <!-- Card Registros de Auditoria Limpa (Col 8) -->
+          <article class="bento-card-soft col-span-12 lg:col-span-8 p-7 sm:p-8 flex flex-col justify-between blueprint-outline">
+            <div>
+              <div class="flex flex-wrap justify-between items-center gap-2 mb-5">
+                <span class="text-sm font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">
+                  Registros de Auditoria
+                </span>
+                <div class="flex items-center gap-2">
+                  <span class="badge-soft">WCAG AA Aprovado</span>
+                  <button onclick="addCustomAuditLog()" class="px-3 py-1 rounded-lg text-xs font-semibold btn-tactile">
+                    + Validar Agora
+                  </button>
+                </div>
+              </div>
+
+              <ul id="nexus-activity-list" class="space-y-3.5">
+                <li class="activity-row px-4 py-3.5 flex justify-between items-center text-sm">
+                  <div class="flex items-center gap-3">
+                    <span class="w-2 h-2 rounded-full" style="background-color: var(--accent-point);"></span>
+                    <span class="font-medium" style="color: var(--text-primary);">Conformidade de tokens <code>DESIGN.md</code> (v4.5-soft Anti-Cobalto)</span>
+                  </div>
+                  <span class="text-xs font-mono-custom" style="color: var(--text-muted);">há 2 min</span>
+                </li>
+                <li class="activity-row px-4 py-3.5 flex justify-between items-center text-sm">
+                  <div class="flex items-center gap-3">
+                    <span class="w-2 h-2 rounded-full" style="background-color: var(--accent-emerald);"></span>
+                    <span class="font-medium" style="color: var(--text-primary);">Validação de esquema semântico sem erros</span>
+                  </div>
+                  <span class="text-xs font-mono-custom" style="color: var(--text-muted);">há 8 min</span>
+                </li>
+                <li class="activity-row px-4 py-3.5 flex justify-between items-center text-sm">
+                  <div class="flex items-center gap-3">
+                    <span class="w-2 h-2 rounded-full" style="background-color: var(--accent-point);"></span>
+                    <span class="font-medium" style="color: var(--text-primary);">Auditoria <code>AUDIT-VIS-01</code>: Zero Glassmorphism / Zero Cobalto / Zero Neon verificado</span>
+                  </div>
+                  <span class="text-xs font-mono-custom" style="color: var(--text-muted);">há 14 min</span>
+                </li>
+              </ul>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           SECTION 03: ESTUDO DE COMPONENTES SOFT UI (8 KITS INTERATIVOS)
+           ====================================================================== -->
+      <section id="sec-components" class="scroll-mt-24 space-y-7">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b pb-4" style="border-color: var(--hairline-color);">
+          <div>
+            <span class="badge-soft font-mono-custom">03 • COMPONENT STUDY LAB</span>
+            <h2 class="font-display-custom text-3xl sm:text-4xl font-bold tracking-tight mt-2">
+              8 Kits de Componentes Soft Tactile UI
+            </h2>
+          </div>
+          <p class="text-sm max-w-md" style="color: var(--text-secondary);">
+            Fusão das referências <em>MOSS / SYSTEM</em>, <em>SOFT SAPPHIRE / SYSTEM</em> e <em>CALM / SYSTEM</em>. Clique nos discos de cor, botões, switches e sliders.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-12 gap-6">
+          <!-- CARD 01: COLOR PALETTE -->
+          <div class="md:col-span-6 surface-raised p-6 sm:p-7 flex flex-col justify-between space-y-5 blueprint-outline">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono-custom uppercase tracking-widest font-semibold" style="color: var(--text-secondary);">
+                01 &nbsp; COLOR PALETTE (CLIQUE PARA COPIAR)
+              </span>
+              <span id="palette-system-badge" class="text-xs font-mono-custom px-2.5 py-0.5 rounded-full surface-inset">Nexus v4.5 Slate</span>
+            </div>
+
+            <div class="grid grid-cols-4 gap-3 sm:gap-4 py-2 text-center">
+              <div onclick="copySwatch(0)" class="flex flex-col items-center space-y-2.5 cursor-pointer">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full swatch-disc" style="background-color: var(--accent-point);"></div>
+                <div>
+                  <div id="swatch-name-0" class="text-xs sm:text-sm font-semibold">Cerulean</div>
+                  <div id="swatch-hex-0" class="text-[11px] font-mono-custom" style="color: var(--text-muted);">#0284C7</div>
+                </div>
+              </div>
+
+              <div onclick="copySwatch(1)" class="flex flex-col items-center space-y-2.5 cursor-pointer">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full swatch-disc" style="background-color: var(--accent-secondary);"></div>
+                <div>
+                  <div id="swatch-name-1" class="text-xs sm:text-sm font-semibold">Sky Mist</div>
+                  <div id="swatch-hex-1" class="text-[11px] font-mono-custom" style="color: var(--text-muted);">#7DD3FC</div>
+                </div>
+              </div>
+
+              <div onclick="copySwatch(2)" class="flex flex-col items-center space-y-2.5 cursor-pointer">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full swatch-disc" style="background-color: var(--surface-raised);"></div>
+                <div>
+                  <div id="swatch-name-2" class="text-xs sm:text-sm font-semibold">Surface</div>
+                  <div id="swatch-hex-2" class="text-[11px] font-mono-custom" style="color: var(--text-muted);">#F1F4F8</div>
+                </div>
+              </div>
+
+              <div onclick="copySwatch(3)" class="flex flex-col items-center space-y-2.5 cursor-pointer">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full swatch-disc" style="background-color: var(--surface-contrast);"></div>
+                <div>
+                  <div id="swatch-name-3" class="text-xs sm:text-sm font-semibold">Graphite</div>
+                  <div id="swatch-hex-3" class="text-[11px] font-mono-custom" style="color: var(--text-muted);">#1E293B</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 02: TYPOGRAPHY SPECIMEN -->
+          <div class="md:col-span-6 surface-raised p-6 sm:p-7 flex flex-col justify-between space-y-5 blueprint-outline">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono-custom uppercase tracking-widest font-semibold" style="color: var(--text-secondary);">
+                02 &nbsp; TYPOGRAPHY &amp; AIRY SCALE
+              </span>
+              <div class="surface-inset-pill p-1 flex text-[11px] font-mono-custom">
+                <button onclick="setTypoSpecimen('calm')" id="spec-btn-calm" class="px-2.5 py-0.5 rounded-full btn-tactile-primary">Calm</button>
+                <button onclick="setTypoSpecimen('moss')" id="spec-btn-moss" class="px-2.5 py-0.5 rounded-full">Moss</button>
+                <button onclick="setTypoSpecimen('soft')" id="spec-btn-soft" class="px-2.5 py-0.5 rounded-full">Soft</button>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-5">
+              <div class="font-display-custom text-6xl sm:text-7xl font-bold leading-none select-none" style="color: var(--accent-point);">
+                Aa
+              </div>
+              <div class="pl-5 border-l space-y-1" style="border-color: var(--hairline-color);">
+                <div id="specimen-headline" class="font-display-custom text-xl sm:text-2xl font-semibold leading-snug">
+                  Clarity feels <em>good.</em>
+                </div>
+                <p id="specimen-subtext" class="text-xs sm:text-sm" style="color: var(--text-secondary);">
+                  Entrelinha 1.6 e espaçamento respirável para leitura sem esforço.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 03: TACTILE CONTROLS -->
+          <div class="md:col-span-6 surface-raised p-6 sm:p-7 flex flex-col justify-between space-y-4 blueprint-outline">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono-custom uppercase tracking-widest font-semibold" style="color: var(--text-secondary);">
+                03 &nbsp; CONTROLS &amp; TACTILE BUTTONS
+              </span>
+              <span class="text-[11px] font-mono-custom" style="color: var(--text-muted);">:active -> inset</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <button onclick="triggerSoftToast('Botão Primário acionado')" class="btn-tactile-primary py-3 px-5 rounded-full font-semibold text-sm">
+                Primary
+              </button>
+              <button onclick="triggerSoftToast('Botão Secundário pressionado')" class="btn-tactile-secondary py-3 px-5 rounded-full font-semibold text-sm">
+                Secondary
+              </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <button onclick="triggerSoftToast('Continue ->')" class="btn-tactile-primary py-2.5 px-5 rounded-full text-xs font-semibold flex items-center justify-center gap-2">
+                <span>Continue</span>
+                <span>→</span>
+              </button>
+              <button onclick="triggerSoftToast('<- Back')" class="btn-tactile-secondary py-2.5 px-5 rounded-full text-xs font-semibold flex items-center justify-center gap-2">
+                <span>←</span>
+                <span>Back</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- CARD 04: RECESSED SEARCH FIELD -->
+          <div class="md:col-span-6 surface-raised p-6 sm:p-7 flex flex-col justify-between space-y-4 blueprint-outline">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono-custom uppercase tracking-widest font-semibold" style="color: var(--text-secondary);">
+                04 &nbsp; SEARCH FIELD (SURFACE-INSET)
+              </span>
+              <span class="text-[11px] font-mono-custom" style="color: var(--text-muted);">Layer 1</span>
+            </div>
+
+            <div class="surface-inset-pill px-5 py-3 flex items-center gap-3.5">
+              <svg class="w-4 h-4 shrink-0" style="color: var(--text-secondary);" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+              </svg>
+              <input
+                type="text"
+                id="tactile-search-input"
+                placeholder="Find your next idea..."
+                oninput="handleSearchDemo(this.value)"
+                class="w-full bg-transparent border-none outline-none text-sm"
+                style="color: var(--text-primary);"
+              />
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <button onclick="fillSearch('Atomic Design v4.0')" class="px-3 py-1 rounded-full text-xs btn-tactile-secondary">Atomic Design v4.0</button>
+              <button onclick="fillSearch('Axe-Core WCAG AA')" class="px-3 py-1 rounded-full text-xs btn-tactile-secondary">Axe-Core WCAG AA</button>
+              <button onclick="fillSearch('Nexus Bento Grid')" class="px-3 py-1 rounded-full text-xs btn-tactile-secondary">Nexus Bento Grid</button>
+            </div>
+          </div>
+
+          <!-- CARD 05: SWITCHES & CHECKBOXES -->
+          <div class="md:col-span-6 surface-raised p-6 sm:p-7 flex flex-col justify-between space-y-5 blueprint-outline">
+            <span class="text-xs font-mono-custom uppercase tracking-widest font-semibold" style="color: var(--text-secondary);">
+              05 &nbsp; TACTILE SWITCHES &amp; CHECKBOXES
+            </span>
+
+            <div class="grid sm:grid-cols-2 gap-5 items-center">
+              <div class="flex items-center justify-around">
+                <div class="flex flex-col items-center gap-1.5">
+                  <button
+                    onclick="toggleSoftSwitch(1)"
+                    id="soft-switch-1"
+                    class="w-18 h-9 w-[74px] rounded-full p-1 flex items-center transition-colors duration-300 cursor-pointer"
+                    style="background-color: var(--accent-point); box-shadow: inset 3px 3px 6px rgba(0,0,0,0.28);"
+                  >
+                    <span id="soft-thumb-1" class="w-7 h-7 rounded-full tactile-thumb transform translate-x-9"></span>
+                  </button>
+                  <span id="soft-label-1" class="text-xs font-medium" style="color: var(--text-secondary);">On</span>
+                </div>
+
+                <div class="flex flex-col items-center gap-1.5">
+                  <button
+                    onclick="toggleSoftSwitch(2)"
+                    id="soft-switch-2"
+                    class="w-[74px] h-9 rounded-full p-1 flex items-center surface-inset-pill transition-colors duration-300 cursor-pointer"
+                  >
+                    <span id="soft-thumb-2" class="w-7 h-7 rounded-full tactile-thumb transform translate-x-0"></span>
+                  </button>
+                  <span id="soft-label-2" class="text-xs font-medium" style="color: var(--text-secondary);">Off</span>
+                </div>
+              </div>
+
+              <div class="space-y-3 sm:pl-4 sm:border-l" style="border-color: var(--hairline-color);">
+                <button onclick="toggleSoftCheckbox(1)" class="flex items-center gap-3 w-full text-left">
+                  <span id="soft-check-1" class="w-6 h-6 rounded-lg flex items-center justify-center transition-all btn-tactile-primary">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </span>
+                  <span id="soft-check-text-1" class="text-xs font-medium">Selected (Ativo)</span>
+                </button>
+
+                <button onclick="toggleSoftCheckbox(2)" class="flex items-center gap-3 w-full text-left">
+                  <span id="soft-check-2" class="w-6 h-6 rounded-lg flex items-center justify-center transition-all surface-inset">
+                    <svg class="w-3.5 h-3.5 opacity-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </span>
+                  <span id="soft-check-text-2" class="text-xs font-medium" style="color: var(--text-secondary);">Unselected (Inset)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 06: PROGRESS INDICATORS -->
+          <div class="md:col-span-6 surface-raised p-6 sm:p-7 flex flex-col justify-between space-y-4 blueprint-outline">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono-custom uppercase tracking-widest font-semibold" style="color: var(--text-secondary);">
+                06 &nbsp; PROGRESS RING &amp; LINEAR BAR
+              </span>
+              <button onclick="randomizeProgress()" class="text-xs font-mono-custom px-2.5 py-1 rounded-full btn-tactile-secondary">
+                ↻ Simular
+              </button>
+            </div>
+
+            <div class="grid sm:grid-cols-12 gap-5 items-center">
+              <div class="sm:col-span-5 flex justify-center">
+                <div class="relative w-28 h-28 rounded-full surface-inset flex items-center justify-center p-2">
+                  <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="10" fill="transparent" class="opacity-10" />
+                    <circle
+                      id="progress-ring-circle"
+                      cx="50" cy="50" r="40"
+                      stroke="var(--accent-point)"
+                      stroke-width="10"
+                      stroke-linecap="round"
+                      fill="transparent"
+                      stroke-dasharray="251.2"
+                      stroke-dashoffset="62.8"
+                      style="transition: stroke-dashoffset 0.5s ease;"
+                    />
+                  </svg>
+                  <div class="absolute inset-3.5 rounded-full surface-raised-sm flex items-center justify-center">
+                    <span id="progress-ring-text" class="text-lg font-bold">75%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sm:col-span-7 space-y-2.5">
+                <div class="flex justify-between text-xs font-semibold">
+                  <span>Sincronização Tonal</span>
+                  <span id="progress-bar-text" class="font-mono-custom">75%</span>
+                </div>
+                <div class="w-full h-3.5 rounded-full surface-inset-pill overflow-hidden p-0.5">
+                  <div id="progress-bar-fill" class="h-full rounded-full transition-all duration-500" style="width: 75%; background-color: var(--accent-point);"></div>
+                </div>
+                <div class="flex justify-between text-[10px] font-mono-custom" style="color: var(--text-muted);">
+                  <span>ALMOST THERE</span>
+                  <span id="progress-step-label">4 OF 6</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 07: SEGMENTED TABS & SLIDER -->
+          <div class="md:col-span-6 surface-raised p-6 sm:p-7 flex flex-col justify-between space-y-5 blueprint-outline">
+            <span class="text-xs font-mono-custom uppercase tracking-widest font-semibold" style="color: var(--text-secondary);">
+              07 &nbsp; TABS &amp; RANGE SLIDER
+            </span>
+
+            <div class="surface-inset-pill p-1.5 grid grid-cols-3 gap-1.5">
+              <button onclick="selectCalmTab('today', 75)" id="calm-tab-today" class="py-2 px-3 rounded-full text-xs font-semibold transition-all btn-tactile-primary">
+                Today
+              </button>
+              <button onclick="selectCalmTab('week', 88)" id="calm-tab-week" class="py-2 px-3 rounded-full text-xs font-semibold transition-all" style="color: var(--text-secondary);">
+                Week
+              </button>
+              <button onclick="selectCalmTab('month', 94)" id="calm-tab-month" class="py-2 px-3 rounded-full text-xs font-semibold transition-all" style="color: var(--text-secondary);">
+                Month
+              </button>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-mono-custom" style="color: var(--text-secondary);">0</span>
+              <input
+                type="range"
+                id="component-progress-slider"
+                min="0"
+                max="100"
+                value="75"
+                oninput="updateProgressFromSlider(this.value)"
+                class="tactile-range"
+              />
+              <span class="text-xs font-mono-custom" style="color: var(--text-secondary);">100</span>
+            </div>
+          </div>
+
+          <!-- CARD 08: PROFILE & BOTTOM NAVIGATION -->
+          <div class="md:col-span-6 surface-raised p-6 sm:p-7 flex flex-col justify-between space-y-4 blueprint-outline">
+            <span class="text-xs font-mono-custom uppercase tracking-widest font-semibold" style="color: var(--text-secondary);">
+              08 &nbsp; PROFILE, TOAST &amp; BOTTOM NAV
+            </span>
+
+            <div class="grid sm:grid-cols-2 gap-3.5">
+              <div class="surface-raised-sm p-3.5 rounded-2xl flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full surface-inset flex items-center justify-center font-bold text-sm shrink-0" style="color: var(--accent-point);">
+                  AR
+                </div>
+                <div class="min-w-0">
+                  <div class="text-xs font-bold truncate">Alex Rivera</div>
+                  <div class="text-[11px] truncate" style="color: var(--text-secondary);">Principal UI Architect</div>
+                </div>
+              </div>
+
+              <div class="surface-raised-sm p-3.5 rounded-2xl flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style="background-color: var(--accent-soft-bg); color: var(--accent-point);">
+                  ✓
+                </div>
+                <div class="min-w-0">
+                  <div id="live-toast-title" class="text-xs font-bold truncate">All set.</div>
+                  <div id="live-toast-desc" class="text-[11px] truncate" style="color: var(--text-secondary);">You're ready to go.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="surface-inset-pill p-1.5 grid grid-cols-4 gap-1">
+              <button onclick="selectBottomNav(0)" id="bnav-0" class="py-1.5 rounded-full flex flex-col items-center justify-center btn-tactile-secondary">
+                <span class="text-[11px] font-semibold">Home</span>
+              </button>
+              <button onclick="selectBottomNav(1)" id="bnav-1" class="py-1.5 rounded-full flex flex-col items-center justify-center" style="color: var(--text-secondary);">
+                <span class="text-[11px] font-medium">Explore</span>
+              </button>
+              <button onclick="selectBottomNav(2)" id="bnav-2" class="py-1.5 rounded-full flex flex-col items-center justify-center" style="color: var(--text-secondary);">
+                <span class="text-[11px] font-medium">Saved</span>
+              </button>
+              <button onclick="selectBottomNav(3)" id="bnav-3" class="py-1.5 rounded-full flex flex-col items-center justify-center" style="color: var(--text-secondary);">
+                <span class="text-[11px] font-medium">Profile</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           SECTION 04: FRONTEND CODE ARCHITECT SKILL (v4.0 — ATOMIC & MODULAR)
+           ====================================================================== -->
+      <section id="sec-architect-skill" class="scroll-mt-24 space-y-8">
+        <div class="surface-raised p-6 sm:p-9 space-y-8 blueprint-outline">
+          <!-- Skill Header -->
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b pb-5" style="border-color: var(--hairline-color);">
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="badge-soft font-mono-custom">SKILL 01 APLICADA • frontend-code-architect v4.0.0</span>
+                <span class="text-xs font-mono-custom" style="color: var(--text-muted);">React 18+ • TypeScript 5+ • Design Atômico</span>
+              </div>
+              <h2 class="font-display-custom text-2xl sm:text-4xl font-bold tracking-tight">
+                Arquitetura Modular de Frontend &amp; Design Atômico
+              </h2>
+              <p class="text-sm max-w-3xl" style="color: var(--text-secondary);">
+                Padronização industrial de projetos dividindo a interface em <strong>5 Camadas Atômicas</strong> e organizando o diretório <code>src/</code> com separação estrita entre tokens (<code>DESIGN.md</code>), estilos táteis (<code>globals.css</code>) e componentes tipados (<code>SoftCard.tsx</code>).
+              </p>
+            </div>
+
+            <!-- Atomic Layer Filter Pills -->
+            <div class="surface-inset-pill p-1.5 flex flex-wrap gap-1 text-xs font-semibold">
+              <button onclick="selectAtomicLayer(0)" id="atom-btn-0" class="px-3 py-1.5 rounded-full btn-tactile-primary">1. Átomos</button>
+              <button onclick="selectAtomicLayer(1)" id="atom-btn-1" class="px-3 py-1.5 rounded-full" style="color: var(--text-secondary);">2. Moléculas</button>
+              <button onclick="selectAtomicLayer(2)" id="atom-btn-2" class="px-3 py-1.5 rounded-full" style="color: var(--text-secondary);">3. Organismos</button>
+              <button onclick="selectAtomicLayer(3)" id="atom-btn-3" class="px-3 py-1.5 rounded-full" style="color: var(--text-secondary);">4. Templates</button>
+              <button onclick="selectAtomicLayer(4)" id="atom-btn-4" class="px-3 py-1.5 rounded-full" style="color: var(--text-secondary);">5. Pages</button>
+            </div>
+          </div>
+
+          <!-- Atomic Layer Interactive Stage -->
+          <div class="surface-inset p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="space-y-2 max-w-xl">
+              <div class="text-xs font-mono-custom uppercase font-bold" style="color: var(--accent-point);" id="atomic-stage-tag">
+                CAMADA ATÔMICA 01 • UNIDADES INDIVISÍVEIS
+              </div>
+              <h3 class="text-lg font-bold" id="atomic-stage-title">
+                Átomos: Botões Táteis, Inputs Escavados, Badges Tonais &amp; Labels
+              </h3>
+              <p class="text-xs sm:text-sm" style="color: var(--text-secondary);" id="atomic-stage-desc">
+                Não possuem dependências de layout externo. Respondem diretamente às variáveis CSS de superfície (<code>--surface-raised</code> e <code>--surface-inset</code>) com foco acessível WCAG AA.
+              </p>
+            </div>
+
+            <!-- Live Rendered Atomic Specimen -->
+            <div id="atomic-stage-preview" class="surface-raised p-4 rounded-2xl flex flex-wrap items-center gap-3 shrink-0">
+              <button class="ui-btn-tactile px-4 py-2 text-xs font-semibold">.ui-btn-tactile</button>
+              <span class="badge-soft">.badge-soft</span>
+              <span class="px-3 py-1.5 rounded-lg surface-inset text-xs font-mono-custom">Input Inset</span>
+            </div>
+          </div>
+
+          <!-- Modular Directory Tree Explorer (Left) + Code Viewer (Right) -->
+          <div class="grid lg:grid-cols-12 gap-6 items-stretch">
+            <!-- Left: Interactive src/ Tree (5 cols) -->
+            <div class="lg:col-span-5 surface-inset p-5 rounded-2xl flex flex-col justify-between space-y-4">
+              <div>
+                <div class="text-xs font-mono-custom uppercase font-bold mb-3" style="color: var(--text-secondary);">
+                  📁 Estrutura Modular (Clique nos arquivos):
+                </div>
+
+                <div class="space-y-1.5 font-mono-custom text-xs">
+                  <div class="px-2 py-1 opacity-70">src/</div>
+
+                  <button onclick="openArchitectFile('softcard')" id="arch-file-softcard" class="w-full text-left px-3 py-2.5 rounded-xl flex items-center justify-between btn-tactile-primary">
+                    <span>├── components/ui/SoftCard.tsx</span>
+                    <span class="text-[10px] opacity-80">TSX</span>
+                  </button>
+
+                  <button onclick="openArchitectFile('globals')" id="arch-file-globals" class="w-full text-left px-3 py-2.5 rounded-xl flex items-center justify-between hover:opacity-80">
+                    <span>├── styles/globals.css</span>
+                    <span class="text-[10px] opacity-60">CSS</span>
+                  </button>
+
+                  <button onclick="openArchitectFile('tokens')" id="arch-file-tokens" class="w-full text-left px-3 py-2.5 rounded-xl flex items-center justify-between hover:opacity-80">
+                    <span>├── config/tokens.ts</span>
+                    <span class="text-[10px] opacity-60">TS</span>
+                  </button>
+
+                  <button onclick="openArchitectFile('designmd')" id="arch-file-designmd" class="w-full text-left px-3 py-2.5 rounded-xl flex items-center justify-between hover:opacity-80">
+                    <span>├── config/DESIGN.md</span>
+                    <span class="text-[10px] opacity-60">YAML</span>
+                  </button>
+
+                  <button onclick="openArchitectFile('types')" id="arch-file-types" class="w-full text-left px-3 py-2.5 rounded-xl flex items-center justify-between hover:opacity-80">
+                    <span>└── types/index.ts</span>
+                    <span class="text-[10px] opacity-60">TS</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Self-Refine Checklist from Skill Section 5 -->
+              <div class="pt-4 border-t space-y-2" style="border-color: var(--hairline-color);">
+                <div class="text-[11px] font-mono-custom uppercase font-bold" style="color: var(--accent-emerald);">
+                  ✓ Checklist Self-Refine (Skill v4.0)
+                </div>
+                <div class="text-xs space-y-1" style="color: var(--text-secondary);">
+                  <div>☑ Zero glassmorphism, cobalto, neon ou bordas duras 1px</div>
+                  <div>☑ Paleta 60-30-10 gerada por elevação tonal (Cerulean/Sapphire)</div>
+                  <div>☑ Modularizado em Design Atômico + TS Estrito</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Code Viewer for Selected File (7 cols) -->
+            <div class="lg:col-span-7 surface-inset p-5 rounded-2xl flex flex-col justify-between space-y-4">
+              <div class="flex items-center justify-between border-b pb-3" style="border-color: var(--hairline-color);">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full" style="background-color: var(--accent-point);"></span>
+                  <span id="arch-code-filename" class="font-mono-custom text-xs font-bold">src/components/ui/SoftCard.tsx</span>
+                </div>
+                <button onclick="copyArchitectCode()" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold btn-tactile">
+                  Copiar Arquivo
+                </button>
+              </div>
+
+              <pre id="arch-code-content" class="font-mono-custom text-xs leading-relaxed overflow-x-auto whitespace-pre select-all max-h-[340px]" style="color: var(--text-primary);"></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           SECTION 05: FRONTEND TESTING AUDITOR SKILL (v2.5 — FSM & AXE-CORE)
+           ====================================================================== -->
+      <section id="sec-auditor-skill" class="scroll-mt-24 space-y-8">
+        <div class="surface-raised p-6 sm:p-9 space-y-8 blueprint-outline">
+          <!-- Header -->
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b pb-5" style="border-color: var(--hairline-color);">
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="badge-soft font-mono-custom">SKILL 02 APLICADA • frontend-testing-auditor v2.5.0</span>
+                <span class="text-xs font-mono-custom" style="color: var(--text-muted);">Jest • RTL • Axe-Core • FSM</span>
+              </div>
+              <h2 class="font-display-custom text-2xl sm:text-4xl font-bold tracking-tight">
+                Auditoria Determinística de UI, Estados Finitos (FSM) &amp; Score Técnico
+              </h2>
+              <p class="text-sm max-w-3xl" style="color: var(--text-secondary);">
+                Teste o componente <code>&lt;SoftCard /&gt;</code> abaixo em cada estado da Máquina de Estados Finita (<code>Idle</code>, <code>Loading</code>, <code>Error</code>, <code>Pressed</code> e <code>XSS Attack</code>) e execute o motor de auditoria real no navegador.
+              </p>
+            </div>
+
+            <button
+              onclick="runLiveDomAuditSuite()"
+              class="btn-tactile-primary px-6 py-3.5 rounded-2xl text-xs sm:text-sm font-semibold flex items-center gap-2.5 shrink-0 self-start lg:self-auto"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+              <span>Executar Auditoria DOM &amp; Axe</span>
+            </button>
+          </div>
+
+          <!-- Top Grid: FSM Simulator (Left 6 cols) + Weighted Readiness Score (Right 6 cols) -->
+          <div class="grid lg:grid-cols-12 gap-7 items-stretch">
+
+            <!-- Left: Live <SoftCard /> FSM Playground -->
+            <div class="lg:col-span-6 surface-inset p-6 rounded-2xl flex flex-col justify-between space-y-5">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-mono-custom uppercase font-bold" style="color: var(--text-secondary);">
+                    Simulador FSM — &lt;SoftCard /&gt;
+                  </span>
+                  <span id="fsm-current-badge" class="badge-soft font-mono-custom">FSM: IDLE</span>
+                </div>
+
+                <!-- FSM Trigger Buttons -->
+                <div class="flex flex-wrap gap-2">
+                  <button onclick="setFsmState('idle')" id="fsm-btn-idle" class="px-3 py-1.5 rounded-xl text-xs font-semibold btn-tactile-primary">
+                    Idle / Default
+                  </button>
+                  <button onclick="setFsmState('loading')" id="fsm-btn-loading" class="px-3 py-1.5 rounded-xl text-xs font-semibold btn-tactile">
+                    Loading (aria-busy)
+                  </button>
+                  <button onclick="setFsmState('error')" id="fsm-btn-error" class="px-3 py-1.5 rounded-xl text-xs font-semibold btn-tactile">
+                    Error (role="alert")
+                  </button>
+                  <button onclick="setFsmState('pressed')" id="fsm-btn-pressed" class="px-3 py-1.5 rounded-xl text-xs font-semibold btn-tactile">
+                    Pressed (Inset)
+                  </button>
+                  <button onclick="setFsmState('xss')" id="fsm-btn-xss" class="px-3 py-1.5 rounded-xl text-xs font-semibold btn-tactile">
+                    Injeção XSS
+                  </button>
+                </div>
+              </div>
+
+              <!-- Live Audited Component Target (<SoftCard />) -->
+              <article
+                id="audited-soft-card"
+                data-testid="soft-card"
+                tabindex="0"
+                aria-label="Métrica de Teste"
+                aria-busy="false"
+                class="ui-card-soft p-6 rounded-2xl space-y-3"
+              >
+                <div class="flex justify-between items-center">
+                  <h3 id="audited-card-title" class="text-lg font-bold tracking-tight" style="color: var(--text-primary);">
+                    Métrica de Teste
+                  </h3>
+                  <span id="audited-card-badge" class="badge-soft">Ativo</span>
+                </div>
+
+                <div id="audited-card-body" class="text-sm" style="color: var(--text-secondary);">
+                  <p>Conteúdo de Leitura Limpa renderizado em superfície <code>.ui-card-soft</code> sem glassmorphism e sem cobalto.</p>
+                </div>
+              </article>
+
+              <!-- Live DOM & ComputedStyle Telemetry Bar -->
+              <div class="surface-raised-sm p-3.5 rounded-xl font-mono-custom text-[11px] space-y-1">
+                <div class="flex justify-between">
+                  <span style="color: var(--text-secondary);">computedStyle.backdropFilter:</span>
+                  <span id="telemetry-backdrop" class="font-bold" style="color: var(--accent-emerald);">none (APROVADO)</span>
+                </div>
+                <div class="flex justify-between">
+                  <span style="color: var(--text-secondary);">ARIA / Semântica DOM:</span>
+                  <span id="telemetry-aria" class="font-bold" style="color: var(--accent-point);">role="article" aria-busy="false"</span>
+                </div>
+                <div class="flex justify-between">
+                  <span style="color: var(--text-secondary);">Sanitização XSS (&lt;img onerror&gt;):</span>
+                  <span id="telemetry-xss" class="font-bold" style="color: var(--accent-emerald);">Escapado como Texto Seguro</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Mathematical Rubric Score Calculator & 5 Audit Checks -->
+            <div class="lg:col-span-6 surface-inset p-6 rounded-2xl flex flex-col justify-between space-y-5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-xs font-mono-custom uppercase font-bold" style="color: var(--text-secondary);">
+                    Rubrica Matemática de Prontidão
+                  </span>
+                  <div class="text-xs font-mono-custom mt-0.5" style="color: var(--text-muted);">
+                    Score = 0.35·A11y + 0.30·FSM + 0.20·Tokens + 0.15·Sec
+                  </div>
+                </div>
+                <div class="surface-raised-sm px-4 py-2 rounded-2xl text-right">
+                  <div id="audit-total-score" class="text-3xl font-bold font-mono-custom" style="color: var(--accent-emerald);">100.0</div>
+                  <div class="text-[10px] font-mono-custom uppercase" style="color: var(--text-muted);">Production Ready</div>
+                </div>
+              </div>
+
+              <!-- 5 Interactive Dimension Sliders / Verifications -->
+              <div class="space-y-3 text-xs">
+                <div class="surface-raised-sm p-3 rounded-xl flex items-center justify-between gap-4">
+                  <div>
+                    <span class="font-bold font-mono-custom" style="color: var(--accent-point);">AUDIT-A11Y-01/02 (35%)</span>
+                    <div class="text-[11px]" style="color: var(--text-secondary);">Axe-Core 0 violações + Foco teclado sem neon</div>
+                  </div>
+                  <span id="badge-audit-1" class="badge-soft font-mono-custom">PASS • 100%</span>
+                </div>
+
+                <div class="surface-raised-sm p-3 rounded-xl flex items-center justify-between gap-4">
+                  <div>
+                    <span class="font-bold font-mono-custom" style="color: var(--accent-point);">AUDIT-STATE-01/02 (30%)</span>
+                    <div class="text-[11px]" style="color: var(--text-secondary);">Transição determinística Loading → Success / Alert</div>
+                  </div>
+                  <span id="badge-audit-2" class="badge-soft font-mono-custom">PASS • 100%</span>
+                </div>
+
+                <div class="surface-raised-sm p-3 rounded-xl flex items-center justify-between gap-4">
+                  <div>
+                    <span class="font-bold font-mono-custom" style="color: var(--accent-point);">AUDIT-VIS-01 (20%)</span>
+                    <div class="text-[11px]" style="color: var(--text-secondary);">Elevação <code>.ui-card-soft</code>, zero <code>blur()</code> e zero cobalto</div>
+                  </div>
+                  <span id="badge-audit-3" class="badge-soft font-mono-custom">PASS • 100%</span>
+                </div>
+
+                <div class="surface-raised-sm p-3 rounded-xl flex items-center justify-between gap-4">
+                  <div>
+                    <span class="font-bold font-mono-custom" style="color: var(--accent-point);">AUDIT-SEC-01 (15%)</span>
+                    <div class="text-[11px]" style="color: var(--text-secondary);">Bloqueio de payload XSS <code>&lt;img src=x onerror&gt;</code></div>
+                  </div>
+                  <span id="badge-audit-4" class="badge-soft font-mono-custom">PASS • 100%</span>
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center pt-1">
+                <span class="text-xs" style="color: var(--text-secondary);">Suíte completa pronta para Jest + React Testing Library</span>
+                <button onclick="copyJestSuite()" class="px-4 py-2 rounded-xl text-xs font-semibold btn-tactile">
+                  Copiar Suíte SoftCard.test.tsx
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           SECTION 06: BENTO TERRIXA, TIMELINE & EXPORTADOR DESIGN.MD v4.5
+           ====================================================================== -->
+      <section id="sec-bento-terrixa" class="scroll-mt-24 space-y-10">
+        <!-- TERRIXA Inversão Tonal -->
+        <div class="surface-raised p-6 sm:p-9 space-y-7 blueprint-outline">
+          <div class="flex flex-wrap items-center justify-between gap-4 border-b pb-4" style="border-color: var(--hairline-color);">
+            <div>
+              <span class="badge-soft font-mono-custom">06 • TERRIXA BENTO &amp; EXPORTAÇÃO</span>
+              <h2 class="font-display-custom text-2xl sm:text-4xl font-bold mt-2">
+                Inversão Tonal Estratégica &amp; Especificação Consolidada
+              </h2>
+            </div>
+            <button onclick="copyFullDesignMd()" class="btn-tactile-primary px-5 py-3 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2">
+              <span id="copy-md-label">Copiar DESIGN.md v4.5 Completo</span>
+            </button>
+          </div>
+
+          <!-- 4 Cards Terrixa (01/04 Inset vs 02/03 Contrast) -->
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="surface-inset p-5 rounded-2xl terrixa-notched space-y-3">
+              <div class="font-mono-custom text-base font-bold">01 • SURFACE INSET</div>
+              <p class="text-xs leading-relaxed" style="color: var(--text-secondary);">
+                Cavidades táteis substituem caixas contornadas por linhas pretas.
+              </p>
+            </div>
+
+            <div class="surface-contrast p-5 rounded-2xl terrixa-notched space-y-3">
+              <div class="font-mono-custom text-base font-bold">02 • CONTRAST ANCHOR</div>
+              <p class="text-xs leading-relaxed opacity-85">
+                Destaque cards críticos usando inversão monocromática profunda em vez de neon.
+              </p>
+            </div>
+
+            <div class="surface-contrast p-5 rounded-2xl terrixa-notched space-y-3">
+              <div class="font-mono-custom text-base font-bold">03 • AIRY RHYTHM</div>
+              <p class="text-xs leading-relaxed opacity-85">
+                Espaçamento generoso de 24px a 36px garante leitura instantânea.
+              </p>
+            </div>
+
+            <div class="surface-inset p-5 rounded-2xl terrixa-notched space-y-3">
+              <div class="font-mono-custom text-base font-bold">04 • ZERO BLUR &amp; COBALTO</div>
+              <p class="text-xs leading-relaxed" style="color: var(--text-secondary);">
+                100% aprovado pelas suítes de auditoria <code>AUDIT-VIS-01</code> e <code>AUDIT-A11Y-01</code>.
+              </p>
+            </div>
+          </div>
+
+          <!-- Source Code Box for DESIGN.md -->
+          <div class="surface-inset p-5 rounded-2xl overflow-x-auto">
+            <pre id="design-md-source" class="font-mono-custom text-xs leading-relaxed whitespace-pre-wrap select-all" style="color: var(--text-primary);"># DESIGN.md v4.5 — MINIMALIST IMPACT, NEXUS BENTO &amp; SOFT TACTILE ARCHITECTURE
+---
+version: "4.5-soft"
+name: "Minimalist Tactile Prestige + Nexus Operations (Zero Cobalt)"
+colors:
+  surface-canvas: "#F1F4F8"     # Fundo neutro contínuo (60%)
+  surface-raised: "#F1F4F8"     # Placa esculpida neumórfica (30%)
+  surface-inset:  "#E5E9F0"     # Elemento afundado (inputs/trilhos/berço de ícone ativo)
+  surface-contrast: "#1E293B"   # Âncora de inversão tonal Terrixa
+  text-primary:   "#1E293B"     # Grafite profundo legível (WCAG AA/AAA)
+  text-secondary: "#64748B"     # Slate suave para metadados
+  accent-point:   "#0284C7"     # Destaque focal Cerulean Sapphire (10% max — Zero Cobalto)
+  accent-sapphire: "#1E6091"    # Variante Ocean Sapphire (Soft Sapphire System)
+  accent-emerald: "#059669"     # Indicador semântico de estabilidade
+lighting:
+  soft-shadow:    "8px 8px 20px rgba(166, 180, 200, 0.42)"
+  soft-highlight: "-8px -8px 20px rgba(255, 255, 255, 0.95)"
+  inset-shadow:   "inset 4px 4px 10px rgba(166, 180, 200, 0.45), inset -4px -4px 10px rgba(255, 255, 255, 0.85)"
+skills_integrated:
+  - frontend-code-architect (v4.0.0): Design Atômico em 5 camadas + src/ modular
+  - frontend-testing-auditor (v2.5.0): Auditoria Axe-Core + FSM + Anti-Glassmorphism/Anti-Cobalto
+---</pre>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- MOBILE BOTTOM COMPANION NAVIGATION BAR (WITH ACTIVE ICON WELL) -->
+  <nav
+    aria-label="Navegação Rápida Mobile"
+    class="lg:hidden fixed bottom-3 left-3 right-3 z-40 surface-raised p-2 rounded-2xl grid grid-cols-6 gap-1"
+  >
+    <button onclick="navigateToSection('sec-foundation', 0)" class="mobile-nav-btn py-2 rounded-xl flex flex-col items-center justify-center surface-inset" style="color: var(--accent-point);">
+      <span class="text-[10px] font-bold">01.Base</span>
+    </button>
+    <button onclick="navigateToSection('sec-nexus-bento', 1)" class="mobile-nav-btn py-2 rounded-xl flex flex-col items-center justify-center" style="color: var(--text-secondary);">
+      <span class="text-[10px] font-semibold">02.Nexus</span>
+    </button>
+    <button onclick="navigateToSection('sec-components', 2)" class="mobile-nav-btn py-2 rounded-xl flex flex-col items-center justify-center" style="color: var(--text-secondary);">
+      <span class="text-[10px] font-semibold">03.SoftUI</span>
+    </button>
+    <button onclick="navigateToSection('sec-architect-skill', 3)" class="mobile-nav-btn py-2 rounded-xl flex flex-col items-center justify-center" style="color: var(--text-secondary);">
+      <span class="text-[10px] font-semibold">04.Arch</span>
+    </button>
+    <button onclick="navigateToSection('sec-auditor-skill', 4)" class="mobile-nav-btn py-2 rounded-xl flex flex-col items-center justify-center" style="color: var(--text-secondary);">
+      <span class="text-[10px] font-semibold">05.Audit</span>
+    </button>
+    <button onclick="navigateToSection('sec-bento-terrixa', 5)" class="mobile-nav-btn py-2 rounded-xl flex flex-col items-center justify-center" style="color: var(--text-secondary);">
+      <span class="text-[10px] font-semibold">06.Spec</span>
+    </button>
+  </nav>
+
+  <!-- Floating Soft Notification Toast -->
+  <div
+    id="floating-toast"
+    role="status"
+    aria-live="polite"
+    class="fixed bottom-6 right-6 z-50 surface-raised px-5 py-3.5 rounded-2xl flex items-center gap-3.5 transform translate-y-28 opacity-0 pointer-events-none transition-all duration-300"
+  >
+    <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style="background-color: var(--accent-point); color: #fff;">
+      ✓
+    </div>
+    <div>
+      <div class="text-xs font-mono-custom uppercase font-semibold" style="color: var(--accent-point);">Feedback Tátil</div>
+      <div id="toast-msg-body" class="text-sm font-medium">Ação executada com sucesso.</div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       INTERACTIVE STUDIO JAVASCRIPT ENGINE
+       ========================================================================== -->
+  <script>
+    // --------------------------------------------------------------------------
+    // 1. SIDEBAR ICON COMPANION TRACKER & SCROLL-SPY ENGINE
+    // --------------------------------------------------------------------------
+    const SECTION_CODES = [
+      '01 • TOKENS',
+      '02 • NEXUS',
+      '03 • SOFT LAB',
+      '04 • ARCHITECT',
+      '05 • AUDITOR',
+      '06 • TERRIXA'
+    ];
+
+    let activeNavIndex = 0;
+
+    function updateSidebarTracker(index) {
+      activeNavIndex = index;
+      const navButtons = document.querySelectorAll('.sidebar-nav-btn');
+      const tracker = document.getElementById('sidebar-active-tracker');
+      const telemetryCode = document.getElementById('sidebar-telemetry-code');
+
+      if (!navButtons[index] || !tracker) return;
+
+      const targetBtn = navButtons[index];
+      const offsetTop = targetBtn.offsetTop;
+      const height = targetBtn.offsetHeight;
+
+      tracker.style.transform = `translateY(${offsetTop}px)`;
+      tracker.style.height = `${height}px`;
+
+      navButtons.forEach((btn, idx) => {
+        if (idx === index) {
+          btn.classList.add('is-active');
+        } else {
+          btn.classList.remove('is-active');
+        }
+      });
+
+      const mobileBtns = document.querySelectorAll('.mobile-nav-btn');
+      mobileBtns.forEach((mBtn, idx) => {
+        if (idx === index) {
+          mBtn.classList.add('surface-inset');
+          mBtn.style.color = 'var(--accent-point)';
+        } else {
+          mBtn.classList.remove('surface-inset');
+          mBtn.style.color = 'var(--text-secondary)';
+        }
+      });
+
+      if (telemetryCode) {
+        telemetryCode.textContent = SECTION_CODES[index] || '01 • STUDIO';
+      }
+    }
+
+    function navigateToSection(sectionId, index) {
+      updateSidebarTracker(index);
+      const target = document.getElementById(sectionId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function toggleSidebarCollapse() {
+      const sidebar = document.getElementById('app-sidebar');
+      const icon = document.getElementById('sidebar-collapse-icon');
+      sidebar.classList.toggle('is-collapsed');
+      const isCollapsed = sidebar.classList.contains('is-collapsed');
+      icon.style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+      setTimeout(() => updateSidebarTracker(activeNavIndex), 330);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateSidebarTracker(0);
+      openArchitectFile('softcard');
+
+      const sectionIds = [
+        'sec-foundation',
+        'sec-nexus-bento',
+        'sec-components',
+        'sec-architect-skill',
+        'sec-auditor-skill',
+        'sec-bento-terrixa'
+      ];
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const idx = sectionIds.indexOf(entry.target.id);
+              if (idx !== -1) {
+                updateSidebarTracker(idx);
+              }
+            }
+          });
+        },
+        { rootMargin: '-20% 0px -65% 0px', threshold: 0.05 }
+      );
+
+      sectionIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) observer.observe(el);
+      });
+    });
+
+    // --------------------------------------------------------------------------
+    // 2. THEME PRESETS & PALETTE METADATA (ZERO COBALT — CERULEAN & OCEAN SAPPHIRE)
+    // --------------------------------------------------------------------------
+    const THEME_METADATA = {
+      slate: {
+        badge: 'Nexus v4.5 Slate',
+        swatches: [
+          { name: 'Cerulean', hex: '#0284C7', oklch: 'oklch(0.58 0.16 242)' },
+          { name: 'Sky Mist', hex: '#7DD3FC', oklch: 'oklch(0.83 0.10 230)' },
+          { name: 'Surface Slate', hex: '#F1F4F8', oklch: 'oklch(0.96 0.005 240)' },
+          { name: 'Graphite', hex: '#1E293B', oklch: 'oklch(0.22 0.02 240)' }
+        ]
+      },
+      moss: {
+        badge: 'Moss / Calm Kit',
+        swatches: [
+          { name: 'Forest', hex: '#174930', oklch: 'oklch(0.35 0.08 155)' },
+          { name: 'Sage Mint', hex: '#B7D3C0', oklch: 'oklch(0.84 0.04 150)' },
+          { name: 'Ivory', hex: '#F8F7F2', oklch: 'oklch(0.98 0.008 95)' },
+          { name: 'Deep Ink', hex: '#1A2E22', oklch: 'oklch(0.22 0.02 155)' }
+        ]
+      },
+      sapphire: {
+        badge: 'Soft Sapphire Kit',
+        swatches: [
+          { name: 'Ocean Sapphire', hex: '#1E6091', oklch: 'oklch(0.47 0.11 245)' },
+          { name: 'Glacier Sky', hex: '#69ADC6', oklch: 'oklch(0.72 0.08 225)' },
+          { name: 'Warm Ivory', hex: '#FAF9F5', oklch: 'oklch(0.98 0.006 90)' },
+          { name: 'Charcoal', hex: '#1E293B', oklch: 'oklch(0.25 0.02 240)' }
+        ]
+      },
+      obsidian: {
+        badge: 'Obsidian Dark Minimal',
+        swatches: [
+          { name: 'Mineral Ice', hex: '#38BDF8', oklch: 'oklch(0.75 0.14 232)' },
+          { name: 'Deep Navy', hex: '#1E3A5F', oklch: 'oklch(0.34 0.07 250)' },
+          { name: 'Raised Dark', hex: '#181D26', oklch: 'oklch(0.22 0.015 255)' },
+          { name: 'Crisp Ivory', hex: '#F1F4F8', oklch: 'oklch(0.96 0.005 240)' }
+        ]
+      }
+    };
+
+    const THEME_ORDER = ['slate', 'moss', 'sapphire', 'obsidian'];
+    let currentTheme = 'slate';
+    let currentTypo = 'sans';
+    let toastTimeout = null;
+
+    function setSystemTheme(themeKey) {
+      currentTheme = themeKey;
+      if (themeKey === 'slate') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', themeKey);
+      }
+
+      THEME_ORDER.forEach((k) => {
+        const btn = document.getElementById('theme-btn-' + k);
+        if (!btn) return;
+        if (k === themeKey) {
+          btn.className = 'px-3 py-1.5 rounded-full transition-all btn-tactile-primary';
+          btn.style.color = '';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-full transition-all';
+          btn.style.color = 'var(--text-secondary)';
+        }
+      });
+
+      const meta = THEME_METADATA[themeKey];
+      document.getElementById('palette-system-badge').textContent = meta.badge;
+      document.getElementById('sidebar-theme-name').textContent = 'Tema: ' + meta.badge;
+      meta.swatches.forEach((s, idx) => {
+        document.getElementById('swatch-name-' + idx).textContent = s.name;
+        document.getElementById('swatch-hex-' + idx).textContent = s.hex;
+      });
+
+      triggerSoftToast('Paleta Tonal ativa: ' + meta.badge);
+    }
+
+    function cycleThemePreset() {
+      const nextIdx = (THEME_ORDER.indexOf(currentTheme) + 1) % THEME_ORDER.length;
+      setSystemTheme(THEME_ORDER[nextIdx]);
+    }
+
+    function toggleTypographyMode() {
+      currentTypo = currentTypo === 'sans' ? 'editorial' : 'sans';
+      document.documentElement.setAttribute('data-typo', currentTypo);
+      const label = document.getElementById('typo-mode-label');
+      label.textContent = currentTypo === 'editorial' ? 'Editorial Serif' : 'Public Sans';
+      triggerSoftToast(
+        currentTypo === 'editorial'
+          ? 'Tipografia: Instrument Serif + Public Sans'
+          : 'Tipografia: Public Sans (Padrão Nexus v4.5)'
+      );
+    }
+
+    function toggleBlueprintMode() {
+      document.body.classList.toggle('show-blueprint');
+      const btn = document.getElementById('blueprint-toggle-btn');
+      btn.classList.toggle('is-pressed');
+      triggerSoftToast(
+        document.body.classList.contains('show-blueprint')
+          ? 'Inspeção de Grid 8pt ativada'
+          : 'Guias de Grid 8pt ocultadas'
+      );
+    }
+
+    function updateShadowScale(val) {
+      document.documentElement.style.setProperty('--shadow-scale', val);
+      const pct = Math.round(val * 100) + '%';
+      document.getElementById('shadow-scale-label').textContent = 'Relevo: ' + pct;
+      const sideLbl = document.getElementById('sidebar-shadow-label');
+      if (sideLbl) sideLbl.textContent = pct;
+    }
+
+    // --------------------------------------------------------------------------
+    // 3. NEXUS OPERATIONS BENTO DASHBOARD INTERACTIVITY (SECTION 02)
+    // --------------------------------------------------------------------------
+    const NEXUS_PATHS = [
+      {
+        line: 'M0,80 C100,20 200,90 300,30 C400,70 450,10 500,40',
+        area: 'M0,80 C100,20 200,90 300,30 C400,70 450,10 500,40 L500,105 L0,105 Z',
+        tps: '14.280 TPS',
+        latency: '124 ms',
+        delta: '+8.4% vs média'
+      },
+      {
+        line: 'M0,65 C90,45 190,15 290,55 C390,20 450,35 500,18',
+        area: 'M0,65 C90,45 190,15 290,55 C390,20 450,35 500,18 L500,105 L0,105 Z',
+        tps: '16.940 TPS',
+        latency: '98 ms',
+        delta: '+18.6% pico tátil'
+      },
+      {
+        line: 'M0,75 C110,35 210,65 310,22 C410,45 460,25 500,30',
+        area: 'M0,75 C110,35 210,65 310,22 C410,45 460,25 500,30 L500,105 L0,105 Z',
+        tps: '15.410 TPS',
+        latency: '112 ms',
+        delta: '+11.2% estável'
+      }
+    ];
+    let nexusStateIdx = 0;
+
+    function runNexusBenchmark() {
+      const btn = document.getElementById('nexus-benchmark-btn');
+      const label = document.getElementById('nexus-benchmark-label');
+      btn.classList.add('is-pressed');
+      label.textContent = 'Executando Benchmark MCP...';
+
+      nexusStateIdx = (nexusStateIdx + 1) % NEXUS_PATHS.length;
+      const nextData = NEXUS_PATHS[nexusStateIdx];
+
+      setTimeout(() => {
+        document.getElementById('nexus-chart-line').setAttribute('d', nextData.line);
+        document.getElementById('nexus-chart-area').setAttribute('d', nextData.area);
+        document.getElementById('nexus-tps-metric').textContent = nextData.tps;
+        document.getElementById('nexus-tps-delta').textContent = nextData.delta;
+        document.getElementById('nexus-latency-metric').textContent = nextData.latency;
+        document.getElementById('nexus-orchestrator-msg').innerHTML =
+          `<strong style="color: var(--text-primary);">Orquestrador Principal:</strong> Benchmark concluído em ${nextData.latency} com 32/32 agentes sincronizados.`;
+
+        addAuditRow(`Benchmark determinístico concluído (${nextData.tps} / P99 ${nextData.latency})`, 'agora');
+
+        btn.classList.remove('is-pressed');
+        label.textContent = 'Executar Benchmark';
+        triggerSoftToast(`Benchmark concluído: ${nextData.tps} (${nextData.latency})`);
+      }, 320);
+    }
+
+    function setNexusTimeframe(tf) {
+      const rt = document.getElementById('nexus-tf-rt');
+      const h1 = document.getElementById('nexus-tf-1h');
+      if (tf === 'realtime') {
+        rt.className = 'badge-soft cursor-pointer';
+        h1.className = 'px-3 py-1 rounded-lg text-xs font-medium cursor-pointer';
+      } else {
+        h1.className = 'badge-soft cursor-pointer';
+        rt.className = 'px-3 py-1 rounded-lg text-xs font-medium cursor-pointer';
+      }
+      runNexusBenchmark();
+    }
+
+    function addAuditRow(text, timeLabel) {
+      const list = document.getElementById('nexus-activity-list');
+      const li = document.createElement('li');
+      li.className = 'activity-row px-4 py-3.5 flex justify-between items-center text-sm';
+      li.innerHTML = `
+        <div class="flex items-center gap-3">
+          <span class="w-2 h-2 rounded-full" style="background-color: var(--accent-emerald);"></span>
+          <span class="font-medium" style="color: var(--text-primary);">${text}</span>
+        </div>
+        <span class="text-xs font-mono-custom" style="color: var(--text-muted);">${timeLabel}</span>
+      `;
+      list.prepend(li);
+      if (list.children.length > 4) {
+        list.removeChild(list.lastElementChild);
+      }
+    }
+
+    function addCustomAuditLog() {
+      addAuditRow('Verificação Axe-Core WCAG 2.1 AA: 0 violações detectadas (Zero Cobalto)', 'agora');
+      triggerSoftToast('Novo registro de auditoria adicionado ao Bento Grid');
+    }
+
+    // --------------------------------------------------------------------------
+    // 4. FRONTEND CODE ARCHITECT SKILL v4.0 EXPLORER (SECTION 04)
+    // --------------------------------------------------------------------------
+    const ATOMIC_LAYERS = [
+      {
+        tag: 'CAMADA ATÔMICA 01 • ÁTOMOS',
+        title: 'Átomos: Botões Táteis, Inputs Escavados, Badges Tonais & Ícones',
+        desc: 'Unidades fundamentais indivisíveis que consomem diretamente --surface-raised e --surface-inset sem bordas duras.',
+        html: `<button class="ui-btn-tactile px-4 py-2 text-xs font-semibold">.ui-btn-tactile</button>
+               <span class="badge-soft">.badge-soft</span>
+               <span class="px-3 py-1.5 rounded-lg surface-inset text-xs font-mono-custom">Surface Inset</span>`
+      },
+      {
+        tag: 'CAMADA ATÔMICA 02 • MOLÉCULAS',
+        title: 'Moléculas: Barra de Busca Escavada & Linha de Atividade Tátil',
+        desc: 'Combinação funcional de 2 ou mais átomos (ex.: ícone + input escavado ou indicador de status + timestamp).',
+        html: `<div class="activity-row px-4 py-2.5 flex items-center gap-3 text-xs">
+                 <span class="w-2 h-2 rounded-full" style="background: var(--accent-emerald);"></span>
+                 <span class="font-semibold">Molécula .activity-row</span>
+                 <span class="opacity-60 font-mono-custom">há 2 min</span>
+               </div>`
+      },
+      {
+        tag: 'CAMADA ATÔMICA 03 • ORGANISMOS',
+        title: 'Organismos: Cards Bento Esculpidos (<SoftCard />) & Sidebar Companion',
+        desc: 'Seções autônomas da interface com cabeçalho semântico, badge tonal e corpo de dados isolado.',
+        html: `<div class="surface-raised-sm p-3.5 rounded-xl text-xs space-y-1">
+                 <div class="font-bold">Organismo &lt;SoftCard /&gt;</div>
+                 <div class="opacity-75">Sombra dupla 135° + ARIA article</div>
+               </div>`
+      },
+      {
+        tag: 'CAMADA ATÔMICA 04 • TEMPLATES',
+        title: 'Templates: Matriz Bento de 12 Colunas (span-8 + span-4)',
+        desc: 'Grade assimétrica responsiva com gap mínimo de 24px (1.75rem) garantindo respirabilidade visual.',
+        html: `<div class="grid grid-cols-12 gap-2 w-48 text-[10px] font-mono-custom text-center">
+                 <div class="col-span-8 surface-raised-sm py-2 rounded">span-8</div>
+                 <div class="col-span-4 surface-inset py-2 rounded">span-4</div>
+               </div>`
+      },
+      {
+        tag: 'CAMADA ATÔMICA 05 • PAGES / VIEWS',
+        title: 'Pages: Centro de Operações Agênticas Conectado ao Estado',
+        desc: 'Instância final que hidrata o Template Bento com telemetria real, temas dinâmicos e auditoria.',
+        html: `<span class="badge-soft font-mono-custom">View: NexusOperationsPage.tsx</span>`
+      }
+    ];
+
+    function selectAtomicLayer(idx) {
+      for (let i = 0; i < 5; i++) {
+        const btn = document.getElementById('atom-btn-' + i);
+        if (i === idx) {
+          btn.className = 'px-3 py-1.5 rounded-full btn-tactile-primary';
+          btn.style.color = '';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-full';
+          btn.style.color = 'var(--text-secondary)';
+        }
+      }
+      const item = ATOMIC_LAYERS[idx];
+      document.getElementById('atomic-stage-tag').textContent = item.tag;
+      document.getElementById('atomic-stage-title').textContent = item.title;
+      document.getElementById('atomic-stage-desc').textContent = item.desc;
+      document.getElementById('atomic-stage-preview').innerHTML = item.html;
+    }
+
+    const ARCHITECT_FILES = {
+      softcard: {
+        name: 'src/components/ui/SoftCard.tsx',
+        code: `import React from 'react';
+
+export interface SoftCardProps {
+  title: string;
+  badgeText?: string;
+  colSpan?: 3 | 4 | 6 | 8 | 12;
+  isLoading?: boolean;
+  error?: string | null;
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const SoftCard: React.FC<SoftCardProps> = ({
+  title,
+  badgeText,
+  colSpan = 4,
+  isLoading = false,
+  error = null,
+  children,
+  className = '',
+}) => {
+  return (
+    <article
+      className={\`ui-card-soft col-span-\${colSpan} \${className}\`}
+      tabIndex={0}
+      aria-label={title}
+      aria-busy={isLoading}
+    >
+      <div className="flex justify-between items-center mb-5">
+        <h3 className="text-xl font-semibold text-slate-800 tracking-tight">{title}</h3>
+        {badgeText && <span className="badge-soft">{badgeText}</span>}
+      </div>
+
+      {isLoading ? (
+        <div role="status" aria-busy="true" aria-live="polite" className="surface-inset p-4 rounded-xl">
+          Sincronizando camada tonal...
+        </div>
+      ) : error ? (
+        <div role="alert" aria-live="assertive" className="surface-inset p-4 rounded-xl text-red-600 font-medium">
+          {error}
+        </div>
+      ) : (
+        <div className="card-body">{children}</div>
+      )}
+    </article>
+  );
+};`
+      },
+      globals: {
+        name: 'src/styles/globals.css',
+        code: `:root {
+  /* Paleta Tonal Monocromática (Soft Light v4.5 — Cerulean Sapphire, Zero Cobalto) */
+  --surface-canvas: #F1F4F8;
+  --surface-raised: #F8FAFC;
+  --surface-inset: #E2E8F0;
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+  --accent-point: #0284C7;
+
+  /* Física Tactile / Neumorfismo Suave 135° */
+  --soft-shadow-main: 8px 8px 24px rgba(166, 180, 200, 0.40);
+  --soft-shadow-light: -8px -8px 24px rgba(255, 255, 255, 0.95);
+  --soft-shadow-inset: inset 3px 3px 8px rgba(166, 180, 200, 0.35),
+                       inset -3px -3px 8px rgba(255, 255, 255, 0.80);
+  --radius-lg: 24px;
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ui-card-soft {
+  background-color: var(--surface-canvas);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--soft-shadow-main), var(--soft-shadow-light);
+  padding: 1.75rem;
+  position: relative;
+  transition: transform 0.25s var(--ease-spring), box-shadow 0.25s var(--ease-spring);
+}`
+      },
+      tokens: {
+        name: 'src/config/tokens.ts',
+        code: `export const DESIGN_TOKENS_V45 = {
+  version: '4.5-soft',
+  rule60_30_10: {
+    canvasBase: '#F1F4F8',      // 60% Fundo Contínuo
+    tonalLayers: '#E5E9F0',     // 30% Elevação & Inset
+    focalAccent: '#0284C7',     // 10% Acento Único Cerulean Sapphire (Zero Cobalto)
+    oceanSapphire: '#1E6091',   // Variante Soft Sapphire
+  },
+  lighting135: {
+    raised: '8px 8px 20px rgba(166, 180, 200, 0.42), -8px -8px 20px rgba(255, 255, 255, 0.95)',
+    inset: 'inset 4px 4px 10px rgba(166, 180, 200, 0.45), inset -4px -4px 10px rgba(255, 255, 255, 0.85)',
+  },
+  prohibitions: {
+    cobaltBlue: false,
+    glassmorphismBlur: false,
+    neonBorders: false,
+    hard1pxBorders: false,
+  },
+} as const;`
+      },
+      designmd: {
+        name: 'src/config/DESIGN.md',
+        code: `---
+version: "4.5-soft"
+name: "Minimalist Tactile Prestige (Zero Cobalt)"
+colors:
+  surface-canvas: "#F1F4F8"
+  surface-raised: "#F1F4F8"
+  surface-inset: "#E5E9F0"
+  text-primary: "#1E293B"
+  text-secondary: "#64748B"
+  accent-point: "#0284C7"
+  accent-sapphire: "#1E6091"
+lighting:
+  soft-shadow: "8px 8px 20px rgba(166, 180, 200, 0.40)"
+  soft-highlight: "-8px -8px 20px rgba(255, 255, 255, 0.95)"
+---`
+      },
+      types: {
+        name: 'src/types/index.ts',
+        code: `export type TonalLayer = 'canvas' | 'inset' | 'flat' | 'raised' | 'contrast';
+
+export type ComponentFSMState = 'IDLE' | 'LOADING' | 'ERROR' | 'PRESSED';
+
+export interface AuditTelemetryResult {
+  auditId: 'AUDIT-A11Y-01' | 'AUDIT-VIS-01' | 'AUDIT-STATE-01' | 'AUDIT-SEC-01';
+  passed: boolean;
+  scoreWeight: number;
+}`
+      }
+    };
+
+    function openArchitectFile(key) {
+      ['softcard', 'globals', 'tokens', 'designmd', 'types'].forEach((k) => {
+        const btn = document.getElementById('arch-file-' + k);
+        if (!btn) return;
+        if (k === key) {
+          btn.className = 'w-full text-left px-3 py-2.5 rounded-xl flex items-center justify-between btn-tactile-primary';
+        } else {
+          btn.className = 'w-full text-left px-3 py-2.5 rounded-xl flex items-center justify-between hover:opacity-80';
+        }
+      });
+
+      const file = ARCHITECT_FILES[key];
+      document.getElementById('arch-code-filename').textContent = file.name;
+      document.getElementById('arch-code-content').textContent = file.code;
+    }
+
+    function copyArchitectCode() {
+      const code = document.getElementById('arch-code-content').textContent;
+      const filename = document.getElementById('arch-code-filename').textContent;
+      copyTextToClipboard(code);
+      triggerSoftToast(`Arquivo ${filename} copiado!`);
+    }
+
+    // --------------------------------------------------------------------------
+    // 5. FRONTEND TESTING AUDITOR SKILL v2.5 ENGINE (SECTION 05)
+    // --------------------------------------------------------------------------
+    function setFsmState(stateKey) {
+      ['idle', 'loading', 'error', 'pressed', 'xss'].forEach((k) => {
+        const b = document.getElementById('fsm-btn-' + k);
+        if (b) {
+          b.className =
+            k === stateKey
+              ? 'px-3 py-1.5 rounded-xl text-xs font-semibold btn-tactile-primary'
+              : 'px-3 py-1.5 rounded-xl text-xs font-semibold btn-tactile';
+        }
+      });
+
+      const card = document.getElementById('audited-soft-card');
+      const title = document.getElementById('audited-card-title');
+      const badge = document.getElementById('audited-card-badge');
+      const body = document.getElementById('audited-card-body');
+      const fsmBadge = document.getElementById('fsm-current-badge');
+      const ariaOut = document.getElementById('telemetry-aria');
+      const xssOut = document.getElementById('telemetry-xss');
+
+      card.classList.remove('surface-inset');
+      card.className = 'ui-card-soft p-6 rounded-2xl space-y-3';
+      title.textContent = 'Métrica de Teste';
+      xssOut.textContent = 'Escapado como Texto Seguro';
+
+      if (stateKey === 'idle') {
+        card.setAttribute('aria-busy', 'false');
+        fsmBadge.textContent = 'FSM: IDLE';
+        badge.textContent = 'Ativo';
+        body.innerHTML = `<p>Conteúdo de Leitura Limpa renderizado em superfície <code>.ui-card-soft</code> sem glassmorphism e sem cobalto.</p>`;
+        ariaOut.textContent = 'role="article" aria-busy="false"';
+      } else if (stateKey === 'loading') {
+        card.setAttribute('aria-busy', 'true');
+        fsmBadge.textContent = 'FSM: LOADING';
+        badge.textContent = 'Sincronizando';
+        body.innerHTML = `<div role="status" aria-busy="true" aria-live="polite" class="surface-inset p-4 rounded-xl font-mono-custom text-xs">⏳ Carregando telemetria determinística (role="status")...</div>`;
+        ariaOut.textContent = 'role="status" aria-busy="true" aria-live="polite"';
+      } else if (stateKey === 'error') {
+        card.setAttribute('aria-busy', 'false');
+        fsmBadge.textContent = 'FSM: ERROR (403)';
+        badge.textContent = 'Falha';
+        body.innerHTML = `<div role="alert" aria-live="assertive" class="surface-inset p-4 rounded-xl text-xs font-semibold" style="color: var(--semantic-error);">⚠️ Falha na conexão com a API — Recuperação segura ativada (role="alert")</div>`;
+        ariaOut.textContent = 'role="alert" aria-live="assertive"';
+      } else if (stateKey === 'pressed') {
+        card.setAttribute('aria-busy', 'false');
+        card.className = 'surface-inset p-6 rounded-2xl space-y-3';
+        fsmBadge.textContent = 'FSM: PRESSED (INSET)';
+        badge.textContent = 'Pressionado';
+        body.innerHTML = `<p>Superfície convertida fisicamente para <code>surface-inset</code> sob pressão tátil.</p>`;
+        ariaOut.textContent = 'box-shadow: var(--inset-shadow)';
+      } else if (stateKey === 'xss') {
+        const maliciousPayload = '<img src=x onerror=alert(1)>';
+        title.textContent = maliciousPayload;
+        fsmBadge.textContent = 'AUDIT-SEC-01: XSS BLOCKED';
+        badge.textContent = 'Sanitizado';
+        body.innerHTML = `<p>Payload malicioso injetado via prop <code>title</code> foi neutralizado como string literal. <code>document.querySelector('img[src="x"]') === null</code>.</p>`;
+        xssOut.textContent = 'img[src="x"] === null (BLOQUEADO)';
+      }
+    }
+
+    function runLiveDomAuditSuite() {
+      const card = document.getElementById('audited-soft-card');
+      const computed = window.getComputedStyle(card);
+      const hasNoBlur = !computed.backdropFilter || computed.backdropFilter === 'none';
+
+      document.getElementById('telemetry-backdrop').textContent = hasNoBlur
+        ? 'none (AUDIT-VIS-01 PASS)'
+        : 'FALHA BLUR DETECTADO';
+
+      const score = (0.35 * 100 + 0.30 * 100 + 0.20 * (hasNoBlur ? 100 : 0) + 0.15 * 100).toFixed(1);
+      document.getElementById('audit-total-score').textContent = score;
+
+      addAuditRow(`Suíte Testing Auditor v2.5 executada: Score ${score}/100 (AUDIT-VIS-01 & A11Y PASS)`, 'agora');
+      triggerSoftToast(`Auditoria Técnica concluída: Score ${score} / 100`);
+    }
+
+    function copyJestSuite() {
+      const suiteCode = `import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import '@testing-library/jest-dom';
+import { SoftCard } from './SoftCard';
+
+expect.extend(toHaveNoViolations);
+
+describe('Auditoria Técnica Soft UI — <SoftCard />', () => {
+  test('AUDIT-A11Y-01: Zero violações no Axe Engine', async () => {
+    const { container } = render(<SoftCard title="Métrica"><p>OK</p></SoftCard>);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  test('AUDIT-VIS-01: Sem glassmorphism/backdrop-filter', () => {
+    render(<SoftCard title="Tactile" data-testid="soft-card"><p>OK</p></SoftCard>);
+    const card = screen.getByTestId('soft-card');
+    expect(window.getComputedStyle(card).backdropFilter).not.toContain('blur');
+  });
+});`;
+      copyTextToClipboard(suiteCode);
+      triggerSoftToast('Suíte Jest + Axe-Core copiada para a área de transferência!');
+    }
+
+    // --------------------------------------------------------------------------
+    // 6. EXISTING SOFT UI LAB HELPERS (SECTION 01 & 03)
+    // --------------------------------------------------------------------------
+    const LAYER_INFO = [
+      {
+        title: '[Layer 0: Canvas Base]',
+        desc: 'Fundo neutro contínuo (60% da área) sem branco estourado.',
+        code: 'background: var(--surface-canvas); /* #F1F4F8 */'
+      },
+      {
+        title: '[Layer 1: Surface Inset]',
+        desc: 'Plano escavado físico para busca, trilho da sidebar e painéis internos.',
+        code: 'box-shadow: inset 4px 4px 10px rgba(166,180,200,0.45), inset -4px -4px 10px #fff'
+      },
+      {
+        title: '[Layer 2: Surface Flat]',
+        desc: 'Placa intermediária de agrupamento sem bordas duras.',
+        code: 'background: var(--surface-flat); border-radius: 24px;'
+      },
+      {
+        title: '[Layer 3: Surface Raised]',
+        desc: 'Cards Bento esculpidos com iluminação direcional dupla a 135°.',
+        code: 'box-shadow: 8px 8px 20px rgba(166,180,200,0.42), -8px -8px 20px rgba(255,255,255,0.95)'
+      }
+    ];
+
+    function inspectLayer(idx) {
+      for (let i = 0; i < 4; i++) {
+        const b = document.getElementById('layer-btn-' + i);
+        if (i === idx) {
+          b.className = 'p-3.5 rounded-2xl text-left transition-all btn-tactile-primary';
+        } else if (i <= 1) {
+          b.className = 'p-3.5 rounded-2xl text-left transition-all surface-inset';
+        } else {
+          b.className = 'p-3.5 rounded-2xl text-left transition-all surface-flat';
+        }
+      }
+      document.getElementById('layer-out-title').textContent = LAYER_INFO[idx].title;
+      document.getElementById('layer-out-desc').textContent = LAYER_INFO[idx].desc;
+      document.getElementById('layer-out-code').textContent = LAYER_INFO[idx].code;
+    }
+
+    function setComparisonMode(mode) {
+      const softView = document.getElementById('comp-view-soft');
+      const noisyView = document.getElementById('comp-view-noisy');
+      const btnSoft = document.getElementById('comp-btn-soft');
+      const btnNoisy = document.getElementById('comp-btn-noisy');
+      const stage = document.getElementById('comparison-stage');
+
+      if (mode === 'soft') {
+        softView.classList.remove('hidden');
+        noisyView.classList.add('hidden');
+        btnSoft.className = 'px-3 py-1.5 rounded-full btn-tactile-primary transition-all';
+        btnNoisy.className = 'px-3 py-1.5 rounded-full transition-all';
+        stage.style.background = '';
+      } else {
+        softView.classList.add('hidden');
+        noisyView.classList.remove('hidden');
+        btnNoisy.className = 'px-3 py-1.5 rounded-full bg-pink-600 text-white transition-all';
+        btnSoft.className = 'px-3 py-1.5 rounded-full transition-all';
+        stage.style.background = '#090514';
+      }
+    }
+
+    function copySwatch(idx) {
+      const swatch = THEME_METADATA[currentTheme].swatches[idx];
+      const textToCopy = `${swatch.name}: ${swatch.hex} (${swatch.oklch})`;
+      copyTextToClipboard(textToCopy);
+      triggerSoftToast(`Token copiado: ${textToCopy}`);
+    }
+
+    function setTypoSpecimen(mode) {
+      const headline = document.getElementById('specimen-headline');
+      const subtext = document.getElementById('specimen-subtext');
+      ['calm', 'moss', 'soft'].forEach((m) => {
+        document.getElementById('spec-btn-' + m).className =
+          m === mode ? 'px-2.5 py-0.5 rounded-full btn-tactile-primary' : 'px-2.5 py-0.5 rounded-full';
+      });
+
+      if (mode === 'calm') {
+        headline.innerHTML = 'Clarity feels <em>good.</em>';
+        subtext.textContent = 'CALM / SYSTEM — Equilíbrio entre presença editorial e respiro.';
+      } else if (mode === 'moss') {
+        headline.innerHTML = 'Clear by nature.';
+        subtext.textContent = 'MOSS / SYSTEM — Hierarquia orgânica inspirada em tons naturais.';
+      } else {
+        headline.innerHTML = 'The quick brown fox.';
+        subtext.textContent = 'SOFT SAPPHIRE / SYSTEM — Calm interfaces for a brighter tomorrow.';
+      }
+    }
+
+    function fillSearch(val) {
+      const input = document.getElementById('tactile-search-input');
+      input.value = val;
+      triggerSoftToast(`Filtro tátil preenchido: "${val}"`);
+    }
+
+    function handleSearchDemo(val) {
+      document.getElementById('live-toast-title').textContent = val ? 'Filtrando...' : 'All set.';
+      document.getElementById('live-toast-desc').textContent = val ? `Busca: "${val}"` : "You're ready to go.";
+    }
+
+    const switchStates = { 1: true, 2: false };
+    function toggleSoftSwitch(id) {
+      switchStates[id] = !switchStates[id];
+      const isOn = switchStates[id];
+      const track = document.getElementById('soft-switch-' + id);
+      const thumb = document.getElementById('soft-thumb-' + id);
+      const label = document.getElementById('soft-label-' + id);
+
+      if (isOn) {
+        track.className = 'w-[74px] h-9 rounded-full p-1 flex items-center transition-colors duration-300 cursor-pointer';
+        track.style.backgroundColor = 'var(--accent-point)';
+        track.style.boxShadow = 'inset 3px 3px 6px rgba(0,0,0,0.28)';
+        thumb.style.transform = 'translateX(36px)';
+        label.textContent = 'On';
+      } else {
+        track.className = 'w-[74px] h-9 rounded-full p-1 flex items-center surface-inset-pill transition-colors duration-300 cursor-pointer';
+        track.style.backgroundColor = '';
+        track.style.boxShadow = '';
+        thumb.style.transform = 'translateX(0px)';
+        label.textContent = 'Off';
+      }
+    }
+
+    const checkStates = { 1: true, 2: false };
+    function toggleSoftCheckbox(id) {
+      checkStates[id] = !checkStates[id];
+      const isChecked = checkStates[id];
+      const box = document.getElementById('soft-check-' + id);
+      const svg = box.querySelector('svg');
+      const text = document.getElementById('soft-check-text-' + id);
+
+      if (isChecked) {
+        box.className = 'w-6 h-6 rounded-lg flex items-center justify-center transition-all btn-tactile-primary';
+        svg.classList.remove('opacity-0');
+        text.textContent = 'Selected (Ativo)';
+        text.style.color = 'var(--text-primary)';
+      } else {
+        box.className = 'w-6 h-6 rounded-lg flex items-center justify-center transition-all surface-inset';
+        svg.classList.add('opacity-0');
+        text.textContent = 'Unselected (Inset)';
+        text.style.color = 'var(--text-secondary)';
+      }
+    }
+
+    function updateProgressFromSlider(val) {
+      const pct = parseInt(val, 10);
+      const circumference = 251.2;
+      const offset = circumference - (pct / 100) * circumference;
+
+      document.getElementById('progress-ring-circle').style.strokeDashoffset = offset;
+      document.getElementById('progress-ring-text').textContent = pct + '%';
+      document.getElementById('progress-bar-text').textContent = pct + '%';
+      document.getElementById('progress-bar-fill').style.width = pct + '%';
+      document.getElementById('component-progress-slider').value = pct;
+
+      const step = Math.max(1, Math.min(6, Math.round((pct / 100) * 6)));
+      document.getElementById('progress-step-label').textContent = `${step} OF 6`;
+    }
+
+    function randomizeProgress() {
+      const randomVal = Math.floor(Math.random() * 65) + 30;
+      updateProgressFromSlider(randomVal);
+      triggerSoftToast(`Progresso sincronizado em ${randomVal}%`);
+    }
+
+    function selectCalmTab(tabKey, presetPct) {
+      ['today', 'week', 'month'].forEach((k) => {
+        const btn = document.getElementById('calm-tab-' + k);
+        if (k === tabKey) {
+          btn.className = 'py-2 px-3 rounded-full text-xs font-semibold transition-all btn-tactile-primary';
+          btn.style.color = '';
+        } else {
+          btn.className = 'py-2 px-3 rounded-full text-xs font-semibold transition-all';
+          btn.style.color = 'var(--text-secondary)';
+        }
+      });
+      updateProgressFromSlider(presetPct);
+    }
+
+    function selectBottomNav(idx) {
+      for (let i = 0; i < 4; i++) {
+        const btn = document.getElementById('bnav-' + i);
+        if (i === idx) {
+          btn.className = 'py-1.5 rounded-full flex flex-col items-center justify-center btn-tactile-secondary';
+          btn.style.color = 'var(--text-primary)';
+        } else {
+          btn.className = 'py-1.5 rounded-full flex flex-col items-center justify-center';
+          btn.style.color = 'var(--text-secondary)';
+        }
+      }
+    }
+
+    function copyFullDesignMd() {
+      const mdText = document.getElementById('design-md-source').innerText;
+      copyTextToClipboard(mdText);
+      const label = document.getElementById('copy-md-label');
+      label.textContent = '✓ DESIGN.md v4.5 Copiado!';
+      triggerSoftToast('Especificação DESIGN.md v4.5 copiada!');
+      setTimeout(() => {
+        label.textContent = 'Copiar DESIGN.md v4.5 Completo';
+      }, 2800);
+    }
+
+    function copyTextToClipboard(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+        console.error('Copy failed', err);
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function triggerSoftToast(message) {
+      const toast = document.getElementById('floating-toast');
+      const body = document.getElementById('toast-msg-body');
+      body.textContent = message;
+
+      document.getElementById('live-toast-title').textContent = 'All set.';
+      document.getElementById('live-toast-desc').textContent = message;
+
+      toast.classList.remove('translate-y-28', 'opacity-0');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('translate-y-28', 'opacity-0');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

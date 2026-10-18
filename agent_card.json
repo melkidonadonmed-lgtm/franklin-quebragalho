@@ -50,13 +50,13 @@
     {
       "id": "analise-design-tatil-frontend",
       "name": "analise-design-tatil-frontend",
-      "description": "Inspeciona e audita interfaces frontend (via agent-browser ou codigo estatico), orquestra os 4 subagentes de UI (Topologia 3+1: ui-shell-navigator, ui-controls-data, ui-motion-interaction, ui-deterministic-observer), analisa menus, sidebar, tipografia, fontes, icones, tamanho dos botoes, transicoes, layout, profundidade tatil e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide, emitindo um Relatorio Comparativo deterministico.",
+      "description": "Fase 1 (Inspector & Structural Scanner) da esteira de Frontend Tátil & Minimalist Impact Melki (DESIGN.md v4.5-soft). Varre a raiz do projeto frontend (detectando stack Next.js/React/Vite/HTML e mapeando pastas/arquivos faltantes como DESIGN.md, components/ui/, components/bento/, components/layout/, config/tokens.ts, styles/globals.css e types/), inspeciona a UI com os 4 subagentes de UI (Topologia 3+1) + frontend-testing-auditor (v2.5.0) e audita conformidade com Minimalist Impact (60-30-10 tonal, Soft UI 135°, zero cobalto/glassmorphism/neon).",
       "tags": [
         "design-tatil",
+        "minimalist-impact",
         "auditoria-ui",
+        "design-md",
         "anti-cobalto",
-        "ergonomia",
-        "multidimensional-2026",
         "subagentes-ui-3+1"
       ],
       "examples": [
@@ -66,14 +66,14 @@
     {
       "id": "aprimoramento-expansibilidade-agentes-skills",
       "name": "aprimoramento-expansibilidade-agentes-skills",
-      "description": "Motor consultivo de arquitetura, expansibilidade (3 Tiers, Envelope Pattern, Context Forking, Memória em 3 Camadas, MCP/A2A) e ciclo de qualidade orientado a dados (Eval-Driven Iteration, Pass@k, FNR < 0.001, LLM-as-a-Judge Snorm, Trigger Optimization, GEPA/ADK e Densidade de Atenção Softmax) para Agentes de IA e SKILL.md. Use quando consultada pela evoluir-skills ou quando o usuário solicitar conversão de agente monolítico em multiagente, escalabilidade em Níveis 1 a 4, despoluição de janela de contexto ou engenharia de métricas de avaliação. Não use para criar pasta física de skill do zero sem passar pela evoluir-skills.",
+      "description": "Arquiteto de sistemas multiagentes em código (Google ADK Go/Python/TS, MCP Spec 2026-07-28, Protocolo A2A, Envelope Pattern, Context Forking, Theranostic Confidence Gate, Provenance HMAC e Memória em 3 Camadas). Use quando o usuário pedir para projetar, escalar ou otimizar a arquitetura de agentes de software, pipelines determinísticos (Gate Chain / Sandbox Go), roteadores híbridos ou suítes de avaliação de agentes (Pass@k, FNR < 0.001, GEPA). Não use para criar ou refatorar arquivos SKILL.md do catálogo de skills (use evoluir-skills ou skill-auditor-refatorador-skills).",
       "tags": [
-        "expansibilidade",
-        "eval-driven",
+        "arquitetura-agentes",
+        "google-adk",
+        "mcp-a2a",
+        "theranostic-pipeline",
         "pass-at-k",
-        "envelope-pattern",
-        "context-forking",
-        "mcp-a2a"
+        "envelope-pattern"
       ],
       "examples": [
         "Executar a skill aprimoramento-expansibilidade-agentes-skills no contexto atual"
@@ -141,14 +141,14 @@
     {
       "id": "consultor-design-tatil-frontend",
       "name": "consultor-design-tatil-frontend",
-      "description": "Analisa e mapeia interfaces frontend via agent-browser, coordena os 4 subagentes de UI (Topologia 3+1: ui-shell-navigator, ui-controls-data, ui-motion-interaction, ui-deterministic-observer), avalia conformidade com o Design System Tátil Melki (profundidade de sombras, cards mais claros que o fundo, rim light e paleta mineral anti-cobalto), oferece opções interativas de melhorias visuais e funcionais com formulários de múltipla escolha ou mockups de referência, audita discrepâncias determinísticas e gera o documento canônico DESIGN.md.",
+      "description": "Fase 2 (Interactive Design Consultant, Folder Scaffolder & Mockup Architect) da esteira de Frontend Tátil & Minimalist Impact Melki (DESIGN.md v4.5-soft). Apresenta opções interativas via ask_question (4 presets Soft UI 135° sem cobalto: Nexus Slate Cerulean, Moss, Soft Sapphire, Obsidian Dark + 22 temas minerais, pares tipográficos Public Sans / Plus Jakarta / Instrument Serif e geometrias), estrutura as pastas em Design Atômico via frontend-code-architect (v4.0) e gera DESIGN.md v4.5-soft + mockup HTML.",
       "tags": [
         "consultoria-ux",
-        "design-tatil",
-        "paleta-mineral",
+        "minimalist-impact",
+        "soft-ui",
+        "scaffolding-frontend",
         "design-md",
-        "multidimensional-2026",
-        "subagentes-ui-3+1"
+        "anti-cobalto"
       ],
       "examples": [
         "Executar a skill consultor-design-tatil-frontend no contexto atual"
@@ -200,32 +200,77 @@
     {
       "id": "design-interface-medica-minimalista",
       "name": "design-interface-medica-minimalista",
-      "description": "Define o padrão de UI/UX para aplicações médicas e SaaS de saúde. Deve ser ativada sempre que o usuário solicitar o desenvolvimento, análise ou refatoração do frontend de sistemas médicos, prontuários, receituários ou calculadoras clínicas.",
+      "description": "Preset clínico especializado (Nexus Slate Cerulean / Moss / Soft Sapphire / Polar Sand) para prontuários eletrônicos, receituários A4, calculadoras médicas e SaaS de saúde, integrado ao Minimalist Impact & Soft Tactile Architecture (DESIGN.md v4.5-soft). Use quando o usuário pedir o desenvolvimento, análise ou refatoração de interfaces médicas, clínicas ou laboratoriais sem azul cobalto.",
       "tags": [
         "saude",
         "clinico",
         "prontuario",
-        "minimalista",
-        "tailwind"
+        "minimalist-impact",
+        "soft-ui",
+        "anti-cobalto"
       ],
       "examples": [
         "Executar a skill design-interface-medica-minimalista no contexto atual"
       ]
     },
     {
+      "id": "design-md",
+      "name": "design-md",
+      "description": "Sintetiza e gera o contrato canônico DESIGN.md (v4.5-soft — Minimalist Impact, Nexus Bento & Soft Tactile Architecture) na raiz de qualquer projeto frontend (local React/Next.js/Vite/HTML ou via Google Stitch MCP), documentando a economia tonal 60-30-10, as 4+1 camadas de elevação (surface-canvas, surface-inset, surface-flat, surface-raised 135° e surface-contrast Terrixa), a Sidebar Tátil com tracker de ícone (surface-inset), os 8 kits Soft UI, Design Atômico em 5 camadas (frontend-code-architect v4.0), auditoria FSM/Axe (frontend-testing-auditor v2.5) e paleta anti-cobalto (Cerulean/Ocean Sapphire #0284C7 / #1E6091).",
+      "tags": [
+        "design-md",
+        "minimalist-impact",
+        "soft-ui",
+        "nexus-bento",
+        "anti-cobalto"
+      ],
+      "examples": [
+        "Executar a skill design-md no contexto atual"
+      ]
+    },
+    {
       "id": "evoluir-skills",
       "name": "evoluir-skills",
-      "description": "Orquestrador mestre do ciclo de vida e pipeline de engenharia de skills do Franklin Quebra-Galho. Use quando o usuário pedir para criar uma nova skill a partir de uma ideia bruta, evoluir, homologar, testar (evals Baseline vs. Treatment e Trigger Matrix) ou versionar uma habilidade existente, encadeando automaticamente expansao-contexto-adaptativa, aprimoramento-expansibilidade-agentes-skills, skill-creator e skill-auditor-refatorador-skills. Não use para auditoria isolada de catálogo (use skill-auditor-refatorador-skills) nem para desenvolvimento de software sem relação com skills.",
+      "description": "Orquestrador de construção e evolução funcional de skills (Forward Builder & TDD). Use quando o usuário pedir para criar uma nova skill a partir de uma ideia bruta, adicionar novas funcionalidades/scripts a uma skill existente ou configurar sua suíte de avaliação empírica (evals/evals.json e Trigger Matrix). Não use para auditoria de catálogo, desacoplamento de monólitos ou refatoração estrutural de skills inchadas (use skill-auditor-refatorador-skills) nem para arquitetura de código multiagente ADK/MCP (use aprimoramento-expansibilidade-agentes-skills).",
       "tags": [
         "skills",
+        "tdd-skills",
+        "forward-builder",
         "evals",
-        "ciclo-de-vida",
-        "governanca",
-        "pipeline-skillcraft",
         "progressive-disclosure"
       ],
       "examples": [
         "Executar a skill evoluir-skills no contexto atual"
+      ]
+    },
+    {
+      "id": "frontend-code-architect",
+      "name": "frontend-code-architect",
+      "description": "Estrutura e padroniza projetos frontend em React, Next.js, Vue ou HTML/CSS utilizando Design Atômico (5 camadas), Design Tokens (DESIGN.md v4.5-soft), matrizes BENTO Grid, escala tipográfica proporcional e Arquitetura Tátil Minimalista (Minimalist Impact & Soft Neumorphism 135°). Use para organizar diretórios src/, criar estilos modulares (globals.css) e componentes tipados (<SoftCard />) proibindo glassmorphism, neons e azul cobalto.",
+      "tags": [
+        "frontend-architect",
+        "atomic-design",
+        "minimalist-impact",
+        "soft-ui",
+        "anti-cobalto"
+      ],
+      "examples": [
+        "Executar a skill frontend-code-architect no contexto atual"
+      ]
+    },
+    {
+      "id": "frontend-testing-auditor",
+      "name": "frontend-testing-auditor",
+      "description": "Audita componentes e interfaces frontend com rigor técnico e matemático sob o paradigma Minimalist Impact e Soft UI (DESIGN.md v4.5-soft). Mede acessibilidade WCAG 2.1 AA (Axe-Core AUDIT-A11Y-01/02), fidelidade de camadas tonais e ausência de glassmorphism/cobalto/neon (AUDIT-VIS-01), determinismo de estados finitos FSM (AUDIT-STATE-01/02), sanitização XSS (AUDIT-SEC-01) e calcula o Score ponderado de prontidão (0-100).",
+      "tags": [
+        "frontend-testing",
+        "axe-core",
+        "fsm",
+        "soft-ui-audit",
+        "minimalist-impact"
+      ],
+      "examples": [
+        "Executar a skill frontend-testing-auditor no contexto atual"
       ]
     },
     {
@@ -330,14 +375,14 @@
     {
       "id": "refatoracao-design-tatil-frontend",
       "name": "refatoracao-design-tatil-frontend",
-      "description": "Executa a refatoracao e implementacao pratica de frontend por framework modular (React, Tailwind, HTML5/CSS, Vue), orquestrando em 3 ondas os 4 subagentes de UI (Topologia 3+1: ui-shell-navigator, ui-controls-data, ui-motion-interaction, ui-deterministic-observer), aplicando navegabilidade de alto padrao, menus descompactados com espacamento nobre, botoes ergonomicos com anti-squish, icones Lucide, tipografia refinada, elevacao tatil mineral e conformidade estrita com o Google HTML/CSS Style Guide e Google JSON Guide.",
+      "description": "Fase 3 (Code Execution & 3-Wave Subagent Orchestrator) da esteira de Frontend Tátil & Minimalist Impact Melki (DESIGN.md v4.5-soft). Executa na prática a refatoração de código frontend (React/Next.js, Tailwind, HTML5/CSS, Vue), extraindo código monolítico para as 5 camadas de Design Atômico (frontend-code-architect v4.0), aplicando iluminação direcional 135° (.ui-card-soft, surface-inset, zero cobalto/glassmorphism/neon) e orquestrando em 3 ondas os 4 subagentes de UI + frontend-testing-auditor (v2.5.0).",
       "tags": [
         "frontend",
-        "design-tatil",
-        "tailwind",
-        "refatoracao",
+        "minimalist-impact",
+        "soft-ui",
+        "refatoracao-codigo",
         "anti-cobalto",
-        "multidimensional-2026"
+        "subagentes-ui-3+1"
       ],
       "examples": [
         "Executar a skill refatoracao-design-tatil-frontend no contexto atual"
@@ -360,12 +405,11 @@
     {
       "id": "skill-auditor-refatorador-skills",
       "name": "skill-auditor-refatorador-skills",
-      "description": "Subagente auditor estático e refatorador de catálogo de habilidades (Estágio 4 do pipeline SkillCraft). Inspeciona pacotes de skills em busca de schemas incompletos, violações dos 3 Tiers (<500 linhas), falta de Trigger Eval Matrix (should-trigger vs near-misses), monólitos a desacoplar, scripts repetitivos em transcrições e discrepâncias com o Motor Multidimensional Tátil v2.6.0-2026 (22 temas, 4 tipografias, 5 geometrias), atualizando SKILL.md e changelogs. Não use para criar uma skill do zero a partir de uma ideia bruta (use evoluir-skills).",
+      "description": "Cirurgião estrutural, desacoplador de monólitos e auditor determinístico de catálogo de skills. Use quando o usuário pedir para auditar skills existentes, enxugar uma skill acima de 500 linhas (movendo tabelas para references/ e código repetitivo de transcript.jsonl para scripts/), dividir uma skill monolítica em sub-skills, calibrar gatilhos com falsos positivos/negativos ou auditar os 4 Módulos Táteis Melki (v2.6.0-2026) nas skills de UI. Não use para criar uma skill nova do zero a partir de uma ideia bruta (use evoluir-skills).",
       "tags": [
-        "auditoria",
-        "refatoracao",
+        "auditoria-skills",
+        "refatoracao-cirurgica",
         "desacoplamento",
-        "governanca-skills",
         "trigger-matrix",
         "design-tatil-2026"
       ],
@@ -412,7 +456,7 @@
         "jku": "http://localhost:10999/public_keys.json",
         "typ": "JOSE+JSON"
       },
-      "signature": "c3731b1dfb118cfdbc2a280e85aaffa082e715a25b6fc2a6693de2c0b31283e5"
+      "signature": "f1b5e84eda489069f1ce9959e8b271a116c6e235fb482e5073221a4f331f2798"
     }
   ]
 }

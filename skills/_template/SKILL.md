@@ -49,31 +49,28 @@ Este documento define o modelo arquitetural canônico para a concepção, padron
 
 Toda skill que envolva frontend, geração de interfaces, dashboards, relatórios visuais ou interação com o usuário deve incorporar obrigatoriamente os 4 módulos canônicos abaixo:
 
-### Módulo 1: Física de Luz/Sombra e Superfícies Minerais (Flexíveis por Projeto)
-- **Destaque por Luz, Sombra e Profundidade (NÃO por Cor Hiperdestacada):** Botões primários, abas ativas, badges e cartões destacam-se por **incidência de luz zenital** (`radial-gradient` / `linear-gradient` no topo + `inset 0 1px 0`), **cavidades esculpidas** (`sunken wells`) e **sombras multicamadas**, nunca por cores vibrantes/neon.
-- **Autonomia de Superfícies Minerais:** Varie tons neutros conforme a identidade do projeto (ardósia, titânio, basalto, calcário, papel algodão, sálvia mineral) mantendo `L_card > L_canvas` no dark mode.
-- ❌ **Banimento Anti-Cobalto:** É categoricamente proibido o uso de azul cobalto puro (`#0044FF`, `#233DFF`, `#1D4ED8`) ou cores fluorescentes saturadas.
+### Módulo 1: Minimalist Impact, Camadas Tonais 60-30-10 e Iluminação 135° (`DESIGN.md v4.5-soft`)
+- **Pilha de Elevação Tonal (4+1 Camadas):** `60%` `surface-canvas` (`#F1F4F8` Light / `#12151B` Dark), `30%` camadas tonais (`surface-inset` `#E5E9F0` escavado para inputs e berço do ícone ativo na sidebar `#sidebar-active-tracker`, `surface-flat` `#E9EEF5`, `surface-raised` `.ui-card-soft` com iluminação direcional dupla a **135°** e `surface-contrast` `#1E293B` para inversão tonal Terrixa `.terrixa-notched`) e `10%` `--accent-point` único.
+- **Autonomia de Superfícies & 4 Presets Soft UI:** *Nexus Slate Cerulean* (`#0284C7`), *Moss & Calm* (`#174930`), *Soft Sapphire* (`#1E6091`) e *Obsidian Dark* (`#38BDF8`), mantendo $L_{\text{card}} > L_{\text{canvas}}$ no dark mode.
+- ❌ **Banimento Anti-Cobalto & Anti-Glassmorphism (`AUDIT-VIS-01`):** É categoricamente proibido o uso de azul cobalto elétrico (`#0044FF`, `#0057FF`, `#233DFF`, `#1D4ED8`), `backdrop-filter: blur()`, bordas neon ou bordas duras de `1px`.
 
-### Módulo 2: Minimalismo, Regra 1+2 e Composição Visual (Tactile Matte 4K)
-- **Orçamento de Densidade (Regra 1+2):** No máximo **1 ação primária** (tecla iluminada em relevo) e **2 secundárias** discretas visíveis por card (restante em menu `⋯`).
-- **Zero "Caixa dentro de Caixa":** Separe metadados com tipografia, espaço livre (*whitespace* $\ge 30\%$) e divisórias sutis de `1px`.
-- **Anti-Squish e Ergonomia TDAH:** Hierarquia escaneável em 3 segundos, busca rápida (`Ctrl+K`), `flex-shrink: 0; white-space: nowrap;` em botões/badges e ausência de `alert()` nativo bloqueante.
+### Módulo 2: Design Atômico (5 Camadas), Regra 1+2 e Composição Bento (`frontend-code-architect` v4.0)
+- **Design Atômico & Modularidade:** Separar em Átomos, Moléculas, Organismos (`<SoftCard />`), Templates (Bento Grid 12 colunas) e Pages (`<= 300` linhas/arquivo).
+- **Orçamento de Densidade (Regra 1+2) & Zero "Caixa dentro de Caixa":** No máximo **1 ação primária** em relevo e **2 secundárias** discretas visíveis por card (restante em menu `⋯`), com respiro amplo ($\ge 24\text{px}$).
+- **Anti-Squish e Ergonomia TDAH:** Hierarquia escaneável em 3 segundos, busca rápida (`Ctrl+K`), `flex-shrink: 0; white-space: nowrap;` em botões/badges ($\ge 44\text{px}$) e toasts `role="status" aria-live="polite"` (zero `alert()` nativo).
 
 ### Módulo 3: Mapeamento de Opções e Preferências Pessoais do Desenvolvedor
 - **Consulta Estruturada via `ask_question`:** Formulários de múltipla escolha apenas em bloqueios críticos/irreversíveis (máx. 1–2 perguntas).
-- **Seletor dos 5 Temas em `localStorage` (Sob Demanda / Cockpits):** *Tactile Matte*, *Phantom Obsidian 4K*, *Quiet Luxury Titanium*, *Steadfast Stainless* e *Warm Editorial Paper* (dentro do catálogo de 22 temas `v2.6.0-2026`).
+- **Seletor de Presets Soft UI & Temas Minerais (`localStorage`):** *Nexus Slate Cerulean*, *Moss & Calm*, *Soft Sapphire*, *Obsidian Dark*, *Tactile Matte*, *Phantom Obsidian 4K*, *Quiet Luxury Titanium*, *Steadfast Stainless* e *Warm Editorial Paper*.
 - **Ecossistema Open Source Autorizado (Copy-Paste):** Prioridade para componentes modulares desacoplados (**shadcn/ui**, **Radix UI**, **Tailwind CSS**, **Lucide Icons**).
 
-### Módulo 4: Matriz de Detecção de Discrepâncias com as Preferências
-- Checklist determinístico que avalia o produto da skill contra os padrões perenes:
-  * `[PASS / FAIL]` **Destaque por Luz/Sombra (Zero Cor Hiperdestacada):** Botões e abas destacam-se por luz zenital e relevo em vez de cores berrantes?
-  * `[PASS / FAIL]` **Orçamento 1+2 e Zero Caixa em Caixa:** Máximo de 1 ação primária + 2 secundárias por card e $\ge 30\%$ de whitespace?
-  * `[PASS / FAIL]` **Ausência de Cobalto Neon:** A paleta está livre de azuis elétricos saturados (`#0044FF`)?
-  * `[PASS / FAIL]` **Profundidade no Dark Mode:** Cartões são mais claros que o fundo (`L_card > L_canvas`)?
-  * `[PASS / FAIL]` **Sombras Multicamadas e Rim Light:** Elementos elevados possuem oclusão + projeção + chanfro superior?
-  * `[PASS / FAIL]` **Anti-Squish Ativo:** Botões e badges possuem `flex-shrink: 0; white-space: nowrap;`?
-  * `[PASS / FAIL]` **Usabilidade e Ergonomia TDAH:** Escaneável em 3s, sem `alert()` nativo e com alvos >= 40x40px?
-  * `[PASS / FAIL]` **Desacoplamento e Tipagem:** Camadas Domínio/I-O/UI separadas e contratos tipados (`pydantic`/`dataclass`)?
+### Módulo 4: Matriz de Detecção de Discrepâncias & Rubrica `frontend-testing-auditor` (`v2.5.0`)
+- Checklist determinístico que avalia o produto da skill ($\text{Score} = 0.35\cdot\text{A11y} + 0.30\cdot\text{FSM} + 0.20\cdot\text{Tokens} + 0.15\cdot\text{Sec}$):
+  * `[PASS / FAIL]` **`AUDIT-VIS-01` (Camadas Tonais 135° & Zero Blur/Cobalto):** Superfícies `.ui-card-soft` e `surface-inset` livres de `backdrop-filter: blur` e livres de azul cobalto (`#0044FF` / `#0057FF`)?
+  * `[PASS / FAIL]` **`AUDIT-A11Y-01/02` (WCAG 2.1 AA & Foco sem Neon):** Zero violações no `jest-axe`, contraste $\ge 4.5:1$ e foco de teclado tracejado tátil?
+  * `[PASS / FAIL]` **`AUDIT-STATE-01/02` (Máquina de Estados FSM):** Estados `Idle`, `Loading` (`aria-busy="true"`), `Error` (`role="alert"`) e `Pressed` (`surface-inset`) implementados?
+  * `[PASS / FAIL]` **`AUDIT-SEC-01` (Sanitização XSS & Tipagem Estrita):** Bloqueio de injeção HTML/XSS e contratos tipados (`TypeScript strict` / `Pydantic`)?
+  * `[PASS / FAIL]` **Orçamento 1+2, Anti-Squish (`>= 44px`) e Ergonomia TDAH (`Ctrl+K`)?**
 
 ---
 

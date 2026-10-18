@@ -67,3 +67,11 @@ Os 6 módulos de engenharia visual e interação ficam consolidados em **4 Subag
 - [MY_AGENTS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_AGENTS.md): Detalhamento dos perfis e prompts dos agentes.
 - [MY_SKILLS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md): Catálogo de skills disponíveis para os agentes.
 - [GEMINI.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/GEMINI.md): Regras globais de ambiente e segurança.
+
+---
+
+## Diretrizes Globais de Qualidade, Eficiência e Execução Adaptativa
+Este repositório segue as diretrizes globais do workspace:
+- **Regras do Workspace (dev)**: [AGENTS.md](file:///C:/Users/melki/dev/AGENTS.md) e [GEMINI.md](file:///C:/Users/melki/dev/GEMINI.md)
+- **Preferências e Memória Canônica**: [Preferências de Trabalho com Agentes.md](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md)
+- **Regra Global (lways_on)**: [diretrizes-qualidade-eficiencia.md](file:///C:/Users/melki/.gemini/config/rules/diretrizes-qualidade-eficiencia.md) (1. Qualidade e Tipagem Estrita; 2. Eficiência, Zero Preâmbulo e Portões HITL; 3. Flexibilidade Anti-Engessamento; 4. Self-Refine Silencioso; 5. Proatividade com 1 Próximo Passo Concreto).

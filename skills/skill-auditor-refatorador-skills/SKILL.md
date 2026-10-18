@@ -1,108 +1,92 @@
 ---
 name: skill-auditor-refatorador-skills
 description: >-
-  Subagente auditor estático e refatorador de catálogo de habilidades (Estágio 4 do pipeline SkillCraft). Inspeciona pacotes de skills em busca de schemas incompletos, violações dos 3 Tiers (<500 linhas), falta de Trigger Eval Matrix (should-trigger vs near-misses), monólitos a desacoplar, scripts repetitivos em transcrições e discrepâncias com o Motor Multidimensional Tátil v2.6.0-2026 (22 temas, 4 tipografias, 5 geometrias), atualizando SKILL.md e changelogs. Não use para criar uma skill do zero a partir de uma ideia bruta (use evoluir-skills).
+  Cirurgião estrutural, desacoplador de monólitos e auditor determinístico de catálogo de skills. Use quando o usuário pedir para auditar skills existentes, enxugar uma skill acima de 500 linhas (movendo tabelas para references/ e código repetitivo de transcript.jsonl para scripts/), dividir uma skill monolítica em sub-skills, calibrar gatilhos com falsos positivos/negativos ou auditar os 4 Módulos Táteis Melki (v2.6.0-2026) nas skills de UI. Não use para criar uma skill nova do zero a partir de uma ideia bruta (use evoluir-skills).
 license: MIT
 metadata:
-  version: "1.3.0"
+  version: "2.0.0"
   author: "SkillCraft & Melki"
-  category: "Governança, Metaprompting e Arquitetura de Agentes"
-  updated_at: "2026-10-14"
+  category: "Governança, Desacoplamento e Auditoria de Skills"
+  updated_at: "2026-10-17"
   tags:
-    - "auditoria"
-    - "refatoracao"
+    - "auditoria-skills"
+    - "refatoracao-cirurgica"
     - "desacoplamento"
-    - "governanca-skills"
     - "trigger-matrix"
     - "design-tatil-2026"
-version: 1.3.0
-updated_at: 2026-10-14
+version: 2.0.0
+updated_at: 2026-10-17
 author: SkillCraft & Melki
-category: Governança, Metaprompting e Arquitetura de Agentes
+category: Governança, Desacoplamento e Auditoria de Skills
 authorized_sub_skills:
-  - name: aprimoramento-expansibilidade-agentes-skills
-    role: "Consulta de parâmetros de 3 Tiers, Envelope Pattern, Pass@k e Densidade Softmax durante refatorações"
   - name: skill-orquestrador-planos-encadeados
     role: "Atualização das rotas de hand-off quando um monólito é dividido em sub-skills"
 ---
 
-# SKILL: Auditoria Arquitetural e Refatoração de Skills (`skill-auditor-refatorador-skills` v1.3.0) 🛡️
+# Cirurgia Estrutural e Auditoria Determinística de Skills (`skill-auditor-refatorador-skills` v2.0.0) 🛡️
 
-## 1. Papel na Esteira `SkillCraft` (Sem Redundância)
-Enquanto a **`evoluir-skills`** orquestra a criação/evolução end-to-end a partir de ideias brutas e a **`aprimoramento-expansibilidade-agentes-skills`** fornece a arquitetura consultiva de expansão e métricas (Níveis 1 a 4), a **`skill-auditor-refatorador-skills`** atua como o **Auditor Estático, Desacoplador Cirúrgico de Monólitos e Validador de Conformidade** (Estágio 4 da esteira ou auditoria independente de catálogo).
-
----
-
-## 2. Gatilhos de Ativação
-
-### Quando Usar
-Esta skill **DEVE** ser acionada nas seguintes condições:
-- Como **Estágio 4 de Homologação** invocado pela `evoluir-skills` após o scaffolding de uma nova skill.
-- Solicitações explícitas de auditoria e refatoração: *"audite minhas skills"*, *"verifique quais skills violam os 3 Tiers ou não possuem Trigger Matrix"*, *"separe esta skill monolítica em módulos encadeados"*, *"audite se as skills de UI respeitam o motor de 22 temas v2.6.0-2026"*.
-- Quando uma skill falhar em ativação automática (falsos positivos/negativos na `description`) ou apresentar loops e reescrita repetitiva de scripts em `transcript.jsonl`.
-
-### Quando NÃO Usar
-- Para criar uma skill nova a partir de uma ideia geral ou rascunho bruto (utilize `evoluir-skills`, que acionará o pipeline completo).
-- Para execução de fluxos operacionais já validados (utilize `skill-orquestrador-planos-encadeados`).
-- Para comandos destrutivos fora do escopo do catálogo de skills.
+Motor de **Diagnóstico, Desacoplamento Cirúrgico e Cura de Catálogo**. Não cria skills do zero (papel da `evoluir-skills`) nem projeta arquiteturas de código ADK/MCP (papel da `aprimoramento-expansibilidade-agentes-skills`): atua exclusivamente na **inspeção determinística, redução de entropia, extração de scripts/referências e eliminação de redundâncias entre skills**.
 
 ---
 
-## 3. Entradas Esperadas
-- `skills_repository_path_or_content` (obrigatório): Caminho ou conteúdo dos pacotes `SKILL.md` a serem auditados.
-- `audit_mode` (opcional): `diagnostic_only` (somente relatório determinístico `[PASS]`/`[FAIL]`) ou `apply_refactoring` (aplica o desacoplamento, extrai scripts, espelha em `skills/` e atualiza o `MY_SKILLS.md`). Padrão: `diagnostic_only`.
-- `transcript_log_path` (opcional): Caminho de `transcript.jsonl` para diagnosticar loops de ferramentas ou código repetitivo que deve migrar para `scripts/`.
+## 🎯 Quando Usar (Gatilhos de Ativação)
+- Auditar uma skill ou todo o catálogo em busca de violações dos 3 Tiers (`SKILL.md > 500` linhas), ausência de `evals/evals.json` ou conflito de gatilhos (*overlapping descriptions*).
+- Refatorar e enxugar uma skill inchada: extrair blocos estáticos para `references/` (Tier 3) e comandos/parsers repetitivos detectados em `transcript.jsonl` para `scripts/`.
+- Dividir uma skill monolítica (que mistura múltiplos domínios cognitivos) em skills independentes e ortogonais.
+- Auditar conformidade de skills de Frontend/UI com os **4 Módulos Táteis Melki (`v2.6.0-2026`)**.
+
+## 🚫 Quando NÃO Usar
+- **Não usar** para criar uma skill nova a partir de uma ideia bruta (use `evoluir-skills`).
+- **Não usar** para arquitetar código de agentes em Go, Python ou TypeScript (use `aprimoramento-expansibilidade-agentes-skills`).
 
 ---
 
-## 4. Diretrizes Canônicas de Design e Preferências Melki na Auditoria (`v2.6.0-2026`)
-
-Ao auditar qualquer skill que gere interfaces, componentes web, dashboards ou relatórios HTML/PDF, o auditor valida a conformidade com os **4 Módulos Canônicos**:
-
-### 4.1. Módulo 1: Paleta de Cores e Catálogo de 22 Temas
-- **Verificação do Motor Multidimensional (`v2.6.0-2026`)**: Suporte às **10 Paletas Canônicas Melki** (`tactile-matte` `#090B10`/`#141824`, `phantom-4k`, `luxury-deepblue`, `gilded-navy`, `polar-sand`, etc.), **5 Temas Trends 2026** (`warm-editorial-paper`, `quiet-luxury-titanium`, `neo-swiss-grid`, `biophilic-matcha-stone`, `tactile-carbon-2026`) e **7 Temas de Estúdio**.
-- **Verificação Anti-Cobalto**: Proibição absoluta de azul cobalto puro (`#0044FF`, `#233DFF`, `#1D4ED8`) ou cores neon fluorescentes.
-
-### 4.2. Módulo 2: Design Tátil, Tipografia, Geometria e Física 3D
-- **Anti-Glassmorphism & Relevo Físico**: Proibir `backdrop-filter: blur` e exigir `L_card > L_canvas` no dark mode, sombras multicamadas (contato + projeção difusa) e *rim light* zenital (`border-top: 1px solid rgba(255, 255, 255, 0.14)`).
-- **Presets Multidimensionais**: Validar suporte aos **4 Pares Tipográficos (`TYPOGRAPHY_PRESETS`)**, **5 Geometrias de Borda (`GEOMETRY_PRESETS`: `6px` a `24px`)**, física 3D `calculateCardTilt` ($\pm 5.5^\circ$ com `@media (prefers-reduced-motion: reduce)`) e resiliência anti-squish (`flex-shrink: 0; white-space: nowrap;`).
-
-### 4.3. Módulo 3: Opções das Preferências do Desenvolvedor
-- **Consulta Estruturada via `ask_question`**: Oferecer escolhas arquiteturais/estéticas claras sem decisões arbitrárias.
-- **Supply Chain Open-Source Copy-Paste**: Priorizar **shadcn/ui**, **Radix UI**, **Lucide Icons** e **Tailwind CSS**.
-
-### 4.4. Módulo 4: Matriz Determinística de Discrepâncias
-- Emissão obrigatória dos marcadores `[DISC-PALETA]`, `[DISC-TATIL]`, `[DISC-OPCOES]` e `[DISC-SUPPLY]` com status `[PASS]`, `[FAIL]` ou `[UNVERIFIED]`.
+## 📥 Entradas Obrigatórias e Pré-requisitos
+- `skill_target` (obrigatório): Nome/slug da skill ou caminho do diretório a ser auditado/refatorado.
+- `audit_mode` (opcional): `diagnostic_only` (somente diagnóstico `[PASS]`/`[FAIL]`) ou `apply_refactoring` (aplica o enxugamento, extrai `references/` e `scripts/`, espelha e atualiza o `MY_SKILLS.md`).
+- `transcript_log_path` (opcional): Caminho de `transcript.jsonl` para identificar comandos ou parsers repetitivos que devem migrar para `scripts/`.
 
 ---
 
-## 5. Processamento Passo a Passo
+## ⚙️ Fluxo Cirúrgico em 4 Etapas
 
-### Passo 1: Auditoria de Contrato Estático, 3 Tiers e Densidade Softmax
-1. Validar frontmatter YAML (`name`, `description` $\le 1024$ chars em 3ª pessoa, `license: MIT`, bloco `metadata` com `version`, `author`, `category`, `updated_at`, `tags`).
-2. Auditar **Divulgação Progressiva (3 Tiers)**:
-   - O `SKILL.md` (Tier 2) possui $< 500$ linhas e instruções enxutas baseadas no "Porquê" (*Lean Instructions*, sem *over-constraining*)?
-   - Tabelas extensas e schemas estão isolados em `references/` (Tier 3)?
-3. Inspecionar `rules/criterios_auditoria.md` (presença de `[PASS]` e `[FAIL]`) e `evals/evals.json` (presença de casos *Baseline vs. Treatment* e matriz `should-trigger` vs `should-not-trigger` / *near-misses*).
+### Etapa 1: Diagnóstico Determinístico Zero-LLM (`adk-go-mcp` + `validate_skills.py`)
+Nunca faça contagem manual de linhas ou inspeção visual de JSON antes de acionar os motores determinísticos:
+1. Invoque a tool MCP **`dispatch_skill_deterministic_tests`** (`action: "run_only"` ou `"configure_and_run"`) para a skill alvo:
+   - Obtém em microssegundos: validade do frontmatter YAML, contagem exata de linhas do `SKILL.md` (`tier2_under_500`) e resultado do Eval Harness A vs B (`Pass@1`, `Pass@3`, `Paired t-Stat`, `TEI`).
+2. Para auditoria em lote do repositório, execute:
+   ```powershell
+   uv run python scripts/validate_skills.py
+   ```
 
-### Passo 2: Diagnóstico de Trajetórias (`transcript.jsonl`) e Desacoplamento de Monólitos
-1. **Extração para `scripts/`**: Se a skill induz o agente a reescrever repetidamente parsers ou comandos complexos em runtime, extrair a lógica para `scripts/`.
-2. **Especialização de Componentes**: Se a skill acumula domínios cognitivos conflitantes (ex: Planejamento Causal + Geração Gráfica Mermaid; Auditoria Read-Only + Mutação Destrutiva), desmembrar conforme [`references/matriz_desacoplamento.md`](references/matriz_desacoplamento.md) e injetar `authorized_sub_skills`.
+### Etapa 2: Cirurgia de Desacoplamento e Enxugamento (3 Tiers)
+Com base nas falhas apontadas na Etapa 1, aplique as 4 operações cirúrgicas:
+1. **Cura de Colisão de Gatilhos (Tier 1)**:
+   - Compare a `description` das skills semanticamente próximas.
+   - Adicione cláusulas explícitas `"Use quando..."` e `"Não use para X (use skill-Y)"`, calibrando `trigger_eval_queries` (`should_trigger` vs `should_not_trigger` com *near-misses*) em `evals/evals.json`.
+2. **Desidratação de Tier 2 (`SKILL.md < 500` linhas)**:
+   - Remova listas repetitivas de regras em caixa alta e explicações teóricas duplicadas.
+   - Mova tabelas extensas, templates longos e schemas JSON/Pydantic para `references/<arquivo>.md` (Tier 3) com link relativo.
+3. **Extração de Trajetórias Repetitivas para `scripts/`**:
+   - Se `transcript.jsonl` ou o corpo da skill mostrar que o agente reescreve o mesmo parser/comando em runtime, extraia para um script parametrizado em `scripts/` e substitua no `SKILL.md` por uma única linha de invocação.
+4. **Fissão de Monólitos**:
+   - Se a skill mistura domínios conflitantes (ex.: *Diagnóstico Read-Only* + *Refatoração Destrutiva*), separe conforme [`references/matriz_desacoplamento.md`](references/matriz_desacoplamento.md).
 
-### Passo 3: Mutação Segura, Espelhamento e Validação Automatizada
-1. Em modo `apply_refactoring`, atualizar os arquivos preservando a intenção central do usuário, incrementar a versão SemVer (`patch` ou `minor`) e sincronizar fisicamente `.agents/skills/<nome>/` e `skills/<nome>/`.
-2. Executar obrigatoriamente `uv run python scripts/validate_skills.py` e comprovar `100% PASS` no terminal.
+### Etapa 3: Auditoria dos 4 Módulos Táteis Melki (`v2.6.0-2026` — Apenas Skills de UI/HTML/PDF)
+Se e somente se a skill auditada gerar interfaces, componentes frontend ou documentos visuais, verifique e emita a matriz determinística:
+- **`[DISC-PALETA]`**: Suporte ao catálogo de 22 temas (`v2.6.0-2026`) e proibição estrita de azul cobalto puro (`#0044FF`, `#233DFF`, `#1D4ED8`) ou neon.
+- **`[DISC-TATIL]`**: Anti-glassmorphism (`backdrop-filter: blur` proibido), `L_card > L_canvas` no dark mode, sombras multicamadas, *rim light* zenital, `TYPOGRAPHY_PRESETS`, `GEOMETRY_PRESETS` e anti-squish (`flex-shrink: 0; white-space: nowrap;`).
+- **`[DISC-OPCOES]`**: Uso estruturado de `ask_question` para decisões visuais/arquiteturais.
+- **`[DISC-SUPPLY]`**: Priorização de `shadcn/ui`, `Radix UI`, `Lucide Icons` e `Tailwind CSS`.
+
+### Etapa 4: Homologação, Espelhamento Físico e Registro
+1. Incremente a versão SemVer no frontmatter YAML (`patch` para ajustes de texto/gatilho, `minor` para extração de scripts/referências ou desacoplamento).
+2. Copie fisicamente `.agents/skills/<nome>/` para `skills/<nome>/` e `.gemini/config/plugins/franklin-skills/skills/<nome>/`.
+3. Reexecute `dispatch_skill_deterministic_tests` e `uv run python scripts/validate_skills.py --targets <nome>` comprovando `[PASS]` total e atualize o [MY_SKILLS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md).
 
 ---
 
-## 6. Saídas Estruturadas (Modelo de Saída)
-1. **Quadro Resumo de Auditoria**: Tabela com Skill, Versão, Status dos 3 Tiers, Status da Trigger Matrix/Evals e Resultado Final (`[PASS]` / `[FAIL]`).
-2. **Matriz de Discrepâncias com as Preferências do Melki**: Avaliação dos 4 módulos (`[DISC-PALETA]`, `[DISC-TATIL]`, `[DISC-OPCOES]`, `[DISC-SUPPLY]`).
-3. **Plano de Desacoplamento / Extração de Scripts**: Contratos `authorized_sub_skills` ou scripts extraídos para `scripts/`.
-4. **Changelog / Diff e Comprovação de Terminal**: Registro de alterações em `MY_SKILLS.md` e saída real do `validate_skills.py`.
-
----
-
-## 7. Exceções e Limites
-- Não deleta permanentemente nenhuma skill sem backup e registro formal no changelog de `MY_SKILLS.md`.
-- Não reduz o número mínimo de skills exigido pela suíte de regressão do servidor MCP (`tests/test_server.py`) sem autorização explícita Human-in-the-Loop.
+## 📤 Modelo de Saída
+1. **Tabela Diagnóstica Antes vs. Depois**: Linhas do `SKILL.md`, Colisões de Gatilho Resolvidas, Arquivos Extraídos (`references/` / `scripts/`) e Veredito do Eval Harness (`[PASS]`/`[FAIL]`).
+2. **Matriz Tátil (`[DISC-*]`)**: Presente quando a skill auditada for de UI/Frontend.
+3. **Comprovação de Terminal**: Resultado real do `dispatch_skill_deterministic_tests` e `validate_skills.py`.

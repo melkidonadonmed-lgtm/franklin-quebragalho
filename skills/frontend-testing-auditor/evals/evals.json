@@ -1,0 +1,26 @@
+{
+  "skill_name": "frontend-testing-auditor",
+  "version": "2.5.0",
+  "evals": [
+    {
+      "eval_id": "auditor-softcard-suite",
+      "prompt": "Crie a suíte de auditoria Jest + React Testing Library + Axe-Core para o componente <SoftCard /> validando Minimalist Impact, FSM e anti-XSS.",
+      "expected_assertions": [
+        "Inclui AUDIT-A11Y-01 (axe toHaveNoViolations) e AUDIT-A11Y-02 (foco de teclado)",
+        "Inclui AUDIT-VIS-01 verificando que computedStyle.backdropFilter não contém blur e possui classe ui-card-soft",
+        "Inclui AUDIT-STATE-01 (Loading role=status aria-busy=true -> Success) e AUDIT-STATE-02 (Error role=alert)",
+        "Inclui AUDIT-SEC-01 testando payload <img src=x onerror=alert(1)> e calcula o Score ponderado (0.35, 0.30, 0.20, 0.15)"
+      ]
+    }
+  ],
+  "trigger_eval_queries": {
+    "should_trigger": [
+      "Audite o componente React SoftCard com Jest, Axe-Core, FSM e AUDIT-VIS-01",
+      "Gere os testes determinísticos de UI para validar ausência de glassmorphism e estados Loading/Error"
+    ],
+    "near_misses": [
+      "Organize as pastas do Google Drive",
+      "Crie uma tabela no BigQuery"
+    ]
+  }
+}

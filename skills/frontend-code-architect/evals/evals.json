@@ -1,0 +1,34 @@
+{
+  "skill_name": "frontend-code-architect",
+  "version": "4.0.0",
+  "evals": [
+    {
+      "eval_id": "architect-atomic-soft-ui",
+      "prompt": "Estruture o diretório src/ de um dashboard React + TypeScript usando Design Atômico em 5 camadas e Minimalist Impact (Soft UI 135 graus) sem cobalto.",
+      "expected_assertions": [
+        "Organiza src/ em components/ui, components/bento, components/layout, config, styles e types",
+        "Define variáveis CSS --surface-canvas, --surface-raised, --surface-inset e --accent-point (#0284C7 Cerulean Sapphire)",
+        "Implementa <SoftCard /> com TypeScript estrito e estados isLoading/error acessíveis",
+        "Proíbe backdrop-filter: blur, neon e azul cobalto (#0057FF/#0044FF)"
+      ]
+    },
+    {
+      "eval_id": "architect-bento-grid-sidebar",
+      "prompt": "Crie os tokens e organismos para um Bento Grid de 12 colunas com Sidebar Tátil que acompanha o ícone ativo.",
+      "expected_assertions": [
+        "Utiliza surface-inset para o tracker deslizante do ícone ativo (#sidebar-active-tracker)",
+        "Aplica regra 60-30-10 e sombras direcionais duplas a 135 graus"
+      ]
+    }
+  ],
+  "trigger_eval_queries": {
+    "should_trigger": [
+      "Organize a arquitetura frontend em Design Atômico com SoftCard.tsx e globals.css",
+      "Padronize as pastas src/ do projeto React com Minimalist Impact e DESIGN.md v4.5"
+    ],
+    "near_misses": [
+      "Audite as duplicatas da unidade G:\\Meu Drive",
+      "Converta este arquivo Markdown em PDF via Edge headless"
+    ]
+  }
+}

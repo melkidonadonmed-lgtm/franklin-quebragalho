@@ -1,48 +1,43 @@
-# Diretrizes do Design System Tátil & Multidimensional Melki (`v2.6.0-2026`)
+# Diretrizes do Design System Tátil, Minimalist Impact & Multidimensional Melki (`v4.5-soft` / `v2.6.0-2026`)
 
-Este documento contém o cânone visual, o Motor Multidimensional de Temas (Cores + Tipografia + Geometria + Acabamento), as fórmulas matemáticas de elevação 3D, as variáveis CSS e o catálogo completo de **22 temas homologados** no **FrontCraft Studio (`v2.6.0-2026`)**.
+Este documento contém o cânone visual consolidado do **Minimalist Impact & Soft Tactile Architecture (`DESIGN.md v4.5-soft`)** e do **FrontCraft Studio (`v2.6.0-2026`)**: a Regra 60-30-10 Tonal, a Pilha de 4+1 Camadas com Iluminação Direcional a 135°, os **4 Presets Soft UI (Zero Cobalto)**, os **8 Kits de Componentes Soft UI** e o catálogo de **22 temas minerais homologados**.
 
 ---
 
-## 1. Princípios Fundamentais de Ergonomia Visual & Física 3D
+## 1. Arquitetura Minimalist Impact & Soft Tactile (`DESIGN.md v4.5-soft`)
 
-### 1.1. Regra de Ouro da Profundidade Volumétrica (Z-Index Físico)
-- **No Tema Escuro (Dark Mode):** Os cartões (`cards`) e superfícies elevadas **DEVEM ser visivelmente mais claros que o plano de fundo (`canvas`)** ($L_{\text{card}} > L_{\text{canvas}}$).
-  - Exemplo canônico: Canvas `#090B10` ou `#060709` vs Cartões `#141824` ou `#11141D`.
-  - **Causa Raiz:** Em fundos escuros onde o card tem a mesma tonalidade do fundo, as sombras tornam-se invisíveis e a interface perde o relevo físico. A diferença positiva de luminância entre o card e o fundo é o que permite à sombra projetada criar volume palpável.
-- **No Tema Claro (Light Mode / Polar Sand):** O canvas adota tom mineral/polar suave (`#EEF2F6`, `#E3EBF2`, `#EFECE6`), enquanto os cards adotam branco puro (`#FFFFFF`) ou marfim elevado (`#FCFBF8`), com sombras de oclusão e contato nítidas (`rgba(11, 19, 43, 0.12)`).
+### 1.1. Economia Tonal 60-30-10 & Pilha de 4+1 Camadas (135° Directional Light)
+- **Layer 0 (`60%` `surface-canvas`)**: Fundo neutro contínuo sem branco estourado (`#F1F4F8` em Nexus Slate; `#F4F3EC` em Moss; `#F5F4EE` em Soft Sapphire; `#12151B` / `#090B10` em Obsidian Dark).
+- **Layer 1 (`surface-inset`)**: Cavidade física escavada (`#E5E9F0` com `inset 4px 4px 10px rgba(166,180,200,0.45), inset -4px -4px 10px rgba(255,255,255,0.85)`) para campos de busca, inputs, trilhos de switches/sliders e o **berço deslizante do ícone ativo na Sidebar (`#sidebar-active-tracker`)**.
+- **Layer 2 (`surface-flat`)**: Placa intermediária de agrupamento (`#E9EEF5`) sem bordas duras de `1px`.
+- **Layer 3 (`30%` `surface-raised` / `.ui-card-soft` / `.bento-card-soft`)**: Cards Bento esculpidos com iluminação direcional dupla a **135°** (`8px 8px 20px rgba(166,180,200,0.42), -8px -8px 20px rgba(255,255,255,0.95)`) e zero bordas duras. No modo escuro, respeita obrigatoriamente $L_{\text{card}} > L_{\text{canvas}}$.
+- **Layer 4 (`surface-contrast` / `.terrixa-notched`)**: Âncora de inversão tonal monocromática (`#1E293B` / `#1A2E22` com recorte chanfrado opcional `clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%)`) para destacar cards críticos sem recorrer a neons.
+- **Acento Focal Único (`10%` `--accent-point` — Zero Cobalto)**: Reservado exclusivamente para CTAs primários, barra vertical de `4px` da sidebar ativa e indicadores focais.
 
-### 1.2. Fio de Luz Superior Mineral (Rim Light) & Física 3D (`calculateCardTilt`)
-Todo cartão e botão em relevo deve possuir uma linha de reflexão superior translúcida (micro-chanfro óptico) simulando a incidência de luz zenital, combinada com inclinação 3D opcional limitada a $\pm 5.5^\circ$:
-```css
-/* Gradiente suave de luz mineral no topo do card */
---rim-light-gradient: linear-gradient(90deg, transparent 5%, rgba(255, 255, 255, 0.18) 50%, transparent 95%);
-
-/* Borda física superior */
-border-top: 1px solid rgba(255, 255, 255, 0.14);
-```
+### 1.2. Os 4 Presets Soft UI (`DESIGN.md v4.5-soft` — Anti-Cobalto)
+| Preset (`data-theme`) | Canvas (60%) | Raised / Inset (30%) | Contrast Anchor | Accent Focal (10% — Zero Cobalto) | Aplicação Principal |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **`slate` (Nexus v4.5 Slate)** | `#F1F4F8` | `#F1F4F8` / `#E5E9F0` | `#1E293B` | **Cerulean Sapphire** (`#0284C7`) + `#7DD3FC` | Centros de operações agênticas, Bento Dashboards e SaaS |
+| **`moss` (Moss & Calm System)** | `#F4F3EC` | `#F8F7F2` / `#E8E5DC` | `#1A2E22` | **Forest Moss** (`#174930`) + `#B7D3C0` | Saúde serena, escrita reflexiva e leitura longa sem fadiga |
+| **`sapphire` (Soft Sapphire)** | `#F5F4EE` | `#FAF9F5` / `#E6E5DD` | `#1E293B` | **Ocean Sapphire** (`#1E6091`) + `#69ADC6` | Interfaces executivas, prontuários clínicos e sistemas diurnos |
+| **`obsidian` (Obsidian Dark)** | `#12151B` | `#181D26` / `#0D1016` | `#F1F4F8` | **Mineral Ice** (`#38BDF8`) + `#10B981` | Plantões noturnos, IDEs, terminais e monitoramento 4K |
 
 ### 1.3. Motor Multidimensional de Temas (`TYPOGRAPHY_PRESETS` & `GEOMETRY_PRESETS`)
-Cada tema reconfigura simultaneamente **4 eixos arquiteturais**:
 1. **Pareamento Tipográfico (`TYPOGRAPHY_PRESETS`)**:
-   - `humanist-tech`: **Plus Jakarta Sans** + **JetBrains Mono** (`tracking: -0.025em`)
-   - `editorial-serif`: **Instrument Serif** + **Plus Jakarta Sans** + **JetBrains Mono** (`tracking: -0.015em`)
+   - `nexus-sans` / `humanist-tech`: **Public Sans** / **Plus Jakarta Sans** + **JetBrains Mono** (`line-height: 1.6`, `tracking: -0.025em`)
+   - `editorial-serif`: **Instrument Serif** + **Public Sans** / **Plus Jakarta Sans** + **JetBrains Mono** (`tracking: -0.015em`)
    - `swiss-grotesk`: **Space Grotesk** + **Inter** + **JetBrains Mono** (`tracking: -0.03em`)
    - `classic-garamond`: **Cormorant Garamond** + **Plus Jakarta Sans** + **JetBrains Mono** (`tracking: -0.015em`)
 2. **Geometria Estrutural de Curvatura (`GEOMETRY_PRESETS`)**:
-   - `sharp`: **6px** (Brutalista / Grid Suíço)
-   - `editorial`: **12px** (Editorial Clássico)
-   - `technical`: **16px** (Técnico / Precisão)
-   - `tactile`: **20px** (Tátil Melki Padrão)
-   - `organic`: **24px** (Orgânico / Cerâmico Biofílico)
+   - `sharp`: **6px** | `editorial`: **12px** | `technical`: **16px** | `tactile`: **20px** | `organic` / `soft-lg`: **24px** (`--rounded-pill: 9999px`)
 
 ---
 
-## 2. Banimento Estrito de Cores Agressivas (Anti-Cobalto Neon)
+## 2. Banimento Estrito de Cores Agressivas (Anti-Cobalto & Anti-Glassmorphism)
 
-- ❌ **TERMINANTEMENTE PROIBIDO:** Tons de azul cobalto ofuscante ou neon elétrico puro (`#0044FF`, `#1D4ED8`, `#233DFF`, `#0000FF`, `#00E5FF`).
-- ❌ **TERMINANTEMENTE PROIBIDO:** Cores ácidas fluorescentes não balanceadas que agridam a vista em longas sessões de trabalho.
-- ✅ **ACENTOS MINERAIS AUTORIZADOS:** Safira Fosco (`#3B82F6`), Slate Navy (`#345E7D`), Glacial Navy (`#274472`), Ouro Champanhe (`#D4AF37`), Titânio Anodizado (`#C5A880`), Terracota Editorial (`#9A3412`), Carmesim Suíço (`#BE123C`), Matcha Botânico (`#2E6F40`) e Violeta Ardósia (`#8B5CF6`).
+- ❌ **TERMINANTEMENTE PROIBIDO (`AUDIT-VIS-01`):** Tons de azul cobalto ofuscante ou neon elétrico puro (`#0044FF`, `#0057FF`, `#1D4ED8`, `#233DFF`, `#0000FF`, `#00E5FF`).
+- ❌ **TERMINANTEMENTE PROIBIDO (`AUDIT-VIS-01`):** Glassmorphism / vidro fosco com `backdrop-filter: blur()`, bordas neon ou bordas duras de `1px` em containers Bento.
+- ✅ **ACENTOS MINERAIS E SAFIRA AUTORIZADOS:** Cerulean Sapphire (`#0284C7`), Ocean Sapphire (`#1E6091`), Mineral Ice (`#38BDF8`), Safira Fosco (`#3B82F6`), Slate Navy (`#345E7D`), Glacial Navy (`#274472`), Forest Moss (`#174930`), Clinical Emerald (`#059669`), Ouro Champanhe (`#D4AF37`), Titânio Anodizado (`#C5A880`) e Terracota Editorial (`#9A3412`).
 
 ---
 
@@ -74,66 +69,41 @@ Cada tema reconfigura simultaneamente **4 eixos arquiteturais**:
 ### 3.3. Os 7 Temas Arquiteturais do Estúdio (`studio`)
 | # | Tema | Canvas | Card | Acento | Tipografia & Raio | Aplicação |
 | :--- | :--- | :---: | :---: | :---: | :--- | :--- |
-| 16 | **Tactile Matte Minimalist** | `#090B10` | `#141824` | `#3B82F6` | Plus Jakarta + JetBrains • `20px` | **Padrão Oficial Melki**: Painéis e cockpits |
+| 16 | **Tactile Matte Minimalist** | `#090B10` | `#141824` | `#3B82F6` | Plus Jakarta + JetBrains • `20px` | **Padrão Dark Melki**: Painéis e cockpits |
 | 17 | **Phantom Obsidian 4K** | `#060709` | `#11141D` | `#38BDF8` | Space Grotesk + Inter • `16px` | Monitores 4K/OLED e centros de comando |
 | 18 | **Luxury Deep Blue & Mineral** | `#070C18` | `#121C31` | `#60A5FA` | Instrument Serif + Jakarta • `20px` | Relatórios executivos e softwares premium |
 | 19 | **Gilded Navy Heritage** | `#05070D` | `#0E1424` | `#D4AF37` | Cormorant Garamond + Jakarta • `12px` | Private banking e relatórios patrimoniais |
-| 20 | **Polar Sand Light** | `#EEF2F6` | `#FFFFFF` | `#0284C7` | Plus Jakarta + JetBrains • `20px` | Sistemas diurnos com barra navy de ancoragem |
+| 20 | **Polar Sand Light** | `#EEF2F6` | `#FFFFFF` | `#0284C7` | Plus Jakarta + JetBrains • `20px` | Sistemas diurnos com Cerulean Sapphire |
 | 21 | **Emerald Terminal & Bio-OS** | `#070F0B` | `#0F1E17` | `#10B981` | Space Grotesk + Inter • `16px` | Telemetria de sensores e terminais de segurança |
 | 22 | **Monokai Tactile / Amber** | `#0A0D12` | `#151B26` | `#F59E0B` | Space Grotesk + Inter • `16px` | Compiladores, debuggers e consoles técnicos |
 
 ---
 
-## 4. Fórmulas Canônicas de Sombra e Elevação CSS
+## 4. Fórmulas Canônicas de Sombra e Elevação CSS (`v4.5-soft`)
 
 ```css
 :root {
-  /* Tipografia Multidimensional */
-  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --tracking-display: -0.025em;
+  /* Camadas Tonais 60-30-10 (Nexus Slate Cerulean — Zero Cobalto) */
+  --surface-canvas: #F1F4F8;
+  --surface-flat: #E9EEF5;
+  --surface-raised: #F1F4F8;
+  --surface-inset: #E5E9F0;
+  --surface-contrast: #1E293B;
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+  --accent-point: #0284C7;
+  --accent-sapphire: #1E6091;
 
-  /* Geometria e Curvatura */
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
+  /* Iluminação Direcional 135° (Soft Neumorphism) */
+  --soft-shadow-main: 8px 8px 20px rgba(166, 180, 200, 0.42);
+  --soft-shadow-light: -8px -8px 20px rgba(255, 255, 255, 0.95);
+  --soft-shadow-inset: inset 4px 4px 10px rgba(166, 180, 200, 0.45),
+                       inset -4px -4px 10px rgba(255, 255, 255, 0.85);
 
-  /* Elevação Padrão de Card (Multicamada: Contato + Projeção) */
-  --shadow-contact: 0 2px 4px rgba(0, 0, 0, 0.45);
-  --shadow-card: 0 4px 10px rgba(0, 0, 0, 0.35), 0 16px 36px -4px rgba(0, 0, 0, 0.65);
-  --shadow-card-hover: 0 8px 16px rgba(0, 0, 0, 0.4), 0 24px 48px -6px rgba(0, 0, 0, 0.85);
-  --shadow-elevated: 0 24px 60px -12px rgba(0, 0, 0, 0.9);
-  --shadow-bevel: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.6);
-  --shadow-sunken: inset 2px 2px 6px rgba(0, 0, 0, 0.7), inset -1px -1px 3px rgba(255, 255, 255, 0.04);
+  /* Geometria e Spring Physics */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
 }
 ```
-
----
-
-## 5. Minimalismo, Antipoluição Visual, UI/UX Intuitiva & Suporte a TDAH
-
-### 5.1. Regras Rígidas de UI/UX, Luz/Sombra e Antipoluição Visual (Obrigatórias em 100% dos Projetos)
-1. **Destaque por Sombra, Profundidade e Incidência de Luz (NÃO por Cor Hiperdestacada)**:
-   - O destaque de botões primários, abas ativas, badges e cartões deve nascer da **incidência de luz zenital** (`radial-gradient` no topo do card, `linear-gradient` nas teclas + `inset 0 1px 0` especular), **cavidades esculpidas** (`sunken wells` para inputs, trilhos de abas e pílulas) e **sombras físicas multicamadas** (oclusão + projeção).
-   - **Proibido** usar cores hiperdestacadas, textos/botões pintados de azul/verde vibrante ou neon para chamar atenção. A hierarquia é escultural e luminosa, não cromático-saturada.
-2. **Orçamento de Densidade por Card (Regra do 1+2 & Progressive Disclosure)**:
-   - Cada cartão deve exibir no máximo **1 ação primária clara** (tecla física iluminada) e **2 ações secundárias discretas**. Ações extras devem ficar recolhidas em um menu popover (`⋯`) ou aparecer sob demanda.
-   - Proibido empilhar 5 a 9 botões ou repetir emojis decorativos em cada botão de uma mesma grade.
-3. **Zero "Caixa dentro de Caixa" Desnecessária**:
-   - Separe metadados dentro do cartão usando tipografia (`font-mono`), espaço em branco (*whitespace* $\ge 30\%$) e divisórias sutis de `1px`. Reserve cavidades (`sunken wells`) para inputs de busca, trilhos de filtro e tags gravadas.
-4. **Escaneabilidade em 3 Segundos & Ergonomia TDAH**:
-   - Em até 3 segundos o usuário deve identificar: (1) onde está, (2) qual é o dado principal e (3) onde clicar.
-   - Busca rápida centralizada (`Ctrl + K` / `⌘K`), feedback físico imediato nos botões (`translateY(1px)`), blindagem anti-squish (`flex-shrink: 0; white-space: nowrap;`) e proibição de `alert()` / `confirm()` nativos (usar toasts silenciosos com `role="status" aria-live="polite"`).
-
-### 5.2. Preferências Flexíveis de Paleta e Temas (NÃO usar como camisa de força)
-1. **Autonomia de Materiais e Superfícies por Projeto**:
-   - Os 22 temas acima são um **repertório de preferência**, não uma obrigação de deixar todos os sistemas com a mesma cor. Varie as superfícies minerais (ardósia, titânio, basalto, calcário, papel algodão) de acordo com a alma do produto, mantendo sempre baixa saturação e relevo por luz e sombra.
-2. **Kit de 5 Temas Integrados com `localStorage` (Para Cockpits, Utilitários e Testes)**:
-   - Quando o projeto for um utilitário pessoal, dashboard de controle ou quando múltiplos temas forem desejados, inclua o seletor leve com persistência em `localStorage` contendo os **5 temas favoritos**:
-     1. `Tactile Matte`
-     2. `Phantom Obsidian 4K`
-     3. `Quiet Luxury Titanium`
-     4. `Steadfast Stainless`
-     5. `Warm Editorial Paper`
-

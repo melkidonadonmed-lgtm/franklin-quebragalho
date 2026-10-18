@@ -1,73 +1,79 @@
 ---
 name: design-interface-medica-minimalista
 description: >-
-  Define o padrão de UI/UX para aplicações médicas e SaaS de saúde. Deve ser ativada sempre que o usuário solicitar o desenvolvimento, análise ou refatoração do frontend de sistemas médicos, prontuários, receituários ou calculadoras clínicas.
+  Preset clínico especializado (Nexus Slate Cerulean / Moss / Soft Sapphire / Polar Sand) para prontuários eletrônicos, receituários A4, calculadoras médicas e SaaS de saúde, integrado ao Minimalist Impact & Soft Tactile Architecture (DESIGN.md v4.5-soft). Use quando o usuário pedir o desenvolvimento, análise ou refatoração de interfaces médicas, clínicas ou laboratoriais sem azul cobalto.
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "2.1.0"
   author: "Franklin-Main & Melki"
-  category: "Design de Interface Médica Minimalista"
-  updated_at: "2026-10-04"
+  category: "Design de Interface Médica Minimalista & Soft UI"
+  updated_at: "2026-10-18"
   tags:
     - "saude"
     - "clinico"
     - "prontuario"
-    - "minimalista"
-    - "tailwind"
-version: 1.0.0
-updated_at: 2026-10-04
+    - "minimalist-impact"
+    - "soft-ui"
+    - "anti-cobalto"
+version: 2.1.0
+updated_at: 2026-10-18
 author: Franklin-Main & Melki
-category: Design de Interface Médica Minimalista
+category: Design de Interface Médica Minimalista & Soft UI
+authorized_sub_skills:
+  - name: design-md
+    role: "Criação automática do DESIGN.md v4.5-soft clínico na raiz do projeto quando ausente"
+  - name: frontend-code-architect
+    role: "Estruturação modular src/ em 5 camadas de Design Atômico (v4.0.0)"
+  - name: frontend-testing-auditor
+    role: "Auditoria determinística FSM + Axe-Core (v2.5.0) para segurança clínica"
 ---
 
-# Skill: Design System Médico Executivo & Minimalista
+# Design System Médico Executivo & Minimalist Impact (`design-interface-medica-minimalista` v2.1.0 — Soft Tactile `v4.5-soft`) 🩺
+
+Preset de domínio clínico do **Minimalist Impact & Soft Tactile Architecture (`DESIGN.md v4.5-soft`)**, calibrado para alta legibilidade em plantões, zero fadiga visual, elevação por camadas tonais a 135°, precisão numérica (`tabular-nums`) e impressão limpa em papel A4.
+
+---
 
 ## 🎯 Gatilhos de Ativação (Quando Usar)
-- Criação ou alteração de telas para softwares médicos, prontuários ou calculadoras de dosagem.
-- Solicitações de componentes de UI para o domínio de saúde e biologia.
-- Pedidos de melhoria estética em interfaces web cirúrgicas, clínicas ou laboratoriais.
+- Criar, auditar ou refatorar telas de prontuários eletrônicos (PEP), calculadoras médicas (ex.: clearance renal, déficit de água livre, infusão), receituários ou laudos.
+- Configurar a árvore de pastas de um app médico (`DESIGN.md v4.5-soft`, `components/ui/SoftCard.tsx`, `styles/globals.css`, `modules/calculadoras/`, `lib/utils/`).
+
+### Quando NÃO Usar
+- Para cockpits de infraestrutura fora da área da saúde (use a esteira `analise-design-tatil-frontend` $\rightarrow$ `consultor-design-tatil-frontend` $\rightarrow$ `refatoracao-design-tatil-frontend`).
 
 ---
 
 ## 📥 Entradas Obrigatórias e Pré-requisitos
-1. **Domínio ou Caso de Uso Clínico**: Ex.: prontuário eletrônico, calculadora de infusão, receituário ou laudo laboratorial.
-2. **Componentes ou Telas Desejadas**: Formulários clínicos, visualizadores de exames, tabelas de posologia ou dashboards de leitos.
-3. **Pilha de Tecnologias**: React/Tailwind, HTML/CSS puro, Next.js ou Vue.
+1. **Domínio ou Caso de Uso Clínico**: Prontuário, calculadora médica, prescrição ou painel hospitalar.
+2. **Caminho Raiz do Projeto (`project_root_path`)**: Para verificar/criar `DESIGN.md v4.5-soft` e organizar as pastas em Design Atômico.
+3. **Preset Tonal Clínico**: `slate` (Nexus Slate Cerulean `#F1F4F8` / `#0284C7`), `sapphire` (Soft Sapphire `#F5F4EE` / `#1E6091`), `moss` (Calm Moss `#F4F3EC` / `#174930`) ou `obsidian` (Plantão Noturno `#12151B` / `#181D26` / `#38BDF8`).
 
 ---
 
-## 🔄 Processamento e Fluxo de Design
+## 🔄 Processamento, Fluxo e Arquitetura Clínica + Minimalist Impact (`v4.5-soft`)
 
-### 1. Restrições Estritas de Elementos
-- **Zero Emojis:** Proibido utilizar emojis na interface. Use apenas ícones vetoriais de linha (`Lucide Icons`, `stroke-width="1.5"`).
-- **Proibido Sombras Fortes:** Não utilize `shadow-lg` ou `shadow-xl`. Utilize apenas bordas ultra-finas (`border border-slate-200/80`) com sombras ambientais de 1px (`shadow-[0_1px_2px_0_rgba(0,0,0,0.03)]`).
-- **Proibido Cores Saturadas:** Não use azuis ou verdes puros (`#0000FF`, `#00FF00`). Utilize a paleta `Slate` combinada com tons atenuados de `Emerald`, `Amber` e `Rose`.
+### 1. Paleta Clínica Tonal 60-30-10 (`[DISC-PALETA]`)
+- **Zero Azul Cobalto ou Neon**: Proibido `#0044FF`, `#0057FF`, `#233DFF`, `#1D4ED8`, `#0000FF` ou `#00FF00`.
+- **Camadas Tonais 135° (Diurno Clínico)**:
+  - `60%` `surface-canvas`: `#F1F4F8` (Slate) ou `#F5F4EE` (Warm Ivory).
+  - `30%` `surface-raised` (`.ui-card-soft` com sombra dupla 135°) e `surface-inset` (`#E5E9F0` para inputs de dose/peso/idade e busca).
+  - `10%` `--accent-point`: **Cerulean Sapphire** (`#0284C7`), **Ocean Sapphire** (`#1E6091`) ou **Clinical Emerald/Moss** (`#059669` / `#174930`).
+- **Tema Escuro Plantão (`obsidian` / `tactile-matte`)**: Canvas `#12151B` / `#090B10`, Cards `#181D26` / `#141824` ($L_{\text{card}} > L_{\text{canvas}}$) e acento **Mineral Ice** (`#38BDF8`).
 
-### 2. Especificação de Componentes (Tailwind CSS)
+### 2. Ergonomia Tátil, Tipografia e Anti-Squish (`[DISC-TATIL]` & `AUDIT-VIS-01`)
+- **Zero Emojis na UI Clínica**: Utilize exclusivamente ícones vetoriais **Lucide Icons** (`stroke-width="1.5"`).
+- **Alvos Ergonômicos e Anti-Squish**: Botões e selects com altura mínima de **`44px`**, `flex-shrink: 0; white-space: nowrap;` (nunca quebrar rótulos de ação ou unidades como `mg/dL`, `mL/min` ou `mEq/L`).
+- **Tipografia de Precisão**: `Public Sans` / `Plus Jakarta Sans` para leitura rápida (`line-height: 1.6`) e `JetBrains Mono` (`tabular-nums`) para doses, resultados laboratoriais e fórmulas.
+- **Anti-Glassmorphism**: Zero `backdrop-filter: blur` e zero bordas duras de `1px`.
 
-| Componente | Classes Tailwind Padrão | Comportamento / Regra |
-| :--- | :--- | :--- |
-| **Fundo da Página** | `bg-slate-50/50 min-h-screen text-slate-900 font-sans` | Base limpa e de baixo contraste |
-| **Card / Container** | `bg-white border border-slate-200/80 rounded-lg p-5 shadow-sm` | Isolamento visual sutil |
-| **Label / Rótulo** | `block text-[11px] uppercase tracking-wider font-semibold text-slate-500 mb-1.5` | Alta legibilidade em tamanho reduzido |
-| **Input / Select** | `h-9 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none` | Campo preciso com estado de foco sóbrio |
-| **Botão Primário** | `h-9 px-4 rounded-md bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium transition-all` | Ação principal discreta e sólida |
-| **Botão Secundário**| `h-9 px-4 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium transition-all` | Ação de apoio ou navegação |
-| **Badge de Status** | `inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium border` | Usado para status vacinal/clínico |
+### 3. Design Atômico, Cálculos Determinísticos e Auditoria FSM (`[DISC-OPCOES]` & `[DISC-SUPPLY]`)
+- Ao inspecionar o projeto médico, se não houver `DESIGN.md` na raiz, acione **`design-md`** (`v4.5-soft`) e **`frontend-code-architect`** (`v4.0.0`).
+- Para cálculos médicos, delegue a aritmética para funções determinísticas testadas (ou `agy_deterministic_calc_suite`), nunca deixando o LLM calcular doses de cabeça.
+- Audite os estados `Idle`, `Loading` (`role="status"`), `Error` (`role="alert"`) e sanitização XSS com **`frontend-testing-auditor`** (`v2.5.0`).
 
 ---
 
 ## 📤 Saídas e Entregáveis (Modelo de Saída)
-Ao gerar código ou protótipos sob esta Skill, a entrega deve conter:
-1. Componentes tipados (TypeScript / JSX) ou HTML com classes utilitárias completas.
-2. Checklist de conformidade com o Design System:
-   - [ ] Todos os rótulos de campos estão em caixa alta e fonte reduzida (`text-[11px] uppercase`)?
-   - [ ] A proporção entre áreas de dados e áreas brancas está espaçada de forma equilibrada (`gap-4` a `gap-6`)?
-   - [ ] A visualização do documento impresso/PDF simula com precisão um papel A4 oficial limpo?
-   - [ ] NENHUM emoji foi inserido no código HTML ou JS?
-
----
-
-## 🚫 Limites, Exceções e Quando NÃO Usar
-- Não utilizar para interfaces de entretenimento, e-commerce casual ou dashboards saturados/gamificados.
-- Não substitui a revisão médica formal de posologias e condutas terapêuticas.
+1. **Estrutura Raiz e `DESIGN.md v4.5-soft`**: Confirmação da criação de `DESIGN.md`, `components/ui/SoftCard.tsx`, `styles/globals.css` e `modules/`.
+2. **Componentes Clínicos Tipados**: Código sem emojis e sem cobalto, com alvos de `44px` anti-squish, números `tabular-nums` e CSS `@media print` calibrado para folha A4.
+3. **Matriz de Conformidade (`[DISC-PALETA]`, `[DISC-TATIL]`, `[DISC-OPCOES]`, `[DISC-SUPPLY]`)** + Score `frontend-testing-auditor`.

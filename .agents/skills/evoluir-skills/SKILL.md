@@ -1,154 +1,103 @@
 ---
 name: evoluir-skills
 description: >-
-  Orquestrador mestre do ciclo de vida e pipeline de engenharia de skills do Franklin Quebra-Galho. Use quando o usuário pedir para criar uma nova skill a partir de uma ideia bruta, evoluir, homologar, testar (evals Baseline vs. Treatment e Trigger Matrix) ou versionar uma habilidade existente, encadeando automaticamente expansao-contexto-adaptativa, aprimoramento-expansibilidade-agentes-skills, skill-creator e skill-auditor-refatorador-skills. Não use para auditoria isolada de catálogo (use skill-auditor-refatorador-skills) nem para desenvolvimento de software sem relação com skills.
+  Orquestrador de construção e evolução funcional de skills (Forward Builder & TDD). Use quando o usuário pedir para criar uma nova skill a partir de uma ideia bruta, adicionar novas funcionalidades/scripts a uma skill existente ou configurar sua suíte de avaliação empírica (evals/evals.json e Trigger Matrix). Não use para auditoria de catálogo, desacoplamento de monólitos ou refatoração estrutural de skills inchadas (use skill-auditor-refatorador-skills) nem para arquitetura de código multiagente ADK/MCP (use aprimoramento-expansibilidade-agentes-skills).
 license: MIT
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
   author: "SkillCraft & Melki"
   category: "Engenharia e Governança de Skills"
-  updated_at: "2026-10-14"
+  updated_at: "2026-10-17"
   tags:
     - "skills"
+    - "tdd-skills"
+    - "forward-builder"
     - "evals"
-    - "ciclo-de-vida"
-    - "governanca"
-    - "pipeline-skillcraft"
     - "progressive-disclosure"
-version: 2.0.0
-updated_at: 2026-10-14
+version: 2.1.0
+updated_at: 2026-10-17
 author: SkillCraft & Melki
 category: Engenharia e Governança de Skills
 authorized_sub_skills:
   - name: expansao-contexto-adaptativa
-    role: "Estágio 1 — Estruturação e desambiguação da ideia bruta da skill (CLAREZA/ReAct)"
-  - name: aprimoramento-expansibilidade-agentes-skills
-    role: "Estágio 2 — Consultoria de arquitetura (3 Tiers, Envelope Pattern, Context Forking, Evals/Pass@k)"
+    role: "Estágio 1 — Desambiguação e estruturação da ideia bruta da skill (CLAREZA/ReAct)"
   - name: skill-creator
-    role: "Estágio 3 — Scaffolding físico compatível com agentskills.io e _template"
+    role: "Estágio 2 — Referência de especificação agentskills.io para scaffolding físico"
   - name: skill-auditor-refatorador-skills
-    role: "Estágio 4 — Auditoria determinística, validação dos 4 Módulos Táteis Melki e desacoplamento"
+    role: "Estágio 3 — Homologação final caso a skill exija desacoplamento ou auditoria dos 4 Módulos Táteis Melki"
 ---
 
-# Evolução e Orquestração do Ciclo de Vida de Skills (`evoluir-skills` v2.0.0) 🚀
+# Construção e Evolução Funcional de Skills (`evoluir-skills` v2.1.0) 🚀
 
-Ponto de entrada (*Entrypoint*) e máquina de estados oficial da persona **`SkillCraft`** para conceber, estruturar, construir, avaliar empiricamente e homologar skills no Google Antigravity e no ecossistema Franklin Quebra-Galho.
+Motor **Forward Builder & TDD** da esteira `SkillCraft`. Seu papel exclusivo é transformar uma **ideia bruta** ou **novo requisito funcional** em um pacote de skill enxuto, testado deterministicamente pelo harness em Go (`dispatch_skill_deterministic_tests`) e homologado em `skills/<slug>/`.
 
 ---
 
-## 🔗 Pipeline Encadeado Automático (`SkillCraft Chain`)
+## 🔗 Fronteira de Responsabilidade (Zero Sobreposição)
 
-Para eliminar redundâncias entre skills de engenharia e impedir a criação de monólitos ("Parede de Complexidade"), toda execução da `evoluir-skills` segue obrigatoriamente esta esteira de 4 estágios:
-
-```text
-[Ideia Geral / Pedido Bruto do Usuário]
-       │
-       ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ ESTÁGIO 1 (Auto): expansao-contexto-adaptativa                              │
-│ • Intercepta a ideia bruta, elimina ambiguidades e estrutura o escopo sob   │
-│   CLAREZA + ReAct sem alterar a intenção original do desenvolvedor.         │
-└────────────────────────────────────┬────────────────────────────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ ESTÁGIO 2 (Consultivo): aprimoramento-expansibilidade-agentes-skills        │
-│ • Define o Nível de Maturidade (1 a 4), a divisão em 3 Tiers (Catálogo,     │
-│   Corpo <500 linhas, Referências/Scripts), Padrão Envelope (Action Routing),│
-│   Context Forking e a arquitetura de métricas (Baseline vs. Treatment).     │
-└────────────────────────────────────┬────────────────────────────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ ESTÁGIO 3 (Construção): skill-creator + _template                           │
-│ • Gera o scaffolding físico em .agents/skills/<slug>/ com SKILL.md enxuto   │
-│   (Lean Instructions baseadas no "Porquê"), references/, rules/, scripts/   │
-│   e evals/evals.json (incluindo Trigger Matrix should-trigger/near-misses). │
-└────────────────────────────────────┬────────────────────────────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ ESTÁGIO 4 (Auditoria & Release): skill-auditor-refatorador-skills           │
-│ • Valida os 4 Módulos Táteis Melki (v2.6.0-2026), executa validate_skills.py│
-│   ([PASS] 100%), espelha 1:1 em skills/<slug>/ e registra em MY_SKILLS.md.  │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+| Intenção do Pedido | Skill Responsável |
+| :--- | :--- |
+| **Criar skill do zero** ou **adicionar feature/script** a uma skill existente | **`evoluir-skills`** *(esta skill)* |
+| **Enxugar monólito (`> 500` linhas)**, extrair código repetitivo de `transcript.jsonl`, corrigir gatilhos ou auditar catálogo | **`skill-auditor-refatorador-skills`** |
+| **Projetar arquitetura de código de agentes** (Google ADK Go/Py/TS, MCP, A2A, Circuit Breaker, Theranostic Pipeline) | **`aprimoramento-expansibilidade-agentes-skills`** |
 
 ---
 
 ## 🎯 Quando Usar (Gatilhos de Ativação)
-- Criação de uma nova skill a partir de uma ideia geral, rascunho ou fluxo repetitivo identificado na sessão.
-- Evolução de uma skill existente para incorporar novos recursos, scripts auxiliares ou métricas de avaliação (`evals.json`).
-- Execução do ciclo de avaliação empírica (*Eval-Driven Iteration*): comparação *Baseline vs. Treatment* e calibração de gatilhos (`should-trigger` vs `should-not-trigger`).
-- Atualização de versão semântica (SemVer), espelhamento paritário e registro de changelog no [MY_SKILLS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md).
+- Criar uma nova skill a partir de uma ideia, prompt recorrente ou fluxo de trabalho identificado na sessão.
+- Evoluir uma skill existente adicionando novos parâmetros, scripts utilitários (`scripts/`) ou casos de avaliação (`evals/evals.json`).
+- Configurar e executar pela primeira vez os testes determinísticos A vs B (`Pass@1`, `Pass@3`, `TEI`) de uma skill.
+
+## 🚫 Quando NÃO Usar
+- **Não usar** para auditar o catálogo existente ou dividir uma skill monolítica em sub-skills (delegue para `skill-auditor-refatorador-skills`).
+- **Não usar** para arquitetar agentes em código Python/Go/TypeScript sem criação de pacote `SKILL.md` (delegue para `aprimoramento-expansibilidade-agentes-skills`).
 
 ---
 
-## 🚫 Limites, Exceções e Quando NÃO Usar
-- **Não usar** para auditoria estática em lote de todo o catálogo ou desacoplamento cirúrgico de monólitos já existentes sem criação de fluxo novo (delegue diretamente para `skill-auditor-refatorador-skills`).
-- **Não usar** quando o pedido for exclusivamente arquitetura de código multiagente em Python/TypeScript no Google ADK ou LangGraph sem criação de pacote de skill (use diretamente `aprimoramento-expansibilidade-agentes-skills`).
-- **Não usar** para desenvolvimento de software de domínio geral que não constitua uma habilidade reutilizável do agente.
+## 🔄 Fluxo de Execução em 3 Passos (Forward Builder)
 
----
+### Passo 1: Desambiguação e Contrato de Intenção (`expansao-contexto-adaptativa`)
+Extraia do pedido bruto:
+1. **Slug canônico**: `a-z0-9-` (máx. 64 caracteres), idêntico ao nome do diretório.
+2. **Fronteira de Ativação (Tier 1)**:
+   - `description` em 3ª pessoa ($\le 1024$ caracteres) declarando explicitamente **quando usar** e **quando NÃO usar** (*near-misses* para evitar colisão de Softmax com skills vizinhas).
+3. **Separação Cognitivo vs. Determinístico**:
+   - O que exige julgamento contextual fica nas instruções do `SKILL.md` (Tier 2, $< 500$ linhas, escrito com foco causal no *"Porquê"* e sem regras maiúsculas redundantes).
+   - O que for tabela estática ou schema extenso vai para `references/` (Tier 3).
+   - O que for cálculo, validação mecânica ou comando repetitivo vai para `scripts/` ou tools MCP (`agy_deterministic_calc_suite`).
 
-## 📥 Entradas Obrigatórias e Pré-requisitos
-1. **Intenção ou Ideia Geral**: Descrição bruta do procedimento, automação ou habilidade desejada (mesmo que incompleta — será expandida no Estágio 1).
-2. **Slug da Skill (ou sugestão automática)**: Identificador em minúsculas separado por hífens (`a-z0-9-`, máx. 64 caracteres), idêntico ao nome da pasta.
-3. **Escopo de Ferramentas e Risco**: Definição se a skill é *Read-Only*, mutação reversível ou requer portão *Human-in-the-Loop (HITL)*.
+### Passo 2: Scaffolding Físico Canônico
+Gere ou atualize a árvore física em `.agents/skills/<slug>/`:
 
----
-
-## 🔄 Fluxo Passo a Passo de Execução (Padrão 2026)
-
-### Passo 1: Expansão Adaptativa da Ideia (`expansao-contexto-adaptativa`)
-- Aplique o motor de expansão sobre o pedido bruto para extrair:
-  - **Propósito central** e fronteiras de atuação (o que faz e o que não faz).
-  - **Gatilhos de ativação** explícitos e casos limítrofes (*near-misses*).
-  - **Entradas, processamento e contrato de saída**.
-
-### Passo 2: Dimensionamento de Expansibilidade e Qualidade (`aprimoramento-expansibilidade-agentes-skills`)
-Consulte os parâmetros arquiteturais da `aprimoramento-expansibilidade-agentes-skills` para estruturar a skill sob 5 pilares:
-1. **Divulgação Progressiva em 3 Tiers**:
-   - *Tier 1 (Catálogo)*: `name` + `description` em 3ª pessoa (~50–100 tokens, $\le 1024$ chars) com palavras-chave de disparo e exclusão.
-   - *Tier 2 (Ativação)*: Corpo do `SKILL.md` estritamente enxuto ($< 500$ linhas / $< 5.000$ tokens), preservando a densidade atencional (Softmax).
-   - *Tier 3 (Execução sob demanda)*: Tabelas extensas, schemas JSON/Pydantic e manuais alocados em `references/` e carregados apenas quando necessário.
-2. **Instruções Enxutas (*Lean Instructions*) e o "Porquê"**:
-   - Substitua regras imperativas cegas e repetitivas ("SEMPRE faça X") por instruções causais enxutas ("Faça X porque Y previne Z"), evitando *over-constraining* do modelo.
-3. **Extração de Lógica Repetitiva para `scripts/`**:
-   - Se a tarefa exigir parsing determinístico, cálculos, varredura de disco ou validação mecânica que o agente reescreveria a cada turno, empacote como script executável em `scripts/` (Python via `uv` ou PowerShell 7 `pwsh`).
-4. **Padrão Envelope (*Action Routing*) e Context Forking**:
-   - Se a skill cobrir múltiplas ações correlatas, exponha um contrato Envelope (`action` + `params`) em vez de criar dezenas de micro-skills fragmentadas.
-   - Se a execução envolver varredura pesada ou tentativa-e-erro longa, recomende bifurcação em subagente isolado (`context: fork` / `invoke_subagent`) para não poluir a thread principal.
-5. **Engenharia de Avaliação (*Eval-Driven Iteration*)**:
-   - Desenhe `evals/evals.json` para suportar comparação *Baseline vs. Treatment* (com/sem skill) e matriz de gatilhos (`should-trigger` vs `should-not-trigger`).
-
-### Passo 3: Scaffolding e Redação Canônica (`skill-creator` + `_template`)
-Crie a estrutura física em `.agents/skills/<nome-da-skill>/`:
 ```text
-.agents/skills/<nome-da-skill>/
-├── SKILL.md                   # Tier 1 (YAML) + Tier 2 (Fluxo decisório enxuto < 500 linhas)
-├── references/                # Tier 3: Conhecimento factual imutável, tabelas e schemas
+.agents/skills/<slug>/
+├── SKILL.md                   # Tier 1 (YAML) + Tier 2 (Fluxo enxuto < 500 linhas)
+├── references/                # Tier 3: Tabelas, schemas JSON/Pydantic (lidos sob demanda)
 ├── rules/
-│   └── criterios_auditoria.md # Regras booleanas falsificáveis ([PASS], [FAIL], [UNVERIFIED])
-├── scripts/                   # Utilitários determinísticos (Python/PowerShell)
+│   └── criterios_auditoria.md # Regras falsificáveis ([PASS], [FAIL], [UNVERIFIED])
+├── scripts/                   # Scripts determinísticos (Python uv / PowerShell pwsh)
 └── evals/
-    └── evals.json             # Casos de teste funcionais + Trigger Eval Queries
+    └── evals.json             # Casos funcionais + trigger_eval_queries (should/should_not)
 ```
-- Se a skill envolver UI/UX, HTML, relatórios visuais ou frontend, injete obrigatoriamente os **4 Módulos Táteis Melki (`v2.6.0-2026`)** conforme o `_template`.
 
-### Passo 4: Auditoria Determinística, Espelhamento e Homologação (`skill-auditor-refatorador-skills`)
-1. **Espelhamento Paritário**: Copie fisicamente `.agents/skills/<nome-da-skill>/` para `skills/<nome-da-skill>/` (nunca use junctions/symlinks `d----l` em diretórios globais de skills).
-2. **Validação Automatizada**: Execute no terminal:
-   ```powershell
-   uv run python scripts/validate_skills.py --targets <nome-da-skill>
-   ```
-3. **Governança do Catálogo**: Atualize [MY_SKILLS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md) com o status (`💡 Ideia`, `🧪 Em Teste`, `✅ Validada`, `🚀 Produção`), versão SemVer e entrada detalhada no Changelog.
+> [!IMPORTANT]
+> Se a skill gerar interfaces, HTML/CSS ou relatórios visuais, inclua a referência aos **4 Módulos Táteis Melki (`v2.6.0-2026`)** conforme o `_template` e valide com `skill-auditor-refatorador-skills`.
+
+### Passo 3: Despacho Determinístico de Testes (`adk-go-mcp`) e Espelhamento
+1. **Despacho para o Harness Determinístico em Go**:
+   - Invoque a tool MCP **`dispatch_skill_deterministic_tests`** (servidor `adk-go-mcp`) com:
+     - `skill_target`: `"<slug>"`
+     - `action`: `"configure_and_run"`
+   - O subagente Go `skill_deterministic_test_dispatcher` criará/validará `evals/evals.json` e `rules/criterios_auditoria.md`, auditará o limite de `< 500` linhas e executará o benchmark concorrente A vs B (`Pass@1`, `Pass@3`, `Paired t-Stat`, `TEI`).
+   - Se a skill envolver cálculos matemáticos/clínicos/financeiros, valide os casos de referência com **`agy_deterministic_calc_suite`**.
+2. **Espelhamento Físico Paritário**:
+   - Copie fisicamente `.agents/skills/<slug>/` para `skills/<slug>/` (e para `.gemini/config/plugins/franklin-skills/skills/<slug>/` quando aplicável). Nunca use symlinks/junctions (`d----l`).
+3. **Validador do Repositório e Catálogo**:
+   - Execute `uv run python scripts/validate_skills.py --targets <slug>` no repositório `franklin-quebragalho` e registre a versão SemVer no [MY_SKILLS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md).
 
 ---
 
-## 📤 Saídas e Entregáveis (Modelo de Saída)
-Toda execução de `evoluir-skills` deve entregar:
-1. **Resumo do Pipeline Encadeado**: Síntese das decisões tomadas nos Estágios 1 (Expansão) e 2 (Arquitetura/Tiers).
-2. **Artefatos Físicos Criados/Atualizados**: Links clicáveis `file:///` para `SKILL.md`, `rules/criterios_auditoria.md`, `evals/evals.json` e `references/` ou `scripts/`.
-3. **Relatório Determinístico de Validação**: Saída comprovada do `scripts/validate_skills.py` com código de retorno `0` (`[PASS]`) e confirmação do espelhamento em `skills/<nome-da-skill>/`.
-4. **Registro de Governança**: Confirmação da atualização de versão e histórico em [MY_SKILLS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md).
+## 📤 Entregáveis Obrigatórios
+1. **Arquivos Criados/Atualizados**: Links clicáveis `file:///` para `SKILL.md`, `evals/evals.json`, `rules/criterios_auditoria.md` e `scripts/` ou `references/`.
+2. **Telemetria Determinística (`dispatch_skill_deterministic_tests`)**: Resultado `[PASS]` do Eval Harness A vs B (`Pass@1`, `Pass@3`, `TEI`) + `validate_skills.py`.
+3. **Sincronia**: Confirmação da cópia física em `skills/<slug>/` e atualização do `MY_SKILLS.md`.

@@ -81,3 +81,10 @@ Este workspace opera sob conformidade estrita com as diretrizes de governança g
 3. **Integração Global de Skills**:
    - O diretório `.agents/skills/` deste repositório está integrado diretamente como o plugin global `~/.gemini/config/plugins/franklin-skills/`, disponibilizando todas as skills para qualquer sessão do Antigravity.
 
+---
+
+## Diretrizes Globais de Qualidade, Eficiência e Execução Adaptativa
+Este repositório segue as diretrizes globais do workspace:
+- **Regras do Workspace (dev)**: [AGENTS.md](file:///C:/Users/melki/dev/AGENTS.md) e [GEMINI.md](file:///C:/Users/melki/dev/GEMINI.md)
+- **Preferências e Memória Canônica**: [Preferências de Trabalho com Agentes.md](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md)
+- **Regra Global (lways_on)**: [diretrizes-qualidade-eficiencia.md](file:///C:/Users/melki/.gemini/config/rules/diretrizes-qualidade-eficiencia.md) (1. Qualidade e Tipagem Estrita; 2. Eficiência, Zero Preâmbulo e Portões HITL; 3. Flexibilidade Anti-Engessamento; 4. Self-Refine Silencioso; 5. Proatividade com 1 Próximo Passo Concreto).
