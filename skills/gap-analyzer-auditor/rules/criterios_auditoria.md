@@ -1,4 +1,4 @@
-# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`gap-analyzer-auditor` v2.0.0)
+# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`gap-analyzer-auditor` v2.1.0)
 
 Este documento estabelece as regras de corte falsificáveis para validação dos relatórios emitidos pela skill `gap-analyzer-auditor`. Cada verificação deve emitir estritamente um dos seguintes marcadores booleanos:
 - `[PASS]`: Requisito comprovado e verificado contra âncoras documentais reais.
@@ -8,7 +8,7 @@ Este documento estabelece as regras de corte falsificáveis para validação dos
 ---
 
 ### Regra 1: Ancoragem em Evidências e Proibição de Alucinação de Logs
-- **Critério**: Todas as falhas, exceções e anomalias relatadas correspondem a registros documentados no input?
+- **Critério**: Todas as falhas, exceções e anomalias relatadas correspondem a registros documentados no input ou estado real de arquivos no disco?
 - **Teste**: O auditor citou linhas, mensagens de erro, comandos ou stack traces presentes no texto sob análise?
 - **Resultado**:
   - Se fundamentado exclusivamente em evidências fornecidas no contexto -> `[PASS]`
@@ -26,7 +26,7 @@ Este documento estabelece as regras de corte falsificáveis para validação dos
 ---
 
 ### Regra 3: Delimitação Estrita de Papel (Proibição de Planejador Final)
-- **Critério**: O agente manteve sua função restrita a auditor crítico e propositor de alternativas?
+- **Critério**: O agente manteve sua função restrita a auditor crítico, motor de convergência e propositor de alternativas?
 - **Teste**: O relatório absteve-se de redigir um plano sequencial de fases completo com cronogramas e novos diagramas Mermaid de execução, delegando essa tarefa ao `high-level-context-planner`?
 - **Resultado**:
   - Se emitiu o diagnóstico e gerou o hand-off payload para o planejador -> `[PASS]`
@@ -52,18 +52,19 @@ Este documento estabelece as regras de corte falsificáveis para validação dos
 
 ---
 
-### Regra 6: Integridade Estrutural do Contrato de Hand-Off YAML
-- **Critério**: O bloco de hand-off está formatado como YAML válido e atende ao schema formal?
-- **Teste**: Contém os campos obrigatórios `handoff_target`, `incident_id`, `recommended_option`, `required_adjustments` (com `step`, `action`, `patch_instructions`) e `contingency_trigger`?
+### Regra 6: Integridade do Contrato de Hand-Off YAML e Convergência *Append-Only*
+- **Critério**: O bloco de hand-off está formatado como YAML válido e, no modo de convergência Spec-to-Code (`/speckit-converge`), respeita a imutabilidade de tasks já concluídas?
+- **Teste**: Contém `handoff_target`, `incident_id`, `recommended_option`, `required_adjustments` (incluindo `APPEND_CONVERGENCE_TASKS` com notação `[ID] [P?] [CONV] caminho/exato.ext` quando aplicável, ou veredito `CONVERGED` byte-a-byte intacto) e `contingency_trigger`?
 - **Resultado**:
-  - Se o payload contiver todos os campos mandatórios em sintaxe correta -> `[PASS]`
-  - Se faltar qualquer campo essencial ou contiver erro de sintaxe YAML -> `[FAIL: Contrato de hand-off malformado]`
+  - Se o payload contiver todos os campos mandatórios e preservar tasks anteriores -> `[PASS]`
+  - Se faltar campo essencial, contiver erro YAML ou reescrever tasks concluídas -> `[FAIL: Contrato de hand-off malformado ou reescrita destrutiva]`
 
 ---
 
-### Regra 7: Aderência ao Design System Tátil e Paleta Mineral
-- **Critério**: Os relatórios e matrizes gerados respeitam as preferências de ergonomia e design do desenvolvedor?
-- **Teste**: Ausência de azul cobalto puro (`#0044FF`), tabelas alinhadas com quebras de linha tratadas (`<br>`), badges anti-squish e estrutura limpa?
+### Regra 7: Aderência à Arquitetura Visual por Propósito (`preferencias_estilo_e_temas.md`)
+- **Critério**: Os relatórios e matrizes gerados respeitam as diretrizes de estilo orientadas ao propósito do projeto?
+- **Teste**: Ausência de azul cobalto puro (`#0044FF`), tabelas alinhadas com `tabular-nums`, badges anti-squish e estrutura limpa?
 - **Resultado**:
-  - Se conforme com a paleta mineral e o design tátil -> `[PASS]`
+  - Se conforme com a arquitetura visual orientada ao propósito -> `[PASS]`
   - Se utilizar cores fluorescentes ou formatação corrompida de tabela -> `[FAIL: Inconformidade visual]`
+

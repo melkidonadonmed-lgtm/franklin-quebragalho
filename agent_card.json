@@ -262,12 +262,13 @@
     {
       "id": "gap-analyzer-auditor",
       "name": "gap-analyzer-auditor",
-      "description": "Auditor técnico e analista de brechas de processos em malha fechada (Closed-Loop Reflection). Inspeciona comandos, arquivos, traces e logs operacionais, identifica causas-raiz (RCA), separa fatos de inferências, propõe rotas alternativas e emite contrato de hand-off estruturado para retroalimentar o planejador de alto nível.",
+      "description": "Auditor técnico, analista de brechas (RCA) e motor de convergência Spec-to-Code em malha fechada (Closed-Loop Reflection). Inspeciona logs, traces, código e planos/specs, separa fatos de inferências e emite Hand-off Payload YAML ou tasks de convergência append-only.",
       "tags": [
         "rca",
         "closed-loop",
         "hand-off",
-        "auditoria"
+        "auditoria",
+        "converge"
       ],
       "examples": [
         "Executar a skill gap-analyzer-auditor no contexto atual"
@@ -304,12 +305,13 @@
     {
       "id": "high-level-context-planner",
       "name": "high-level-context-planner",
-      "description": "Arquiteto estratégico e planejador de contexto de alto nível em malha fechada (Closed-Loop Reflection). Decompõe metas complexas em fases numeradas sequenciais com Fase 0 obrigatória, mapeia dependências, critérios de aceite Go/No-Go e consome o Hand-off Payload do gap-analyzer-auditor para replanejamento corretivo autônomo (Plano v2.0).",
+      "description": "Arquiteto estratégico e planejador de contexto de alto nível em malha fechada (Closed-Loop Reflection & Spec-Driven Development). Decompõe metas em fases numeradas com Fase 0, tasks paralelizáveis ([ID] [P?] [US#] path), tabela Complexity Tracking e convergência append-only (Plano v2.0).",
       "tags": [
         "planejamento",
         "fase-zero",
         "closed-loop",
-        "replanning"
+        "replanning",
+        "spec-kit"
       ],
       "examples": [
         "Executar a skill high-level-context-planner no contexto atual"
@@ -442,7 +444,7 @@
         "jku": "http://localhost:10999/public_keys.json",
         "typ": "JOSE+JSON"
       },
-      "signature": "fe61cc0783b9ace6e10426afd59f79f04ab419e05aae163284cf7c4e2405b03f"
+      "signature": "947ebfd2ba95d7d3da00ba473ca30572eeeeb7e1dcd227695563902b4d3cb997"
     }
   ]
 }

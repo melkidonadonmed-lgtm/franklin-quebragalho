@@ -1,4 +1,4 @@
-# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`high-level-context-planner` v2.0.0)
+# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`high-level-context-planner` v2.1.0)
 
 Este documento estabelece as regras de conformidade e critérios de corte falsificáveis para validação dos planos emitidos pela skill `high-level-context-planner`. Toda verificação emite obrigatoriamente um dos três marcadores padronizados:
 - `[PASS]`: Requisito comprovado e verificado contra âncoras documentais reais.
@@ -16,12 +16,12 @@ Este documento estabelece as regras de conformidade e critérios de corte falsif
 
 ---
 
-### Regra 2: Decomposição Falsificável e Critérios Go/No-Go
-- **Critério**: Todas as fases possuem critérios objetivos de aceite e bloqueio?
-- **Teste**: As condições Go e No-Go baseiam-se em estados falsificáveis (exit codes, schemas, arquivos) e possuem rota de contingência?
+### Regra 2: Decomposição Falsificável, Notação `[ID] [P?] [US#]` e Critérios Go/No-Go
+- **Critério**: Todas as fases possuem tasks no formato `[ID] [P?] [US#] caminho/exato.ext` e critérios objetivos de aceite e bloqueio?
+- **Teste**: As tasks paralelizadas (`[P]`) tocam arquivos distintos sem conflito de escrita e as condições Go/No-Go baseiam-se em estados falsificáveis (exit codes, schemas, arquivos)?
 - **Resultado**:
-  - Se todas as fases possuírem condições Go/No-Go determinísticas -> `[PASS]`
-  - Se contiver critérios vagos ("verificar se funciona", "validar tudo") -> `[FAIL: Critérios Go/No-Go subjetivos ou ausentes]`
+  - Se todas as fases possuírem tasks estruturadas e condições Go/No-Go determinísticas -> `[PASS]`
+  - Se contiver critérios vagos ou paralelismo conflitante no mesmo arquivo -> `[FAIL: Tasks sem caminho exato ou critérios Go/No-Go subjetivos]`
 
 ---
 
@@ -34,12 +34,12 @@ Este documento estabelece as regras de conformidade e critérios de corte falsif
 
 ---
 
-### Regra 4: Consumo Integral do Hand-Off Payload no Replanning
-- **Critério**: Diante de uma entrada contendo o payload YAML do `gap-analyzer-auditor`, o novo plano incorporou todos os ajustes solicitados?
-- **Teste**: O plano v2.0 reflete as ações `REFATORAR`, `INSERIR_GUARDRAIL`, `REMOVER_DEPENDENCIA`, `ADICIONAR_RETRY` ou `BLOQUEIO_HITL` e registra o `incident_id`?
+### Regra 4: Consumo Integral do Hand-Off Payload e Convergência *Append-Only*
+- **Critério**: Diante de uma entrada contendo o payload YAML do `gap-analyzer-auditor`, o novo plano incorporou todos os ajustes solicitados em modo *Append-Only*?
+- **Teste**: O plano v2.0 reflete as ações (`REFATORAR`, `INSERIR_GUARDRAIL`, `REMOVER_DEPENDENCIA`, `ADICIONAR_RETRY`, `BLOQUEIO_HITL` ou `APPEND_CONVERGENCE_TASKS`) anexando a seção de Convergência sem apagar ou renumerar tasks concluídas?
 - **Resultado**:
-  - Se todas as mitigações do payload forem absorvidas no plano e no diagrama -> `[PASS]`
-  - Se ignorar qualquer ajuste mandatório do payload -> `[FAIL: Descumprimento das diretrizes de hand-off]`
+  - Se todas as mitigações forem anexadas sem destruir histórico -> `[PASS]`
+  - Se ignorar qualquer ajuste do payload ou reescrever tasks concluídas -> `[FAIL: Violação de hand-off ou reescrita destrutiva de histórico]`
 
 ---
 
@@ -52,18 +52,19 @@ Este documento estabelece as regras de conformidade e critérios de corte falsif
 
 ---
 
-### Regra 6: Delimitação Estrita de Papel (Planejamento vs Execução)
-- **Critério**: O agente manteve sua atuação restrita à arquitetura, orquestração e planejamento?
-- **Teste**: O plano não executou mutações diretas no disco nem rodou comandos sem a esteira apropriada?
+### Regra 6: Delimitação Estrita de Papel e Tabela `Complexity Tracking` (YAGNI)
+- **Critério**: O agente manteve sua atuação restrita ao planejamento e incluiu a tabela `Complexity Tracking` justificando eventuais abstrações extras?
+- **Teste**: O plano não executou mutações diretas no disco e documentou violações YAGNI (ou declarou zero violações)?
 - **Resultado**:
-  - Se formulou a esteira e delegou para as skills operárias -> `[PASS]`
-  - Se executou mutações destrutivas diretamente durante o turno de planejamento -> `[FAIL: Violação de separação entre planejamento e execução]`
+  - Se formulou a esteira com `Complexity Tracking` e delegou para as skills operárias -> `[PASS]`
+  - Se executou mutações destrutivas ou omitiu justificativa de complexidade -> `[FAIL: Violação de separação de papéis ou over-engineering não justificado]`
 
 ---
 
-### Regra 7: Aderência ao Design System Tátil e Paleta Mineral
-- **Critério**: Fases que envolvem interfaces de usuário respeitam o design tátil Melki?
-- **Teste**: Banimento explícito de azul cobalto puro (`#0044FF`), especificação de cartões elevados e componentes modulares (shadcn/ui)?
+### Regra 7: Aderência à Arquitetura Visual por Propósito (`preferencias_estilo_e_temas.md`)
+- **Critério**: Fases que envolvem interfaces de usuário respeitam a atmosfera alinhada ao propósito do projeto?
+- **Teste**: Seleção de atmosfera (*Ad Lucem*, *Cinza Monolítico `#57545d` + `#8e8999`*, *Preto Terminal IBM `Ex Umbris`* ou *AETHER 2027*), banimento de azul cobalto puro (`#0044FF`) e Design Atômico em 5 camadas?
 - **Resultado**:
-  - Se incorporar os guardrails visuais minerais -> `[PASS]`
-  - Se planejar componentes neon ou bibliotecas opacas caixa-preta -> `[FAIL: Inconformidade com preferências visuais]`
+  - Se incorporar os guardrails visuais orientados ao propósito -> `[PASS]`
+  - Se planejar paleta fixa repetitiva, componentes neon ou caixas-pretas -> `[FAIL: Inconformidade com arquitetura visual por propósito]`
+

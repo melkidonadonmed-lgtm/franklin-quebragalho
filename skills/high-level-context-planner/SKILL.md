@@ -1,32 +1,33 @@
 ---
 name: high-level-context-planner
 description: >-
-  Arquiteto estratégico e planejador de contexto de alto nível em malha fechada (Closed-Loop Reflection). Decompõe metas complexas em fases numeradas sequenciais com Fase 0 obrigatória, mapeia dependências, critérios de aceite Go/No-Go e consome o Hand-off Payload do gap-analyzer-auditor para replanejamento corretivo autônomo (Plano v2.0).
+  Arquiteto estratégico e planejador de contexto de alto nível em malha fechada (Closed-Loop Reflection & Spec-Driven Development). Decompõe metas em fases numeradas com Fase 0, tasks paralelizáveis ([ID] [P?] [US#] path), tabela Complexity Tracking e convergência append-only (Plano v2.0).
 license: MIT
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
   author: "LoopPlanner & Melki"
   category: "Planejamento Estratégico, Orquestração Multiagente e Workflows"
-  updated_at: "2026-10-04"
+  updated_at: "2026-10-19"
   tags:
     - "planejamento"
     - "fase-zero"
     - "closed-loop"
     - "replanning"
-version: 2.0.0
-updated_at: 2026-10-04
+    - "spec-kit"
+version: 2.1.0
+updated_at: 2026-10-19
 author: LoopPlanner & Melki
 category: Planejamento Estratégico, Orquestração Multiagente e Workflows
 ---
 
-# SKILL: Planejador Estratégico de Contexto de Alto Nível (`high-level-context-planner` v2.0.0)
+# SKILL: Planejador Estratégico de Contexto de Alto Nível (`high-level-context-planner` v2.1.0)
 
 ## 1. Identificação e Metadados
 - **Nome Oficial**: `high-level-context-planner`
-- **Identificador de Ativo**: `SKILL_HIGH_LEVEL_CONTEXT_PLANNER_V2`
-- **Versão de Referência**: `2.0.0`
-- **Compatibilidade Normativa**: Multi-LLM (Gemini 2.5+, Claude 3.5+, GPT-4o+, Google ADK, LangGraph, MCP Spec 2026-07-28).
-- **Papel na Arquitetura**: Nó Planejador Estratégico em malha fechada (*Strategic Planner & State Graph Coordinator*).
+- **Identificador de Ativo**: `SKILL_HIGH_LEVEL_CONTEXT_PLANNER_V2_1`
+- **Versão de Referência**: `2.1.0`
+- **Compatibilidade Normativa**: Multi-LLM (Gemini 2.5+, Claude 3.5+, GPT-4o+, Google ADK, LangGraph, MCP Spec 2026-07-28, GitHub Spec Kit SDD).
+- **Papel na Arquitetura**: Nó Planejador Estratégico em malha fechada (*Strategic Planner, Spec-Driven Coordinator & State Graph Architect*).
 
 ---
 
@@ -100,33 +101,28 @@ flowchart TD
     F --> G["Emissão do Plano de Ação Estruturado (v1.0 ou v2.0)"]
 ```
 
-### Passo 1: Concepção do Plano Inicial (v1.0)
-1. Analisar a meta e isolar o escopo do projeto (regra anti-inchaço / MVP).
-2. **Fase 0 Mandatória**: Toda esteira deve iniciar com a Fase 0 cobrindo:
-   - Validação de pré-requisitos, schemas de dados, variáveis de ambiente e diretrizes de design.
-   - Verificação de caminhos canônicos e catálogo de ferramentas.
+### Passo 1: Concepção do Plano Inicial (v1.0) & Notação Executável `spec-kit`
+1. Analisar a meta e isolar o escopo do projeto em fatias independentemente testáveis (`P1 MVP`, `P2`, `P3`). Se houver requisito crítico ambíguo que não possa ser inferido com segurança, marcá-lo explicitamente com `[NEEDS CLARIFICATION: motivo]`.
+2. **Fase 0 Mandatória**: Toda esteira deve iniciar com a Fase 0 cobrindo validação de pré-requisitos, schemas de dados, variáveis de ambiente, diretrizes de design e verificação de caminhos canônicos.
 3. Decompor os objetivos em fases numeradas (Fase 1, Fase 2, Fase 3...), cada uma contendo:
-   - Objetivo específico da fase.
-   - Skill / Agente responsável pela execução.
-   - Insumos requeridos (inputs) e entregáveis esperados (outputs).
-   - Critérios determinísticos de aceite (`[PASS]` / `[FAIL]`).
-   - Estimativa de esforço relativo (Baixo / Médio / Alto).
+   - Objetivo específico da fase e Skill / Agente responsável pela execução.
+   - **Checklist de Tasks com Notação Paralela (`[ID] [P?] [US#] caminho/exato.ext`)**:
+     - `[ID]`: Identificador sequencial imutável (`T001`, `T002`...).
+     - `[P]`: Marcador explícito para tarefas que tocam **arquivos diferentes sem dependência entre si** e podem ser despachadas em subagentes paralelos (`invoke_subagent` / nós do DAG) sem conflito de escrita.
+     - `[US#]`: Fatia de história/requisito correspondente (`[US1]`, `[MVP]`, `[CONV]`).
+   - Insumos requeridos (inputs), entregáveis esperados (outputs), critérios Go/No-Go (`[PASS]` / `[FAIL]`) e esforço relativo (Baixo / Médio / Alto).
 
-### Passo 2: Assimilação do Hand-Off Payload e Replanning (v2.0)
+### Passo 2: Assimilação do Hand-Off Payload e Convergência *Append-Only* (v2.0)
 1. Extrair os campos estruturados do payload YAML: `incident_id`, `recommended_option`, `required_adjustments` e `contingency_trigger`.
-2. Para cada item em `required_adjustments`:
-   - Ação `REFATORAR`: Ajustar pontualmente a instrução técnica da fase afetada.
-   - Ação `INSERIR_GUARDRAIL`: Adicionar etapa de validação intermediária ou parada HITL.
-   - Ação `REMOVER_DEPENDENCIA`: Desacoplar nós com dependência circular.
-   - Ação `ADICIONAR_RETRY`: Configurar política de retentativa com backoff exponencial.
-   - Ação `BLOQUEIO_HITL`: Congelar avanço automatizado exigindo confirmação explícita do desenvolvedor.
-3. Emitir a versão atualizada do plano marcada formalmente como **Plano de Ação Revisado (v2.0)**.
+2. **Regra de Convergência *Append-Only* (`/speckit-converge`)**:
+   - Em ciclos de replanejamento ou convergência pós-implementação, **NUNCA apague, renumere ou reescreva tarefas já concluídas (`[x] T001`)**.
+   - Aplique os ajustes necessários (`REFATORAR`, `INSERIR_GUARDRAIL`, `REMOVER_DEPENDENCIA`, `ADICIONAR_RETRY`, `BLOQUEIO_HITL` ou `APPEND_CONVERGENCE_TASKS`) anexando uma nova seção **`## Fase N: Convergência & Mitigação`** ao final do plano com novas tasks sequenciais (`- [ ] T0XX [P] [CONV] caminho/exato.py`).
 
 ### Passo 3: Mapeamento de Dependências e Diagramação Mermaid
 Elaborar fluxograma visual claro em sintaxe `mermaid` (`flowchart TD` ou `LR`), com rótulos de nós entre aspas e sem tags HTML complexas.
 
-### Passo 4: Matriz de Decisão Go/No-Go e Portão de Qualidade
-Consolidar a tabela determinística de critérios de aprovação para cada fase, garantindo que falhas em fases antecedentes impeçam transições prematuras.
+### Passo 4: Matriz de Decisão Go/No-Go e `Complexity Tracking` (Anti-Overengineering)
+Consolidar a tabela determinística de critérios de aprovação por fase e incluir a tabela **`Complexity Tracking`**, justificando qualquer abstração extra caso o plano exceda a solução mínima viável (YAGNI).
 
 ---
 
@@ -137,8 +133,8 @@ Toda entrega gerada por esta skill segue rigorosamente a estrutura canônica:
 ```markdown
 # PLANO DE AÇÃO ESTRUTURADO: [NOME DO PROJETO / OBJETIVO]
 
-> **Versão do Plano**: [v1.0.0 (Concepção Inicial) OU v2.0.0 (Revisão Pós-Auditoria)]  
-> **Status de Execução**: [EM PLANEJAMENTO / PRONTO PARA EXECUÇÃO / REVISADO PÓS-HANDOFF]  
+> **Versão do Plano**: [v1.0.0 (Concepção Inicial) OU v2.0.0 (Convergência Pós-Auditoria)]  
+> **Status de Execução**: [EM PLANEJAMENTO / PRONTO PARA EXECUÇÃO / CONVERGÊNCIA APPEND-ONLY]  
 > **Orquestrador Alvo**: skill-orquestrador-planos-encadeados  
 
 ---
@@ -146,39 +142,39 @@ Toda entrega gerada por esta skill segue rigorosamente a estrutura canônica:
 ## 1. Síntese Executiva e Escopo
 - **Objetivo Estratégico:** [Resumo claro do resultado esperado em 1 a 2 frases]
 - **Origem do Disparo:** [Demanda Direta do Usuário OU Hand-off do gap-analyzer-auditor (ID: [INCIDENT_ID])]
-- **Premissas e Restrições:** [Premissas adotadas e restrições de ambiente]
+- **Premissas e Restrições:** [Premissas adotadas, metas p95/RAM e eventuais marcadores `[NEEDS CLARIFICATION: ...]
+]
 
 ---
 
 ## 2. Diagrama de Fluxo Visual de Fases (Mermaid)
 ```mermaid
 flowchart TD
-    F0["Fase 0: Alinhamento, Pré-requisitos & Schemas"] --> F1["Fase 1: [Nome da Fase]"]
-    F1 --> F2["Fase 2: [Nome da Fase]"]
+    F0["Fase 0: Alinhamento, Pré-requisitos & Schemas"] --> F1["Fase 1: [Nome da Fase (P1 MVP)]"]
+    F1 --> F2["Fase 2: [Nome da Fase (P2)]"]
     F2 --> F3["Fase 3: Consolidação & Auditoria Final"]
 ```
 
 ---
 
-## 3. Decomposição Detalhada por Fases
+## 3. Decomposição Detalhada por Fases e Tasks (`[ID] [P?] [US#]`)
 
 ### Fase 0: Alinhamento, Pré-requisitos e Schemas
-- **Objetivo:** Garantir integridade de insumos, tokens de design tátil e ausência de dependências circulares.
+- **Objetivo:** Garantir integridade de insumos, atmosfera visual por propósito e ausência de dependências circulares.
 - **Skill / Agente Responsável:** `skill-orquestrador-planos-encadeados`
-- **Insumos:** [Arquivos, schemas JSON, credenciais requeridas]
-- **Entregáveis:** [Ambiente validado, schemas compilados]
+- **Tasks Executáveis:**
+  - [ ] `T001` `[US0]` Validar pré-requisitos, variáveis de ambiente e schemas em `config/`
 - **Critério Go/No-Go:** `[PASS]` Todos os pré-requisitos satisfeitos; `[FAIL]` Aborta com diagnóstico.
 - **Esforço Estimado:** Baixo
 
-### Fase 1: [Nome da Fase 1]
-- **Objetivo:** [Meta técnica da fase]
+### Fase 1: [Nome da Fase 1 — Prioridade: P1 MVP]
+- **Objetivo:** [Meta técnica da fase, independentemente testável]
 - **Skill / Agente Responsável:** `[Nome da Skill]`
-- **Insumos:** [Saídas da fase anterior]
-- **Entregáveis:** [Arquivos gerados, testes validados]
-- **Critério Go/No-Go:** [Critério booleano de aceite]
+- **Tasks Executáveis (`[P]` = Paralelizável sem conflito de arquivo):**
+  - [ ] `T002` `[P]` `[US1]` Implementar módulo X em `src/caminho/modulo_x.py`
+  - [ ] `T003` `[P]` `[US1]` Criar suíte de testes unitários em `tests/test_modulo_x.py`
+- **Critério Go/No-Go:** `[PASS]` Exit code 0 nos testes e score AST >= 75; `[FAIL]` Acionar `gap-analyzer-auditor`.
 - **Esforço Estimado:** [Baixo / Médio / Alto]
-
-[... Demais fases estruturadas ...]
 
 ---
 
@@ -190,11 +186,19 @@ flowchart TD
 
 ---
 
-## 5. Registro de Patches e Mitigações (Apenas para Planos v2.0+)
-- **Incidente de Origem:** [AUDIT-DATA-SEQ]
-- **Opção Adotada:** [Opção 1 Cirúrgica OU Opção 2 Arquitetural]
-- **Ajustes Aplicados:**
-  - *Etapa X:* [Descrição da refatoração realizada com base nas instruções de patch]
+## 5. Rastreamento de Complexidade (`Complexity Tracking` — Vacina YAGNI)
+> *Preencher APENAS se o plano introduzir abstrações, serviços ou dependências além do mínimo estritamente necessário.*
+
+| Violação / Abstração Extra | Por que é Necessária | Alternativa Mais Simples Descartada Porque |
+| :--- | :--- | :--- |
+| Nenhuma violação YAGNI | — | Solução usa biblioteca padrão e módulos coesos diretos |
+
+---
+
+## 6. Fase N: Convergência & Mitigação *Append-Only* (Apenas para Planos v2.0+)
+- **Incidente de Origem:** `[AUDIT-DATA-SEQ]` | **Opção Adotada:** `[Opção 1 Cirúrgica OU Opção 2 Arquitetural]`
+- **Novas Tasks de Convergência (Sem reescrever histórico anterior):**
+  - [ ] `T0XX` `[P]` `[CONV]` Aplicar correção em `src/caminho/arquivo.py` conforme `patch_instructions`
 ```
 
 ---
@@ -202,6 +206,7 @@ flowchart TD
 ## 7. Exceções, Limites e Restrições Negativas (Guardrails)
 
 - ❌ **Proibição de Pular a Fase 0**: Todo plano deve conter a Fase 0 de alinhamento e validação de schemas.
-- ❌ **Proibição de Dependências Circulares**: É vedado gerar planos onde a Fase A dependa da Fase B e vice-versa.
-- ❌ **Proibição de Execução Direta**: A skill não executa comandos destrutivos ou scripts; ela planeja e delega.
-- ❌ **Proibição de Ignorar o Hand-Off Payload**: Quando acionada com um payload do `gap-analyzer-auditor`, todos os `required_adjustments` devem ser refletidos no novo plano.
+- ❌ **Proibição de Reescrever Histórico na Convergência**: Na revisão v2.0+, é proibido apagar ou renumerar tasks anteriores; adicione apenas a seção *Append-Only* de Convergência.
+- ❌ **Proibição de Tasks Sem Caminho ou Paralelismo Ambíguo**: Nunca marcar `[P]` em duas tasks que editam o mesmo arquivo simultaneamente.
+- ❌ **Proibição de Dependências Circulares e Execução Direta**: A skill não executa comandos destrutivos; ela planeja e delega.
+

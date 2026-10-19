@@ -1,32 +1,33 @@
 ---
 name: gap-analyzer-auditor
 description: >-
-  Auditor técnico e analista de brechas de processos em malha fechada (Closed-Loop Reflection). Inspeciona comandos, arquivos, traces e logs operacionais, identifica causas-raiz (RCA), separa fatos de inferências, propõe rotas alternativas e emite contrato de hand-off estruturado para retroalimentar o planejador de alto nível.
+  Auditor técnico, analista de brechas (RCA) e motor de convergência Spec-to-Code em malha fechada (Closed-Loop Reflection). Inspeciona logs, traces, código e planos/specs, separa fatos de inferências e emite Hand-off Payload YAML ou tasks de convergência append-only.
 license: MIT
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
   author: "LoopPlanner & Melki"
   category: "Auditoria de Processos, RCA e Hand-off Multiagente"
-  updated_at: "2026-10-04"
+  updated_at: "2026-10-19"
   tags:
     - "rca"
     - "closed-loop"
     - "hand-off"
     - "auditoria"
-version: 2.0.0
-updated_at: 2026-10-04
+    - "converge"
+version: 2.1.0
+updated_at: 2026-10-19
 author: LoopPlanner & Melki
 category: Auditoria de Processos, RCA e Hand-off Multiagente
 ---
 
-# SKILL: Analisador de Brechas, Auditor de Falhas & Crítico de Processos (`gap-analyzer-auditor` v2.0.0)
+# SKILL: Analisador de Brechas, Auditor de Falhas & Convergência Spec-to-Code (`gap-analyzer-auditor` v2.1.0)
 
 ## 1. Identificação e Metadados
 - **Nome Oficial**: `gap-analyzer-auditor`
-- **Identificador de Ativo**: `SKILL_GAP_ANALYZER_AUDITOR_V2`
-- **Versão de Referência**: `2.0.0`
-- **Compatibilidade Normativa**: Multi-LLM (Gemini 2.5+, Claude 3.5+, GPT-4o+, Google ADK, LangGraph, MCP Spec 2026-07-28).
-- **Papel na Arquitetura**: Nó Crítico / Auditor em malha fechada (*stateless analyzer*).
+- **Identificador de Ativo**: `SKILL_GAP_ANALYZER_AUDITOR_V2_1`
+- **Versão de Referência**: `2.1.0`
+- **Compatibilidade Normativa**: Multi-LLM (Gemini 2.5+, Claude 3.5+, GPT-4o+, Google ADK, LangGraph, MCP Spec 2026-07-28, GitHub Spec Kit SDD `/speckit-converge`).
+- **Papel na Arquitetura**: Nó Crítico / Auditor de RCA e Convergência em malha fechada (*stateless analyzer & convergence engine*).
 
 ---
 
@@ -35,8 +36,8 @@ category: Auditoria de Processos, RCA e Hand-off Multiagente
 ### Quando Usar
 Esta skill **DEVE** ser acionada nas seguintes circunstâncias:
 - Quando comandos, scripts, pipelines ou automações falharem ou emitirem traces e logs de erro inesperados.
-- Para auditar processos, arquivos ou planos propostos antes ou durante a execução, detectando gargalos e vulnerabilidades latentes.
-- Quando for necessário isolar fatos documentados de inferências diagnósticas em falhas operacionais complexas.
+- **Modo Convergência Spec-to-Code (`/speckit-converge`)**: Para comparar a especificação/plano (`spec.md`, `plan.md`, `tasks.md`) contra o estado atual do código no disco, detectando requisitos não atendidos (`FR-###`, `SC-###`, `T###`) e gerando novas tasks rastreáveis *append-only* (`[ ] T0XX [P] [CONV] caminho/exato.ext`) sem reescrever o histórico.
+- Para isolar fatos documentados de inferências diagnósticas em falhas operacionais complexas.
 - Para formular alternativas estruturadas (Opção 1 Cirúrgica vs Opção 2 Arquitetural) e gerar o contrato de hand-off em YAML para retroalimentar o `high-level-context-planner`.
 - Em malhas fechadas de agentes (*closed-loop reflection*), onde um plano deve ser submetido a escrutínio crítico independente antes da aprovação final.
 
@@ -118,8 +119,12 @@ Para cada brecha diagnosticada, estruturar no mínimo duas rotas resolutivas:
 - **Opção 1 (Cirúrgica / Imediata)**: Ajuste pontual de menor esforço para restabelecer a operação rápida do fluxo.
 - **Opção 2 (Arquitetural / Estrutural)**: Readequação definitiva com guardrails determinísticos, tolerância a falhas e desacoplamento.
 
-### Fase 4: Geração do Contrato de Hand-Off para o Planejador
-Sintetizar as descobertas em um payload YAML padronizado contendo alvo, ID de incidente, opção recomendada, ajustes necessários por etapa e gatilhos de contingência.
+### Fase 4: Geração do Contrato de Hand-Off e Convergência *Append-Only* (`/speckit-converge`)
+1. Sintetizar as descobertas em um payload YAML padronizado contendo alvo, ID de incidente, opção recomendada, ajustes necessários por etapa e gatilhos de contingência.
+2. **Protocolo de Convergência Spec-to-Code**:
+   - Quando acionada para comparar `spec.md`/`plan.md`/`tasks.md` contra o código real no disco:
+     - Se **100% dos requisitos e tasks** estiverem atendidos, emitir `Status do Veredito: CONVERGED` e determinar que `tasks.md` permaneça **inalterado byte-a-byte** (sem cabeçalho vazio de convergência).
+     - Se houver requisitos incompletos ou parciais, usar a ação `APPEND_CONVERGENCE_TASKS` listando apenas as novas tasks em notação `[ID] [P?] [CONV] caminho/exato.ext`, proibindo reescrever, renumerar ou apagar tasks anteriores.
 
 ---
 
@@ -128,21 +133,21 @@ Sintetizar as descobertas em um payload YAML padronizado contendo alvo, ID de in
 Toda auditoria executada por esta skill deve emitir o relatório no modelo canônico abaixo:
 
 ```markdown
-# RELATÓRIO DE AUDITORIA TÉCNICA E BRECHAS DE PROCESSO
+# RELATÓRIO DE AUDITORIA TÉCNICA, RCA E CONVERGÊNCIA SPEC-TO-CODE
 
-## 1. Mapeamento Factual e Síntese da Anomalia
+## 1. Mapeamento Factual e Síntese da Anomalia / Convergência
 - **Alvo Auditado:** [Nome do processo, pipeline, arquivo ou skill sob análise]
-- **Status do Veredito:** [CRÍTICO / ALERTA / SUBÓTIMO / CONFORME]
+- **Status do Veredito:** [CRÍTICO / ALERTA / SUBÓTIMO / CONVERGED / CONFORME]
 - **Classificação da Informação:**
-  - `[FATO]`: [Evidência textual exata ou registro de log comprovado]
-  - `[INFERÊNCIA]`: [Dedução analítica da causa imediata do erro]
+  - `[FATO]`: [Evidência textual exata, registro de log ou estado real do arquivo no disco]
+  - `[INFERÊNCIA]`: [Dedução analítica da causa imediata do erro ou da divergência Spec-to-Code]
   - `[LACUNA]`: [Dados ausentes que limitam o diagnóstico definitivo]
 
 ---
 
-## 2. Diagnóstico da Causa-Raiz (RCA)
-- **Mecanismo da Falha:** [Explicação em cadeia causal: Causa -> Propagação -> Impacto]
-- **Ponto de Quebra:** [Etapa, função, parâmetro ou instrução específica onde o fluxo colapsou]
+## 2. Diagnóstico da Causa-Raiz (RCA) ou Lacunas de Convergência
+- **Mecanismo da Falha / Brecha:** [Explicação em cadeia causal: Causa -> Propagação -> Impacto]
+- **Ponto de Quebra:** [Etapa, função, requisito FR-### ou arquivo específico onde o fluxo divergiu]
 - **Risco Residual:** [Impacto no ecossistema caso a falha não seja corrigida]
 
 ---
@@ -164,15 +169,15 @@ required_adjustments:
   - step: "[Etapa afetada no plano anterior]"
     action: "REFATORAR"
     patch_instructions: "[Instrução técnica pontual para sanar a brecha]"
-  - step: "[Nova etapa de mitigação necessária]"
-    action: "INSERIR_GUARDRAIL"
-    patch_instructions: "[Inclusão de validação de schema ou parada HITL]"
+  - step: "Fase N: Convergência Spec-to-Code"
+    action: "APPEND_CONVERGENCE_TASKS"
+    patch_instructions: "Anexar ao final do plano sem reescrever tasks concluídas: - [ ] T0XX [P] [CONV] src/caminho/exato.py"
 contingency_trigger: "[Condição em que o fallback deve ser acionado]"
 ```
 
 ---
 
-**Deseja acionar o `high-level-context-planner` agora com este payload para emitir o plano corretivo revisado, ou deseja ajustar a alternativa recomendada?**
+**Deseja acionar o `high-level-context-planner` agora com este payload para emitir o plano corretivo revisado (Convergência Append-Only), ou deseja ajustar a alternativa recomendada?**
 ```
 
 ---
@@ -180,6 +185,7 @@ contingency_trigger: "[Condição em que o fallback deve ser acionado]"
 ## 7. Exceções, Limites e Restrições Negativas (Guardrails)
 
 - ❌ **Proibição de Assumir Papel de Planejador**: A skill audita e recomenda rotas; a reescrita de cronogramas e fluxogramas cabe ao planejador.
-- ❌ **Proibição de Alucinação de Logs**: Na ausência de dados comprovados, marcar obrigatoriamente como `[LACUNA]`. Nunca inventar exceções ou respostas de API não documentadas.
-- ❌ **Proibição de Pareceres Sem Evidência**: Todo diagnóstico deve apontar a evidência factual (`[FATO]`).
+- ❌ **Proibição de Reescrever Tasks Passadas na Convergência**: A convergência é estritamente *append-only* (`APPEND_CONVERGENCE_TASKS`); se tudo já convergiu (`CONVERGED`), nenhuma linha vazia deve ser anexada.
+- ❌ **Proibição de Alucinação de Logs**: Na ausência de dados comprovados, marcar obrigatoriamente como `[LACUNA]`.
 - ❌ **Bloqueio Mandatório para Mutações Críticas**: Diante de operações destrutivas ou de risco irreversível, emitir `[BLOQUEIO HITL]` imediatamente, suspendendo a cadeia.
+
