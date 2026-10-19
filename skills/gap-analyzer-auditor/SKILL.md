@@ -57,30 +57,28 @@ Esta skill **DEVE** ser acionada nas seguintes circunstâncias:
 
 ---
 
-## 4. Diretrizes Canônicas de Design e Preferências Melki (`DESIGN.md v4.5-soft`)
+## 4. Diretrizes de Estilo por Propósito e Arquitetura Visual (`preferencias_estilo_e_temas.md`)
 
-Sempre que a auditoria gerar relatórios visuais, painéis de monitoramento, tabelas formatadas ou documentação técnica para o desenvolvedor, a skill aplica os 4 módulos canônicos:
+Sempre que a auditoria gerar relatórios visuais, painéis de monitoramento, tabelas formatadas ou recomendações de UI, aplica os 4 módulos guiados pelo **propósito do projeto** ([`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md)):
 
-### Módulo 1: Paleta de Cores Canônica (Economia Tonal 60-30-10 & Acentos Minerais)
-- **Dark Mode (`obsidian`)**: Canvas (`#12151B` / `#090B10`), Cartões Elevados (`#181D26` / `#141824`) e Cavidade (`#0D1016`).
-- **Light Mode (`slate` / `moss` / `sapphire`)**: Canvas (`#F1F4F8`, `#F4F3EC`, `#F5F4EE`) com Cavidades `surface-inset` (`#E5E9F0`) e Âncora Terrixa (`#1E293B`).
-- **Acentos Minerais Autorizados**: Cerulean Sapphire (`#0284C7`), Ocean Sapphire (`#1E6091`), Mineral Ice (`#38BDF8`), Forest Moss (`#174930`), Clinical Emerald (`#059669`) e Ouro Champanhe (`#D4AF37`).
-- ❌ **Banimento Anti-Cobalto**: É expressamente proibido o uso de azul cobalto puro (`#0044FF`, `#0057FF`, `#233DFF`, `#1D4ED8`) ou cores fluorescentes saturadas em gráficos ou badges de alerta.
+### Módulo 1: Atmosfera e Tema pelo Propósito (Sem Paleta Fixa)
+- **Ad Lucem (Claro Editorial/Técnico)**: Canvas (`#F3F3F5` / `#F6F6F4`), Card (`#FFFFFF`), Elevado (`#E6E6EA`) e Bloco de Contraste (`#18181C`).
+- **Cinza Monolítico**: Canvas (`#57545d`), Card (`#49464f`) e Menus `#8e8999` com tinta escura (`#16151A`).
+- **Preto Terminal IBM (`Ex Umbris`)**: Canvas (`#070709`), Card (`#101014`), acoplado a **`IBM Plex Sans` + `IBM Plex Mono`**.
+- **Isolamento de Acento (98/2 ou 60-30-10)**: Cor de destaque guiada pelo domínio e restrita a 1 CTA primário sólido vs. `.btn-ghost`.
 
-### Módulo 2: Diretrizes de Design Tátil e Composição Visual (`Minimalist Impact & Soft UI 135°`)
-- **Anti-Glassmorphism & Zero Bordas Duras**: Proibido o uso de vidros translúcidos borrados (`backdrop-filter: blur`), contornos neon brilhantes e bordas duras de `1px`.
-- **Regra de Ouro da Profundidade**: No dark mode, os blocos de diagnóstico e cartões devem ser estritamente mais claros que o fundo ($L_{\text{card}} > L_{\text{canvas}}$).
-- **Iluminação Direcional a 135°**: Elevação `.ui-card-soft` (`8px 8px 20px rgba(166,180,200,0.42), -8px -8px 20px rgba(255,255,255,0.95)`) e cavidades `surface-inset`.
-- **Anti-Squish em Badges e Tabelas**: Uso de `flex-shrink: 0;` e `white-space: nowrap;` em células de status e identificadores.
+### Módulo 2: Contraste, Espaçamento, Tipografia e Camadas Esculpidas
+- **Profundidade e Camadas**: No dark mode, $L_{\text{card}} > L_{\text{canvas}}$. Sombra esculpida em 3 estágios (`--shadow-sculpted`) + `1px` Rim Light superior (`inset 0 1px 0 0 var(--rim-light)`).
+- **Tipografia & Anti-Squish**: Escala `clamp()`, `tabular-nums` em métricas/tabelas e proteção `flex-shrink: 0; white-space: nowrap;` em células de status e botões.
 
 ### Módulo 3: Opções das Preferências do Desenvolvedor
-- **Estruturação Modular**: Formulação de alternativas de solução alinhadas com o ecossistema open-source copy-paste (**shadcn/ui**, **Radix UI**, **Lucide Icons**) e Design Atômico em 5 camadas (`frontend-code-architect` v4.0).
+- **Estruturação Modular**: Formulação de alternativas alinhadas com Design Atômico em 5 camadas (`frontend-code-architect` v5.0).
 - **Consulta Interativa via `ask_question`**: Quando houver trade-offs arquiteturais significativos entre a correção imediata e a estrutural.
 
 ### Módulo 4: Matriz de Detecção de Discrepâncias com as Preferências
 - Avaliação determinística dos relatórios técnicos e recomendações geradas:
-  * `[PASS / FAIL]` **Ausência de Cobalto Neon (`AUDIT-VIS-01`)**: Relatórios sem azuis elétricos ofuscantes.
-  * `[PASS / FAIL]` **Profundidade e Luz 135°**: Contraste adequado entre superfícies elevadas e fundo sem `blur()`.
+  * `[PASS / FAIL]` **Tema Coerente com o Propósito (`AUDIT-VIS-01`)**: Relatórios e UIs sem paleta fixa engessada e com contraste WCAG AA/AAA.
+  * `[PASS / FAIL]` **Camadas Esculpidas e `tabular-nums`**: Sombra 3 camadas + `1px` Rim Light e alinhamento numérico tabular.
   * `[PASS / FAIL]` **Segregação de Fatos**: Classificação rigorosa sem alucinação de dados.
   * `[PASS / FAIL]` **Contrato Estruturado**: Presença mandatória do payload YAML de hand-off.
 

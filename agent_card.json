@@ -1,6 +1,6 @@
 {
   "name": "Franklin Quebra-Galho (A2A + MCP Orchestrator)",
-  "description": "Orquestrador multiagente e catálogo de 29 Skills canônicas (Python, TS/JS, Go, MCP, Harness e Design Tátil) com suporte nativo a Agent2Agent (A2A v1.0) e Model Context Protocol (MCP).",
+  "description": "Orquestrador multiagente e catálogo de 27 Skills canônicas (Python, TS/JS, Go, MCP, Harness e Arquitetura Visual por Propósito) com suporte nativo a Agent2Agent (A2A v1.0) e Model Context Protocol (MCP).",
   "supportedInterfaces": [
     {
       "url": "http://localhost:10999",
@@ -49,22 +49,6 @@
       ]
     },
     {
-      "id": "analise-design-tatil-frontend",
-      "name": "analise-design-tatil-frontend",
-      "description": "Fase 1 (Diagnóstico Read-Only): escaneia projetos frontend com audit_tactile_ui.py sob DESIGN.md v4.5-soft, detectando SoftCard órfão, bordas 1px, cobalto/blur e pastas faltantes. Não use para refatorar código (use refatoracao-design-tatil-frontend).",
-      "tags": [
-        "design-tatil",
-        "minimalist-impact",
-        "auditoria-ui",
-        "design-md",
-        "anti-cobalto",
-        "subagentes-ui-3+1"
-      ],
-      "examples": [
-        "Executar a skill analise-design-tatil-frontend no contexto atual"
-      ]
-    },
-    {
       "id": "aprimoramento-expansibilidade-agentes-skills",
       "name": "aprimoramento-expansibilidade-agentes-skills",
       "description": "Arquiteto de sistemas agênticos, seleção de frameworks, contratos de tools Pydantic/MCP 2026-07-28, despacho polimórfico (Envelope Pattern) e auditoria matemática (Pass@k, D_cos, FNR<0.001, Snorm, TEI). Use para projetar agentes de software, escolher frameworks ou rodar auditoria matemática; não use para editar SKILL.md do catálogo (use evoluir-skills ou skill-auditor-refatorador-skills).",
@@ -97,14 +81,13 @@
     {
       "id": "arquitetura-design-implementacao-sistema",
       "name": "arquitetura-design-implementacao-sistema",
-      "description": "Executa diagnóstico severo de MVP, arquitetura de navegabilidade comentada, aglomeração funcional por ilhas (Island UI/UX), especificação tipográfica linear, auditoria anti-hardcode e plano de implementação modular com score determinístico e histórico comparativo V1 vs V2 em HTML com metadados.",
+      "description": "Executa diagnóstico severo de MVP, arquitetura de navegabilidade comentada, aglomeração funcional por ilhas (Island UI/UX), especificação tipográfica linear, alinhamento de atmosfera ao propósito do sistema, auditoria anti-hardcode e plano de implementação modular com score determinístico e histórico comparativo V1 vs V2 em HTML com metadados.",
       "tags": [
-        "navegabilidade",
-        "arquitetura-em-ilhas",
-        "auditoria-mvp",
-        "zero-hardcode",
-        "tipografia-linear",
-        "score-deterministico"
+        "system-architecture",
+        "island-architecture",
+        "mvp-critique",
+        "deterministic-audit",
+        "typography-scale"
       ],
       "examples": [
         "Executar a skill arquitetura-design-implementacao-sistema no contexto atual"
@@ -113,10 +96,11 @@
     {
       "id": "auditoria-projetos-sistema",
       "name": "auditoria-projetos-sistema",
-      "description": "Audita a integridade estrutural, arquivos essenciais (AGENTS.md, README, CONTEXT, DESIGN, SPEC), higiene de repositório (.env, .gitignore, Git), orfandade de código, desacoplamento/tipagem/chunking, discrepâncias entre escopo documentado e executado, conformidade de UI/UX e esteira visual via agent-browser (snapshots @eX) com nota ponderada (0 a 100). Não use para refatorar código sem aprovação prévia.",
+      "description": "Audita a integridade estrutural, arquivos essenciais (AGENTS.md, README, CONTEXT, DESIGN, SPEC), higiene de repositório (.env, .gitignore, Git), orfandade de código, desacoplamento/tipagem/chunking, discrepâncias entre escopo documentado e executado, aderência do tema/estilo ao propósito do projeto (espaçamento, contraste, tipografia, camadas, hierarquia) e esteira visual via agent-browser (snapshots @eX) com nota ponderada (0 a 100). Não use para refatorar código sem aprovação prévia.",
       "tags": [
         "auditoria",
         "agent-browser",
+        "estilo-por-proposito",
         "higiene-repo",
         "qualidade"
       ],
@@ -157,22 +141,6 @@
       ]
     },
     {
-      "id": "consultor-design-tatil-frontend",
-      "name": "consultor-design-tatil-frontend",
-      "description": "Fase 2 (Consultoria Interativa & Mockup): apresenta via ask_question os 4 presets Soft UI 135° (slate, moss, sapphire, obsidian), tipografia e geometria, gerando DESIGN.md v4.5-soft e mockup HTML. Não use para diagnóstico (Fase 1) nem refatoração (Fase 3).",
-      "tags": [
-        "consultoria-ux",
-        "minimalist-impact",
-        "soft-ui",
-        "scaffolding-frontend",
-        "design-md",
-        "anti-cobalto"
-      ],
-      "examples": [
-        "Executar a skill consultor-design-tatil-frontend no contexto atual"
-      ]
-    },
-    {
       "id": "context-sentinel",
       "name": "context-sentinel",
       "description": "Audita a integridade da janela de contexto em conversas multi-turn e pipelines multiagente. A cada ciclo de turnos ou sob demanda, extrai o estado estruturado da sessão com validação determinística Pydantic/JSON (classificando [FATO], [PENDENCIA] e [LACUNA]) para persistência em SQLite ou JSON local.",
@@ -209,6 +177,7 @@
         "wikilinks",
         "frontmatter",
         "mempalace",
+        "hybrid-search",
         "anexos-orfaos"
       ],
       "examples": [
@@ -218,14 +187,13 @@
     {
       "id": "design-interface-medica-minimalista",
       "name": "design-interface-medica-minimalista",
-      "description": "Preset exclusivamente clínico/hospitalar (PEP, receituários A4, calculadoras médicas com tabular-nums e zero emojis) sob DESIGN.md v4.5-soft. Não use para apps gerais fora da área da saúde (use analise-design-tatil-frontend).",
+      "description": "Preset e arquitetura exclusivamente clínica/hospitalar (PEP, receituários A4, triagem e calculadoras médicas com tabular-nums, alto contraste e zero emojis) guiada pelo propósito assistencial. Não use para apps gerais fora da área da saúde (use design-md, frontend-code-architect ou auditoria-projetos-sistema).",
       "tags": [
-        "saude",
-        "clinico",
-        "prontuario",
-        "minimalist-impact",
-        "soft-ui",
-        "anti-cobalto"
+        "medtech-ui",
+        "clinical-design",
+        "prontuario-eletronico",
+        "a4-print",
+        "tabular-nums"
       ],
       "examples": [
         "Executar a skill design-interface-medica-minimalista no contexto atual"
@@ -234,13 +202,13 @@
     {
       "id": "design-md",
       "name": "design-md",
-      "description": "Gera ou atualiza apenas o arquivo de contrato DESIGN.md (v4.5-soft) na raiz do projeto ou via Google Stitch. Não use para diagnosticar código (use analise-design-tatil-frontend) nem para refatorar componentes (use refatoracao-design-tatil-frontend).",
+      "description": "Gera ou atualiza o arquivo de contrato DESIGN.md na raiz do projeto ou via Google Stitch, selecionando o tema, atmosfera, tipografia, espaçamento, contraste e camadas de acordo com o propósito do projeto (Conversão/SaaS, Editorial, FinTech, IA Nativa/AETHER, MedTech ou Terminal IBM Ex Umbris), sem impor paletas de cores fixas. Não use para auditar repositório completo (use auditoria-projetos-sistema).",
       "tags": [
         "design-md",
-        "minimalist-impact",
-        "soft-ui",
-        "nexus-bento",
-        "anti-cobalto"
+        "estilo-por-proposito",
+        "ex-umbris-ad-lucem",
+        "aether-2027",
+        "arquitetura-visual"
       ],
       "examples": [
         "Executar a skill design-md no contexto atual"
@@ -264,13 +232,13 @@
     {
       "id": "frontend-code-architect",
       "name": "frontend-code-architect",
-      "description": "Scaffolding estrutural de diretórios src/ em 5 camadas de Design Atômico e templates base (globals.css e <SoftCard />) sob DESIGN.md v4.5-soft. Use apenas para criar a estrutura de pastas ou componentes novos do zero. Não use para diagnosticar UI existente (use analise-design-tatil-frontend) nem para refatorar telas (use refatoracao-design-tatil-frontend).",
+      "description": "Arquitetura, scaffolding e implementação de código frontend (src/ em 5 camadas de Design Atômico, globals.css, tokens e componentes) adaptando tema, estilo, espaçamento, contraste, tipografia e camadas ao propósito do projeto (Conversão/SaaS, Editorial, FinTech, IA Nativa/AETHER, MedTech ou Terminal IBM Ex Umbris), sem impor paletas fixas. Não use para auditoria somente-leitura (use frontend-testing-auditor ou auditoria-projetos-sistema).",
       "tags": [
         "frontend-architect",
         "atomic-design",
-        "minimalist-impact",
-        "soft-ui",
-        "anti-cobalto"
+        "estilo-por-proposito",
+        "ex-umbris-ad-lucem",
+        "aether-2027"
       ],
       "examples": [
         "Executar a skill frontend-code-architect no contexto atual"
@@ -279,13 +247,13 @@
     {
       "id": "frontend-testing-auditor",
       "name": "frontend-testing-auditor",
-      "description": "Gatekeeper determinístico de testes frontend (scripts/audit_tactile_ui.py + Jest/Vitest + Axe-Core) sob DESIGN.md v4.5-soft. Use para auditar componentes/views, reprovar SoftCard órfão, bordas 1px, micro-texto 10px, emojis, cobalto/blur e comment-gaming de FSM. Não use para scaffolding (use frontend-code-architect).",
+      "description": "Gatekeeper determinístico de testes e qualidade frontend (scripts/audit_tactile_ui.py + Jest/Vitest + Axe-Core) para auditar arquitetura visual por propósito, contraste (WCAG AA/AAA), tipografia tabular (tabular-nums), camadas esculpidas, componentes órfãos, estados finitos FSM e anti-XSS. Não use para scaffolding (use frontend-code-architect).",
       "tags": [
         "frontend-testing",
         "axe-core",
-        "fsm",
-        "soft-ui-audit",
-        "minimalist-impact"
+        "wcag-aa",
+        "estilo-por-proposito",
+        "deterministic-audit"
       ],
       "examples": [
         "Executar a skill frontend-testing-auditor no contexto atual"
@@ -363,6 +331,21 @@
       ]
     },
     {
+      "id": "minimal-impact-ui",
+      "name": "minimal-impact-ui",
+      "description": "Sistema de design e arquitetura front-end HTML, CSS, Tailwind e JavaScript baseado no padrão Ex Umbris Ad Lucem (Minimalismo de Impacto) e WinUI 3 Gallery. Use para criar ou estilizar páginas HTML, apps web, calculadoras médicas, formulários SUS, dashboards, prontuários ou ferramentas Anti-TDAH com os 3 temas (Cinza #57545d + menus #8e8999, Claro Editorial #F3F3F5 e Preto Terminal IBM #070709), 6 arquétipos de página, 28 efeitos WinUI, tipografia nítida sem letras vermelhas embaçadas sobre cinza e regra 98% neutro / 2% acento (#e13535, #35acd8, #10B981, #D97706). Não use para auditoria de repositório sem UI (use auditoria-projetos-sistema).",
+      "tags": [
+        "minimal-impact-ui",
+        "ex-umbris-ad-lucem",
+        "winui-3-gallery",
+        "anti-tdah",
+        "arquitetura-visual"
+      ],
+      "examples": [
+        "Executar a skill minimal-impact-ui no contexto atual"
+      ]
+    },
+    {
       "id": "organizador-fluxo-arvore-arquivos",
       "name": "organizador-fluxo-arvore-arquivos",
       "description": "Transforma ideias brutas e requisitos de projetos/apps em fluxos visuais limpos (Mermaid), árvores de diretórios comentadas e planos de execução diretos, preservando o pedido original, mantendo histórico de versões e oferecendo exportação direta em arquivo único Markdown (.md) ou PDF formatado para evitar quebras.",
@@ -388,22 +371,6 @@
       ],
       "examples": [
         "Executar a skill redator-tecnico-markdown no contexto atual"
-      ]
-    },
-    {
-      "id": "refatoracao-design-tatil-frontend",
-      "name": "refatoracao-design-tatil-frontend",
-      "description": "Fase 3 (Execução de Código & Orquestração 3+1): refatora views reais (.tsx/.vue/.html) aplicando <SoftCard /> 135°, #sidebar-active-tracker deslizante e 8 kits Soft UI até passar no audit_tactile_ui.py. Não use para diagnóstico read-only (Fase 1).",
-      "tags": [
-        "frontend",
-        "minimalist-impact",
-        "soft-ui",
-        "refatoracao-codigo",
-        "anti-cobalto",
-        "subagentes-ui-3+1"
-      ],
-      "examples": [
-        "Executar a skill refatoracao-design-tatil-frontend no contexto atual"
       ]
     },
     {
@@ -438,11 +405,12 @@
     {
       "id": "skill-orquestrador-planos-encadeados",
       "name": "skill-orquestrador-planos-encadeados",
-      "description": "Orquestrador executivo de planos encadeados e modulares. Recebe planos decompostos em fases numeradas, mapeia as dependencias entre skills especialistas, gerencia o estado compartilhado sem poluicao de contexto, governa a aderência ao design tátil e paleta mineral do desenvolvedor e dispara a execucao sequencial com validacao de discrepancias a cada transicao.",
+      "description": "Orquestrador executivo de planos encadeados e modulares. Recebe planos decompostos em fases numeradas, mapeia as dependências entre skills especialistas, gerencia o estado compartilhado sem poluição de contexto, governa a aderência do estilo visual ao propósito do projeto (espaçamento, contraste, tipografia e camadas sem paleta fixa) e dispara a execução sequencial com validação de discrepâncias a cada transição.",
       "tags": [
         "orquestrador",
         "planos-encadeados",
         "workflow",
+        "estilo-por-proposito",
         "multiagente"
       ],
       "examples": [
@@ -474,7 +442,7 @@
         "jku": "http://localhost:10999/public_keys.json",
         "typ": "JOSE+JSON"
       },
-      "signature": "428b9d611486babb99a99950e309be04e4acd1106f7ca0e73d18f66d83ae82b8"
+      "signature": "fe61cc0783b9ace6e10426afd59f79f04ab419e05aae163284cf7c4e2405b03f"
     }
   ]
 }

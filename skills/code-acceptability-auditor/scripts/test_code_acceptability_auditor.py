@@ -87,6 +87,47 @@ def test_detects_syntax_error_and_long_function() -> None:
     assert any(v.rule_id == "ARCH001" for v in arch_report.violations)
 
 
+def test_detects_cognitive_nesting_arch002_and_cyclomatic_arch003() -> None:
+    auditor = CodeAcceptabilityAuditor(max_nesting_depth=3, max_cyclomatic_complexity=10)
+    deep_and_branchy = (
+        "def complex_fn(x: int) -> int:\n"
+        "    if x > 0:\n"
+        "        for i in range(x):\n"
+        "            if i % 2 == 0:\n"
+        "                while i > 10:\n"
+        "                    i -= 1\n"
+        "    if x == 1: return 1\n"
+        "    if x == 2: return 2\n"
+        "    if x == 3: return 3\n"
+        "    if x == 4: return 4\n"
+        "    if x == 5: return 5\n"
+        "    if x == 6: return 6\n"
+        "    if x == 7: return 7\n"
+        "    return 0\n"
+    )
+    report = auditor.audit_code(deep_and_branchy)
+    rule_ids = {v.rule_id for v in report.violations}
+    assert "ARCH002" in rule_ids
+    assert "ARCH003" in rule_ids
+    assert report.quality_score == 90.0
+
+    elif_chain = (
+        "def flat_elif(code: int) -> str:\n"
+        "    if code == 1:\n"
+        "        return 'a'\n"
+        "    elif code == 2:\n"
+        "        return 'b'\n"
+        "    elif code == 3:\n"
+        "        return 'c'\n"
+        "    elif code == 4:\n"
+        "        return 'd'\n"
+        "    return 'z'\n"
+    )
+    flat_report = auditor.audit_code(elif_chain)
+    assert not any(v.rule_id == "ARCH002" for v in flat_report.violations)
+    assert flat_report.quality_score == 100.0
+
+
 def test_trigger_eval_suite_achieves_100_percent_f1() -> None:
     queries = load_canonical_queries()
     assert len(queries) == 20

@@ -61,9 +61,9 @@ Este documento estabelece as regras falsificáveis para validação e auditoria 
 
 ---
 
-### Regra 7: Aderência ao Design Tátil e Paleta Mineral (`DESIGN.md v4.5-soft` — Artefatos Visuais)
+### Regra 7: Aderência à Arquitetura Visual por Propósito (`preferencias_estilo_e_temas.md` — Artefatos Visuais)
 - **Critério**: O entregável envolve interface, dashboards, relatórios ou estilos visuais?
-- **Teste**: Banimento de cobalto puro (`#0044FF`, `#0057FF`, `#1D4ED8`, `#233DFF`), uso de azuis minerais (`Cerulean Sapphire #0284C7`), cartões mais claros que o fundo no dark mode (`L_card > L_canvas`), iluminação direcional a 135° (`.ui-card-soft`, `surface-inset`), zero `backdrop-filter: blur()` e zero bordas duras de `1px`?
+- **Teste**: Escolha do tema coerente com o propósito do projeto (sem paleta fixa repetitiva), contraste WCAG AA/AAA ($L_{\text{card}} > L_{\text{canvas}}$ no escuro, tinta escura em menus claros/`#8e8999`), escala `clamp()` com `tabular-nums` (`IBM Plex` no terminal preto), espaçamento ($\ge 25\%$ respiro) e camadas esculpidas (`--shadow-sculpted` + `1px` Rim Light)?
 - **Resultado**:
-  - Se atender integralmente aos 4 módulos de design (`DESIGN.md v4.5-soft`) -> `[PASS]`
-  - Se violar qualquer critério de estilo ou usar azul cobalto saturado -> `[FAIL: Inconformidade com o design system tátil Melki]`
+  - Se atender integralmente à arquitetura visual guiada por propósito -> `[PASS]`
+  - Se aplicar paleta fixa sem contexto ou violar contraste/hierarquia/camadas -> `[FAIL: Inconformidade com as preferências de estilo por propósito]`

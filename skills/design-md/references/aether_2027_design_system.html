@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHER // Arquitetura Visual, Temas & Front-End 2027</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter,Instrument Serif, and JetBrains Mono for editorial swiss minimalism -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Default Theme: Conversão & SaaS (Obsidian & Electric Indigo) */
+            --bg-primary: #FAFAFA;
+            --bg-surface: #FFFFFF;
+            --bg-elevated: #F4F4F5;
+            --text-primary: #09090B;
+            --text-secondary: #52525B;
+            --text-muted: #A1A1AA;
+            --accent-primary: #4F46E5;
+            --accent-Soft: rgba(79, 70, 229, 0.08);
+            --border-color: #E4E4E7;
+            --radius-ui: 0.75rem;
+            --font-display: 'Inter', sans-serif;
+            --shadow-token: 0 10px 30px -10px rgba(0, 0, 0, 0.06);
+        }
+
+        [data-mode="dark"] {
+            --bg-primary: #09090B;
+            --bg-surface: #121215;
+            --bg-elevated: #18181C;
+            --text-primary: #FAFAFA;
+            --text-secondary: #A1A1AA;
+            --text-muted: #52525B;
+            --border-color: #27272A;
+            --shadow-token: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        .font-serif-editorial {
+            font-family: 'Instrument Serif', serif;
+        }
+
+        .font-mono-code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Dynamic Variable Classes */
+        .theme-bg { background-color: var(--bg-primary); }
+        .theme-surface { background-color: var(--bg-surface); }
+        .theme-elevated { background-color: var(--bg-elevated); }
+        .theme-text { color: var(--text-primary); }
+        .theme-text-sec { color: var(--text-secondary); }
+        .theme-border { border-color: var(--border-color); }
+        .theme-accent-bg { background-color: var(--accent-primary); }
+        .theme-accent-text { color: var(--accent-primary); }
+        .theme-accent-soft { background-color: var(--accent-Soft); }
+        .theme-radius { border-radius: var(--radius-ui); }
+        .theme-shadow { box-shadow: var(--shadow-token); }
+
+        /* Subtle Swiss Grid Background */
+        .swiss-grid {
+            background-size: 48px 48px;
+            background-image: 
+                linear-gradient(to right, var(--border-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--border-color) 1px, transparent 1px);
+        }
+
+        /* Smooth transitions for interactive lab elements */
+        .lab-transition {
+            transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+    
+    /* Canonical A11y, Tabular & Layer Tokens */
+    :root { --bg-canvas: #F3F3F5; --bg-surface: #FFFFFF; --ink-primary: #111113; --shadow-sculpted: 0 8px 24px -4px rgba(9,9,11,0.06), inset 0 1px 0 0 rgba(255,255,255,0.85); }
+    :focus-visible { outline: 2px solid var(--punctual-accent, #35acd8); outline-offset: 2px; }
+    .tabular-nums, .font-mono, code, td { font-variant-numeric: tabular-nums; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
+  </style>
+</head>
+<body data-state="idle" data-theme="ad-lucem" role="status" aria-busy="false" aria-label="Design System Studio" class="antialiased selection:bg-indigo-500 selection:text-white">
+
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-opacity-80 theme-bg border-b theme-border transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Identity -->
+            <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 rounded-full theme-accent-bg transition-colors duration-500"></div>
+                <span class="font-mono-code text-xs tracking-widest uppercase font-semibold">AETHER.27</span>
+                <span class="hidden sm:inline-block text-xs theme-text-sec border-l theme-border pl-3">Design Systems & Hierarquia</span>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium theme-text-sec">
+                <a href="#temas-objetivo" class="hover:opacity-70 transition-opacity">01. Tema por Objetivo</a>
+                <a href="#hierarquia-lab" class="hover:opacity-70 transition-opacity">02. Hierarquia Visual</a>
+                <a href="#regra-603010" class="hover:opacity-70 transition-opacity">03. Regra 60-30-10</a>
+                <a href="#tendencias-2027" class="hover:opacity-70 transition-opacity">04. Radar 2027</a>
+            </nav>
+
+            <!-- Interactive Utility Actions -->
+            <div class="flex items-center space-x-3">
+                <button id="exportTokensBtn" class="px-3 py-1.5 text-xs font-mono-code border theme-border theme-surface hover:opacity-80 theme-radius transition-all flex items-center space-x-1.5">
+                    <span>{ } Tokens CSS</span>
+                </button>
+                <button id="darkModeToggle" aria-label="Alternar Modo Escuro" class="p-2 border theme-border theme-surface theme-radius hover:opacity-80 transition-all">
+                    <svg id="sunIcon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    <svg id="moonIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative border-b theme-border overflow-hidden">
+        <div class="swiss-grid absolute inset-0 opacity-35 pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 md:pt-24 md:pb-28 relative z-10">
+            <div class="max-w-4xl">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full theme-accent-soft border theme-border mb-6">
+                    <span class="w-2 h-2 rounded-full theme-accent-bg animate-pulse"></span>
+                    <span class="font-mono-code text-xs theme-accent-text uppercase tracking-wider" id="activeObjectiveBadge">Tema Ativo: Conversão & SaaS</span>
+                </div>
+
+                <h1 class="text-4xl sm:text-6xl lg:text-7xl font-light tracking-tight leading-[1.08] mb-6">
+                    A forma segue a <span class="font-serif-editorial italic font-normal theme-accent-text">intenção</span>.<br>
+                    A hierarquia guia a <span class="font-medium">decisão</span>.
+                </h1>
+
+                <p class="text-lg sm:text-xl theme-text-sec max-w-2xl font-light leading-relaxed mb-10">
+                    Um guia interativo sobre como arquitetar temas orientados a objetivos de negócio, dominar a percepção cognitiva na interface e preparar seu Front-End para os padrões de 2027.
+                </p>
+
+                <div class="flex flex-wrap items-center gap-4">
+                    <a href="#temas-objetivo" class="px-6 py-3.5 text-sm font-medium text-white theme-accent-bg theme-radius shadow-sm hover:opacity-90 transition-all flex items-center space-x-2">
+                        <span>Testar Simulador de Temas</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </a>
+                    <a href="#hierarquia-lab" class="px-6 py-3.5 text-sm font-medium theme-surface border theme-border theme-radius hover:opacity-80 transition-all">
+                        Inspecionar Hierarquia Visual
+                    </a>
+                </div>
+            </div>
+
+            <!-- Key Metrics Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 pt-8 border-t theme-border">
+                <div>
+                    <p class="font-mono-code text-xs theme-text-sec uppercase">Tempo de Julgamento Visual</p>
+                    <p class="text-2xl sm:text-3xl font-semibold mt-1">50 ms</p>
+                    <p class="text-xs theme-text-sec mt-0.5">Primeira impressão cognitiva</p>
+                </div>
+                <div>
+                    <p class="font-mono-code text-xs theme-text-sec uppercase">Proporção Cromática</p>
+                    <p class="text-2xl sm:text-3xl font-semibold mt-1">60 · 30 · 10</p>
+                    <p class="text-xs theme-text-sec mt-0.5">Superfície, Estrutura e Ação</p>
+                </div>
+                <div>
+                    <p class="font-mono-code text-xs theme-text-sec uppercase">Espaço de Cor 2027</p>
+                    <p class="text-2xl sm:text-3xl font-semibold mt-1">OKLCH()</p>
+                    <p class="text-xs theme-text-sec mt-0.5">Luminosidade perceptualmente uniforme</p>
+                </div>
+                <div>
+                    <p class="font-mono-code text-xs theme-text-sec uppercase">Acessibilidade Alvo</p>
+                    <p class="text-2xl sm:text-3xl font-semibold mt-1">APCA / AAA</p>
+                    <p class="text-xs theme-text-sec mt-0.5">Contraste adaptativo por peso de fonte</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="temas-objetivo" class="py-20 border-b theme-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <div>
+                    <span class="font-mono-code text-xs uppercase tracking-widest theme-accent-text">01 // Direção de Arte Estratégica</span>
+                    <h2 class="text-3xl sm:text-4xl font-light tracking-tight mt-2">Definindo o Tema por <span class="font-serif-editorial italic">Objetivo</span></h2>
+                </div>
+                <p class="text-sm theme-text-sec max-w-md mt-4 md:mt-0">
+                    Um tema nunca deve começar por gosto pessoal. Ele nasce da resposta emocional e cognitiva que o produto exige do usuário. Clique nos objetivos abaixo para mutar toda esta página em tempo real.
+                </p>
+            </div>
+
+            <!-- 4 Interactive Objective Buttons -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10" id="objectiveCardsContainer">
+                <!-- Card 1: Conversion -->
+                <button onclick="setObjectiveTheme('conversion')" data-obj="conversion" class="obj-card text-left p-5 theme-surface border-2 border-indigo-600 theme-radius transition-all hover:shadow-md">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-mono-code text-xs px-2 py-0.5 rounded theme-accent-soft theme-accent-text">OBJ_01</span>
+                        <span class="w-3 h-3 rounded-full bg-indigo-600"></span>
+                    </div>
+                    <h3 class="font-semibold text-base">Conversão & SaaS</h3>
+                    <p class="text-xs theme-text-sec mt-1 leading-relaxed">Foco em ação rápida, clareza funcional e contraste cirúrgico nos CTAs.</p>
+                </button>
+
+                <!-- Card 2: Editorial -->
+                <button onclick="setObjectiveTheme('editorial')" data-obj="editorial" class="obj-card text-left p-5 theme-surface border theme-border theme-radius transition-all hover:shadow-md">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-mono-code text-xs px-2 py-0.5 rounded theme-elevated theme-text-sec">OBJ_02</span>
+                        <span class="w-3 h-3 rounded-full bg-amber-700"></span>
+                    </div>
+                    <h3 class="font-semibold text-base">Editorial & Leitura</h3>
+                    <p class="text-xs theme-text-sec mt-1 leading-relaxed">Retenção prolongada, fundo aquecido (off-white) para reduzir fadiga ocular.</p>
+                </button>
+
+                <!-- Card 3: Fintech -->
+                <button onclick="setObjectiveTheme('fintech')" data-obj="fintech" class="obj-card text-left p-5 theme-surface border theme-border theme-radius transition-all hover:shadow-md">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-mono-code text-xs px-2 py-0.5 rounded theme-elevated theme-text-sec">OBJ_03</span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-600"></span>
+                    </div>
+                    <h3 class="font-semibold text-base">Confiança & Fintech</h3>
+                    <p class="text-xs theme-text-sec mt-1 leading-relaxed">Precisão numérica, segurança institucional, bordas sóbrias e estabilidade.</p>
+                </button>
+
+                <!-- Card 4: AI / Spatial -->
+                <button onclick="setObjectiveTheme('ai2027')" data-obj="ai2027" class="obj-card text-left p-5 theme-surface border theme-border theme-radius transition-all hover:shadow-md">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-mono-code text-xs px-2 py-0.5 rounded theme-elevated theme-text-sec">OBJ_04</span>
+                        <span class="w-3 h-3 rounded-full bg-violet-600"></span>
+                    </div>
+                    <h3 class="font-semibold text-base">Imersão & IA Nativa</h3>
+                    <p class="text-xs theme-text-sec mt-1 leading-relaxed">Interfaces generativas, curvas suaves e destaques semânticos preditivos.</p>
+                </button>
+            </div>
+
+            <!-- Live Theme Diagnostic Matrix -->
+            <div class="theme-surface border theme-border theme-radius p-6 sm:p-8 theme-shadow">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-7 space-y-4">
+                        <div class="inline-block font-mono-code text-xs uppercase px-2.5 py-1 theme-elevated theme-radius" id="themePsychTag">
+                            Psicologia Cognitiva: Urgência Controlada & Decisão
+                        </div>
+                        <h3 class="text-2xl font-medium" id="themeTitleDetail">Arquitetura para Conversão & Produto Digital</h3>
+                        <p class="text-sm theme-text-sec leading-relaxed" id="themeDescDetail">
+                            Quando o objetivo principal é levar o usuário a completar um fluxo (checkout, sign-up, deploy), o tema deve ser silencioso em 90% da tela. Usamos neutros puros de baixa saturação para que a cor de destaque funcione como um imã óptico.
+                        </p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+                            <div class="p-3.5 theme-elevated theme-radius">
+                                <span class="text-xs font-mono-code theme-text-sec block">TIPOGRAFIA GUIA</span>
+                                <span class="text-sm font-semibold mt-1 block" id="themeFontRec">Grotesca Geométrica (Inter)</span>
+                            </div>
+                            <div class="p-3.5 theme-elevated theme-radius">
+                                <span class="text-xs font-mono-code theme-text-sec block">RAIO DE BORDA</span>
+                                <span class="text-sm font-semibold mt-1 block" id="themeRadiusRec">12px (Equilíbrio amigável)</span>
+                            </div>
+                            <div class="p-3.5 theme-elevated theme-radius">
+                                <span class="text-xs font-mono-code theme-text-sec block">CONTRASTE Lc</span>
+                                <span class="text-sm font-semibold mt-1 block" id="themeContrastRec">Alto (Lc 90+ em CTAs)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Token Swatch Preview -->
+                    <div class="lg:col-span-5 border theme-border theme-radius p-5 theme-bg">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-mono-code text-xs theme-text-sec">TOKENS SEMÂNTICOS ATIVOS</span>
+                            <span class="font-mono-code text-xs theme-accent-text">W3C DTCG Format</span>
+                        </div>
+                        <div class="space-y-2.5 font-mono-code text-xs">
+                            <div class="flex items-center justify-between p-2.5 theme-surface border theme-border rounded">
+                                <span>--surface-primary</span>
+                                <div class="flex items-center space-x-2">
+                                    <span id="tokenBgText">#FAFAFA</span>
+                                    <span class="w-4 h-4 rounded border theme-border theme-bg"></span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-2.5 theme-surface border theme-border rounded">
+                                <span>--text-primary</span>
+                                <div class="flex items-center space-x-2">
+                                    <span id="tokenTextText">#09090B</span>
+                                    <span class="w-4 h-4 rounded border theme-border" style="background-color: var(--text-primary)"></span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-2.5 theme-surface border theme-border rounded">
+                                <span>--action-intent</span>
+                                <div class="flex items-center space-x-2">
+                                    <span id="tokenAccentText">#4F46E5</span>
+                                    <span class="w-4 h-4 rounded theme-accent-bg"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="hierarquia-lab" class="py-20 border-b theme-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-12">
+                <div>
+                    <span class="font-mono-code text-xs uppercase tracking-widest theme-accent-text">02 // Laboratório Prático</span>
+                    <h2 class="text-3xl sm:text-4xl font-light tracking-tight mt-2">Engenharia de <span class="font-serif-editorial italic">Hierarquia Visual</span></h2>
+                </div>
+                <p class="text-sm theme-text-sec max-w-md mt-4 lg:mt-0">
+                    Quando tudo grita, nada é ouvido. Compare como o mesmo componente HTML muda drasticamente sua velocidade de escaneamento ocular através de escala, peso e espaço negativo.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <!-- Left Column: Hierarchy Controls & Principles -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="theme-surface border theme-border theme-radius p-5">
+                        <label class="font-mono-code text-xs uppercase theme-text-sec block mb-3">Nível de Maturidade da Hierarquia</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setHierarchyLevel(1)" id="hBtn1" class="py-2.5 px-3 text-xs font-medium theme-radius border theme-border theme-elevated transition-all">
+                                1. Sem Hierarquia
+                            </button>
+                            <button onclick="setHierarchyLevel(2)" id="hBtn2" class="py-2.5 px-3 text-xs font-medium theme-radius border theme-border theme-elevated transition-all">
+                                2. Estruturada
+                            </button>
+                            <button onclick="setHierarchyLevel(3)" id="hBtn3" class="py-2.5 px-3 text-xs font-medium theme-radius text-white theme-accent-bg transition-all">
+                                3. Editorial 2027
+                            </button>
+                        </div>
+
+                        <!-- Scan Path Toggle -->
+                        <div class="mt-5 pt-5 border-t theme-border flex items-center justify-between">
+                            <div>
+                                <span class="text-sm font-medium block">Simular Mapa de Foco Ocular</span>
+                                <span class="text-xs theme-text-sec">Exibe a ordem de leitura (1º → 2º → 3º)</span>
+                            </div>
+                            <button id="toggleEyeTrackBtn" onclick="toggleEyeTracking()" class="w-12 h-6 rounded-full theme-elevated border theme-border relative transition-colors p-0.5">
+                                <span id="eyeTrackKnob" class="w-4 h-4 rounded-full bg-zinc-400 block transition-transform"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Explanation of Active State -->
+                    <div class="theme-surface border theme-border theme-radius p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono-code text-xs theme-accent-text uppercase" id="hStateBadge">ESTADO: HIERARQUIA ÓTIMA</span>
+                            <span class="font-mono-code text-xs theme-text-sec" id="hCognitiveLoad">Carga Cognitiva: 18% (Baixa)</span>
+                        </div>
+                        <h4 class="text-lg font-medium" id="hStateTitle">Contraste Assimétrico & Agrupamento Gestalt</h4>
+                        <p class="text-sm theme-text-sec leading-relaxed" id="hStateExplanation">
+                            A métrica principal salta imediatamente aos olhos com escala tipográfica 3.5x maior que os rótulos. As ações secundárias recuam para bordas sutis, deixando apenas uma decisão primária evidente.
+                        </p>
+                        <ul class="text-xs theme-text-sec space-y-2 pt-2 border-t theme-border font-mono-code" id="hMetricsList">
+                            <li>• Razão de Escala: Clamp Fluido (1.25 Major Third)</li>
+                            <li>• Desambiguação de Botões: 1 Primário vs 1 Fantasma</li>
+                            <li>• Lei de Hick: Tempo de decisão reduzido em 64%</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Right Column: The Live Mutable UI Card -->
+                <div class="lg:col-span-7 theme-surface border theme-border theme-radius p-6 sm:p-10 flex items-center justify-center min-h-[420px] relative overflow-hidden swiss-grid">
+                    
+                    <!-- The Component Under Test -->
+                    <div id="previewComponent" class="w-full max-w-lg theme-surface border theme-border theme-radius p-8 theme-shadow lab-transition relative">
+                        
+                        <!-- Eye Tracking Badges (Hidden by default) -->
+                        <div id="focalPoint1" class="hidden absolute -top-3 -left-3 w-7 h-7 rounded-full bg-rose-500 text-white font-mono-code text-xs font-bold flex items-center justify-center shadow-lg z-20 animate-bounce">1</div>
+                        <div id="focalPoint2" class="hidden absolute top-1/2 right-6 w-7 h-7 rounded-full bg-amber-500 text-white font-mono-code text-xs font-bold flex items-center justify-center shadow-lg z-20">2</div>
+                        <div id="focalPoint3" class="hidden absolute bottom-6 left-8 w-7 h-7 rounded-full bg-emerald-500 text-white font-mono-code text-xs font-bold flex items-center justify-center shadow-lg z-20">3</div>
+
+                        <!-- Top Meta -->
+                        <div id="compHeader" class="flex items-center justify-between mb-6">
+                            <span id="compTag" class="font-mono-code text-xs uppercase tracking-wider px-2.5 py-1 theme-accent-soft theme-accent-text rounded-full font-medium">
+                                Relatório de Performance Core
+                            </span>
+                            <span id="compDate" class="font-mono-code text-xs theme-text-sec">Q4 · 2027</span>
+                        </div>
+
+                        <!-- Main Value / Metric -->
+                        <div id="compMetricBox" class="mb-6">
+                            <div class="flex items-baseline space-x-3">
+                                <span id="compValue" class="text-5xl font-semibold tracking-tight lab-transition">99.4%</span>
+                                <span id="compDelta" class="text-xs font-mono-code px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 font-medium">+4.2% vs mês ant.</span>
+                            </div>
+                            <h3 id="compTitle" class="text-lg font-medium mt-2 lab-transition">Índice de Estabilidade Visual (CLS Zero)</h3>
+                            <p id="compBody" class="text-sm theme-text-sec mt-1 leading-relaxed lab-transition">
+                                As camadas de cascata CSS (@layer) e os tokens semânticos eliminaram desvios de layout em 142 componentes críticos.
+                            </p>
+                        </div>
+
+                        <!-- Progress / Visual Bar -->
+                        <div id="compProgressWrap" class="mb-8">
+                            <div class="flex justify-between text-xs font-mono-code theme-text-sec mb-1.5">
+                                <span>Orçamento de Bundle JS</span>
+                                <span>32 KB / 100 KB</span>
+                            </div>
+                            <div class="w-full h-2 theme-elevated rounded-full overflow-hidden">
+                                <div class="h-full theme-accent-bg w-1/3 rounded-full"></div>
+                            </div>
+                        </div>
+
+                        <!-- Action Hierarchy -->
+                        <div id="compActions" class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t theme-border">
+                            <button id="compPrimaryBtn" class="px-5 py-2.5 text-xs font-medium text-white theme-accent-bg theme-radius hover:opacity-90 transition-all">
+                                Publicar Design Tokens
+                            </button>
+                            <button id="compSecondaryBtn" class="px-4 py-2.5 text-xs font-medium theme-text-sec hover:opacity-70 transition-all">
+                                Inspecionar Auditoria
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="regra-603010" class="py-20 border-b theme-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mb-12">
+                <span class="font-mono-code text-xs uppercase tracking-widest theme-accent-text">03 // Equilíbrio Cromático</span>
+                <h2 class="text-3xl sm:text-4xl font-light tracking-tight mt-2">A Regra <span class="font-mono-code font-normal">60 · 30 · 10</span> na Prática</h2>
+                <p class="text-sm theme-text-sec mt-3 leading-relaxed">
+                    A elegância minimalista depende do silêncio visual. Experimente alterar o peso da cor de destaque abaixo para observar como o excesso de cor destrói a hierarquia de atenção.
+                </p>
+            </div>
+
+            <!-- Interactive Proportion Bar -->
+            <div class="theme-surface border theme-border theme-radius p-6 sm:p-8">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-sm font-medium">Distribuir Peso Cromático:</span>
+                        <button onclick="setProportionMode('balanced')" id="propBalancedBtn" class="px-3 py-1.5 text-xs font-mono-code theme-accent-bg text-white rounded transition-all">
+                            Equilibrado (60 / 30 / 10)
+                        </button>
+                        <button onclick="setProportionMode('saturated')" id="propSaturatedBtn" class="px-3 py-1.5 text-xs font-mono-code theme-elevated theme-text-sec border theme-border rounded transition-all">
+                            Sobrecarregado (30 / 30 / 40)
+                        </button>
+                        <button onclick="setProportionMode('ultraMinimal')" id="propMinimalBtn" class="px-3 py-1.5 text-xs font-mono-code theme-elevated theme-text-sec border theme-border rounded transition-all">
+                            Ultra-Minimal (80 / 15 / 5)
+                        </button>
+                    </div>
+                    <span class="font-mono-code text-xs theme-text-sec" id="proportionVerdict">Veredito: Ponto focal claro e repouso ocular ideal.</span>
+                </div>
+
+                <!-- Visual Ratio Bar -->
+                <div class="h-14 w-full rounded-xl overflow-hidden flex border theme-border mb-8 p-1 gap-1 theme-elevated">
+                    <div id="barDominant" style="width: 60%" class="h-full theme-bg border theme-border rounded-lg flex items-center justify-between px-4 lab-transition">
+                        <span class="font-mono-code text-xs font-semibold">DOMINANTE</span>
+                        <span class="font-mono-code text-xs theme-text-sec" id="labelDominant">60%</span>
+                    </div>
+                    <div id="barSecondary" style="width: 30%" class="h-full theme-surface border theme-border rounded-lg flex items-center justify-between px-4 lab-transition">
+                        <span class="font-mono-code text-xs font-semibold">ESTRUTURA</span>
+                        <span class="font-mono-code text-xs theme-text-sec" id="labelSecondary">30%</span>
+                    </div>
+                    <div id="barAccent" style="width: 10%" class="h-full theme-accent-bg text-white rounded-lg flex items-center justify-center px-2 lab-transition">
+                        <span class="font-mono-code text-xs font-semibold" id="labelAccent">10%</span>
+                    </div>
+                </div>
+
+                <!-- 3 Pillars Breakdown -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-5 theme-elevated theme-radius">
+                        <div class="font-mono-code text-xs theme-text-sec mb-1">CAMADA 01 // 60%</div>
+                        <h4 class="font-semibold text-base mb-2">Superfície & Espaço Negativo</h4>
+                        <p class="text-xs theme-text-sec leading-relaxed">
+                            Fundos primários, margens de respiro e áreas de leitura. Garante que a retina não sofra saturação prematura durante sessões longas.
+                        </p>
+                    </div>
+                    <div class="p-5 theme-elevated theme-radius">
+                        <div class="font-mono-code text-xs theme-text-sec mb-1">CAMADA 02 // 30%</div>
+                        <h4 class="font-semibold text-base mb-2">Contêineres & Tipografia Base</h4>
+                        <p class="text-xs theme-text-sec leading-relaxed">
+                            Cards, barras laterais, divisores sutis e cabeçalhos. Cria a grade arquitetônica que separa blocos lógicos de informação (Card Sorting).
+                        </p>
+                    </div>
+                    <div class="p-5 theme-elevated theme-radius">
+                        <div class="font-mono-code text-xs theme-accent-text mb-1">CAMADA 03 // 10%</div>
+                        <h4 class="font-semibold text-base mb-2">Intenção & Call-to-Action</h4>
+                        <p class="text-xs theme-text-sec leading-relaxed">
+                            Reservada cirurgicamente para botões primários, indicadores de status ativo e alertas críticos. Se tudo tem destaque, nada tem destaque.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tendencias-2027" class="py-20 border-b theme-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <div>
+                    <span class="font-mono-code text-xs uppercase tracking-widest theme-accent-text">04 // Horizonte Tecnológico</span>
+                    <h2 class="text-3xl sm:text-4xl font-light tracking-tight mt-2">Tendências Front-End <span class="font-serif-editorial italic">2027</span></h2>
+                </div>
+                <!-- Category Filter Pills -->
+                <div class="flex flex-wrap gap-2 mt-4 md:mt-0">
+                    <button onclick="filterTrends('all')" data-filter="all" class="trend-filter px-3.5 py-1.5 text-xs font-mono-code theme-accent-bg text-white rounded-full transition-all">Todas (6)</button>
+                    <button onclick="filterTrends('css')" data-filter="css" class="trend-filter px-3.5 py-1.5 text-xs font-mono-code theme-surface border theme-border rounded-full transition-all">CSS Nativo & Cor</button>
+                    <button onclick="filterTrends('ai')" data-filter="ai" class="trend-filter px-3.5 py-1.5 text-xs font-mono-code theme-surface border theme-border rounded-full transition-all">UI Generativa</button>
+                    <button onclick="filterTrends('arch')" data-filter="arch" class="trend-filter px-3.5 py-1.5 text-xs font-mono-code theme-surface border theme-border rounded-full transition-all">Arquitetura Zero-JS</button>
+                </div>
+            </div>
+
+            <!-- Bento Grid of 2027 Trends -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="trendsGrid">
+                
+                <!-- Trend 1 -->
+                <article data-category="ai" class="trend-card theme-surface border theme-border theme-radius p-6 flex flex-col justify-between hover:shadow-lg transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-mono-code text-xs px-2.5 py-0.5 rounded theme-accent-soft theme-accent-text">UI GENERATIVA</span>
+                            <span class="font-mono-code text-xs theme-text-sec">Adoção: 88%</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Interfaces orientadas a Intenção (Intent-Driven UI)</h3>
+                        <p class="text-sm theme-text-sec leading-relaxed mb-4">
+                            Em vez de menus estáticos com dezenas de sub-rotas, o Front-End 2027 monta micro-componentes sob demanda baseados no contexto da tarefa atual do usuário.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t theme-border">
+                        <pre class="font-mono-code text-[11px] theme-elevated p-3 rounded overflow-x-auto"><code>&lt;intent-slot context="checkout-express"
+  fallback="standard-grid" /&gt;</code></pre>
+                    </div>
+                </article>
+
+                <!-- Trend 2 -->
+                <article data-category="css" class="trend-card theme-surface border theme-border theme-radius p-6 flex flex-col justify-between hover:shadow-lg transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-mono-code text-xs px-2.5 py-0.5 rounded theme-accent-soft theme-accent-text">SISTEMAS DE COR</span>
+                            <span class="font-mono-code text-xs theme-text-sec">Adoção: 95%</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Paletas Dinâmicas em OKLCH & Contraste APCA</h3>
+                        <p class="text-sm theme-text-sec leading-relaxed mb-4">
+                            Fim do HEX e RGB para temas. O espaço <code class="font-mono-code text-xs">oklch()</code> garante que ao mudar a matiz do tema, o brilho percebido pelo olho humano permaneça idêntico.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t theme-border">
+                        <pre class="font-mono-code text-[11px] theme-elevated p-3 rounded overflow-x-auto"><code>--brand: oklch(62% 0.19 var(--hue));
+--surface: color-mix(in oklch, var(--brand) 6%, white);</code></pre>
+                    </div>
+                </article>
+
+                <!-- Trend 3 -->
+                <article data-category="css" class="trend-card theme-surface border theme-border theme-radius p-6 flex flex-col justify-between hover:shadow-lg transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-mono-code text-xs px-2.5 py-0.5 rounded theme-accent-soft theme-accent-text">CSS NATIVO</span>
+                            <span class="font-mono-code text-xs theme-text-sec">Adoção: 92%</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Scroll-Driven Animations & View Transitions</h3>
+                        <p class="text-sm theme-text-sec leading-relaxed mb-4">
+                            Narrativas visuais fluidas a 120fps executadas diretamente no compositor do navegador, sem bibliotecas JavaScript pesadas bloqueando a thread principal.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t theme-border">
+                        <pre class="font-mono-code text-[11px] theme-elevated p-3 rounded overflow-x-auto"><code>animation-timeline: view();
+view-transition-name: hero-card;</code></pre>
+                    </div>
+                </article>
+
+                <!-- Trend 4 -->
+                <article data-category="arch" class="trend-card theme-surface border theme-border theme-radius p-6 flex flex-col justify-between hover:shadow-lg transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-mono-code text-xs px-2.5 py-0.5 rounded theme-accent-soft theme-accent-text">ARQUITETURA</span>
+                            <span class="font-mono-code text-xs theme-text-sec">Adoção: 84%</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Declarative Shadow DOM & Ilhas Zero-Bundle</h3>
+                        <p class="text-sm theme-text-sec leading-relaxed mb-4">
+                            Design Systems universais compilados no servidor usando Web Components nativos com isolamento CSS garantido por <code class="font-mono-code text-xs">@layer</code> e Shadow Root.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t theme-border">
+                        <pre class="font-mono-code text-[11px] theme-elevated p-3 rounded overflow-x-auto"><code>&lt;template shadowrootmode="open"&gt;
+  @layer reset, tokens, component;
+&lt;/template&gt;</code></pre>
+                    </div>
+                </article>
+
+                <!-- Trend 5 -->
+                <article data-category="css" class="trend-card theme-surface border theme-border theme-radius p-6 flex flex-col justify-between hover:shadow-lg transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-mono-code text-xs px-2.5 py-0.5 rounded theme-accent-soft theme-accent-text">LAYOUT FLUIDO</span>
+                            <span class="font-mono-code text-xs theme-text-sec">Adoção: 96%</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Container Queries & Anchor Positioning</h3>
+                        <p class="text-sm theme-text-sec leading-relaxed mb-4">
+                            Componentes verdadeiramente autônomos que adaptam sua hierarquia interna baseados no espaço do próprio contêiner pai, não na tela inteira.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t theme-border">
+                        <pre class="font-mono-code text-[11px] theme-elevated p-3 rounded overflow-x-auto"><code>@container card (width > 420px) {
+  .metric { font-size: clamp(2rem, 4cqi, 3.5rem); }
+}</code></pre>
+                    </div>
+                </article>
+
+                <!-- Trend 6 -->
+                <article data-category="ai" class="trend-card theme-surface border theme-border theme-radius p-6 flex flex-col justify-between hover:shadow-lg transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-mono-code text-xs px-2.5 py-0.5 rounded theme-accent-soft theme-accent-text">ESTÉTICA 2027</span>
+                            <span class="font-mono-code text-xs theme-text-sec">Adoção: 89%</span>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Minimalismo Tátil & Micro-Física</h3>
+                        <p class="text-sm theme-text-sec leading-relaxed mb-4">
+                            Superfícies foscas ultraleves combinadas com iluminação especular sutil no cursor, trazendo profundidade espacial sem poluição visual.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t theme-border">
+                        <pre class="font-mono-code text-[11px] theme-elevated p-3 rounded overflow-x-auto"><code>backdrop-filter: blur(16px) saturate(140%);
+border: 1px solid color-mix(in srgb, currentColor 12%, transparent);</code></pre>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 theme-elevated">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="theme-surface border theme-border theme-radius p-8 sm:p-10">
+                <span class="font-mono-code text-xs uppercase theme-accent-text">Checklist de Produção</span>
+                <h3 class="text-2xl font-light mt-1 mb-6">Validação de Arquitetura Visual antes do Deploy</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="checklistContainer">
+                    <label class="flex items-start space-x-3 p-3.5 theme-elevated theme-radius cursor-pointer select-none">
+                        <input type="checkbox" checked onchange="updateReadinessScore()" class="mt-1 accent-indigo-600 w-4 h-4 rounded">
+                        <span class="text-xs sm:text-sm"><strong>Teste de Desfoque (Squint Test):</strong> Ao semicerrar os olhos, o CTA primário e o título principal continuam óbvios?</span>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3.5 theme-elevated theme-radius cursor-pointer select-none">
+                        <input type="checkbox" checked onchange="updateReadinessScore()" class="mt-1 accent-indigo-600 w-4 h-4 rounded">
+                        <span class="text-xs sm:text-sm"><strong>Camada Semântica de Tokens:</strong> Nenhum componente consome códigos HEX fixos (apenas variáveis funcionais)?</span>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3.5 theme-elevated theme-radius cursor-pointer select-none">
+                        <input type="checkbox" onchange="updateReadinessScore()" class="mt-1 accent-indigo-600 w-4 h-4 rounded">
+                        <span class="text-xs sm:text-sm"><strong>Escala Tipográfica Fluida:</strong> Títulos utilizam <code class="font-mono-code">clamp()</code> para manter a hierarquia em mobile e ultrawide?</span>
+                    </label>
+                    <label class="flex items-start space-x-3 p-3.5 theme-elevated theme-radius cursor-pointer select-none">
+                        <input type="checkbox" onchange="updateReadinessScore()" class="mt-1 accent-indigo-600 w-4 h-4 rounded">
+                        <span class="text-xs sm:text-sm"><strong>Conformidade WCAG / APCA:</strong> Pares de texto e superfície validados tanto em Light quanto em Dark Mode?</span>
+                    </label>
+                </div>
+
+                <div class="mt-6 pt-6 border-t theme-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex items-center space-x-3">
+                        <span class="font-mono-code text-xs theme-text-sec">ÍNDICE DE MATURIDADE DA UI:</span>
+                        <span id="readinessScoreBadge" class="font-mono-code text-sm font-semibold theme-accent-text">50% Pronto</span>
+                    </div>
+                    <button onclick="openTokenModal()" class="px-5 py-2.5 text-xs font-mono-code text-white theme-accent-bg theme-radius hover:opacity-90 transition-all">
+                        Exportar Configuração CSS Atual
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 border-t theme-border text-xs theme-text-sec">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full theme-accent-bg"></span>
+                <span class="font-mono-code font-medium theme-text">AETHER DESIGN SYSTEM</span>
+                <span>— Guia Interativo de Front-End 2027</span>
+            </div>
+            <p class="font-mono-code">Construído com Semântica HTML5, CSS Custom Properties & Zero Dependências Pesadas.</p>
+        </div>
+    </footer>
+
+    <div id="tokenModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="theme-surface border theme-border theme-radius max-w-lg w-full p-6 shadow-2xl">
+            <div class="flex items-center justify-between pb-4 border-b theme-border">
+                <span class="font-mono-code text-xs uppercase theme-accent-text">Exportação de Design Tokens (CSS 2027)</span>
+                <button onclick="closeTokenModal()" class="text-sm theme-text-sec hover:opacity-70">✕</button>
+            </div>
+            <pre id="exportedCssCode" class="font-mono-code text-xs theme-elevated p-4 rounded my-4 overflow-x-auto leading-relaxed"></pre>
+            <div class="flex items-center justify-between">
+                <span id="copyConfirmMsg" class="text-xs font-mono-code text-emerald-600 opacity-0 transition-opacity">✓ Copiado para a área de transferência!</span>
+                <div class="flex space-x-2">
+                    <button onclick="closeTokenModal()" class="px-4 py-2 text-xs border theme-border theme-radius">Fechar</button>
+                    <button onclick="copyTokensToClipboard()" class="px-4 py-2 text-xs text-white theme-accent-bg theme-radius font-medium">Copiar Código</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme presets mapped to business objectives
+        const THEME_PRESETS = {
+            conversion: {
+                name: 'Conversão & SaaS',
+                bgLight: '#FAFAFA',
+                surfaceLight: '#FFFFFF',
+                elevatedLight: '#F4F4F5',
+                textLight: '#09090B',
+                accent: '#4F46E5',
+                accentSoft: 'rgba(79, 70, 229, 0.09)',
+                radius: '0.75rem',
+                psych: 'Psicologia Cognitiva: Urgência Controlada & Decisão',
+                title: 'Arquitetura para Conversão & Produto Digital',
+                desc: 'Quando o objetivo principal é levar o usuário a completar um fluxo (checkout, sign-up, deploy), o tema deve ser silencioso em 90% da tela. Usamos neutros puros de baixa saturação para que a cor de destaque funcione como um ímã óptico.',
+                fontRec: 'Grotesca Geométrica (Inter)',
+                radiusRec: '12px (Equilíbrio amigável)',
+                contrastRec: 'Alto (Lc 90+ em CTAs)'
+            },
+            editorial: {
+                name: 'Editorial & Leitura',
+                bgLight: '#F7F4EF',
+                surfaceLight: '#FDFBF7',
+                elevatedLight: '#EFECE6',
+                textLight: '#1C1917',
+                accent: '#B45309',
+                accentSoft: 'rgba(180, 83, 9, 0.1)',
+                radius: '0.25rem',
+                psych: 'Psicologia Cognitiva: Imersão, Conforto & Autoridade Intelectual',
+                title: 'Arquitetura para Conteúdo & Retenção de Leitura',
+                desc: 'Fundos brancos puros (#FFFFFF) causam fadiga visual em leituras longas. O tema Editorial aplica tons de papel aquecido (Alabaster/Warm Stone), cantos retos clássicos e contraste suavizado para manter o foco no ritmo tipográfico.',
+                fontRec: 'Serif Editorial + Sans Humanista',
+                radiusRec: '4px (Corte Editorial Clássico)',
+                contrastRec: 'Suavizado (Evita halation ocular)'
+            },
+            fintech: {
+                name: 'Confiança & Fintech',
+                bgLight: '#F4F6F8',
+                surfaceLight: '#FFFFFF',
+                elevatedLight: '#E2E8F0',
+                textLight: '#0F172A',
+                accent: '#059669',
+                accentSoft: 'rgba(5, 150, 105, 0.1)',
+                radius: '0.5rem',
+                psych: 'Psicologia Cognitiva: Estabilidade, Clareza Numérica & Segurança',
+                title: 'Arquitetura para Sistemas Financeiros & Dados Críticos',
+                desc: 'Em dashboards bancários ou governamentais, a previsibilidade supera o ornamento. Utilizamos alinhamento tabular rigoroso, tons de ardósia frios e verde esmeralda semântico associado à solvência e validação.',
+                fontRec: 'Sans + Monospace Tabular',
+                radiusRec: '8px (Precisão Corporativa)',
+                contrastRec: 'WCAG AAA Estrito em Tabelas'
+            },
+            ai2027: {
+                name: 'Imersão & IA Nativa',
+                bgLight: '#F8F7FF',
+                surfaceLight: '#FFFFFF',
+                elevatedLight: '#F0EEFF',
+                textLight: '#13111C',
+                accent: '#7C3AED',
+                accentSoft: 'rgba(124, 58, 237, 0.1)',
+                radius: '1.25rem',
+                psych: 'Psicologia Cognitiva: Fluidez Adaptativa & Co-criação',
+                title: 'Arquitetura para Interfaces Generativas & Espaciais 2027',
+                desc: 'Produtos baseados em agentes de IA pedem superfícies orgânicas com raios generosos (20px) e acentos violeta espectral para diferenciar conteúdo gerado por máquina de ações humanas tradicionais.',
+                fontRec: 'Variável Dinâmica + Mono',
+                radiusRec: '20px (Tátil & Orgânico)',
+                contrastRec: 'Adaptativo por Contexto Ambiental'
+            }
+        };
+
+        let currentObjective = 'conversion';
+        let isDarkMode = false;
+        let eyeTrackingActive = false;
+
+        // Apply selected objective theme across the entire page
+        function setObjectiveTheme(key) {
+            currentObjective = key;
+            const preset = THEME_PRESETS[key];
+            const root = document.documentElement;
+
+            if (!isDarkMode) {
+                root.style.setProperty('--bg-primary', preset.bgLight);
+                root.style.setProperty('--bg-surface', preset.surfaceLight);
+                root.style.setProperty('--bg-elevated', preset.elevatedLight);
+                root.style.setProperty('--text-primary', preset.textLight);
+            }
+
+            root.style.setProperty('--accent-primary', preset.accent);
+            root.style.setProperty('--accent-Soft', preset.accentSoft);
+            root.style.setProperty('--radius-ui', preset.radius);
+
+            // Update UI labels and diagnostic text
+            document.getElementById('activeObjectiveBadge').textContent = `Tema Ativo: ${preset.name}`;
+            document.getElementById('themePsychTag').textContent = preset.psych;
+            document.getElementById('themeTitleDetail').textContent = preset.title;
+            document.getElementById('themeDescDetail').textContent = preset.desc;
+            document.getElementById('themeFontRec').textContent = preset.fontRec;
+            document.getElementById('themeRadiusRec').textContent = preset.radiusRec;
+            document.getElementById('themeContrastRec').textContent = preset.contrastRec;
+
+            // Update token preview badges
+            document.getElementById('tokenBgText').textContent = isDarkMode ? '#09090B' : preset.bgLight;
+            document.getElementById('tokenTextText').textContent = isDarkMode ? '#FAFAFA' : preset.textLight;
+            document.getElementById('tokenAccentText').textContent = preset.accent;
+
+            // Highlight selected card
+            document.querySelectorAll('.obj-card').forEach(card => {
+                if (card.getAttribute('data-obj') === key) {
+                    card.style.borderColor = preset.accent;
+                    card.style.borderWidth = '2px';
+                } else {
+                    card.style.borderColor = 'var(--border-color)';
+                    card.style.borderWidth = '1px';
+                }
+            });
+        }
+
+        // Toggle Dark Mode while preserving the active objective's accent & geometry
+        document.getElementById('darkModeToggle').addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            const root = document.documentElement;
+            const preset = THEME_PRESETS[currentObjective];
+
+            if (isDarkMode) {
+                root.setAttribute('data-mode', 'dark');
+                root.style.setProperty('--bg-primary', '#09090B');
+                root.style.setProperty('--bg-surface', '#121215');
+                root.style.setProperty('--bg-elevated', '#1C1C21');
+                root.style.setProperty('--text-primary', '#FAFAFA');
+                document.getElementById('sunIcon').classList.remove('hidden');
+                document.getElementById('moonIcon').classList.add('hidden');
+            } else {
+                root.removeAttribute('data-mode');
+                root.style.setProperty('--bg-primary', preset.bgLight);
+                root.style.setProperty('--bg-surface', preset.surfaceLight);
+                root.style.setProperty('--bg-elevated', preset.elevatedLight);
+                root.style.setProperty('--text-primary', preset.textLight);
+                document.getElementById('sunIcon').classList.add('hidden');
+                document.getElementById('moonIcon').classList.remove('hidden');
+            }
+            setObjectiveTheme(currentObjective);
+        });
+
+        // Visual Hierarchy Interactive Simulator (Levels 1, 2, 3)
+        function setHierarchyLevel(level) {
+            const hBtn1 = document.getElementById('hBtn1');
+            const hBtn2 = document.getElementById('hBtn2');
+            const hBtn3 = document.getElementById('hBtn3');
+            
+            [hBtn1, hBtn2, hBtn3].forEach(btn => {
+                btn.className = 'py-2.5 px-3 text-xs font-medium theme-radius border theme-border theme-elevated transition-all';
+            });
+
+            const compValue = document.getElementById('compValue');
+            const compTitle = document.getElementById('compTitle');
+            const compBody = document.getElementById('compBody');
+            const compPrimaryBtn = document.getElementById('compPrimaryBtn');
+            const compSecondaryBtn = document.getElementById('compSecondaryBtn');
+            const compTag = document.getElementById('compTag');
+            const compDelta = document.getElementById('compDelta');
+
+            if (level === 1) {
+                // Flat / No Hierarchy
+                hBtn1.className = 'py-2.5 px-3 text-xs font-medium theme-radius text-white theme-accent-bg transition-all';
+                compValue.className = 'text-base font-normal lab-transition';
+                compTitle.className = 'text-base font-normal mt-1 lab-transition';
+                compBody.className = 'text-base font-normal mt-1 lab-transition';
+                compTag.className = 'text-sm font-normal';
+                compDelta.className = 'text-sm font-normal';
+                compPrimaryBtn.className = 'px-4 py-2 text-sm border theme-border theme-elevated';
+                compSecondaryBtn.className = 'px-4 py-2 text-sm border theme-border theme-elevated';
+
+                document.getElementById('hStateBadge').textContent = 'ESTADO: RUÍDO COGNITIVO (NÍVEL 1)';
+                document.getElementById('hCognitiveLoad').textContent = 'Carga Cognitiva: 92% (Crítica)';
+                document.getElementById('hStateTitle').textContent = 'Ausência de Peso, Escala e Contraste';
+                document.getElementById('hStateExplanation').textContent = 'Todos os textos têm exatamente o mesmo tamanho (16px) e peso. Os dois botões competem igualmente pela atenção, forçando o usuário a ler palavra por palavra para entender o que é título, dado ou ação.';
+            } else if (level === 2) {
+                // Basic / Structured Hierarchy
+                hBtn2.className = 'py-2.5 px-3 text-xs font-medium theme-radius text-white theme-accent-bg transition-all';
+                compValue.className = 'text-3xl font-bold lab-transition';
+                compTitle.className = 'text-base font-semibold mt-2 lab-transition';
+                compBody.className = 'text-sm theme-text-sec mt-1 lab-transition';
+                compTag.className = 'font-mono-code text-xs uppercase theme-text-sec';
+                compDelta.className = 'text-xs font-mono-code theme-text-sec';
+                compPrimaryBtn.className = 'px-4 py-2 text-xs font-medium text-white theme-accent-bg theme-radius';
+                compSecondaryBtn.className = 'px-4 py-2 text-xs font-medium border theme-border theme-radius';
+
+                document.getElementById('hStateBadge').textContent = 'ESTADO: FUNCIONAL PADRÃO (NÍVEL 2)';
+                document.getElementById('hCognitiveLoad').textContent = 'Carga Cognitiva: 45% (Moderada)';
+                document.getElementById('hStateTitle').textContent = 'Diferenciação Básica por Tamanho';
+                document.getElementById('hStateExplanation').textContent = 'A informação já é legível e organizada, mas ainda carece de refinamento semântico nos badges de status e na desambiguação rápida entre ações primárias e secundárias.';
+            } else {
+                // Level 3: Editorial 2027 Optimal Hierarchy
+                hBtn3.className = 'py-2.5 px-3 text-xs font-medium theme-radius text-white theme-accent-bg transition-all';
+                compValue.className = 'text-5xl font-semibold tracking-tight lab-transition';
+                compTitle.className = 'text-lg font-medium mt-2 lab-transition';
+                compBody.className = 'text-sm theme-text-sec mt-1 leading-relaxed lab-transition';
+                compTag.className = 'font-mono-code text-xs uppercase tracking-wider px-2.5 py-1 theme-accent-soft theme-accent-text rounded-full font-medium';
+                compDelta.className = 'text-xs font-mono-code px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 font-medium';
+                compPrimaryBtn.className = 'px-5 py-2.5 text-xs font-medium text-white theme-accent-bg theme-radius hover:opacity-90 transition-all';
+                compSecondaryBtn.className = 'px-4 py-2.5 text-xs font-medium theme-text-sec hover:opacity-70 transition-all';
+
+                document.getElementById('hStateBadge').textContent = 'ESTADO: HIERARQUIA ÓTIMA (NÍVEL 3)';
+                document.getElementById('hCognitiveLoad').textContent = 'Carga Cognitiva: 18% (Baixa)';
+                document.getElementById('hStateTitle').textContent = 'Contraste Assimétrico & Agrupamento Gestalt';
+                document.getElementById('hStateExplanation').textContent = 'A métrica principal salta imediatamente aos olhos com escala tipográfica 3.5x maior que os rótulos. As ações secundárias recuam para texto fantasma, deixando apenas uma decisão primária evidente.';
+            }
+        }
+
+        // Toggle Eye-Tracking Focal Order Badges
+        function toggleEyeTracking() {
+            eyeTrackingActive = !eyeTrackingActive;
+            const knob = document.getElementById('eyeTrackKnob');
+            const fp1 = document.getElementById('focalPoint1');
+            const fp2 = document.getElementById('focalPoint2');
+            const fp3 = document.getElementById('focalPoint3');
+
+            if (eyeTrackingActive) {
+                knob.classList.add('translate-x-6', 'theme-accent-bg');
+                knob.classList.remove('bg-zinc-400');
+                fp1.classList.remove('hidden');
+                fp2.classList.remove('hidden');
+                fp3.classList.remove('hidden');
+            } else {
+                knob.classList.remove('translate-x-6', 'theme-accent-bg');
+                knob.classList.add('bg-zinc-400');
+                fp1.classList.add('hidden');
+                fp2.classList.add('hidden');
+                fp3.classList.add('hidden');
+            }
+        }
+
+        // 60-30-10 Proportion Simulator
+        function setProportionMode(mode) {
+            const barDom = document.getElementById('barDominant');
+            const barSec = document.getElementById('barSecondary');
+            const barAcc = document.getElementById('barAccent');
+            const lblDom = document.getElementById('labelDominant');
+            const lblSec = document.getElementById('labelSecondary');
+            const lblAcc = document.getElementById('labelAccent');
+            const verdict = document.getElementById('proportionVerdict');
+
+            const btns = ['propBalancedBtn', 'propSaturatedBtn', 'propMinimalBtn'];
+            btns.forEach(id => {
+                document.getElementById(id).className = 'px-3 py-1.5 text-xs font-mono-code theme-elevated theme-text-sec border theme-border rounded transition-all';
+            });
+
+            if (mode === 'balanced') {
+                document.getElementById('propBalancedBtn').className = 'px-3 py-1.5 text-xs font-mono-code theme-accent-bg text-white rounded transition-all';
+                barDom.style.width = '60%';
+                barSec.style.width = '30%';
+                barAcc.style.width = '10%';
+                lblDom.textContent = '60%';
+                lblSec.textContent = '30%';
+                lblAcc.textContent = '10%';
+                verdict.textContent = 'Veredito: Ponto focal claro e repouso ocular ideal.';
+            } else if (mode === 'saturated') {
+                document.getElementById('propSaturatedBtn').className = 'px-3 py-1.5 text-xs font-mono-code theme-accent-bg text-white rounded transition-all';
+                barDom.style.width = '30%';
+                barSec.style.width = '30%';
+                barAcc.style.width = '40%';
+                lblDom.textContent = '30%';
+                lblSec.textContent = '30%';
+                lblAcc.textContent = '40% (Excessivo)';
+                verdict.textContent = 'Alerta: Excesso de cor de destaque causa fadiga e anula a prioridade do CTA.';
+            } else {
+                document.getElementById('propMinimalBtn').className = 'px-3 py-1.5 text-xs font-mono-code theme-accent-bg text-white rounded transition-all';
+                barDom.style.width = '80%';
+                barSec.style.width = '15%';
+                barAcc.style.width = '5%';
+                lblDom.textContent = '80%';
+                lblSec.textContent = '15%';
+                lblAcc.textContent = '5%';
+                verdict.textContent = 'Veredito: Estética de galeria suíça; máxima serenidade e foco cirúrgico.';
+            }
+        }
+
+        // Filter 2027 Trends Grid
+        function filterTrends(category) {
+            document.querySelectorAll('.trend-filter').forEach(btn => {
+                if (btn.getAttribute('data-filter') === category) {
+                    btn.className = 'trend-filter px-3.5 py-1.5 text-xs font-mono-code theme-accent-bg text-white rounded-full transition-all';
+                } else {
+                    btn.className = 'trend-filter px-3.5 py-1.5 text-xs font-mono-code theme-surface border theme-border rounded-full transition-all';
+                }
+            });
+
+            document.querySelectorAll('.trend-card').forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // Checklist Readiness Calculator
+        function updateReadinessScore() {
+            const checks = document.querySelectorAll('#checklistContainer input[type="checkbox"]');
+            let checkedCount = 0;
+            checks.forEach(c => { if (c.checked) checkedCount++; });
+            const pct = Math.round((checkedCount / checks.length) * 100);
+            document.getElementById('readinessScoreBadge').textContent = `${pct}% Pronto para Produção`;
+        }
+
+        // Modal for Exporting CSS Design Tokens
+        function openTokenModal() {
+            const preset = THEME_PRESETS[currentObjective];
+            const codeBlock = document.getElementById('exportedCssCode');
+            codeBlock.textContent = `/* Design Tokens 2027 — Objetivo: ${preset.name} */
+@layer tokens {
+  :root {
+    --surface-primary: ${isDarkMode ? '#09090B' : preset.bgLight};
+    --surface-card: ${isDarkMode ? '#121215' : preset.surfaceLight};
+    --text-primary: ${isDarkMode ? '#FAFAFA' : preset.textLight};
+    --action-intent: ${preset.accent};
+    --radius-interactive: ${preset.radius};
+  }
+}`;
+            document.getElementById('tokenModal').classList.remove('hidden');
+        }
+
+        function closeTokenModal() {
+            document.getElementById('tokenModal').classList.add('hidden');
+            document.getElementById('copyConfirmMsg').classList.remove('opacity-100');
+        }
+
+        document.getElementById('exportTokensBtn').addEventListener('click', openTokenModal);
+
+        function copyTokensToClipboard() {
+            const text = document.getElementById('exportedCssCode').textContent;
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            const msg = document.getElementById('copyConfirmMsg');
+            msg.classList.add('opacity-100');
+            setTimeout(() => msg.classList.remove('opacity-100'), 2500);
+        }
+    </script>
+</body>
+</html>

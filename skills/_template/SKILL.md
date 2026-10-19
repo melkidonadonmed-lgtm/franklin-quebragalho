@@ -27,7 +27,7 @@ Este documento define o contrato nuclear (Tier 2, `< 500` linhas) para qualquer 
 > **Eliminação de Redundâncias (Carregamento Modular Tier 3):**
 > - Não copie blocos extensos de CSS, paletas ou checklists genéricos para dentro do `SKILL.md` de novas skills.
 > - Carregue sob demanda [`references/guardrails_por_modulo.md`](references/guardrails_por_modulo.md) para aplicar o **Checklist Transversal (5 Eixos)** e selecionar apenas o **Módulo de Domínio (M1 a M7)** pertinente à skill.
-> - Carregue [`references/paleta_estilo_melki.md`](references/paleta_estilo_melki.md) **exclusivamente** quando a skill pertencer ao **Módulo 3 (Frontend, UI & Design System Tátil `DESIGN.md v4.5-soft`)**.
+> - Carregue [`references/preferencias_estilo_e_temas.md`](references/preferencias_estilo_e_temas.md) **exclusivamente** quando a skill pertencer ao **Módulo 3 (Frontend, UI & Arquitetura Visual por Propósito)**.
 
 ---
 
@@ -51,7 +51,7 @@ Este documento define o contrato nuclear (Tier 2, `< 500` linhas) para qualquer 
 - **Mapeamento de Módulos de Domínio (Selecionar em [`references/guardrails_por_modulo.md`](references/guardrails_por_modulo.md))**:
   - `M1`: Execução, Automação & Código (`Python / Go / TS / ADK / ReAct`)
   - `M2`: Design Visual & Arquitetura da Informação ($\le 35$ palavras/bloco, 6–10 blocos/tela)
-  - `M3`: Frontend, UI & Design Tátil (`DESIGN.md v4.5-soft`, Luz 135°, `Cerulean Sapphire #0284C7`, Zero Cobalto/Blur, WCAG 2.1 AA, FSM 4 estados)
+  - `M3`: Frontend, UI & Arquitetura Visual por Propósito (`DESIGN.md`, *Ad Lucem*, *Cinza `#57545d` + Menus `#8e8999`*, *Preto Terminal IBM `Ex Umbris`*, *AETHER 2027*, Contraste WCAG AA/AAA, `tabular-nums`, Camadas Esculpidas e FSM)
   - `M4`: Investigação, Pesquisa & RAG (*Closed-Domain Grounding*, filtro contra *context poisoning*)
   - `M5`: Criação & Edição de Imagem (Prompt final em Inglês + 8 Pilares Visuais)
   - `M6`: Criação & Edição de Vídeo (Prompt em Inglês + 1 ação/1 câmera + progressão temporal)

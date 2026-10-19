@@ -40,7 +40,7 @@ Para assegurar validações rigorosas e erradicar auditorias fictícias, toda ch
 ---
 
 ### Regra 5: Conformidade com o Módulo Específico de Domínio (`M1`..`M7`)
-- **Critério**: A skill cumpre integralmente os guardrails do seu módulo em `_template/references/guardrails_por_modulo.md` (`M1` Código/ReAct, `M2` Densidade $\le 35$ palavras, `M3` Frontend `DESIGN.md v4.5-soft` 135°/zero cobalto/WCAG/FSM, `M4` Grounding RAG, `M5` Imagem 8 Pilares em inglês, `M6` Vídeo temporal em inglês, `M7` Clínica 4 passos + 6 pilares + PII/PHI)?
+- **Critério**: A skill cumpre integralmente os guardrails do seu módulo em `_template/references/guardrails_por_modulo.md` (`M1` Código/ReAct, `M2` Densidade $\le 35$ palavras, `M3` Frontend & Estilo por Propósito `preferencias_estilo_e_temas.md` com contraste WCAG, `tabular-nums`, camadas esculpidas e FSM, `M4` Grounding RAG, `M5` Imagem 8 Pilares em inglês, `M6` Vídeo temporal em inglês, `M7` Clínica 4 passos + 6 pilares + PII/PHI)?
 - **Classificação**:
   - Aderência integral ao módulo de domínio aplicável -> `[PASS]`
   - Violação de qualquer guardrail obrigatório do módulo -> `[FAIL: Discrepância com o Módulo de Domínio M1..M7]`

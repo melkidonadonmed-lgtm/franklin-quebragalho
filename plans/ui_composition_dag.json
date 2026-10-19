@@ -1,113 +1,84 @@
 {
-  "objective": "Orquestração Determinística de Composição de UI em 3 Ondas sob Minimalist Impact & Soft Tactile Architecture (DESIGN.md v4.5-soft + frontend-code-architect v4.0 + frontend-testing-auditor v2.5)",
+  "objective": "Orquestração Determinística de Arquitetura Visual Orientada ao Propósito, Camadas Esculpidas & QA em 3 Ondas (Topologia 3+1: ui-shell-navigator -> ui-controls-data + ui-motion-interaction -> ui-deterministic-observer)",
   "acceptance_criteria": [
-    "Onda 1 (ui_shell_navigator): 4+1 Camadas Tonais (60-30-10), Design Atômico em 5 camadas, Nexus Bento Grid 12 colunas (CLS < 0.1, zero bordas 1px), Inversão Tonal Terrixa e Tactile Companion Sidebar (#sidebar-active-tracker em surface-inset) com Ctrl+K",
-    "Onda 2A (ui_controls_data): 8 Kits Soft UI (<SoftCard />, .ui-btn-tactile, .badge-soft, .swatch-disc, .tactile-thumb, .tactile-range, .surface-inset-pill, .activity-row), alvos >= 44x44px anti-squish, FSM (Idle/Loading/Error/Pressed) e Zero Cobalto (Cerulean #0284C7 / Ocean Sapphire #1E6091)",
-    "Onda 2B (ui_motion_interaction): Física --ease-spring, compressão mecânica :active -> surface-inset, suporte multi-input (Touch/Pen/Mouse/Keyboard sem foco neon) e respeito a prefers-reduced-motion",
-    "Onda 3 (ui_deterministic_observer): Auditoria frontend-testing-auditor v2.5 (AUDIT-A11Y-01/02 Axe-Core, AUDIT-VIS-01 zero blur/cobalto, AUDIT-STATE-01/02 FSM, AUDIT-SEC-01 anti-XSS), Core Web Vitals e Score ponderado (0.35*A11y + 0.30*FSM + 0.20*Tokens + 0.15*Sec)"
+    "Onda 1 (ui-shell-navigator): Diagnosticar o propósito do projeto, selecionar a família atmosférica adequada (Ad Lucem, Cinza Monolítico #57545d + Menus #8e8999, Preto Terminal IBM Ex Umbris + IBM Plex, ou AETHER 2027 oklch), estruturar src/ em 5 camadas de Design Atômico e Bento Grid 12 colunas (respiro >= 25%, CLS < 0.1)",
+    "Onda 2A (ui-controls-data): Implementar <SurfaceCard /> com sombra esculpida em 3 camadas + 1px Rim Light, blocos de contraste alternados, 1 único CTA primário sólido vs .btn-ghost, alvos >= 44x44px anti-squish, tabular-nums e máquina de estados FSM (idle, loading, error, pressed)",
+    "Onda 2B (ui-motion-interaction): Calibrar física elástica Spring (--ease-spring: cubic-bezier(0.22, 1, 0.36, 1)), transições de superfície/tema, proteção vestibular obrigatória (prefers-reduced-motion) e ergonomia multi-input (Touch, Pen, Mouse, Keyboard)",
+    "Onda 3 (ui-deterministic-observer): Auditar matematicamente a conformidade ao propósito, contraste WCAG 2.1 AA/AAA, camadas esculpidas, zero componentes órfãos, FSM sem comment-gaming e anti-XSS via scripts/audit_tactile_ui.py (Readiness Score >= 90/100)"
   ],
   "tasks": [
     {
       "id": "wave1_shell_navigator",
       "group_id": "ui_shell_navigator",
-      "description": "Estruturar as 4+1 Camadas Tonais (DESIGN.md v4.5-soft), diretório src/ em 5 camadas de Design Atômico (frontend-code-architect v4.0), Nexus Bento Grid 12 colunas e Tactile Companion Sidebar (#sidebar-active-tracker)",
-      "criticality": "MEDIUM",
+      "description": "Onda 1: Diagnóstico do propósito do projeto, escolha de atmosfera (preferencias_estilo_e_temas.md), estrutura src/ em 5 camadas de Design Atômico, Bento Grid 12 colunas e navegação ergonômica (Ctrl+K, tinta escura em menus claros/#8e8999)",
+      "criticality": "HIGH",
       "payload": {
         "agent_spec": "agents/ui-shell-navigator.md",
-        "covered_modules": [
-          "1. Arquitetura Visual, 4+1 Camadas Tonais (60-30-10) & Design Atômico",
-          "2. Nexus Bento Grid 12 Colunas & Tactile Companion Sidebar"
-        ],
-        "design_md_version": "4.5-soft",
+        "skill": "frontend-code-architect",
         "cls_budget": 0.1,
-        "min_sidebar_px": 272,
-        "collapsed_sidebar_px": 92,
-        "accent_cerulean": "#0284C7",
-        "accent_sapphire": "#1E6091",
-        "zero_cobalt": true
+        "whitespace_ratio_min": 0.25,
+        "min_sidebar_px": 256
       }
     },
     {
       "id": "wave2_controls_data",
       "group_id": "ui_controls_data",
-      "description": "Implementar os 8 Kits Soft Tactile UI, <SoftCard /> com Máquina de Estados Finita (Idle, Loading, Error, Pressed), alvos 44x44px anti-squish (Regra 1+2), gráficos tonais SVG e toasts aria-live sem azul cobalto",
+      "description": "Onda 2A: Camadas esculpidas (<SurfaceCard /> com sombra em 3 níveis + 1px Rim Light), isolamento de acento 98/2 (1 CTA sólido vs .btn-ghost), alvos >= 44x44px anti-squish, tabular-nums e estados FSM (idle, loading, error, pressed)",
       "dependencies": [
         "wave1_shell_navigator"
       ],
-      "criticality": "MEDIUM",
+      "criticality": "HIGH",
       "payload": {
         "agent_spec": "agents/ui-controls-data.md",
-        "covered_modules": [
-          "3. Os 8 Kits de Componentes Soft Tactile UI & FSM",
-          "4. Exibição de Dados Bento, Telemetria SVG e Toasts aria-live"
-        ],
+        "skill": "frontend-code-architect",
         "min_touch_target_px": 44,
-        "target_fps": 60,
-        "fsm_states": ["IDLE", "LOADING", "ERROR", "PRESSED"]
+        "target_fps": 60
       },
       "upstream_mapping": {
-        "shell_layout": "wave1_shell_navigator.layout_contract",
-        "nav_slots": "wave1_shell_navigator.navigation_contract"
+        "layout_contract": "wave1_shell_navigator.layout_contract",
+        "navigation_contract": "wave1_shell_navigator.navigation_contract"
       }
     },
     {
       "id": "wave2_motion_interaction",
       "group_id": "ui_motion_interaction",
-      "description": "Configurar física elástica --ease-spring, transição :active -> surface-inset, tracker deslizante #sidebar-active-tracker, fallback prefers-reduced-motion e paridade de teclado sem foco neon",
+      "description": "Onda 2B: Física elástica Spring (--ease-spring: cubic-bezier(0.22, 1, 0.36, 1)), micro-interações de elevação e pressão, proteção vestibular prefers-reduced-motion e gestos multi-input (Touch, Pen, Mouse, Keyboard)",
       "dependencies": [
         "wave1_shell_navigator"
       ],
       "criticality": "MEDIUM",
       "payload": {
         "agent_spec": "agents/ui-motion-interaction.md",
-        "covered_modules": [
-          "5.1 Física Tátil Soft UI 135° & prefers-reduced-motion",
-          "5.2 Gestos e Interações Multi-Input"
-        ],
-        "max_tilt_deg": 5.5,
+        "skill": "frontend-code-architect",
         "respect_reduced_motion": true
       },
       "upstream_mapping": {
-        "shell_layout": "wave1_shell_navigator.layout_contract",
-        "nav_routes": "wave1_shell_navigator.navigation_contract"
+        "layout_contract": "wave1_shell_navigator.layout_contract",
+        "navigation_contract": "wave1_shell_navigator.navigation_contract"
       }
     },
     {
       "id": "wave3_deterministic_observer",
       "group_id": "ui_deterministic_observer",
-      "description": "Executar auditoria determinística frontend-testing-auditor v2.5 (AUDIT-A11Y-01/02, AUDIT-VIS-01 zero blur/cobalto, AUDIT-STATE-01/02 FSM, AUDIT-SEC-01 anti-XSS), Core Web Vitals e calcular Score ponderado (0-100)",
+      "description": "Onda 3 (Gatekeeper): Auditoria determinística integrada (frontend-testing-auditor v3.0 + auditoria-projetos-sistema v3.0) validando alinhamento ao propósito, contraste, tipografia, camadas esculpidas, FSM e anti-XSS via scripts/audit_tactile_ui.py",
       "dependencies": [
+        "wave1_shell_navigator",
         "wave2_controls_data",
         "wave2_motion_interaction"
       ],
       "criticality": "HIGH",
       "payload": {
         "agent_spec": "agents/ui-deterministic-observer.md",
-        "covered_modules": [
-          "5.3 Coordenador Determinístico & Rubrica frontend-testing-auditor v2.5",
-          "6. Os 6 Pilares de Governança (A11y, Soft UI 135° Zero Cobalto, FSM, Anti-XSS, CWV, DI)"
-        ],
-        "rubric_weights": {
-          "a11y": 0.35,
-          "state_fsm": 0.3,
-          "tokens_vis": 0.2,
-          "security_xss": 0.15
-        },
-        "cwv_thresholds": {
-          "lcp_max_s": 2.5,
-          "inp_max_ms": 200,
-          "cls_max": 0.1
-        },
-        "wcag_contrast": {
-          "text_min": 4.5,
-          "graphics_min": 3.0
-        }
+        "skill": "frontend-testing-auditor",
+        "auditor_script": "skills/frontend-testing-auditor/scripts/audit_tactile_ui.py"
       },
       "upstream_mapping": {
-        "controls_spec": "wave2_controls_data.controls_contract",
-        "data_virtualization": "wave2_controls_data.data_feedback_contract",
-        "gpu_motion": "wave2_motion_interaction.motion_contract",
-        "multi_input": "wave2_motion_interaction.interaction_contract"
+        "layout_contract": "wave1_shell_navigator.layout_contract",
+        "navigation_contract": "wave1_shell_navigator.navigation_contract",
+        "controls_contract": "wave2_controls_data.controls_contract",
+        "data_feedback_contract": "wave2_controls_data.data_feedback_contract",
+        "motion_contract": "wave2_motion_interaction.motion_contract",
+        "interaction_contract": "wave2_motion_interaction.interaction_contract"
       }
     }
   ]

@@ -4,18 +4,19 @@ description: >-
   Audita e higieniza estruturalmente o cofre do Obsidian (C:\Users\melki\dev\notes\), validando frontmatter YAML, links bidirecionais [[Wikilinks]], paridade de projetos ativos com dev\repos, deteccao de anexos orfaos e sincronizacao com MemPalace (wing: notes) sem perda de dados.
 license: MIT
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   author: "VaultMaster & Melki"
   category: "Gestão de Conhecimento e PKM"
-  updated_at: "2026-10-14"
+  updated_at: "2026-10-19"
   tags:
     - "obsidian"
     - "wikilinks"
     - "frontmatter"
     - "mempalace"
+    - "hybrid-search"
     - "anexos-orfaos"
-version: 1.1.0
-updated_at: 2026-10-14
+version: 1.2.0
+updated_at: 2026-10-19
 author: VaultMaster & Melki
 category: Gestão de Conhecimento e PKM
 ---
@@ -108,8 +109,12 @@ pwsh "C:\Users\melki\dev\tools\check-vault-projects.ps1"
 ### Passo 3: Auditoria de Links, Frontmatter e Monólitos (>25KB)
 Identificar notas sem cabeçalho YAML (`title`, `date`, `tags`), `[[Wikilinks]]` órfãos e notas monolíticas que pedem *split* (nunca *trim*).
 
-### Passo 4: Relatório, Realocação Segura e Sincronização MemPalace
-Apresentar o diagnóstico determinístico (`[PASS]` / `[FAIL]`) com `report_key` canônico, aplicar correções aprovadas e executar `mempalace mine "C:\Users\melki\dev\notes"`.
+### Passo 4: Relatório, Realocação Segura, Índice Seccional Híbrido e Sincronização MemPalace
+Apresentar o diagnóstico determinístico (`[PASS]` / `[FAIL]`) com `report_key` canônico, aplicar correções aprovadas, atualizar o índice incremental de seções (`vault_palace_search.py`) e executar `mempalace mine`:
+```powershell
+uv run python skills/curadoria-obsidian-vault/scripts/vault_palace_search.py --query "preferencias" --room memoria --rebuild
+mempalace mine "C:\Users\melki\dev\notes"
+```
 
 ---
 

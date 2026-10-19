@@ -1,0 +1,32 @@
+[
+  {
+    "eval_id": "miu-01-medtech-split-workbench",
+    "prompt": "@minimal-impact-ui Crie um gerador de Evolução Médica e APAC no tema Cinza #57545d com menus #8e8999, acento Esmeralda #10B981, Split-Screen Live Workbench e folha A4.",
+    "should_trigger": true,
+    "expected_behavior": "Aplica os 3 temas Ex Umbris Ad Lucem iniciando em data-theme='gray' (#57545d + #8e8999 com tinta #16151A), acento #10B981 com texto escuro #062016 no botão, SplitView com preview A4 e zero letras vermelhas embaçadas."
+  },
+  {
+    "eval_id": "miu-02-tdah-focus-wizard-kanban",
+    "prompt": "Crie uma página HTML no meu estilo Ex Umbris minimal-impact-ui com Wizard Modo Foco Anti-TDAH, Command Palette Ctrl+K e Connected Animation.",
+    "should_trigger": true,
+    "expected_behavior": "Estrutura a interface usando os arquétipos Wizard Modo Foco e Kanban Operacional, adiciona AcrylicBrush no modal Ctrl+K, curvas cubic-bezier(0.16, 1, 0.3, 1) e destaque .accent-text / .highlight-surgical de alta nitidez."
+  },
+  {
+    "eval_id": "miu-03-winui-atlas-playground",
+    "prompt": "Estilize este dashboard HTML com os 3 temas (Claro Editorial, Cinza #57545d e Preto Terminal IBM Plex Mono), Bento Grid e sombras esculpidas com Rim Light de 1px.",
+    "should_trigger": true,
+    "expected_behavior": "Injeta o boilerplate CSS/JS completo da minimal-impact-ui com alternância em localStorage, --shadow-sculpted + inset 0 1px 0 0 var(--rim-light), blocos .surface-contrast alternados e tabular-nums."
+  },
+  {
+    "eval_id": "miu-04-negative-gdrive-cleanup",
+    "prompt": "Faça uma varredura na minha unidade G:\\Meu Drive procurando arquivos duplicados por hash SHA-256 e pastas vazias.",
+    "should_trigger": false,
+    "expected_behavior": "Near-miss negativo: tarefa de auditoria de arquivos no Google Drive sem relação com UI/HTML (deve acionar gdrive-auditoria-limpeza)."
+  },
+  {
+    "eval_id": "miu-05-negative-python-ast-audit",
+    "prompt": "Audite estaticamente o script Python server.py via AST para verificar se há except silencioso ou funções acima de 60 linhas.",
+    "should_trigger": false,
+    "expected_behavior": "Near-miss negativo: auditoria estática de código Python backend (deve acionar code-acceptability-auditor)."
+  }
+]

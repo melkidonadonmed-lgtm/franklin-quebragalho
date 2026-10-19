@@ -1,124 +1,118 @@
 ---
 name: design-md
 description: >-
-  Gera ou atualiza apenas o arquivo de contrato DESIGN.md (v4.5-soft) na raiz do projeto ou via Google Stitch. Não use para diagnosticar código (use analise-design-tatil-frontend) nem para refatorar componentes (use refatoracao-design-tatil-frontend).
-version: "4.5.1"
+  Gera ou atualiza o arquivo de contrato DESIGN.md na raiz do projeto ou via Google Stitch, selecionando o tema, atmosfera, tipografia, espaçamento, contraste e camadas de acordo com o propósito do projeto (Conversão/SaaS, Editorial, FinTech, IA Nativa/AETHER, MedTech ou Terminal IBM Ex Umbris), sem impor paletas de cores fixas. Não use para auditar repositório completo (use auditoria-projetos-sistema).
+version: "5.0.0"
 license: MIT
 metadata:
   author: "FrontCraftMaster & Melki"
-  version: "4.5.1"
-  category: "Design System Tátil, Minimalist Impact e Documentação Canônica"
-  updated_at: "2026-10-18"
+  version: "5.0.0"
+  category: "Design System Adaptativo por Propósito, Arquitetura Visual e Documentação Canônica"
+  updated_at: "2026-10-19"
   tags:
     - "design-md"
-    - "minimalist-impact"
-    - "soft-ui"
-    - "nexus-bento"
-    - "anti-cobalto"
-updated_at: 2026-10-18
+    - "estilo-por-proposito"
+    - "ex-umbris-ad-lucem"
+    - "aether-2027"
+    - "arquitetura-visual"
+updated_at: 2026-10-19
 author: FrontCraftMaster & Melki
-category: Design System Tátil, Minimalist Impact e Documentação Canônica
+category: Design System Adaptativo por Propósito, Arquitetura Visual e Documentação Canônica
 authorized_sub_skills:
+  - name: minimal-impact-ui
+    role: "Atlas Ex Umbris Ad Lucem + WinUI 3 Gallery (6 arquétipos de página, 28 efeitos, 3 temas e boilerplate HTML/CSS/JS)"
   - name: frontend-code-architect
-    role: "Estruturação modular src/ em 5 camadas de Design Atômico e componentes Soft UI"
+    role: "Estruturação modular src/ em 5 camadas de Design Atômico e componentes guiados por propósito"
   - name: frontend-testing-auditor
-    role: "Auditoria determinística via scripts/audit_tactile_ui.py + Axe-Core (v2.6.0)"
+    role: "Auditoria determinística de contraste, tipografia, espaçamento, camadas e FSM via scripts/audit_tactile_ui.py"
 ---
 
-# Gerador e Sintetizador Canônico de `DESIGN.md` (`design-md` v4.5.0 — Minimalist Impact & Soft Tactile) 📐
+# Gerador e Sintetizador Canônico de `DESIGN.md` (`design-md` v5.0.0 — Arquitetura Visual Guiada por Propósito) 📐
 
-Utilitário especializado em inspecionar um projeto frontend (local em disco ou remoto no **Google Stitch MCP**) e sintetizar o arquivo **`DESIGN.md` (`v4.5-soft`)** na pasta raiz como fonte única da verdade (*Single Source of Truth*) sob o paradigma **Minimalist Impact, Nexus Bento & Soft Tactile Architecture**.
+Utilitário especializado em inspecionar um projeto frontend (local em disco ou remoto no **Google Stitch MCP**), compreender o **propósito e domínio do produto** e sintetizar o arquivo **`DESIGN.md`** na pasta raiz como fonte única da verdade (*Single Source of Truth*). Em vez de aplicar uma paleta fixa repetitiva em todos os projetos, adapta a atmosfera (*Ad Lucem*, *Cinza Monolítico `#57545d` + Menus `#8e8999`*, *Preto Terminal IBM `Ex Umbris`*, *AETHER 2027* ou paleta própria do domínio) respeitando **espaçamento, contraste, tipografia, estilo, camadas e hierarquia**.
 
 ---
 
 ## 🎯 Quando Usar (Gatilhos de Ativação)
-- Automaticamente quando **`analise-design-tatil-frontend`** (Fase 1), **`consultor-design-tatil-frontend`** (Fase 2) ou **`frontend-code-architect`** verificarem a raiz do projeto e notarem que o arquivo `DESIGN.md` ainda não existe ou precisa ser atualizado para `v4.5-soft`.
-- Quando o usuário solicitar explicitamente a criação ou atualização do `DESIGN.md` de um projeto local ou do **Google Stitch** (`stitch*:*`).
+- Quando um projeto novo ou existente precisar criar ou atualizar seu contrato `DESIGN.md` alinhado ao objetivo do produto.
+- Quando o usuário solicitar explicitamente a definição de estilo, atmosfera, tipografia e tokens visuais de um projeto local ou do **Google Stitch** (`stitch*:*`).
 
 ### 🚫 Quando NÃO Usar (Limites e Exceções)
 - Para scripts puramente backend/CLI sem interface gráfica.
-- Nunca gere tokens com azul cobalto elétrico (`#0044FF`, `#0057FF`, `#1D4ED8`, `#233DFF`), glassmorphism (`backdrop-filter: blur`) ou bordas neon.
+- Nunca imponha uma única paleta de cores fixa sem antes analisar o propósito do projeto e seu público-alvo.
 
 ---
 
 ## 📥 Entradas Obrigatórias e Pré-requisitos
 - `project_root_path` (obrigatório para projetos locais): Caminho absoluto da raiz onde o `DESIGN.md` será gravado.
+- `project_purpose` (opcional, inferido automaticamente se omitido): `conversao_saas`, `editorial_leitura`, `fintech_confianca`, `ia_nativa_aether`, `medtech_clinico` ou `devtools_terminal_ibm`.
+- `atmosphere_preference` (opcional): Preferência de família tonal (`ad-lucem`, `monolith-gray`, `ibm-terminal-dark`, `aether-oklch` ou `studio-v45` opcional).
 - `stitch_project_id` (opcional): ID do projeto no Google Stitch MCP (`list_projects` / `get_screen` / `get_project`).
-- `theme_preset` (opcional, padrão `slate`): Um dos 4 presets Soft UI (`slate` Cerulean `#0284C7`, `moss` Forest `#174930`, `sapphire` Ocean Sapphire `#1E6091` ou `obsidian` Dark `#38BDF8`) ou dos 22 temas minerais homologados.
 
 ---
 
-## ⚙️ Fluxo de Síntese e Arquitetura (`v4.5-soft`)
+## ⚙️ Fluxo de Síntese por Propósito (`v5.0`)
 
-### Passo 1: Varredura de Ativos e Economia Tonal 60-30-10
-1. Inspecione `package.json`, `globals.css`, `tailwind.config.*`, `index.html` e as pastas da raiz (`src/components/ui/`, `src/components/bento/`, `src/components/layout/`, `src/config/`, `src/styles/`, `src/types/`).
-2. Aplique a **Regra 60-30-10 Tonal Restrita**:
-   - **60% `surface-canvas` (Layer 0)**: Fundo neutro contínuo (`#F1F4F8` no Light; `#12151B` / `#090B10` no Dark).
-   - **30% Camadas de Elevação (Layers 1 a 3 + Layer 4 Contrast)**:
-     - `Layer 1 (surface-inset / surface-sunken)`: `#E5E9F0` (`--surface-sunken: #DCE3EC`) com sombra interna dupla (`inset 4px 4px 10px rgba(166,180,200,0.45), inset -4px -4px 10px rgba(255,255,255,0.85)`) para campos de busca, inputs, trilhos e o berço deslizante do ícone ativo na sidebar (`#sidebar-active-tracker`).
-     - `Layer 2 (surface-flat)`: `#E9EEF5` para agrupamento intermediário sem bordas duras de `1px`.
-     - `Layer 3 (surface-raised / .ui-card-soft / .bento-card-soft)`: `#F8FAFC` esculpido com iluminação direcional dupla a **135°** (`8px 8px 20px rgba(166,180,200,0.42), -8px -8px 20px rgba(255,255,255,0.95)`), garantindo delta de luminância real sobre `--surface-canvas` (`#F1F4F8`).
-     - `Layer 4 (surface-contrast / .terrixa-notched)`: `#1E293B` para âncoras de alto contraste por inversão tonal monocromática (sem neon).
-   - **10% `--accent-point` (Acento Focal Único — Zero Cobalto)**: **Cerulean Sapphire** (`#0284C7`), **Ocean Sapphire** (`#1E6091`), **Moss Forest** (`#174930`) ou **Mineral Ice** (`#38BDF8` no dark mode).
+### Passo 1: Diagnóstico do Propósito do Projeto e Escolha da Atmosfera
+Consulte [`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md), a skill [`../minimal-impact-ui/SKILL.md`](../minimal-impact-ui/SKILL.md) e as referências interativas:
+- [`../minimal-impact-ui/references/atlas_ex_umbris_winui.html`](../minimal-impact-ui/references/atlas_ex_umbris_winui.html) (*Atlas Ex Umbris + WinUI 3 Gallery* — 3 temas ao vivo, 4 cores pontuais de 2%, 6 arquétipos de composição de página além de formulários/gráficos, 28 efeitos de superfície/layout/motion/controles e nitidez tipográfica zero vermelho embaçado).
+- [`references/ex_umbris_ad_lucem_studio.html`](references/ex_umbris_ad_lucem_studio.html) (*Ex Umbris Ad Lucem Studio* — 3 famílias tonais, 4 níveis de tinta, sombra esculpida em 3 camadas + 1px Rim Light, proporção 98/2).
+- [`references/aether_2027_design_system.html`](references/aether_2027_design_system.html) (*AETHER 2027* — matriz de decisão por objetivo, `oklch()`, Bento Grid assimétrico e contraste perceptual APCA).
+- [`references/design_md_v4_5_studio.html`](references/design_md_v4_5_studio.html) (Referência opcional de controles de estúdio v4.5 quando o projeto exigir estética de hardware dedicado).
 
-### Passo 2: Integração com `frontend-code-architect` (v4.0) e `frontend-testing-auditor` (v2.5)
-- Documente no `DESIGN.md` a hierarquia em **5 Camadas de Design Atômico** (Átomos, Moléculas, Organismos, Templates Bento 12 colunas e Pages/Views) e os invariantes de auditoria (`AUDIT-A11Y-01`, `AUDIT-VIS-01`, `AUDIT-STATE-01`, `AUDIT-SEC-01`).
-- Referencie o estúdio interativo canônico em [`references/design_md_v4_5_studio.html`](references/design_md_v4_5_studio.html).
+1. **Enquadre o Objetivo**:
+   - *Editorial / SaaS Diurno / MedTech*: Priorize **Ad Lucem** (`--bg-canvas: #F3F3F5` / `#F6F6F4`, `--bg-surface: #FFFFFF`, `--bg-elevated: #E6E6EA`, card de contraste alternado `--bg-contrast-card: #18181C`).
+   - *Estúdio Analítico / Produtividade Anti-TDAH / Governança*: Priorize **Cinza sobre Cinza Monolítico** (`--bg-canvas: #57545d`, `--bg-surface: #49464f`, `--bg-elevated: #635f6a`, card de contraste `#232127`, menus em `#8e8999` com tinta escura `--nav-ink: #16151A`).
+   - *DevTools / Observabilidade / Engenharia / Terminal*: Priorize **Preto Terminal IBM (`Ex Umbris`)** (`--bg-canvas: #070709` / `#09090B`, `--bg-surface: #101014`, `--bg-elevated: #18181E`) acoplado obrigatoriamente a **`IBM Plex Sans` + `IBM Plex Mono`**.
+2. **Defina o Acento Pontual por Intenção (Proporção 98/2) e o Arquétipo de Página**:
+   - Escolha a cor de acento (`--punctual-accent`: Carmim `#e13535`, Cerúleo `#35acd8` com texto escuro `#091318`, Esmeralda `#10B981` com texto escuro `#062016`, ou Âmbar `#D97706`) e selecione um dos **6 Arquétipos de Página** (*Split-Screen Workbench*, *Timeline Cronológica*, *Kanban Operacional*, *Canvas de Nós*, *Wizard Modo Foco Anti-TDAH* ou *Catálogo WinUI Gallery*).
+
+### Passo 2: Especificação de Nitidez Tipográfica, Espaçamento, Contraste e Camadas
+- **Nitidez Tipográfica (Zero Letras Vermelhas Embaçadas sobre Cinza/Escuro)**: Proibido `color: #e13535` puro ou serifa fina embaçada em fundos cinza/pretos; use `.highlight-surgical` (Semibold + sublinhado `2px` em `--punctual-accent`) em títulos e `.accent-text` (`#FFFFFF` no cinza/escuro ou `#991B1B` no claro + fundo `--punctual-soft` + `border-left: 2.5px solid var(--punctual-accent)`) em badges/tags, além de `font-variant-numeric: tabular-nums`.
+- **Camadas, Motion & Elevação**: Sombra esculpida em 3 estágios (`--shadow-sculpted`: Umbra + Penumbra + Difusão) + luz de borda zenital de `1px` (`inset 0 1px 0 0 var(--rim-light)`) + curvas físicas `cubic-bezier(0.16, 1, 0.3, 1)` (`Quint Out`) e `cubic-bezier(0.34, 1.56, 0.64, 1)` (`Spring`).
+- **Espaçamento & Geometria**: Respiro mínimo de 25%–35% de canvas aberto, Bento Grid assimétrico (`col-span-2` no item prioritário) e raios concêntricos ($R_{\text{interno}} = R_{\text{externo}} - \text{Padding}$).
 
 ---
 
 ## 📤 Saídas e Entregáveis — Template Canônico (`<project_root>/DESIGN.md`)
 
 ```markdown
-# DESIGN.md v4.5 — Minimalist Impact, Nexus Bento & Soft Tactile Architecture
+# DESIGN.md — Arquitetura Visual, Atmosfera & Sistema de Estilo por Propósito
 ---
-version: "4.5-soft"
-name: "Minimalist Tactile Prestige + Nexus Operations"
-colors:
-  surface-sunken: "#DCE3EC"     # Layer -1: Profundidade rebaixada (Tactile Wells / Split-Pane)
-  surface-canvas: "#F1F4F8"     # Layer 0: Fundo neutro contínuo (60%)
-  surface-flat:   "#E9EEF5"     # Layer 2: Placa intermediária sem borda dura
-  surface-raised: "#F8FAFC"     # Layer 3: Placa esculpida neumórfica 135° (30%)
-  surface-inset:  "#E5E9F0"     # Layer 1: Cavidade física (inputs/trilhos/berço de ícone ativo)
-  surface-contrast: "#1E293B"   # Layer 4: Âncora de inversão tonal Terrixa
-  text-primary:   "#1E293B"     # Grafite profundo legível (WCAG AA/AAA)
-  text-secondary: "#64748B"     # Slate suave para metadados
-  accent-point:   "#0284C7"     # Destaque focal Cerulean Sapphire (10% max — Zero Cobalto)
-  accent-secondary: "#7DD3FC"   # Acento suave complementar
-  accent-emerald: "#059669"     # Indicador semântico de estabilidade
+version: "5.0-adaptive"
+project_purpose: "<conversao_saas | editorial_leitura | fintech_confianca | ia_nativa_aether | medtech_clinico | devtools_terminal_ibm>"
+atmosphere_family: "<ad-lucem | monolith-gray | ibm-terminal-dark | aether-oklch | custom-domain>"
+tokens:
+  bg-canvas:        "#F3F3F5"   # Superfície base (respiro >= 25% da viewport)
+  bg-surface:       "#FFFFFF"   # Card primário
+  bg-elevated:      "#E6E6EA"   # Superfície secundária / agrupador
+  bg-contrast-card: "#18181C"   # Bloco de inversão rítmica para destaque estrutural
+  ink-primary:      "#111113"   # Títulos e métricas âncora (WCAG AAA / APCA Lc >= 75)
+  ink-secondary:    "#4A4A52"   # Corpo de leitura (max 65ch, WCAG AA >= 4.5:1)
+  ink-muted:        "#71717A"   # Rótulos e legendas
+  ink-subtle:       "#A1A1AA"   # Placeholders e metadados terciários
+  nav-bg:           "rgba(228, 228, 233, 0.88)"
+  nav-ink:          "#18181B"   # Tinta escura nítida sobre menus claros ou #8e8999
+  punctual-accent:  "#35acd8"   # Acento cirúrgico guiado pelo propósito (2% a 10% da tela)
+  border-hairline:  "rgba(24, 24, 27, 0.08)"
+  rim-light:        "rgba(255, 255, 255, 0.85)"
 lighting:
-  shadow-card:    "8px 8px 20px rgba(166, 180, 200, 0.42), -8px -8px 20px rgba(255, 255, 255, 0.95)"
-  shadow-ambient: "0 12px 28px rgba(15, 23, 42, 0.06), 0 4px 10px rgba(15, 23, 42, 0.04)"
-  shadow-inset:   "inset 4px 4px 10px rgba(166, 180, 200, 0.45), inset -4px -4px 10px rgba(255, 255, 255, 0.85)"
-  soft-shadow:    "8px 8px 20px rgba(166, 180, 200, 0.42)"
-  soft-highlight: "-8px -8px 20px rgba(255, 255, 255, 0.95)"
-  inset-shadow:   "inset 4px 4px 10px rgba(166, 180, 200, 0.45), inset -4px -4px 10px rgba(255, 255, 255, 0.85)"
-presets:
-  slate:    { canvas: "#F1F4F8", raised: "#F8FAFC", inset: "#E5E9F0", accent: "#0284C7" }
-  moss:     { canvas: "#F4F3EC", raised: "#F8F7F2", inset: "#E8E5DC", accent: "#174930" }
-  sapphire: { canvas: "#F5F4EE", raised: "#FAF9F5", inset: "#E6E5DD", accent: "#1E6091" }
-  obsidian: { canvas: "#12151B", raised: "#181D26", inset: "#0D1016", accent: "#38BDF8" }
-skills_integrated:
-  - frontend-code-architect (v4.1.0): Design Atômico em 5 camadas + src/ modular
-  - frontend-testing-auditor (v2.6.0): Auditoria Axe-Core + FSM + Anti-Glassmorphism (AUDIT-VIS-01)
+  shadow-sculpted:  "0 1px 2px rgba(9,9,11,0.05), 0 8px 24px -4px rgba(9,9,11,0.06), 0 20px 40px -12px rgba(9,9,11,0.04), inset 0 1px 0 0 var(--rim-light)"
+typography:
+  font-sans:    "'Plus Jakarta Sans', 'Inter', sans-serif" # Ou 'IBM Plex Sans' no tema Terminal IBM
+  font-display: "'Instrument Serif', serif"                # Opcional para tensão editorial
+  font-mono:    "'IBM Plex Mono', 'JetBrains Mono', monospace" # Obrigatório tabular-nums em dados
 ---
 
-## 1. Pilha de Elevação Tonal (4+1 Camadas) e Iluminação 135°
-- **Zero Glassmorphism / Zero Neon / Zero Bordas Duras 1px (`AUDIT-VIS-01`)**: Proibido `backdrop-filter: blur()`, brilhos neon ou azul cobalto (`#0044FF`, `#0057FF`, `#1D4ED8`).
-- **Sidebar Tátil com Tracker de Ícone (`#sidebar-active-tracker`)**: Trilho colapsável (`272px` <-> `92px`) onde um berço escavado (`surface-inset`) com barra vertical de `4px` acompanha suavemente o ícone ativo via Scroll-Spy.
-- **Inversão Tonal Terrixa (`.terrixa-notched`)**: Destaque de containers críticos por contraste monocromático (`surface-contrast: #1E293B`) e recorte chanfrado `28px`.
+## 1. Propósito do Projeto e Direção de Atmosfera
+- **Objetivo Cognitivo**: [Descrever como o tema escolhido serve ao propósito do projeto].
+- **Isolamento de Acento (Von Restorff 98/2 ou 60-30-10)**: Apenas 1 CTA primário sólido por vista; ações secundárias em `.btn-ghost`.
 
-## 2. Tipografia e Escala Respirável (Grid 8pt / Gap >= 24px)
-- **Display & Sans**: `Public Sans` / `Plus Jakarta Sans` (ou `Instrument Serif` no modo Editorial) com `line-height: 1.6`.
-- **Monospace / Telemetria**: `JetBrains Mono` (`tabular-nums`).
+## 2. Tipografia, Hierarquia (Squint Test) e Alinhamento Tabular
+- Escala fluida com `clamp()`, largura de leitura de `60ch–70ch` e `font-variant-numeric: tabular-nums` em KPIs, preços e tabelas.
 
-## 3. Arquitetura Modular `src/` (Design Atômico em 5 Camadas)
-- `src/components/ui/` — Átomos e Moléculas (`.ui-btn-tactile`, `.badge-soft`, `.activity-row`, `<SoftCard />`).
-- `src/components/bento/` — Organismos Bento Grid (12 colunas, `gap: 1.75rem`).
-- `src/components/layout/` — Tactile Companion Sidebar, Header Dock e Bottom Nav.
-- `src/config/` — `tokens.ts` e `DESIGN.md`.
-- `src/styles/` — `globals.css` e `theme.css`.
-- `src/types/` — Contratos TypeScript estritos (`TonalLayer`, `ComponentFSMState`, `AuditTelemetryResult`).
+## 3. Espaçamento, Camadas Esculpidas e Arquitetura `src/` (5 Camadas Atômicas)
+- Bento Grid de 12 colunas (`gap: 16px..24px`), raios concêntricos ($R_{\text{int}} = R_{\text{ext}} - \text{Padding}$), sombra em 3 camadas + `1px` Rim Light e estados finitos FSM (`idle | loading | error | pressed`) com alvos $\ge 44 \times 44\text{px}$.
 ```
 
 ---
@@ -126,4 +120,3 @@ skills_integrated:
 ## 🤖 Ativação de Subagentes e Orquestração (`Topologia 3+1`)
 - **Persona Responsável:** `FrontCraftMaster`
 - **Subagentes Vinculados:** `ui-shell-navigator`, `ui-controls-data`, `ui-motion-interaction` e `ui-deterministic-observer`.
-- **Disparo Automático:** Acione `franklin_execute_dag(plan_path_or_json="ui", target_dir="<project_root_path>")` ou `invoke_subagent` após sintetizar o `DESIGN.md`.

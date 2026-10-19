@@ -3,7 +3,8 @@
 code_acceptability_auditor.py
 Motor determinístico de auditoria estática de código Python via AST, Regex e Pydantic v2.
 Valida segurança (SEC001-003), sintaxe (SYN001), tratamento de erros (ERR001-003),
-tipagem estática (TYP001-002) e modularidade (ARCH001).
+tipagem estática (TYP001-002), modularidade (ARCH001), complexidade cognitiva/indentação (ARCH002)
+e complexidade ciclomática (ARCH003).
 """
 
 import argparse
@@ -23,7 +24,8 @@ if hasattr(sys.stderr, "reconfigure"):
 SeverityType = Literal["CRÍTICO", "ALTO", "MÉDIO", "BAIXO"]
 RuleIdType = Literal[
     "SYN001", "SEC001", "SEC002", "SEC003",
-    "ERR001", "ERR002", "ERR003", "TYP001", "TYP002", "ARCH001"
+    "ERR001", "ERR002", "ERR003", "TYP001", "TYP002",
+    "ARCH001", "ARCH002", "ARCH003",
 ]
 
 RULE_PENALTIES: Dict[str, float] = {
@@ -37,6 +39,8 @@ RULE_PENALTIES: Dict[str, float] = {
     "TYP001": 5.0,
     "TYP002": 5.0,
     "ARCH001": 2.0,
+    "ARCH002": 5.0,
+    "ARCH003": 5.0,
 }
 
 SECRET_VAR_REGEX = re.compile(
@@ -94,9 +98,59 @@ class DirectoryAuditSummary(BaseModel):
     reports: List[FileAuditReport]
 
 
+def _compute_control_nesting(stmts: List[ast.stmt], cur_depth: int = 0) -> int:
+    """Calcula a profundidade máxima de indentação de controle (if/for/while), tratando elif no mesmo nível."""
+    max_d = cur_depth
+    for stmt in stmts:
+        if isinstance(stmt, ast.If):
+            max_d = max(max_d, _compute_control_nesting(stmt.body, cur_depth + 1))
+            is_elif = len(stmt.orelse) == 1 and isinstance(stmt.orelse[0], ast.If)
+            next_d = cur_depth if is_elif else cur_depth + 1
+            max_d = max(max_d, _compute_control_nesting(stmt.orelse, next_d))
+        elif isinstance(stmt, (ast.For, ast.AsyncFor, ast.While)):
+            max_d = max(
+                max_d,
+                _compute_control_nesting(stmt.body, cur_depth + 1),
+                _compute_control_nesting(stmt.orelse, cur_depth + 1),
+            )
+        elif isinstance(stmt, (ast.With, ast.AsyncWith)):
+            max_d = max(max_d, _compute_control_nesting(stmt.body, cur_depth))
+        elif isinstance(stmt, ast.Try):
+            max_d = max(
+                max_d,
+                _compute_control_nesting(stmt.body, cur_depth),
+                _compute_control_nesting(stmt.orelse, cur_depth),
+                _compute_control_nesting(stmt.finalbody, cur_depth),
+            )
+            for handler in stmt.handlers:
+                max_d = max(max_d, _compute_control_nesting(handler.body, cur_depth))
+    return max_d
+
+
+def _compute_cyclomatic_complexity(fn_node: ast.FunctionDef | ast.AsyncFunctionDef) -> int:
+    """Calcula a complexidade ciclomática McCabe M = 1 + pontos de decisão de fluxo da função."""
+    m_score = 1
+    stack: List[ast.AST] = list(fn_node.body)
+    while stack:
+        curr = stack.pop()
+        if isinstance(curr, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            continue
+        if isinstance(curr, (ast.If, ast.For, ast.AsyncFor, ast.While, ast.ExceptHandler)):
+            m_score += 1
+        stack.extend(ast.iter_child_nodes(curr))
+    return m_score
+
+
 class _ASTCodeVisitor(ast.NodeVisitor):
-    def __init__(self, max_function_lines: int = 60) -> None:
+    def __init__(
+        self,
+        max_function_lines: int = 60,
+        max_nesting_depth: int = 3,
+        max_cyclomatic_complexity: int = 10,
+    ) -> None:
         self.max_function_lines = max_function_lines
+        self.max_nesting_depth = max_nesting_depth
+        self.max_cyclomatic_complexity = max_cyclomatic_complexity
         self.violations: List[CodeViolation] = []
         self._reported_secret_lines: Set[int] = set()
 
@@ -276,6 +330,22 @@ class _ASTCodeVisitor(ast.NodeVisitor):
                 "Refatorar extraindo subfunções coesas (Princípio SRP).",
             )
 
+        nesting_depth = _compute_control_nesting(node.body, 0)
+        if nesting_depth > self.max_nesting_depth:
+            self._add(
+                "ARCH002", "Complexidade Cognitiva", "MÉDIO", node.lineno, node.name,
+                f"Função '{node.name}' possui {nesting_depth} níveis de indentação de controle (limite: {self.max_nesting_depth}).",
+                "Aplicar Early Return (Guard Clauses) ou extrair subfunções para manter <= 3 níveis.",
+            )
+
+        cyclomatic_m = _compute_cyclomatic_complexity(node)
+        if cyclomatic_m > self.max_cyclomatic_complexity:
+            self._add(
+                "ARCH003", "Complexidade Ciclomática", "MÉDIO", node.lineno, node.name,
+                f"Função '{node.name}' possui complexidade ciclomática M={cyclomatic_m} (limite: {self.max_cyclomatic_complexity}).",
+                "Reduzir ramificações (M <= 10) usando despacho por dicionário ou subfunções.",
+            )
+
         self.generic_visit(node)
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
@@ -291,68 +361,50 @@ class CodeAcceptabilityAuditor:
         min_quality_score: float = 75.0,
         max_critical_violations: int = 0,
         max_function_lines: int = 60,
+        max_nesting_depth: int = 3,
+        max_cyclomatic_complexity: int = 10,
     ) -> None:
         self.min_quality_score = min_quality_score
         self.max_critical_violations = max_critical_violations
         self.max_function_lines = max_function_lines
+        self.max_nesting_depth = max_nesting_depth
+        self.max_cyclomatic_complexity = max_cyclomatic_complexity
 
     def audit_code(self, source_code: str, file_path: str = "<memory>") -> FileAuditReport:
         try:
             tree = ast.parse(source_code, filename=file_path)
         except SyntaxError as exc:
             violation = CodeViolation(
-                rule_id="SYN001",
-                category="Sintaxe",
-                severity="CRÍTICO",
-                penalty=RULE_PENALTIES["SYN001"],
-                line=max(1, exc.lineno or 1),
-                symbol="SyntaxError",
-                message=f"Erro de sintaxe Python: {exc.msg}",
+                rule_id="SYN001", category="Sintaxe", severity="CRÍTICO",
+                penalty=RULE_PENALTIES["SYN001"], line=max(1, exc.lineno or 1),
+                symbol="SyntaxError", message=f"Erro de sintaxe Python: {exc.msg}",
                 recommendation="Corrigir a sintaxe antes de qualquer execução ou commit.",
             )
             return FileAuditReport(
-                file_path=file_path,
-                passed_syntax=False,
-                quality_score=75.0,
-                critical_violations=1,
-                total_violations=1,
-                status="REJECTED",
+                file_path=file_path, passed_syntax=False, quality_score=75.0,
+                critical_violations=1, total_violations=1, status="REJECTED",
                 violations=[violation],
                 deterministic_markers=["[FAIL: SYN001]", "[FAIL: QUALITY_GATE_REJECTED]"],
             )
 
-        visitor = _ASTCodeVisitor(max_function_lines=self.max_function_lines)
+        visitor = _ASTCodeVisitor(
+            self.max_function_lines, self.max_nesting_depth, self.max_cyclomatic_complexity
+        )
         visitor.visit(tree)
 
         violations = visitor.violations
-        total_penalty = sum(v.penalty for v in violations)
-        quality_score = round(max(0.0, 100.0 - total_penalty), 2)
+        quality_score = round(max(0.0, 100.0 - sum(v.penalty for v in violations)), 2)
         critical_count = sum(1 for v in violations if v.severity == "CRÍTICO")
-
-        approved = (
-            critical_count <= self.max_critical_violations
-            and quality_score >= self.min_quality_score
-        )
+        approved = critical_count <= self.max_critical_violations and quality_score >= self.min_quality_score
         status: Literal["APPROVED", "REJECTED"] = "APPROVED" if approved else "REJECTED"
 
-        markers: List[str] = []
-        triggered_rules = sorted({v.rule_id for v in violations})
-        for r_id in triggered_rules:
-            markers.append(f"[FAIL: {r_id}]")
-        if approved:
-            markers.append("[PASS]")
-        else:
-            markers.append("[FAIL: QUALITY_GATE_REJECTED]")
+        markers = [f"[FAIL: {r_id}]" for r_id in sorted({v.rule_id for v in violations})]
+        markers.append("[PASS]" if approved else "[FAIL: QUALITY_GATE_REJECTED]")
 
         return FileAuditReport(
-            file_path=file_path,
-            passed_syntax=True,
-            quality_score=quality_score,
-            critical_violations=critical_count,
-            total_violations=len(violations),
-            status=status,
-            violations=violations,
-            deterministic_markers=markers,
+            file_path=file_path, passed_syntax=True, quality_score=quality_score,
+            critical_violations=critical_count, total_violations=len(violations),
+            status=status, violations=violations, deterministic_markers=markers,
         )
 
     def audit_file(self, file_path: str | Path) -> FileAuditReport:

@@ -92,13 +92,11 @@ harness_store = CheckpointStore(CHECKPOINTS_FILE)
 a2a_task_manager = FranklinA2ATaskManager(SKILLS_ROOT, harness_store)
 
 CANONICAL_PERSONA_MAPPING: Dict[str, str] = {
-    "analise-design-tatil-frontend": "FrontCraftMaster",
-    "refatoracao-design-tatil-frontend": "FrontCraftMaster",
-    "consultor-design-tatil-frontend": "FrontCraftMaster",
     "design-interface-medica-minimalista": "FrontCraftMaster",
     "design-md": "FrontCraftMaster",
     "frontend-code-architect": "FrontCraftMaster",
     "frontend-testing-auditor": "FrontCraftMaster",
+    "minimal-impact-ui": "FrontCraftMaster",
     "gdrive-auditoria-limpeza": "DriveMaster",
     "gdrive-taxonomia-organizacao": "DriveMaster",
     "manutencao-disco-windows": "FileOpsLocal",
@@ -156,36 +154,49 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "atomic-ui": "frontend-code-architect",
     "ui-testing": "frontend-testing-auditor",
     "frontend-auditor": "frontend-testing-auditor",
-    "frontend": "consultor-design-tatil-frontend",
-    "ui": "consultor-design-tatil-frontend",
-    "consultor-ui": "consultor-design-tatil-frontend",
-    "consultor-frontend": "consultor-design-tatil-frontend",
-    "analise-ui": "analise-design-tatil-frontend",
-    "analise-frontend": "analise-design-tatil-frontend",
-    "refatorar-ui": "refatoracao-design-tatil-frontend",
-    "refatoracao-frontend": "refatoracao-design-tatil-frontend",
+    "minimal-impact-ui": "minimal-impact-ui",
+    "minimal-ui": "minimal-impact-ui",
+    "ex-umbris": "minimal-impact-ui",
+    "atlas-ui": "minimal-impact-ui",
+    "winui": "minimal-impact-ui",
+    "frontend": "design-md",
+    "ui": "design-md",
+    "consultor-ui": "design-md",
+    "consultor-frontend": "design-md",
+    "analise-ui": "auditoria-projetos-sistema",
+    "analise-frontend": "auditoria-projetos-sistema",
+    "refatorar-ui": "frontend-code-architect",
+    "refatoracao-frontend": "frontend-code-architect",
 }
+
+
+def _parse_agent_table_line(line: str, mapping: Dict[str, str]) -> None:
+    """Extrai persona e skills de uma linha de tabela Markdown de AGENTS.md."""
+    if "|" not in line or "`" not in line:
+        return
+    parts = [p.strip() for p in line.split("|")]
+    if len(parts) < 5:
+        return
+    persona_match = re.search(r"^\*\*`([A-Za-z][A-Za-z0-9_\-]+)`\*\*$", parts[1])
+    if not persona_match:
+        return
+    persona = persona_match.group(1)
+    for s in re.findall(r"`([a-zA-Z0-9_\-]+)`", parts[3]):
+        if s in mapping or (SKILLS_ROOT / s).is_dir():
+            mapping[s] = persona
 
 
 def _load_agents_map() -> Dict[str, str]:
     """Mapeia cada skill à sua persona especialista correspondente via AGENTS.md."""
     mapping = dict(CANONICAL_PERSONA_MAPPING)
-    if AGENTS_MD_PATH.exists():
-        try:
-            content = AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace")
-            for line in content.splitlines():
-                if "|" in line and "`" in line:
-                    parts = [p.strip() for p in line.split("|")]
-                    if len(parts) >= 5:
-                        persona_match = re.search(r"^\*\*`([A-Za-z][A-Za-z0-9_\-]+)`\*\*$", parts[1])
-                        if persona_match:
-                            persona = persona_match.group(1)
-                            skills_in_line = re.findall(r"`([a-zA-Z0-9_\-]+)`", parts[3])
-                            for s in skills_in_line:
-                                if s in mapping or (SKILLS_ROOT / s).is_dir():
-                                    mapping[s] = persona
-        except OSError as exc:
-            _ = exc
+    if not AGENTS_MD_PATH.exists():
+        return mapping
+    try:
+        content = AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace")
+        for line in content.splitlines():
+            _parse_agent_table_line(line, mapping)
+    except OSError as exc:
+        _ = exc
     return mapping
 
 
@@ -198,13 +209,10 @@ def _load_status_map() -> Dict[str, str]:
     try:
         content = MY_SKILLS_MD_PATH.read_text(encoding="utf-8", errors="replace")
         for line in content.splitlines():
-            if "|" in line and "**`" in line:
-                parts = [p.strip() for p in line.split("|")]
-                if len(parts) >= 5:
-                    skill_match = re.search(r"\*\*`([a-zA-Z0-9_\-]+)`\*\*", parts[1])
-                    if skill_match:
-                        skill_name = skill_match.group(1)
-                        status_map[skill_name] = parts[3].strip()
+            parts = [p.strip() for p in line.split("|")] if ("|" in line and "**`" in line) else []
+            skill_match = re.search(r"\*\*`([a-zA-Z0-9_\-]+)`\*\*", parts[1]) if len(parts) >= 5 else None
+            if skill_match:
+                status_map[skill_match.group(1)] = parts[3].strip()
     except OSError as exc:
         _ = exc
 
@@ -392,6 +400,27 @@ def _build_full_skill_package(skill_dir: Path) -> str:
     return "\n".join(parts)
 
 
+def _render_skill_references(skill_dir: Path) -> str:
+    """Renderiza os arquivos de references/ de uma skill."""
+    ref_dir = skill_dir / "references"
+    files = sorted(f for f in ref_dir.iterdir() if f.is_file()) if ref_dir.exists() else []
+    if not files:
+        return f"A skill '{skill_dir.name}' não possui referências adicionais (references/)."
+    parts = [f"### Referências da Skill `{skill_dir.name}`:\n"]
+    for f in files:
+        parts.extend([f"#### Arquivo: `{f.name}`", f.read_text(encoding="utf-8", errors="replace"), "\n" + ("-" * 40) + "\n"])
+    return "\n".join(parts)
+
+
+def _render_skill_scripts(skill_dir: Path) -> str:
+    """Lista os scripts executáveis de uma skill."""
+    scripts_dir = skill_dir / "scripts"
+    files = sorted(f for f in scripts_dir.iterdir() if f.is_file()) if scripts_dir.exists() else []
+    if not files:
+        return f"A skill '{skill_dir.name}' não possui scripts executáveis próprios (scripts/)."
+    return "\n".join([f"### Scripts da Skill `{skill_dir.name}`:\n"] + [f"- **`{f.name}`** ({f.stat().st_size} bytes)" for f in files])
+
+
 @mcp.tool()
 def franklin_skills_get(
     skill_name: str,
@@ -410,29 +439,18 @@ def franklin_skills_get(
         return f"Erro: Skill '{skill_name}' não encontrada em {SKILLS_ROOT}.{sug_text}"
 
     sec = section.strip().lower()
-    if sec == "contract":
-        skill_file = skill_dir / "SKILL.md"
-        return skill_file.read_text(encoding="utf-8", errors="replace") if skill_file.exists() else f"Erro: SKILL.md ausente na pasta {skill_dir.name}."
-    if sec == "rules":
-        rules_file = skill_dir / "rules" / "criterios_auditoria.md"
-        return rules_file.read_text(encoding="utf-8", errors="replace") if rules_file.exists() else f"A skill '{skill_dir.name}' não possui arquivo dedicado de regras (rules/criterios_auditoria.md)."
-    if sec == "evals":
-        evals_file = skill_dir / "evals" / "evals.json"
-        return evals_file.read_text(encoding="utf-8", errors="replace") if evals_file.exists() else f"A skill '{skill_dir.name}' não possui arquivo de evals (evals/evals.json)."
+    direct_files = {
+        "contract": (skill_dir / "SKILL.md", f"Erro: SKILL.md ausente na pasta {skill_dir.name}."),
+        "rules": (skill_dir / "rules" / "criterios_auditoria.md", f"A skill '{skill_dir.name}' não possui arquivo dedicado de regras (rules/criterios_auditoria.md)."),
+        "evals": (skill_dir / "evals" / "evals.json", f"A skill '{skill_dir.name}' não possui arquivo de evals (evals/evals.json)."),
+    }
+    if sec in direct_files:
+        f_path, missing_msg = direct_files[sec]
+        return f_path.read_text(encoding="utf-8", errors="replace") if f_path.exists() else missing_msg
     if sec == "references":
-        ref_dir = skill_dir / "references"
-        if not ref_dir.exists() or not any(ref_dir.iterdir()):
-            return f"A skill '{skill_dir.name}' não possui referências adicionais (references/)."
-        parts = [f"### Referências da Skill `{skill_dir.name}`:\n"]
-        for f in sorted(ref_dir.iterdir()):
-            if f.is_file():
-                parts.extend([f"#### Arquivo: `{f.name}`", f.read_text(encoding="utf-8", errors="replace"), "\n" + ("-" * 40) + "\n"])
-        return "\n".join(parts)
+        return _render_skill_references(skill_dir)
     if sec == "scripts":
-        scripts_dir = skill_dir / "scripts"
-        if not scripts_dir.exists() or not any(scripts_dir.iterdir()):
-            return f"A skill '{skill_dir.name}' não possui scripts executáveis próprios (scripts/)."
-        return "\n".join([f"### Scripts da Skill `{skill_dir.name}`:\n"] + [f"- **`{f.name}`** ({f.stat().st_size} bytes)" for f in sorted(scripts_dir.iterdir()) if f.is_file()])
+        return _render_skill_scripts(skill_dir)
     if sec == "all":
         return _build_full_skill_package(skill_dir)
     return f"Seção '{section}' inválida. Opções: 'contract', 'rules', 'references', 'evals', 'scripts', 'all'."
@@ -504,6 +522,26 @@ REQUIRED_SKILL_SECTIONS: List[Tuple[str, str]] = [
 ]
 
 
+def _validate_skill_rules_and_evals(s_dir: Path, errs: List[str]) -> None:
+    """Valida rules/criterios_auditoria.md e evals/evals.json de uma pasta de skill."""
+    rules_file = s_dir / "rules" / "criterios_auditoria.md"
+    if rules_file.exists():
+        rules_text = rules_file.read_text(encoding="utf-8")
+        if "[PASS]" not in rules_text or ("[FAIL]" not in rules_text and "[FAIL:" not in rules_text):
+            errs.append("rules/criterios_auditoria.md deve conter marcadores [PASS] e [FAIL]")
+
+    evals_file = s_dir / "evals" / "evals.json"
+    if not evals_file.exists():
+        return
+    try:
+        evals_data = json.loads(evals_file.read_text(encoding="utf-8"))
+        evals_list = evals_data.get("evals", []) if isinstance(evals_data, dict) else (evals_data if isinstance(evals_data, list) else [])
+        if not isinstance(evals_list, list) or len(evals_list) == 0:
+            errs.append("evals.json deve conter uma lista não-vazia de testes")
+    except (OSError, json.JSONDecodeError, ValueError, TypeError) as e:
+        errs.append(f"Sintaxe JSON inválida em evals.json: {e}")
+
+
 def _validate_single_skill_dir(s_dir: Path) -> List[str]:
     """Valida a conformidade contratual, frontmatter, rules e evals de uma pasta de skill."""
     errs: List[str] = []
@@ -516,31 +554,13 @@ def _validate_single_skill_dir(s_dir: Path) -> List[str]:
         meta, body = _parse_frontmatter(content)
         if not meta:
             errs.append("Frontmatter YAML ausente ou malformado")
-        for req in ("name", "description", "version"):
-            if req not in meta or not meta[req]:
-                errs.append(f"Campo obrigatório '{req}' ausente no frontmatter")
-        if "name" in meta and meta["name"] != s_dir.name:
-            if not (s_dir.name == "_template" and meta["name"] == "template-skill"):
-                errs.append(f"Nome no frontmatter ('{meta['name']}') difere da pasta ('{s_dir.name}')")
-        for sec_pattern, sec_name in REQUIRED_SKILL_SECTIONS:
-            if not re.search(sec_pattern, body, re.IGNORECASE):
-                errs.append(f"Seção obrigatória ausente: {sec_name}")
-
-        rules_file = s_dir / "rules" / "criterios_auditoria.md"
-        if rules_file.exists():
-            rules_text = rules_file.read_text(encoding="utf-8")
-            if "[PASS]" not in rules_text or ("[FAIL]" not in rules_text and "[FAIL:" not in rules_text):
-                errs.append("rules/criterios_auditoria.md deve conter marcadores [PASS] e [FAIL]")
-
-        evals_file = s_dir / "evals" / "evals.json"
-        if evals_file.exists():
-            try:
-                evals_data = json.loads(evals_file.read_text(encoding="utf-8"))
-                evals_list = evals_data.get("evals", []) if isinstance(evals_data, dict) else (evals_data if isinstance(evals_data, list) else [])
-                if not isinstance(evals_list, list) or len(evals_list) == 0:
-                    errs.append("evals.json deve conter uma lista não-vazia de testes")
-            except (OSError, json.JSONDecodeError, ValueError, TypeError) as e:
-                errs.append(f"Sintaxe JSON inválida em evals.json: {e}")
+        missing = [req for req in ("name", "description", "version") if not meta.get(req)]
+        errs.extend([f"Campo obrigatório '{req}' ausente no frontmatter" for req in missing])
+        is_template = s_dir.name == "_template" and meta.get("name") == "template-skill"
+        if meta.get("name") and meta["name"] != s_dir.name and not is_template:
+            errs.append(f"Nome no frontmatter ('{meta['name']}') difere da pasta ('{s_dir.name}')")
+        errs.extend([f"Seção obrigatória ausente: {sec_name}" for sec_pattern, sec_name in REQUIRED_SKILL_SECTIONS if not re.search(sec_pattern, body, re.IGNORECASE)])
+        _validate_skill_rules_and_evals(s_dir, errs)
     except (OSError, ValueError, KeyError) as e:
         errs.append(f"Erro ao analisar arquivo: {e}")
     return errs
@@ -649,7 +669,7 @@ PERSONA_ALIASES: Dict[str, str] = {
 
 
 def _render_ecosystem_topology() -> str:
-    """Renderiza a topologia interativa de agentes em 5 camadas e 29 skills."""
+    """Renderiza a topologia interativa de agentes em 5 camadas e 26 skills."""
     skills = _get_all_skills_data()
     by_persona: Dict[str, List[str]] = {}
     for s in skills:
@@ -659,7 +679,7 @@ def _render_ecosystem_topology() -> str:
         "## 1. Camadas de Execução e Custo Cognitivo",
         "- **Camada 0 (Bússola & Heartbeat Zero-LLM — 0 tokens)**: `franklin_smart_compass()`, `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1`, `POST /rpc` (`mesh/heartbeat` em `adk-tests`).",
         "- **Camada 1 (Orquestração & Loop Fechado)**: `Franklin-Main` (Execução Direta) e `LoopPlanner` (`high-level-context-planner` Fase 0 -> `skill-orquestrador-planos-encadeados` -> `gap-analyzer-auditor`).",
-        "- **Camada 2 (Esquadrão Frontend Soft Tactile `DESIGN.md v4.5-soft` — Topologia 3+1)**: `FrontCraftMaster` + `ui-shell-navigator` (Onda 1) -> `ui-controls-data` + `ui-motion-interaction` (Onda 2) -> `ui-deterministic-observer` (Onda 3 Gatekeeper `AUDIT-VIS-01 >= 90`).",
+        "- **Camada 2 (Esquadrão Frontend & Arquitetura Visual por Propósito — Topologia 3+1)**: `FrontCraftMaster` + `ui-shell-navigator` (Onda 1) -> `ui-controls-data` + `ui-motion-interaction` (Onda 2) -> `ui-deterministic-observer` (Onda 3 Gatekeeper `AUDIT-VIS-01 >= 90`).",
         "- **Camada 3 (Gatekeepers Determinísticos AST/Pass@k — 0 tokens)**: `SkillCraft` (`code-acceptability-auditor` Score >= 75, `test-quality-auditor`), `3D Physics Auditor` (`franklin_execute_dag('physics')`) e `dispatch_skill_deterministic_tests` (Go Eval Harness).",
         "- **Camada 4 (Malha Multiagente Cloud/Web & Clínica)**: `adk-tests` (`mesh_hybrid_orchestrator`, `self_healing_specialist`, `customer_issue_reviewer`, `AgyCalcCluster`), `epic-volta` (`DAGEngine` Kahn + `MCPBridgeAgent` + `ContextSentinel`), `mcp-web-agents` (Gateway 4+1 + `watchdogBridge.ts`) e `PCM`/`scoreboard` (`prescmed-clinical-reviewer`).\n",
         "## 2. Personas Especialistas & Skills Vinculadas (`franklin-quebragalho`)",
@@ -746,21 +766,21 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
     (
         ("medic", "saude", "clin", "prontuario", "receit", "calculadora", "paciente"),
         "🩺 Software Médico & SaaS Clínico Minimalista",
-        ["design-interface-medica-minimalista", "arquitetura-design-implementacao-sistema", "consultor-design-tatil-frontend", "frontend-testing-auditor"],
+        ["design-interface-medica-minimalista", "arquitetura-design-implementacao-sistema", "design-md", "frontend-testing-auditor"],
         [
             ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria adaptativa FrontierCode (Tipagem, Bare Except, Segurança)"),
             ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Sanitização e chunking SHA-256 para diretrizes clínicas/RAG"),
         ],
         "plans/ui_composition_dag.json",
-        "Zero dados identificáveis de pacientes fora de .env, contraste WCAG AA/AAA, paleta mineral sem cobalto neon e tipagem estrita.",
+        "Zero dados identificáveis de pacientes fora de .env, contraste WCAG AA/AAA, tipografia tabular-nums e conformidade A4.",
     ),
     (
         ("ui", "ux", "front", "tela", "botao", "menu", "css", "tailwind", "react", "design"),
-        "🎨 Engenharia de Interface & Design System Tátil Melki (`DESIGN.md v4.5-soft` • 4 Presets + 28 Temas)",
-        ["consultor-design-tatil-frontend", "analise-design-tatil-frontend", "refatoracao-design-tatil-frontend", "design-md", "frontend-code-architect", "frontend-testing-auditor"],
+        "🎨 Engenharia de Interface & Arquitetura Visual Guiada por Propósito (`DESIGN.md` • Ex Umbris Ad Lucem & AETHER 2027)",
+        ["design-md", "frontend-code-architect", "frontend-testing-auditor", "auditoria-projetos-sistema"],
         [("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Verificação rápida de código sem engessamento")],
         "plans/ui_composition_dag.json",
-        "Alvos >= 44x44px anti-squish (flex-shrink: 0), L_card > L_canvas no dark mode, Iluminação 135° (DESIGN.md v4.5-soft) e zero azul cobalto (#0044FF).",
+        "Seleção de tema pelo propósito do projeto (Ad Lucem, Cinza #57545d + Menus #8e8999, Preto Terminal IBM + IBM Plex, AETHER 2027), contraste WCAG, sombra 3 camadas + 1px Rim Light e alvos >= 44x44px.",
     ),
     (
         ("rag", "dado", "chunk", "jsonl", "vetor", "memoria", "obsidian", "nota", "vault"),
@@ -775,13 +795,13 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
     ),
     (
         ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra", "test", "auditor"),
-        "🤖 Arquitetura de Agentes, Declarative YAML Spec, Qualidade AST & Skills (29 Canônicas)",
+        "🤖 Arquitetura de Agentes, Declarative YAML Spec, Qualidade AST & Skills (26 Canônicas)",
         ["evoluir-skills", "aprimoramento-expansibilidade-agentes-skills", "code-acceptability-auditor", "test-quality-auditor", "high-level-context-planner", "gap-analyzer-auditor"],
         [
             ("aprimoramento-expansibilidade-agentes-skills", "agent_spec_loader.py", "Carregador Declarative YAML Agent Spec com Zero-Config Defaults"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Auditor estático AST + Pydantic v2 (Segurança, Tipagem, Quality Score >= 75)"),
             ("test-quality-auditor", "test_quality_auditor.py", "Auditor de qualidade de suítes de testes em 5 módulos (Py/TS/Go/MCP/Harness)"),
-            ("workspace", "validate_skills.py", "Validador determinístico das 29 skills canônicas"),
+            ("workspace", "validate_skills.py", "Validador determinístico das 26 skills canônicas"),
         ],
         "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json",
         "Divulgação progressiva em 3 Tiers (<500 linhas no SKILL.md), Zero-Config Defaults no YAML e validação cruzada.",
@@ -797,8 +817,8 @@ def _resolve_compass_profile(
         if any(k in q for k in keywords):
             return title, rec_skills, scripts, dag_plan, guardrail
     return (
-        "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 29 Skills)",
-        ["arquiteto-conteudo-solucoes", "auditoria-projetos-sistema", "code-acceptability-auditor", "code-quality-audit-3d-physics", "consultor-design-tatil-frontend", "evoluir-skills"],
+        "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 26 Skills)",
+        ["arquiteto-conteudo-solucoes", "auditoria-projetos-sistema", "code-acceptability-auditor", "code-quality-audit-3d-physics", "design-md", "evoluir-skills"],
         [
             ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (detecta sozinho se é código Geral ou 3D)"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST pré-commit de segurança e tipagem Python (Score >= 75)"),
@@ -939,6 +959,18 @@ def franklin_run_skill_script(
         return f"Erro ao executar script: {e}"
 
 
+def _apply_target_dir_to_task(t_item: Any, clean_target: str) -> None:
+    """Injeta target_dir no payload e input_data de um item de task do DAG."""
+    if not isinstance(t_item, dict):
+        return
+    payload = t_item.setdefault("payload", {})
+    if isinstance(payload, dict) and not payload.get("target_dir"):
+        payload["target_dir"] = clean_target
+    input_data = t_item.get("input_data")
+    if isinstance(input_data, dict) and not input_data.get("target_dir"):
+        input_data["target_dir"] = clean_target
+
+
 def _inject_target_dir_into_plan(plan_dict: Dict[str, Any], target_dir: str) -> Tuple[Path, Path]:
     """Injeta target_dir nos payloads das tasks do DAG (preservando overrides locais) e persiste em arquivo temporário."""
     import uuid
@@ -946,13 +978,7 @@ def _inject_target_dir_into_plan(plan_dict: Dict[str, Any], target_dir: str) -> 
     clean_target = target_dir.strip()
     if clean_target and isinstance(plan_dict.get("tasks"), list):
         for t_item in plan_dict["tasks"]:
-            if isinstance(t_item, dict):
-                payload = t_item.setdefault("payload", {})
-                if isinstance(payload, dict) and not payload.get("target_dir"):
-                    payload["target_dir"] = clean_target
-                input_data = t_item.get("input_data")
-                if isinstance(input_data, dict) and not input_data.get("target_dir"):
-                    input_data["target_dir"] = clean_target
+            _apply_target_dir_to_task(t_item, clean_target)
     temp_dir = ROOT_DIR / ".sessions" / "temp_plans"
     temp_dir.mkdir(parents=True, exist_ok=True)
     temp_file = temp_dir / f"plan_{uuid.uuid4().hex[:8]}.json"
@@ -1011,6 +1037,26 @@ def _resolve_dag_plan_file(plan_str: str, target_dir: str = "") -> Tuple[Optiona
         return None, None, json.dumps({"status": "FILE_NOT_FOUND_OR_INVALID_JSON", "error": f"Não foi possível localizar o arquivo nem interpretar como JSON válido: {exc}"}, ensure_ascii=False)
 
 
+def _build_dag_cli_cmd(
+    resolved_plan_path: Path,
+    run_id: str,
+    resume: bool,
+    timeout_seconds: float,
+    db_path: str,
+) -> List[str]:
+    """Monta a lista de argumentos CLI para invocar o orchestrator.cli do Epic-Volta."""
+    cmd = ["uv", "--directory", str(EPIC_VOLTA_DIR), "run", "python", "-m", "orchestrator.cli", str(resolved_plan_path), "--json"]
+    if run_id.strip():
+        cmd.extend(["--run-id", run_id.strip()])
+    if resume:
+        cmd.append("--resume")
+    if timeout_seconds > 0:
+        cmd.extend(["--timeout", str(timeout_seconds)])
+    if db_path.strip():
+        cmd.extend(["--db", db_path.strip()])
+    return cmd
+
+
 @mcp.tool()
 def franklin_execute_dag(
     plan_path_or_json: str,
@@ -1036,16 +1082,7 @@ def franklin_execute_dag(
     if err_json or not resolved_plan_path:
         return err_json or json.dumps({"status": "FAILED", "error": "Plano inválido."}, ensure_ascii=False)
 
-    cmd = ["uv", "--directory", str(EPIC_VOLTA_DIR), "run", "python", "-m", "orchestrator.cli", str(resolved_plan_path), "--json"]
-    if run_id.strip():
-        cmd.extend(["--run-id", run_id.strip()])
-    if resume:
-        cmd.append("--resume")
-    if timeout_seconds > 0:
-        cmd.extend(["--timeout", str(timeout_seconds)])
-    if db_path.strip():
-        cmd.extend(["--db", db_path.strip()])
-
+    cmd = _build_dag_cli_cmd(resolved_plan_path, run_id, resume, timeout_seconds, db_path)
     try:
         res = subprocess.run(
             cmd,
@@ -1058,7 +1095,7 @@ def franklin_execute_dag(
         )
         stdout = res.stdout.strip()
         if res.returncode == 0:
-            return stdout if stdout else json.dumps({"status": "COMPLETED", "note": "Sem saída stdout"}, ensure_ascii=False)
+            return stdout or json.dumps({"status": "COMPLETED", "note": "Sem saída stdout"}, ensure_ascii=False)
         return stdout if stdout.startswith("{") else json.dumps({"status": "FAILED", "exit_code": res.returncode, "stdout": stdout, "stderr": res.stderr.strip()}, ensure_ascii=False)
     except subprocess.TimeoutExpired:
         return json.dumps({"status": "TIMEOUT", "error": f"Execução do DAG excedeu o limite de {timeout_seconds} segundos."}, ensure_ascii=False)

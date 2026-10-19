@@ -68,10 +68,16 @@ def sync_ecosystem() -> dict[str, int | str]:
         if legacy_dir.exists():
             shutil.rmtree(legacy_dir)
 
-    # 2. Sincronizar Skills: skills/ -> config/plugins/franklin-skills/skills/
+    # 2. Sincronizar Skills: skills/ -> config/plugins/franklin-skills/skills/ (removendo skills excluídas)
     skills_src = ROOT_DIR / "skills"
+    plugin_skills_dst = CONFIG_PLUGIN_ROOT / "skills"
+    if plugin_skills_dst.exists() and skills_src.exists():
+        valid_skill_dirs = {p.name for p in skills_src.iterdir() if p.is_dir()}
+        for existing_dir in list(plugin_skills_dst.iterdir()):
+            if existing_dir.is_dir() and existing_dir.name not in valid_skill_dirs:
+                shutil.rmtree(existing_dir)
     skills_agents_count = 0
-    skills_plugin_count = _copy_tree(skills_src, CONFIG_PLUGIN_ROOT / "skills")
+    skills_plugin_count = _copy_tree(skills_src, plugin_skills_dst)
 
     # 2.1 Remover de .gemini/config/skills qualquer skill que já exista em franklin-quebragalho/skills/ ou em plugins
     deduplicated_config_skills = 0

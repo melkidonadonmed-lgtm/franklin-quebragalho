@@ -1,79 +1,72 @@
 ---
 name: design-interface-medica-minimalista
 description: >-
-  Preset exclusivamente clínico/hospitalar (PEP, receituários A4, calculadoras médicas com tabular-nums e zero emojis) sob DESIGN.md v4.5-soft. Não use para apps gerais fora da área da saúde (use analise-design-tatil-frontend).
+  Preset e arquitetura exclusivamente clínica/hospitalar (PEP, receituários A4, triagem e calculadoras médicas com tabular-nums, alto contraste e zero emojis) guiada pelo propósito assistencial. Não use para apps gerais fora da área da saúde (use design-md, frontend-code-architect ou auditoria-projetos-sistema).
 license: MIT
 metadata:
-  version: "2.2.0"
-  author: "Franklin-Main & Melki"
-  category: "Design de Interface Médica Minimalista & Soft UI"
-  updated_at: "2026-10-18"
+  author: "FrontCraftMaster & Melki"
+  version: "3.0.0"
+  category: "Design System Clínico, MedTech & Impressão Hospitalar A4"
+  updated_at: "2026-10-19"
   tags:
-    - "saude"
-    - "clinico"
-    - "prontuario"
-    - "minimalist-impact"
-    - "soft-ui"
-    - "anti-cobalto"
-version: 2.2.0
-updated_at: 2026-10-18
-author: Franklin-Main & Melki
-category: Design de Interface Médica Minimalista & Soft UI
-authorized_sub_skills:
-  - name: design-md
-    role: "Criação automática do DESIGN.md v4.5-soft clínico na raiz do projeto quando ausente"
-  - name: frontend-code-architect
-    role: "Estruturação modular src/ em 5 camadas de Design Atômico (v4.1.0)"
-  - name: frontend-testing-auditor
-    role: "Auditoria determinística via scripts/audit_tactile_ui.py + Axe-Core (v2.6.0)"
+    - "medtech-ui"
+    - "clinical-design"
+    - "prontuario-eletronico"
+    - "a4-print"
+    - "tabular-nums"
+version: 3.0.0
+updated_at: 2026-10-19
+author: FrontCraftMaster & Melki
+category: Design System Clínico, MedTech & Impressão Hospitalar A4
 ---
 
-# Design System Médico Executivo & Minimalist Impact (`design-interface-medica-minimalista` v2.2.0 — Soft Tactile `v4.5-soft`)
+# Design de Interface Médica Minimalista & Precisão Clínica (`design-interface-medica-minimalista` v3.0.0)
 
-Preset de domínio clínico do **Minimalist Impact & Soft Tactile Architecture (`DESIGN.md v4.5-soft`)**, calibrado para alta legibilidade em plantões, zero fadiga visual, elevação por camadas tonais a 135°, precisão numérica (`tabular-nums`) e impressão limpa em papel A4 (consulte [`references/guia_tokens_clinicos_a4.md`](references/guia_tokens_clinicos_a4.md)).
+Diretrizes visuais, ergonômicas e de segurança assistencial para sistemas médicos, Prontuários Eletrônicos do Paciente (PEP), calculadoras clínicas e receituários A4. Adapta o estilo ao **propósito clínico** (consultório diurno, UTI/plantão noturno, laudos radiológicos ou prescrição impressa) priorizando **contraste impecável, espaçamento de leitura rápida, tipografia tabular e zero ruído cognitivo**.
 
 ---
 
 ## 🎯 Gatilhos de Ativação (Quando Usar)
-- Criar, auditar ou refatorar telas de prontuários eletrônicos (PEP), calculadoras médicas (ex.: clearance renal, déficit de água livre, infusão), receituários ou laudos.
-- Configurar a árvore de pastas de um app médico (`DESIGN.md v4.5-soft`, `components/ui/SoftCard.tsx`, `styles/globals.css`, `modules/calculadoras/`, `lib/utils/`).
+- Criar ou refatorar telas de prontuário eletrônico (PEP), prescrição médica, evolução clínica, triagem ou calculadoras nefrológicas/cardiológicas/intensivas.
+- Configurar folhas de estilo `@media print` para receituários, atestados, solicitações de exames e sumários de alta em formato **A4**.
 
-### Quando NÃO Usar
-- Para cockpits de infraestrutura fora da área da saúde (use a esteira `analise-design-tatil-frontend` $\rightarrow$ `consultor-design-tatil-frontend` $\rightarrow$ `refatoracao-design-tatil-frontend`).
-
----
-
-## 📥 Entradas Obrigatórias e Pré-requisitos
-1. **Domínio ou Caso de Uso Clínico**: Prontuário, calculadora médica, prescrição ou painel hospitalar.
-2. **Caminho Raiz do Projeto (`project_root_path`)**: Para verificar/criar `DESIGN.md v4.5-soft` e organizar as pastas em Design Atômico.
-3. **Preset Tonal Clínico**: `slate` (Nexus Slate Cerulean `#F1F4F8` / `#0284C7`), `sapphire` (Soft Sapphire `#F5F4EE` / `#1E6091`), `moss` (Calm Moss `#F4F3EC` / `#174930`) ou `obsidian` (Plantão Noturno `#12151B` / `#181D26` / `#38BDF8`).
+### Quando NÃO Usar (Fronteira Estrita)
+- Para aplicações SaaS gerais, e-commerce, jogos ou dashboards corporativos fora da área da saúde (use **`design-md`**, **`frontend-code-architect`** ou **`auditoria-projetos-sistema`**).
+- Nunca delegue o cálculo matemático de doses ou escores clínicos a inferência livre do LLM — todo cálculo deve residir em função determinística tipada e testada (ou `agy_deterministic_calc_suite`).
 
 ---
 
-## 🔄 Processamento, Fluxo e Arquitetura Clínica + Minimalist Impact (`v4.5-soft`)
-
-### 1. Paleta Clínica Tonal 60-30-10 (`[DISC-PALETA]`)
-- **Zero Azul Cobalto ou Neon**: Proibido `#0044FF`, `#0057FF`, `#233DFF`, `#1D4ED8`, `#0000FF` ou `#00FF00`.
-- **Camadas Tonais 135° (Diurno Clínico)**:
-  - `60%` `surface-canvas`: `#F1F4F8` (Slate) ou `#F5F4EE` (Warm Ivory).
-  - `30%` `surface-raised` (`.ui-card-soft` com sombra dupla 135°) e `surface-inset` (`#E5E9F0` para inputs de dose/peso/idade e busca).
-  - `10%` `--accent-point`: **Cerulean Sapphire** (`#0284C7`), **Ocean Sapphire** (`#1E6091`) ou **Clinical Emerald/Moss** (`#059669` / `#174930`).
-- **Tema Escuro Plantão (`obsidian` / `tactile-matte`)**: Canvas `#12151B` / `#090B10`, Cards `#181D26` / `#141824` ($L_{\text{card}} > L_{\text{canvas}}$) e acento **Mineral Ice** (`#38BDF8`).
-
-### 2. Ergonomia Tátil, Tipografia e Anti-Squish (`[DISC-TATIL]` & `AUDIT-VIS-01`)
-- **Zero Emojis na UI Clínica**: Utilize exclusivamente ícones vetoriais **Lucide Icons** (`stroke-width="1.5"` a `"1.75"`).
-- **Alvos Ergonômicos e Anti-Squish**: Botões e selects com altura mínima de **`44px`**, `flex-shrink: 0; white-space: nowrap;` (nunca quebrar rótulos de ação ou unidades como `mg/dL`, `mL/min` ou `mEq/L`).
-- **Tipografia de Precisão**: `Public Sans` / `Plus Jakarta Sans` para leitura rápida (`line-height: 1.6`) e `JetBrains Mono` (`tabular-nums`) para doses, resultados laboratoriais e fórmulas.
-- **Anti-Glassmorphism**: Zero `backdrop-filter: blur` e zero bordas duras de `1px`.
-
-### 3. Design Atômico, Cálculos Determinísticos e Auditoria FSM (`[DISC-OPCOES]` & `[DISC-SUPPLY]`)
-- Ao inspecionar o projeto médico, se não houver `DESIGN.md` na raiz, acione **`design-md`** (`v4.5-soft`) e **`frontend-code-architect`** (`v4.1.0`).
-- Para cálculos médicos, delegue a aritmética para funções determinísticas testadas (ou `agy_deterministic_calc_suite`), nunca deixando o LLM calcular doses de cabeça.
-- Audite os estados `Idle`, `Loading` (`role="status"`), `Error` (`role="alert"`) e sanitização XSS com **`frontend-testing-auditor`** (`v2.6.0`), coordenando os subagentes `ui-shell-navigator`, `ui-controls-data`, `ui-motion-interaction`, `ui-deterministic-observer` e `prescmed-clinical-reviewer` via `invoke_subagent` ou `franklin_execute_dag(plan_path_or_json="ui", target_dir="<project_root_path>")`.
+## 📥 Entradas Esperadas
+- `clinical_context` (obrigatório): Contexto assistencial (`ambulatorio_pep`, `uti_plantao_noturno`, `calculadora_doses`, `receituario_a4`).
+- `target_stack` (opcional): React + TypeScript + Tailwind/CSS Variables ou HTML5/CSS3.
 
 ---
 
-## 📤 Saídas e Entregáveis (Modelo de Saída)
-1. **Estrutura Raiz e `DESIGN.md v4.5-soft`**: Confirmação da criação de `DESIGN.md`, `components/ui/SoftCard.tsx`, `styles/globals.css` e `modules/`.
-2. **Componentes Clínicos Tipados**: Código sem emojis e sem cobalto, com alvos de `44px` anti-squish, números `tabular-nums` e CSS `@media print` calibrado para folha A4 (conforme [`references/guia_tokens_clinicos_a4.md`](references/guia_tokens_clinicos_a4.md)).
-3. **Matriz de Conformidade (`[DISC-PALETA]`, `[DISC-TATIL]`, `[DISC-OPCOES]`, `[DISC-SUPPLY]`)** + Score `frontend-testing-auditor`.
+## ⚙️ Fluxo de Execução — Arquitetura Visual Guiada pelo Propósito Clínico
+
+Consulte os tokens e templates detalhados em [`references/guia_tokens_clinicos_a4.md`](references/guia_tokens_clinicos_a4.md), o padrão [`../minimal-impact-ui/SKILL.md`](../minimal-impact-ui/SKILL.md) ([`atlas_ex_umbris_winui.html`](../minimal-impact-ui/references/atlas_ex_umbris_winui.html)) e [`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md):
+
+### 1. Atmosferas Clínicas por Turno e Ambiente (3 Temas + Preset Esmeralda `#10B981`)
+- **Enfermaria, Prontuário & Uso Prolongado (*Cinza sobre Cinza `#57545d` + Menus `#8e8999`*)**:
+  - `--bg-canvas: #57545d`; `--bg-surface: #49464f`; `--bg-elevated: #635f6a`; `--bg-contrast-card: #232127`; menus `#8e8999` com tinta escura `#16151A`.
+- **Ambulatório, Consultório Diurno & Impressão (*Ad Lucem Clínico*)**:
+  - `--bg-canvas: #F3F3F5` / `#F4F6F8`; `--bg-surface: #FFFFFF`; `--bg-elevated: #E6E6EA`; `--ink-primary: #111115` (contraste AAA $\ge 14:1$).
+- **Plantão Noturno / UTI / Laudos (*Preto Terminal IBM `Ex Umbris`*)**:
+  - `--bg-canvas: #070709`; `--bg-surface: #101014`; `--bg-elevated: #18181E` acoplado a `IBM Plex Sans` + `IBM Plex Mono`.
+- **Semântica Cromática Estrita & Nitidez Tipográfica (Zero Letras Vermelhas Embaçadas)**:
+  - **Ação Clínica / Estabilidade (2%)**: Esmeralda Clínico (`#10B981` com texto escuro obrigatório `#062016` em botões preenchidos `.accent-bg`).
+  - **Zero Letras Vermelhas Soltas no Cinza/Escuro**: Alertas e destaques usam `.accent-text` (texto `#FFFFFF` Semibold + fundo `--punctual-soft` + `border-left: 2.5px solid #e13535`) ou `.highlight-surgical` (sublinhado `2px`).
+
+### 2. Tipografia Tabular, Unidades Inquebráveis & Zero Emojis
+- **Proibição Absoluta de Emojis**: Interfaces clínicas usam exclusivamente ícones vetoriais **Lucide** (`stroke-width: 1.75`) ou marcadores técnicos monoespaçados.
+- **Dados Numéricos & Doses (`tabular-nums` + `Compact Sizing`)**: Sinais vitais, escores (`SOFA`, `CHA2DS2-VASc`, `CKD-EPI`), tabelas SIGTAP/CID-10 e posologias usam `JetBrains Mono` / `IBM Plex Mono` com `font-variant-numeric: tabular-nums` e modo `Compact Sizing` (`py-1.5 px-2.5`).
+- **Blindagem Anti-Squish de Unidades**: Unidades críticas (`mg/dL`, `mL/min/1.73m²`, `mcg/kg/min`, `mEq/L`) exigem `white-space: nowrap; flex-shrink: 0` e alvos interativos $\ge 44 \times 44\text{px}$.
+
+### 3. Arquétipos Clínicos (`minimal-impact-ui`) e Folha A4 Proporcional (`Viewbox` & `@media print`)
+- **Arquétipos Recomendados**: **01. Split-Screen Live Workbench** (`SplitView`: pílulas de exame físico/sinais vitais à esquerda + folha A4 APAC/LME/Evolução ao vivo à direita), **02. Linha do Tempo Cronológica** (`D1, D2, D3` de internação/antibiótico), **04. Árvore de Decisão Clínica** e **25. RichEditBox com Templates Clínicos** + `Popover Contextual` de doses.
+- **Folha A4 Fiel (`Viewbox` 210x297mm)**: Renderizada em `#FFFFFF` com `--shadow-sculpted` sobre o palco `#57545d`, e regras `@media print` que ocultam `.no-print`/`header.nav-shell` e forçam fundo branco e tinta `#111115`.
+
+---
+
+## 📤 Saídas e Entregáveis
+Componentes clínicos tipados (`.tsx` / `.html`), variáveis CSS com suporte a `@media print` A4 e verificação determinística via [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md) e `frontend-testing-auditor`.

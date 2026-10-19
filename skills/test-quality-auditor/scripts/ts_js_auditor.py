@@ -12,42 +12,37 @@ from typing import List, Tuple
 from models import AuditIssue, FileAuditReport, TestDossierRecord, classify_quality_level
 
 
+def _find_ts_block_end(lines: List[str], start_idx: int) -> int:
+    """Localiza o índice final de um bloco JS/TS balanceando chaves fora de strings/comentários."""
+    brace_depth = 0
+    started_block = False
+    for j in range(start_idx, len(lines)):
+        clean_line = re.sub(r"//.*$", "", lines[j])
+        clean_line = re.sub(r"'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"|`(?:\\.|[^`\\])*`", '""', clean_line)
+        clean_line = re.sub(r"/(?![/*])(?:\\.|\[(?:\\.|[^\]\\])*\]|[^/\\\n])+/[dgimsuvy]*", "//", clean_line)
+        opens = clean_line.count("{")
+        closes = clean_line.count("}")
+        if opens > 0:
+            started_block = True
+        brace_depth += opens - closes
+        if started_block and brace_depth <= 0:
+            return j
+    return len(lines) - 1
+
+
 def _extract_ts_js_blocks(lines: List[str]) -> List[Tuple[str, int, List[str]]]:
     """Extrai blocos test(...)/it(...) com título, linha inicial e lista de linhas."""
     test_pattern = re.compile(r"^\s*(?:test|it)\s*\(\s*(['\"`])(.*?)\1\s*,")
     blocks: List[Tuple[str, int, List[str]]] = []
     i = 0
-    n = len(lines)
-
-    while i < n:
+    while i < len(lines):
         match = test_pattern.match(lines[i])
         if not match:
             i += 1
             continue
-
-        test_title = match.group(2)
-        start_line = i + 1
-        brace_depth = 0
-        started_block = False
-        end_idx = n - 1
-
-        for j in range(i, n):
-            clean_line = re.sub(r"//.*$", "", lines[j])
-            clean_line = re.sub(r"'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"|`(?:\\.|[^`\\])*`", '""', clean_line)
-            clean_line = re.sub(r"/(?![/*])(?:\\.|\[(?:\\.|[^\]\\])*\]|[^/\\\n])+/[dgimsuvy]*", "//", clean_line)
-            for ch in clean_line:
-                if ch == "{":
-                    brace_depth += 1
-                    started_block = True
-                elif ch == "}":
-                    brace_depth -= 1
-            if started_block and brace_depth <= 0:
-                end_idx = j
-                break
-
-        blocks.append((test_title, start_line, lines[i : end_idx + 1]))
+        end_idx = _find_ts_block_end(lines, i)
+        blocks.append((match.group(2), i + 1, lines[i : end_idx + 1]))
         i = end_idx + 1
-
     return blocks
 
 
@@ -147,7 +142,7 @@ def _audit_single_ts_block(
     """Audita um bloco de teste TS/JS e retorna seu dossiê e lista de inconformidades."""
     block_text = "\n".join(block_lines)
     test_issues: List[AuditIssue] = []
-    assertion_count = len(re.findall(r"\b(?:assert\.\w+|expect\s*\()", block_text))
+    assertion_count = len(re.findall(r"\b(?:assert(?:\.\w+)?\s*\(|expect\s*\()", block_text))
 
     if assertion_count == 0:
         test_issues.append(

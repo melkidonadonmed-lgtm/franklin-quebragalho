@@ -20,7 +20,7 @@ Classifique explicitamente as premissas em:
 
 Aplique os guardrails do domínio correspondente:
 - **Código/Agentes**: `Pydantic extra="forbid"`, `max_steps`, `deadline_seconds`, zero `input()`, `stdout` separado de `stderr` e portão HITL.
-- **Frontend/UI (`DESIGN.md v4.5-soft`)**: HTML5 semântico, anti-XSS, WCAG 2.1 AA, FSM 4 estados, luz 135°, Cerulean Sapphire `#0284C7`, zero cobalto (`#0044FF`) e zero `backdrop-filter: blur()`.
+- **Frontend/UI (Estilo por Propósito & `DESIGN.md`)**: Tema adaptado ao objetivo do projeto (*Ad Lucem*, *Cinza `#57545d` + Menus `#8e8999`*, *Preto Terminal IBM `Ex Umbris` + `IBM Plex`* ou *AETHER 2027*), HTML5 semântico, anti-XSS, WCAG 2.1 AA/AAA, `tabular-nums`, sombra esculpida em 3 camadas + `1px` Rim Light e FSM 4 estados.
 - **Imagem/Vídeo**: Prompt final em INGLÊS com os 8 Pilares Visuais (Imagem) ou 1 ação + 1 movimento de câmera com progressão temporal (Vídeo).
 - **Saúde/Clínica**: Anonimização PII/PHI, cadeia causal em 4 passos (Fisiopatologia -> Apresentação -> Exames -> Conduta), prescrição nos 6 pilares e citação de Diretriz (Instituição + Ano).
 

@@ -46,11 +46,13 @@ Toda auditoria executada por esta skill deve emitir marcadores determinísticos 
   - Função/método (exceto `__init__`) com `node.returns is None` -> `[FAIL: TYP002]` (Severidade: `MÉDIO` | Penalidade: `-5.0`).
   - Assinatura 100% anotada com Type Hints -> `[PASS]`.
 
-### Regra 7: Modularidade e Limite de Linhas por Função (`ARCH001`)
-- **Critério**: Funções e métodos devem respeitar o Princípio da Responsabilidade Única (SRP), não excedendo `60` linhas de código (`end_lineno - lineno + 1 <= 60`).
+### Regra 7: Modularidade, Complexidade Cognitiva e Ciclomática (`ARCH001`, `ARCH002`, `ARCH003`)
+- **Critério**: Funções e métodos devem respeitar o Princípio da Responsabilidade Única (SRP), não excedendo `60` linhas (`ARCH001`), mantendo $\le 3$ níveis de indentação de controle (`if/for/while`, tratando `elif` no mesmo nível — `ARCH002`) e complexidade ciclomática McCabe $M = E - N + 2P \le 10$ (`ARCH003`).
 - **Verificação Determinística**:
   - Função com extensão `> 60` linhas -> `[FAIL: ARCH001]` (Severidade: `BAIXO` | Penalidade: `-2.0`).
-  - Todas as funções com `<= 60` linhas -> `[PASS]`.
+  - Função com aninhamento de controle `> 3` níveis -> `[FAIL: ARCH002]` (Severidade: `MÉDIO` | Penalidade: `-5.0`).
+  - Função com complexidade ciclomática $M > 10$ -> `[FAIL: ARCH003]` (Severidade: `MÉDIO` | Penalidade: `-5.0`).
+  - Todas as funções dentro dos limites ($\le 60$ linhas, $\le 3$ níveis, $M \le 10$) -> `[PASS]`.
 
 ### Regra 8: Portão Final de Qualidade (`Quality Gate`)
 - **Critério**: O arquivo só é aprovado (`APPROVED`) se obtiver simultaneamente `passed_syntax == True`, `critical_violations == 0` e `quality_score >= 75.0`.

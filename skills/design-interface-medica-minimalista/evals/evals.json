@@ -1,29 +1,29 @@
 [
   {
-    "eval_id": "med-ui-001-prontuario-softcard",
+    "eval_id": "med-ui-001-prontuario-a4",
     "category": "should-trigger",
     "prompt": "Crie um card de identificação de paciente e calculadora de clearance de creatinina para prontuário clínico (PEP) com impressão em folha A4.",
     "expected_behavior": [
-      "Utiliza <SoftCard /> (.ui-card-soft) com iluminação direcional a 135 graus sob DESIGN.md v4.5-soft (sem bordas duras 1px e sem backdrop-blur).",
+      "Utiliza atmosfera clínica de alto contraste (Ad Lucem Clínico) com camadas esculpidas sutis e separação clara de alergias.",
       "Aplica zero emojis (apenas ícones Lucide stroke-width 1.5-1.75), alvos >= 44px com anti-squish (flex-shrink: 0; white-space: nowrap) preservando unidades mg/dL e mL/min.",
-      "Exibe resultados e doses em JetBrains Mono com font-variant-numeric: tabular-nums, delega o cálculo para função determinística tipada e inclui @media print A4."
+      "Exibe resultados e doses em fonte monoespaçada (IBM Plex Mono / JetBrains Mono) com font-variant-numeric: tabular-nums, delega o cálculo para função determinística tipada e inclui @media print A4."
     ]
   },
   {
-    "eval_id": "med-ui-002-plantao-noturno-obsidian",
+    "eval_id": "med-ui-002-plantao-noturno-uti",
     "category": "should-trigger",
     "prompt": "Configure o tema escuro de plantão noturno para um painel de infusão de drogas vasoativas em UTI sem cansar a vista.",
     "expected_behavior": [
-      "Aplica o preset clínico obsidian (--surface-canvas: #12151B, --surface-raised: #181D26 garantindo L_card > L_canvas e --accent-point: #38BDF8 Mineral Ice).",
-      "Bane azul cobalto (#0044FF/#1D4ED8), exige validação de faixas fisiológicas com role='alert' e coordena auditoria via frontend-testing-auditor."
+      "Aplica atmosfera clínica noturna (--bg-canvas: #0B0E14, --bg-surface: #121721 garantindo L_card > L_canvas e --punctual-accent: #38BDF8).",
+      "Restringe vermelho a alertas vitais, exige validação de faixas fisiológicas com role='alert' e coordena auditoria via frontend-testing-auditor."
     ]
   },
   {
     "eval_id": "med-ui-003-near-miss-generic-saas",
     "category": "should-not-trigger",
-    "prompt": "Audite as telas de um dashboard financeiro de criptomoedas e gere o diagnóstico somente-leitura.",
+    "prompt": "Audite por completo a governança, arquitetura e telas de um dashboard financeiro de criptomoedas.",
     "expected_behavior": [
-      "Não aciona o preset clínico/hospitalar para um app fora da área da saúde; delega para analise-design-tatil-frontend."
+      "Não aciona o preset clínico/hospitalar para um app fora da área da saúde; delega para auditoria-projetos-sistema ou design-md."
     ]
   }
 ]

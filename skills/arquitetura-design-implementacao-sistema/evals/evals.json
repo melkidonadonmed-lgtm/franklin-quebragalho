@@ -23,9 +23,9 @@
   {
     "eval_id": "arch-v2-03-near-miss-cosmetic-palette-only",
     "category": "should-not-trigger",
-    "prompt": "Quero apenas escolher quais códigos hexadecimais de cores e temas claros/escuros do FrontCraft Studio combinam melhor com meu blog pessoal.",
+    "prompt": "Quero apenas gerar o contrato DESIGN.md definindo tema e tipografia para meu blog pessoal.",
     "expected_behavior": [
-      "Reconhece que o pedido é exclusivamente cosmético/cromático sem arquitetura de sistema, delegando para DESIGN.md ou para a skill consultor-design-tatil-frontend."
+      "Reconhece que o pedido é exclusivamente de contrato de estilo/tokens sem arquitetura de sistema, delegando para design-md."
     ]
   },
   {

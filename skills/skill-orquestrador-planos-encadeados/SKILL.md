@@ -1,44 +1,43 @@
 ---
 name: skill-orquestrador-planos-encadeados
 description: >-
-  Orquestrador executivo de planos encadeados e modulares. Recebe planos decompostos em fases numeradas, mapeia as dependencias entre skills especialistas, gerencia o estado compartilhado sem poluicao de contexto, governa a aderência ao design tátil e paleta mineral do desenvolvedor e dispara a execucao sequencial com validacao de discrepancias a cada transicao.
+  Orquestrador executivo de planos encadeados e modulares. Recebe planos decompostos em fases numeradas, mapeia as dependências entre skills especialistas, gerencia o estado compartilhado sem poluição de contexto, governa a aderência do estilo visual ao propósito do projeto (espaçamento, contraste, tipografia e camadas sem paleta fixa) e dispara a execução sequencial com validação de discrepâncias a cada transição.
 license: MIT
 metadata:
-  version: "1.1.0"
+  version: "2.0.0"
   author: "LoopPlanner & Melki"
   category: "Orquestração, Workflows e Execução Multiagente"
-  updated_at: "2026-10-04"
+  updated_at: "2026-10-19"
   tags:
     - "orquestrador"
     - "planos-encadeados"
     - "workflow"
+    - "estilo-por-proposito"
     - "multiagente"
-version: 1.1.0
-updated_at: 2026-10-04
+version: 2.0.0
+updated_at: 2026-10-19
 author: LoopPlanner & Melki
 category: Orquestração, Workflows e Execução Multiagente
 ---
 
-# SKILL: Orquestração e Execução de Planos Encadeados (`skill-orquestrador-planos-encadeados`)
+# SKILL: Orquestração e Execução de Planos Encadeados (`skill-orquestrador-planos-encadeados` v2.0.0)
 
 ## 1. Nome da Skill
-`skill-orquestrador-planos-encadeados` (Orquestrador e Coordenador Executivo de Planos Modulares Encadeados com Portão de Preferências Táteis).
+`skill-orquestrador-planos-encadeados` (Orquestrador e Coordenador Executivo de Planos Modulares Encadeados com Portão de Estilo por Propósito).
 
 ---
 
 ## 2. Descrição
-Esta skill atua como o motor de orquestração e roteamento executivo para planos de trabalho decompostos em etapas, módulos e cadeias de dependência. Sua responsabilidade central é receber planos estruturados, verificar os pré-requisitos de cada fase, manter a memória de trabalho enxuta (isolando payloads intermediários para mitigar *context rot*) e acionar cada skill especialista no momento exato em que seus insumos estiverem validados. Ela suporta chamadas condicionais — permitindo que uma skill planejadora decida se e quando a skill de diagramação visual deve ser acionada — e assegura que nenhuma etapa subsequente seja inicializada sem a satisfação integral dos critérios de aceite da etapa anterior. Adicionalmente, ela incorpora os 4 módulos canônicos de governança de design tátil e preferências perenes do desenvolvedor (paleta de cores mineral, anti-cobalto, anti-glassmorphism, opções de arquétipos e matriz de discrepâncias), atuando como guardiã da qualidade visual e arquitetural em toda a esteira de execução.
+Esta skill atua como o motor de orquestração e roteamento executivo para planos de trabalho decompostos em etapas, módulos e cadeias de dependência. Sua responsabilidade central é receber planos estruturados, verificar os pré-requisitos de cada fase, manter a memória de trabalho enxuta (isolando payloads intermediários para mitigar *context rot*) e acionar cada skill especialista no momento exato em que seus insumos estiverem validados. Adicionalmente, quando o plano envolve entregas visuais/frontend, aplica a governança de **Preferências de Estilo e Arquitetura Visual por Propósito** ([`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md)), garantindo que o tema se encaixe no objetivo do projeto sem impor paletas fixas repetitivas.
 
 ---
 
 ## 3. Gatilhos de Ativação
 
 ### Quando Usar
-Esta skill **DEVE** ser acionada nas seguintes circunstâncias:
 - Quando o usuário ou uma skill de nível superior fornecer um plano de ação estruturado em etapas (ex.: Fase 0, Fase 1, Fase 2...).
 - Em solicitações de execução que envolvem mais de duas ferramentas ou skills trabalhando em conjunto de forma sequencial ou ramificada.
-- Quando for necessário auditar a conformidade de planos multiagente com as preferências do Melki (paleta mineral e ergonomia tátil).
-- Comandos diretos como: "execute o plano encadeado", "orquestre estas skills para resolver o projeto", "coordene a execução do plano modular garantindo minhas preferências de design".
+- Quando for necessário coordenar a transição entre planejamento, arquitetura, código e auditoria mantendo o estado isolado e validado.
 
 ### Quando NÃO Usar
 - Para tarefas simples de comando único ou script isolado que não demandam transição de fases.
@@ -48,123 +47,77 @@ Esta skill **DEVE** ser acionada nas seguintes circunstâncias:
 ---
 
 ## 4. Entradas Esperadas
-- `structured_plan` (obrigatório): O plano de trabalho estruturado contendo:
-  * Título e objetivo final do fluxo.
-  * Fases numeradas com: Objetivo específico, Skill/Agente responsável, Insumos necessários (inputs), Entregáveis esperados (outputs), Regras de aceite e Nível de esforço.
+- `structured_plan` (obrigatório): O plano de trabalho estruturado contendo título, objetivo final e fases numeradas com: Objetivo específico, Skill/Agente responsável, Insumos necessários (`inputs`), Entregáveis esperados (`outputs`) e Regras de aceite.
 - `context_state` (opcional): Variáveis de contexto iniciais e restrições de negócio fornecidas pelo usuário.
-- `execution_policy` (opcional): Política de execução (`autonomous` para rodar ponta a ponta sem interrupções em ações seguras; ou `step_by_step` para solicitar confirmação ao fim de cada fase). Padrão: `autonomous`.
-- `design_preferences_gate` (opcional): Habilitação do portão de validação tátil para fases geradoras de UI/relatórios. Padrão: `true`.
+- `execution_policy` (opcional): `autonomous` (padrão) ou `step_by_step`.
+- `design_preferences_gate` (opcional): Habilitação do portão de validação visual por propósito para fases geradoras de UI/relatórios (`true` por padrão).
 
 ---
 
-## 5. Governança Canônica de Design e Preferências Melki nos Planos Encadeados (`DESIGN.md v4.5-soft`)
+## 5. Governança de Estilo por Propósito e Arquitetura Visual nos Planos Encadeados
 
-Em todas as transições de fase e consolidações de entregáveis, o orquestrador aplica os 4 módulos canônicos:
+Em todas as fases que gerem interfaces, dashboards ou relatórios HTML/PDF, o orquestrador verifica os 4 módulos de qualidade visual (consulte [`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md)):
 
-### 5.1. Módulo de Governança de Paleta de Cores nos Fluxos (Economia 60-30-10)
-- **Propagação de Tokens Minerais:** O orquestrador injeta no payload de transição (`references/schema_transicao_contexto.json`) os tokens cromáticos canônicos:
-  * Light Mode (`slate` / `moss` / `sapphire`): Canvas (`#F1F4F8` / `#F4F3EC` / `#F5F4EE`), Cavidade `surface-inset` (`#E5E9F0`), Âncora Terrixa (`#1E293B`).
-  * Dark Mode (`obsidian`): Canvas (`#12151B` / `#090B10`), Superfície Elevada (`#181D26` / `#141824`), Cavidade (`#0D1016`).
-  * Acentos autorizados: Cerulean Sapphire (`#0284C7`), Ocean Sapphire (`#1E6091`), Mineral Ice (`#38BDF8`), Forest Moss (`#174930`), Clinical Emerald (`#059669`) e Ouro Champanhe (`#D4AF37`).
-- **Intercepção Anti-Cobalto:** Bloqueio imediato de qualquer entregável intermediário que utilize azul cobalto ofuscante (`#0044FF`, `#0057FF`, `#233DFF`, `#1D4ED8`) ou neons fluorescentes.
+### 5.1. Módulo de Tema e Atmosfera pelo Propósito do Projeto (Sem Paleta Fixa)
+- **Propagação Semântica Contextual:** O orquestrador propaga no payload de transição (`references/schema_transicao_contexto.json`) o propósito do projeto (*Conversão/SaaS*, *Editorial*, *FinTech*, *IA Nativa/AETHER*, *MedTech* ou *DevTools/Terminal IBM*) e a atmosfera selecionada:
+  * *Ad Lucem* (Claro Editorial/Técnico: `--bg-canvas: #F3F3F5` / `#F6F6F4`, `--bg-surface: #FFFFFF`, `--bg-contrast-card: #18181C`).
+  * *Cinza Monolítico* (`--bg-canvas: #57545d`, `--bg-surface: #49464f`, menus `#8e8999` com tinta escura `--nav-ink: #16151A`).
+  * *Preto Terminal IBM (`Ex Umbris`)* (`--bg-canvas: #070709`, `--bg-surface: #101014`, acoplado à tipografia `IBM Plex Sans` + `IBM Plex Mono`).
+  * *AETHER 2027* (Espaço perceptual `oklch()` e contraste APCA).
+- **Isolamento de Acento (98/2 ou 60-30-10):** A cor de acento (`--punctual-accent`) é escolhida conforme o propósito do projeto e restrita a 1 único CTA primário sólido por dobra (contra ações secundárias `.btn-ghost`).
 
-### 5.2. Módulo de Design Tátil para Artefatos e Painéis do Fluxo (`Soft UI 135°`)
-- **Qualidade Visual dos Entregáveis da Cadeia:** Todo artefato visual, painel de monitoramento, dashboard ou mockup gerado pelas skills do fluxo deve:
-  * Respeitar a Regra de Ouro da profundidade no dark mode ($L_{\text{card}} > L_{\text{canvas}}$).
-  * Conter iluminação direcional dupla a 135° (`.ui-card-soft`), cavidades escavadas (`surface-inset`) e zero bordas duras de `1px`.
-  * Banir categoricamente vidros translúcidos com blur (`backdrop-filter: blur`) e elementos neon reflexivos.
-  * Conter classes de proteção anti-squish em botões e badges (`flex-shrink: 0; white-space: nowrap;`).
+### 5.2. Módulo de Contraste, Espaçamento, Tipografia e Camadas Esculpidas
+- **Qualidade Visual dos Entregáveis da Cadeia:**
+  * Respeitar separação de luminância no dark mode ($L_{\text{card}} > L_{\text{canvas}}$) e tinta escura nítida em menus claros/`#8e8999`.
+  * Conter sombra esculpida em 3 camadas (`--shadow-sculpted`: Umbra + Penumbra + Difusão) + `1px` Rim Light (`inset 0 1px 0 0 var(--rim-light)`).
+  * Preservar $\ge 25\%$ de respiro no canvas, raios concêntricos, escala fluida `clamp()`, `tabular-nums` em métricas e proteção anti-squish (`flex-shrink: 0; white-space: nowrap;`, alvos $\ge 44\times44\text{px}$).
 
-### 5.3. Módulo de Opções das Preferências na Tomada de Decisão do Fluxo
-- **Pontos de Decisão com `ask_question`:** Em bifurcações de rota técnica ou visual, o orquestrador aciona a ferramenta `ask_question` oferecendo opções pré-configuradas baseadas nos 4 Presets Soft UI (`Nexus Slate Cerulean`, `Moss`, `Soft Sapphire`, `Obsidian Dark`) e 22 temas minerais.
-- **Adoção do Padrão shadcn/ui & Design Atômico:** Garantir que quando a esteira demandar novas bibliotecas de UI, priorize componentes de código aberto "copy-paste" (shadcn/ui, Radix UI, Lucide Icons, Tailwind CSS) em 5 camadas de Design Atômico (`frontend-code-architect` v4.0).
+### 5.3. Módulo de Decisão Arquitetural
+- Em bifurcações visuais ou arquiteturais ambíguas, o orquestrador pode acionar `ask_question` apresentando a recomendação alinhada ao propósito do projeto.
+- Prioriza componentes modulares em **5 camadas de Design Atômico** (`frontend-code-architect` v5.0).
 
 ### 5.4. Módulo de Portão de Qualidade e Matriz de Discrepâncias
-- Na conclusão de cada fase que gere artefatos de interface ou documentação de arquitetura, o orquestrador executa o portão de qualidade com marcadores determinísticos:
-  * `[DISC-PALETA]` `[PASS / FAIL]`: Cores minerais 60-30-10 sem cobalto neon (`AUDIT-VIS-01`).
-  * `[DISC-RELEVO]` `[PASS / FAIL]`: Cartões `.ui-card-soft` com iluminação 135° e cavidades `surface-inset` sem bordas duras.
-  * `[DISC-RESILIENCIA]` `[PASS / FAIL]`: Botões e badges protegidos com anti-squish.
-  * `[DISC-SUPPLY]` `[PASS / FAIL]`: Stack modular alinhada com as preferências do Melki.
-- Se qualquer item for reprovado (`[FAIL]`), a transição para a próxima fase é pausada para 1 ciclo de auto-correção.
+- Na conclusão de cada fase visual/arquitetural, valida:
+  * `[DISC-PROPOSITO]` `[PASS / FAIL]`: Tema e acento coerentes com o objetivo do projeto e isolamento de 1 CTA primário.
+  * `[DISC-CAMADAS]` `[PASS / FAIL]`: Sombra esculpida 3 estágios + `1px` Rim Light, contraste WCAG AA/AAA e espaçamento concêntrico.
+  * `[DISC-RESILIENCIA]` `[PASS / FAIL]`: Tipografia `tabular-nums`, botões com anti-squish e estados FSM (`idle | loading | error | pressed`).
+  * `[DISC-SUPPLY]` `[PASS / FAIL]`: Stack modular alinhada com as preferências do projeto.
 
 ---
 
 ## 6. Processamento Passo a Passo
 
-```text
-[Recepção do Plano Estruturado]
-               │
-               ▼
-[Fase 0: Validação de Pré-requisitos & Schemas de Design]
-               │
-               ▼
-┌───► [Ciclo de Execução por Fase com Injeção de Contexto] ◄───┐
-│                      │                                       │
-│                      ▼                                       │
-│        [Disparo da Skill Designada]                          │
-│                      │                                       │
-│                      ▼                                       │
-│        [Portão de Qualidade & Matriz de Discrepâncias]       │
-│                      │                                       │
-└──── [Aprovado] ──────┴── [Discrepância] ─────────────────────► [Auto-Correção / Fallback]
-               │
-               ▼
-[Consolidação Final, Matriz de Preferências & Entrega Integrada]
-```
-
 ### Passo 1: Fase 0 — Validação Estrutural do Plano e Catálogo
-1. Analisar o plano recebido e verificar se há:
-   - Ambiguidade crítica ou ausência de insumos essenciais.
-   - Referência a skills inexistentes no catálogo registrado.
-   - Loops circulares de dependência (ex.: Fase A depende de B que depende de A).
-2. Consultar os critérios em `rules/criterios_auditoria.md` e validar se os parâmetros de design tátil foram incluídos.
+1. Analisar o plano recebido e verificar se há ambiguidade crítica, referência a skills inexistentes ou loops circulares de dependência (DAG).
+2. Consultar os critérios em [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md).
 
 ### Passo 2: Isolamento de Contexto e Montagem do Payload de Transição
-1. Para cada fase ativa:
-   - Extrair exclusivamente os dados necessários para aquela etapa específica.
-   - NUNCA injetar o histórico bruto inteiro na skill operária para evitar poluição de contexto (*context rot*).
-   - Envelopar os dados sob o formato de transição estruturado com injeção dos tokens de design e paleta mineral definidos em `references/schema_transicao_contexto.json`:
-     ```json
-     {
-       "phase_id": "fase_1",
-       "target_skill": "skill-nome",
-       "input_payload": { },
-       "context_constraints": [ "tactile_matte", "anti_cobalt", "cards_lighter_than_canvas" ]
-     }
-     ```
+1. Extrair exclusivamente os dados necessários para a etapa ativa (evitando *context rot*).
+2. Envelopar os dados sob o formato de `references/schema_transicao_contexto.json`:
+   ```json
+   {
+     "phase_id": "fase_1",
+     "target_skill": "skill-nome",
+     "input_payload": {},
+     "context_constraints": ["purpose_driven_theme", "sculpted_layers_rim_light", "wcag_contrast_tabular_nums"]
+   }
+   ```
 
 ### Passo 3: Execução Condicional, Despacho DAG e Invocação de Sub-Skills
-1. **Despacho Automático via Motor DAG:** Se o plano estruturado estiver no formato de grafo acíclico (`DAGExecutionPlan`), o orquestrador aciona a tool nativa do MCP `franklin_execute_dag(plan_path_or_json)` para execução paralela em ondas via Kahn, resolução determinística de dot-path e persistência atômica com retomada (`resume`).
-2. Se uma skill de planejamento indicar a necessidade de um artefato complementar (ex.: fluxograma ou mockup visual), verificar se a permissão contratual de invocação (`authorized_sub_skills`) está ativa.
-3. Fazer o despacho da tarefa para a sub-skill autorizada, receber o retorno validado e reanexá-lo ao pacote de entrega da fase antes de prosseguir.
+1. Se o plano estiver no formato `DAGExecutionPlan`, acione `franklin_execute_dag(plan_path_or_json)` para execução paralela em ondas via Kahn.
+2. Despache sub-tarefas para skills autorizadas (`authorized_sub_skills`) e valide o retorno antes de avançar.
 
-
-### Passo 4: Verificação de Critérios de Aceite e Matriz de Discrepâncias (Quality Gate)
-1. Conferir se a saída produzida pela skill atende aos requisitos declarados no plano e passa na Matriz de Discrepâncias do Módulo 5.4.
-2. Atualizar o estado da execução:
-   - `FASE_CONCLUIDA`: Avança para a próxima fase numerada.
-   - `FALHA_RECUPERAVEL`: Dispara 1 ciclo de auto-correção enviando o feedback de discrepância para a skill responsável.
-   - `BLOQUEIO_CRITICO`: Suspende a execução e aciona `ask_question` para alinhamento com o usuário (HITL).
+### Passo 4: Verificação de Critérios de Aceite (Quality Gate)
+- `FASE_CONCLUIDA`: Avança para a próxima fase numerada.
+- `FALHA_RECUPERAVEL`: Dispara 1 ciclo de auto-correção enviando o feedback de discrepância.
+- `BLOQUEIO_CRITICO`: Suspende a execução e solicita alinhamento (HITL).
 
 ### Passo 5: Consolidação do Produto Final Integrado
-Reunir os entregáveis gerados em cada fase em um único documento coerente e executivo, acompanhado do relatório de rastreabilidade e da matriz de conformidade com as preferências do Melki.
+Reunir os entregáveis gerados em cada fase em um documento executivo acompanhado do painel de rastreabilidade.
 
 ---
 
 ## 7. Saídas Estruturadas
-O orquestrador entrega:
-
-1. **Painel de Rastreabilidade do Fluxo:**
-   - Tabela com: Fase | Skill Acionada | Insumos | Status de Execução | Tempo/Esforço Estimado.
-2. **Matriz Consolidada de Discrepâncias com as Preferências:**
-   - Tabela determinística com os status de aceite de design e qualidade (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`).
-3. **Entregável Integrado:** O compilado final dos produtos gerados em estrita conformidade com o formato solicitado pelo usuário.
-4. **Registro de Transições e Hand-offs:** Descrição concisa dos dados transferidos entre cada elo da cadeia.
-
----
-
-## 8. Exceções e Limites (O que esta Skill NÃO cobre)
-- Não executa ações de risco crítico (deletar bases, publicar dados sensíveis, transações financeiras) sem autorização humana explícita no ponto de parada (Human-in-the-Loop).
-- Não continua a execução se o resultado de uma fase antecedente for inválido e violar o contrato de entrada da fase subsequente.
-- Não aceita entregáveis que violem o banimento estrito de azul cobalto puro ou empreguem vidros difusos que quebrem a consistência tátil.
-- Não assume suposições probabilísticas sobre dados factuais ausentes; nestes casos, marca a fase como pendente (`[UNVERIFIED]`).
+1. **Painel de Rastreabilidade do Fluxo:** Fase | Skill Acionada | Insumos | Status de Execução.
+2. **Matriz Consolidada de Conformidade:** Status `[PASS]`, `[FAIL]`, `[UNVERIFIED]`.
+3. **Entregável Integrado e Registro de Transições.**

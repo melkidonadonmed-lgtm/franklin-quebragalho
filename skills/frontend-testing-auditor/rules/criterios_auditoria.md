@@ -1,6 +1,6 @@
-# Critérios Determinísticos de Auditoria — `frontend-testing-auditor` (`v2.6.0`)
+# Critérios Determinísticos de Auditoria — `frontend-testing-auditor` (`v3.0.0`)
 
-Critérios objetivos e falsificáveis (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) para o gatekeeper determinístico de testes de frontend (`scripts/audit_tactile_ui.py` + Jest/Vitest + Axe-Core) sob `DESIGN.md v4.5-soft`.
+Critérios objetivos e falsificáveis (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) para o gatekeeper determinístico de testes de frontend (`scripts/audit_tactile_ui.py` + Jest/Vitest + Axe-Core).
 
 ---
 
@@ -12,11 +12,11 @@ Critérios objetivos e falsificáveis (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) para 
 ## 2. Cobertura das 4 Suítes Determinísticas e Rubrica Ponderada (`[AUDIT-GATE-02]`)
 - **`[PASS]`**: Calcula exatamente $\text{Score} = (0.35 \cdot S_{\text{A11y}}) + (0.30 \cdot S_{\text{FSM}}) + (0.20 \cdot S_{\text{Tokens}}) + (0.15 \cdot S_{\text{Sec}})$ cobrindo:
   - `AUDIT-A11Y-01/02` (35%): `jest-axe` 0 violações WCAG 2.1 AA, `:focus-visible`, `aria-live`, `tabular-nums` e `prefers-reduced-motion`.
-  - `AUDIT-STATE-01/02` (30%): Máquina de estados finitos executável (`data-state`, `aria-busy`, `role="alert"`) e `#sidebar-active-tracker` deslizante.
-  - `AUDIT-VIS-01` (20%): Camadas tonais 135° (`.ui-card-soft`), adoção de `<SoftCard />` em $\ge 50\%$ das views, zero azul cobalto, zero `backdrop-blur`, $\le 6$ bordas `1px`, zero micro-texto `10px/11px` e zero emojis em UI.
+  - `AUDIT-STATE-01/02` (30%): Máquina de estados finitos executável (`data-state`, `data-theme`, `aria-busy`, `role="alert"` / `role="status"`).
+  - `AUDIT-VIS-01` (20%): Famílias de tokens semânticos alinhadas ao propósito (`--bg-canvas`/`--bg-surface`/`--ink-primary`, `--surface-canvas`/`--surface-primary` ou `--surface-raised`), camadas esculpidas (`--shadow-sculpted`, `--rim-light`, `.sculpted-card`) e ausência de componentes órfãos (`SurfaceCard`/`SoftCard`).
   - `AUDIT-SEC-01` (15%): Bloqueio de `dangerouslySetInnerHTML` sem `DOMPurify` e `eval()`.
-- **`[FAIL: SUITE_INCOMPLETA]`**: Omissão de qualquer uma das 4 dimensões ponderadas ou ausência de asserções anti-glassmorphism e anti-XSS.
+- **`[FAIL: SUITE_INCOMPLETA]`**: Omissão de qualquer uma das 4 dimensões ponderadas ou ausência de asserções anti-XSS.
 
 ## 3. Detecção Anti-Placebo e Anti-Comment-Gaming (`[AUDIT-GATE-03]`)
-- **`[PASS]`**: Reprova automaticamente (`-25 pts`) comentários artificiais `// empty | loading | success | error`, `<SoftCard />` órfão (`-25 pts`) e `#sidebar-active-tracker` aplicado como `id` condicional estático (`-20 pts`).
+- **`[PASS]`**: Reprova automaticamente (`-25 pts`) comentários artificiais `// empty | loading | success | error` e componentes de card criados em `src/components/ui/` mas órfãos nas views (`-25 pts`).
 - **`[FAIL: FALSO_POSITIVO_GAMING]`**: Aceitação de comentários estáticos como evidência de máquina de estados.

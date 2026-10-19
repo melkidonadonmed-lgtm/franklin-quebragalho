@@ -76,7 +76,7 @@ Confronte a skill com [`skills/_template/references/guardrails_por_modulo.md`](.
 Verifique apenas o módulo correspondente à natureza da skill:
 - **`M1` (Execução/Código)**: `max_steps`, zero `input()`, `stdout`/`stderr` separados, dependências isoladas (`uv`).
 - **`M2` (Design/Layout)**: Arquitetura da informação prévia, teto de $\le 35$ palavras/bloco e 6–10 blocos/tela.
-- **`M3` (Frontend/UI `DESIGN.md v4.5-soft`)**: HTML5 semântico, anti-XSS (`AUDIT-SEC-01`), WCAG 2.1 AA (`AUDIT-A11Y-01/02`), FSM 4 estados (`AUDIT-STATE-01/02`) e matriz tátil (`[DISC-PALETA]` zero cobalto/Cerulean `#0284C7`, `[DISC-TATIL]` luz 135°/zero blur/zero 1px, `[DISC-OPCOES]`, `[DISC-SUPPLY]`).
+- **`M3` (Frontend/UI & Estilo por Propósito `preferencias_estilo_e_temas.md`)**: Diagnóstico do propósito do projeto antes do tema, HTML5 semântico, anti-XSS (`AUDIT-SEC-01`), WCAG 2.1 AA/AAA (`AUDIT-A11Y-01/02`), FSM 4 estados (`AUDIT-STATE-01/02`), espaçamento ($\ge 25\%$ respiro), tipografia `clamp()` + `tabular-nums` (`IBM Plex` no terminal preto) e camadas esculpidas (`--shadow-sculpted` + `1px` Rim Light).
 - **`M4` (Pesquisa/RAG)**: Memória separada da fonte de verdade, grounding explícito e sanitização contra *context poisoning*.
 - **`M5` / `M6` (Imagem / Vídeo)**: Prompts finais em inglês, 8 Pilares Visuais (Imagem) e 1 ação + 1 câmera com progressão temporal (Vídeo).
 - **`M7` (Saúde/Clínica)**: Anonimização PII/PHI, cadeia causal em 4 passos, prescrição em 6 pilares e citação de diretriz (Instituição + Ano).

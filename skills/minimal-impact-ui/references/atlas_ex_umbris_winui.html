@@ -1,0 +1,2369 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth" data-theme="gray">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EX UMBRIS // Atlas de Efeitos, Layouts, Motion & Arquétipos de UI (Guia Anti-TDAH)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans, Instrument Serif, IBM Plex Mono & IBM Plex Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           SISTEMA DE 3 TEMAS EX UMBRIS AD LUCEM (MINIMAL-IMPACT-UI)
+           1. CINZA SOBRE CINZA (#57545d Fundo + #8e8999 Menus — Padrão Favorito)
+           2. CLARO EDITORIAL (#F3F3F5 — Ad Lucem)
+           3. PRETO TERMINAL IBM (#070709 + IBM Plex Mono)
+           ========================================================================== */
+        :root, [data-theme="light"] {
+            --bg-canvas: #F3F3F5;
+            --bg-surface: #FFFFFF;
+            --bg-elevated: #E6E6EA;
+            --bg-contrast-card: #18181C;
+            --ink-contrast-card: #F4F4F6;
+
+            --nav-shell-bg: rgba(255, 255, 255, 0.92);
+            --nav-pill-bg: #EAEAEF;
+            --nav-ink: #18181B;
+            --nav-ink-muted: #52525B;
+            --nav-active-bg: #18181B;
+            --nav-active-ink: #FFFFFF;
+
+            --ink-primary: #111115;
+            --ink-secondary: #3F3F46;
+            --ink-muted: #686873;
+            --ink-subtle: #A1A1AA;
+
+            --border-hairline: rgba(24, 24, 27, 0.10);
+            --border-strong: rgba(24, 24, 27, 0.24);
+            --rim-light: rgba(255, 255, 255, 0.95);
+
+            --shadow-sculpted: 
+                0 1px 2px rgba(17, 17, 21, 0.04),
+                0 10px 28px -6px rgba(17, 17, 21, 0.08),
+                0 28px 56px -14px rgba(17, 17, 21, 0.10),
+                inset 0 1px 0 0 rgba(255, 255, 255, 1);
+
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+
+            --punctual-accent: #e13535;
+            --punctual-text: #991B1B; /* Vermelho escuro profundo de alto contraste no fundo claro */
+            --punctual-soft: rgba(225, 53, 53, 0.12);
+            --punctual-glow: rgba(225, 53, 53, 0.32);
+            --punctual-btn-ink: #FFFFFF;
+        }
+
+        [data-theme="gray"] {
+            --bg-canvas: #57545d;
+            --bg-surface: #49464f;
+            --bg-elevated: #635f6a;
+            --bg-contrast-card: #232127;
+            --ink-contrast-card: #F4F3F7;
+
+            --nav-shell-bg: #8e8999;
+            --nav-pill-bg: rgba(35, 33, 39, 0.12);
+            --nav-ink: #16151A;
+            --nav-ink-muted: #2E2C35;
+            --nav-active-bg: #1E1C22;
+            --nav-active-ink: #F5F4F8;
+
+            --ink-primary: #F7F6F9;
+            --ink-secondary: #DFDDE4;
+            --ink-muted: #BDB9C6;
+            --ink-subtle: #8e8999;
+
+            --border-hairline: rgba(255, 255, 255, 0.14);
+            --border-strong: rgba(255, 255, 255, 0.28);
+            --rim-light: rgba(255, 255, 255, 0.22);
+
+            --shadow-sculpted: 
+                0 2px 6px rgba(15, 14, 18, 0.35),
+                0 16px 36px -6px rgba(15, 14, 18, 0.50),
+                0 32px 64px -14px rgba(15, 14, 18, 0.65),
+                inset 0 1px 0 0 var(--rim-light);
+
+            --font-sans: 'Inter', 'Plus Jakarta Sans', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+            /* No cinza #57545d, letras vermelhas puras (#e13535) embaçam por baixo contraste (2.1:1).
+               Usamos branco puro #FFFFFF com sublinhado/borda vermelha cirúrgica ou pílula sólida! */
+            --punctual-text: #FFFFFF;
+        }
+
+        [data-theme="dark"] {
+            --bg-canvas: #070709;
+            --bg-surface: #101014;
+            --bg-elevated: #18181E;
+            --bg-contrast-card: #1D1D24;
+            --ink-contrast-card: #FAFAFA;
+
+            --nav-shell-bg: rgba(16, 16, 20, 0.92);
+            --nav-pill-bg: #18181F;
+            --nav-ink: #E4E4E7;
+            --nav-ink-muted: #A1A1AA;
+            --nav-active-bg: #FAFAFA;
+            --nav-active-ink: #09090B;
+
+            --ink-primary: #F4F4F6;
+            --ink-secondary: #B4B4BE;
+            --ink-muted: #7D7D8A;
+            --ink-subtle: #3F3F48;
+
+            --border-hairline: rgba(255, 255, 255, 0.09);
+            --border-strong: rgba(255, 255, 255, 0.22);
+            --rim-light: rgba(255, 255, 255, 0.13);
+
+            --shadow-sculpted: 
+                0 2px 4px rgba(0, 0, 0, 0.65),
+                0 16px 36px -6px rgba(0, 0, 0, 0.82),
+                0 36px 72px -16px rgba(0, 0, 0, 0.95),
+                inset 0 1px 0 0 var(--rim-light);
+
+            --font-sans: 'IBM Plex Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+            --punctual-text: #FFFFFF;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--ink-primary);
+            font-family: var(--font-sans);
+            transition: background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        [data-theme="dark"] h1,
+        [data-theme="dark"] h2,
+        [data-theme="dark"] h3,
+        [data-theme="dark"] .ibm-heading {
+            font-family: 'IBM Plex Mono', monospace;
+            letter-spacing: -0.03em;
+        }
+
+        body.squint-active main {
+            filter: blur(5px);
+        }
+
+        /* Substituído Instrument Serif (fina/embaçada) por destaque geométrico nítido com sublinhado cirúrgico */
+        .font-serif-editorial, .highlight-surgical {
+            font-family: var(--font-sans);
+            font-style: normal;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            text-decoration: underline;
+            text-decoration-color: var(--punctual-accent);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 6px;
+        }
+        .font-mono-tech {
+            font-family: var(--font-mono);
+            font-variant-numeric: tabular-nums;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: 0.01em;
+        }
+
+        .surface-canvas { background-color: var(--bg-canvas); }
+        .surface-card { background-color: var(--bg-surface); }
+        .surface-elevated { background-color: var(--bg-elevated); }
+        .surface-contrast { background-color: var(--bg-contrast-card); color: var(--ink-contrast-card); }
+
+        .nav-shell {
+            background-color: var(--nav-shell-bg);
+            color: var(--nav-ink);
+            backdrop-filter: blur(16px);
+        }
+        .nav-pill-container {
+            background-color: var(--nav-pill-bg);
+            border: 1px solid var(--border-hairline);
+        }
+        .nav-link-item {
+            color: var(--nav-ink);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .nav-link-item:hover, .nav-link-item.active {
+            background-color: var(--nav-active-bg);
+            color: var(--nav-active-ink);
+        }
+        .theme-pill-btn {
+            color: var(--nav-ink);
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .theme-pill-btn.active {
+            background-color: var(--nav-active-bg);
+            color: var(--nav-active-ink);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+        }
+
+        .ink-primary { color: var(--ink-primary); }
+        .ink-secondary { color: var(--ink-secondary); }
+        .ink-muted { color: var(--ink-muted); }
+        .ink-subtle { color: var(--ink-subtle); }
+
+        .border-hair { border-color: var(--border-hairline); }
+        .border-strong { border-color: var(--border-strong); }
+
+        .accent-bg {
+            background-color: var(--punctual-accent);
+            color: var(--punctual-btn-ink);
+            font-weight: 600;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.18);
+        }
+        /* Zero letras vermelhas embaçadas sobre fundo cinza: texto de altíssimo contraste + marcador lateral/inferior */
+        .accent-text {
+            color: var(--punctual-text);
+            font-weight: 600;
+            background-color: var(--punctual-soft);
+            padding: 0.1rem 0.45rem;
+            border-radius: 5px;
+            border-left: 2.5px solid var(--punctual-accent);
+            display: inline-block;
+            line-height: 1.35;
+        }
+        h1 .accent-text, h2 .accent-text {
+            background-color: transparent;
+            border-left: none;
+            padding: 0;
+            border-radius: 0;
+            color: var(--ink-primary);
+            font-weight: 600;
+        }
+        .accent-soft { background-color: var(--punctual-soft); }
+        .accent-border { border-color: var(--punctual-accent); }
+        .accent-glow { box-shadow: 0 0 18px var(--punctual-glow); }
+
+        .shadow-architectural { box-shadow: var(--shadow-sculpted); }
+        .terrixa-card { position: relative; border-radius: 14px; }
+
+        .architectural-grid {
+            background-size: 64px 64px;
+            background-image: 
+                linear-gradient(to right, var(--border-hairline) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--border-hairline) 1px, transparent 1px);
+        }
+
+        .input-ex-umbris {
+            background-color: var(--bg-elevated);
+            color: var(--ink-primary);
+            border: 1px solid var(--border-hairline);
+            border-radius: 10px;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.8125rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            outline: none;
+        }
+        .input-ex-umbris::placeholder { color: var(--ink-muted); opacity: 0.8; }
+        .input-ex-umbris:focus, button:focus-visible, a:focus-visible {
+            border-color: var(--punctual-accent);
+            box-shadow: 0 0 0 3px var(--punctual-soft);
+            outline: none;
+        }
+
+        .table-ex-umbris { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+        .table-ex-umbris th {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--ink-muted);
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-strong);
+        }
+        .table-ex-umbris td {
+            padding: 0.85rem 1rem;
+            font-size: 0.8125rem;
+            color: var(--ink-secondary);
+            border-bottom: 1px solid var(--border-hairline);
+            vertical-align: top;
+        }
+        .table-ex-umbris tr:hover td { background-color: var(--bg-elevated); color: var(--ink-primary); }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--bg-elevated);
+            height: 4px;
+            border-radius: 999px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--ink-primary);
+            cursor: pointer;
+            border: 2px solid var(--bg-surface);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+            transition: transform 0.15s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: var(--punctual-accent);
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media print {
+            :root, [data-theme="gray"], [data-theme="dark"], [data-theme="light"] {
+                --bg-canvas: #FFFFFF !important;
+                --bg-surface: #FFFFFF !important;
+                --bg-elevated: #F4F4F6 !important;
+                --ink-primary: #111115 !important;
+                --ink-secondary: #3F3F46 !important;
+                --ink-muted: #52525B !important;
+                --border-hairline: rgba(0, 0, 0, 0.15) !important;
+                --shadow-sculpted: none !important;
+            }
+            .no-print, header.nav-shell { display: none !important; }
+            body { background: #FFFFFF !important; color: #111115 !important; }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-zinc-700 selection:text-white" data-state="idle">
+
+    <!-- BARRA DE NAVEGAÇÃO EM PÍLULA (ESTILO EX UMBRIS + RESPONSIVIDADE MOBILE) -->
+    <header class="sticky top-0 z-50 nav-shell border-b border-hair transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+            
+            <!-- Marca & Identificador -->
+            <div class="flex items-center space-x-3 shrink-0">
+                <span class="w-2.5 h-2.5 rounded-full accent-bg accent-glow"></span>
+                <span class="font-mono-tech text-xs tracking-[0.16em] uppercase font-semibold" style="color: var(--nav-ink);">ATLAS UI // EX UMBRIS</span>
+                <span class="hidden xl:inline-block text-xs border-l border-hair pl-3 font-medium" style="color: var(--nav-ink-muted);">
+                    Referência Anti-TDAH (WinUI + Minimal Impact)
+                </span>
+            </div>
+
+            <!-- Navegação Central em Pílula (Visível e Deslizante também no Mobile) -->
+            <nav aria-label="Navegação Principal" class="flex items-center nav-pill-container px-2 py-1 rounded-full space-x-1 text-xs overflow-x-auto no-scrollbar max-w-[44vw] sm:max-w-none">
+                <a href="#catalogo-winui" class="nav-link-item px-3 py-1.5 rounded-full">01. Catálogo (28 Efeitos)</a>
+                <a href="#playgrounds" class="nav-link-item px-3 py-1.5 rounded-full">02. Playgrounds Ao Vivo</a>
+                <a href="#arquetipos" class="nav-link-item px-3 py-1.5 rounded-full">03. Outros Estilos de App</a>
+                <a href="#matriz-decisao" class="nav-link-item px-3 py-1.5 rounded-full">04. Quando Usar / Evitar</a>
+                <a href="#montador-tdah" class="nav-link-item px-3 py-1.5 rounded-full font-semibold">05. Montador de Pedido</a>
+            </nav>
+
+            <!-- Controles Globais: 3 Temas + Contador do Checklist Anti-TDAH -->
+            <div class="flex items-center space-x-2 shrink-0">
+                <div role="tablist" aria-label="Seletor de Tema" class="nav-pill-container p-1 rounded-full flex items-center space-x-0.5 text-[11px] font-mono-tech">
+                    <button id="themeBtnLight" role="tab" aria-selected="false" onclick="setThemeMode('light')" class="theme-pill-btn px-2.5 py-1 rounded-full" title="Tema Claro Editorial (#F3F3F5)">
+                        Claro
+                    </button>
+                    <button id="themeBtnGray" role="tab" aria-selected="true" onclick="setThemeMode('gray')" class="theme-pill-btn active px-2.5 py-1 rounded-full" title="Cinza sobre Cinza (#57545d fundo / #8e8999 menus)">
+                        Cinza·#57545d
+                    </button>
+                    <button id="themeBtnDark" role="tab" aria-selected="false" onclick="setThemeMode('dark')" class="theme-pill-btn px-2.5 py-1 rounded-full" title="Preto Terminal IBM (#070709 + IBM Plex Mono)">
+                        IBM·Preto
+                    </button>
+                </div>
+
+                <a href="#montador-tdah" class="px-3.5 py-1.5 text-xs font-mono-tech font-medium accent-bg rounded-full hover:opacity-90 transition-all shadow-sm flex items-center space-x-1.5" title="Ir para o Montador de Pedido para IA">
+                    <span>Pedido</span>
+                    <span id="navSelectedCount" class="px-1.5 py-0.2 rounded-full bg-black/25 text-[10px]">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="transition-all duration-500">
+
+        <!-- HERO SECTION: COMPÊNDIO VISUAL E TÉCNICO ANTI-ESQUECIMENTO -->
+        <section class="relative border-b border-hair overflow-hidden">
+            <div class="architectural-grid absolute inset-0 opacity-60 pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 md:pt-16 md:pb-22 relative z-10">
+                
+                <!-- Barra Técnica de Topo -->
+                <div class="flex flex-wrap items-center justify-between gap-4 pb-5 mb-8 border-b border-hair text-[11px] font-mono-tech ink-muted uppercase tracking-[0.16em]">
+                    <div class="flex items-center space-x-2.5">
+                        <span class="w-2 h-2 rounded-full accent-bg"></span>
+                        <span id="heroThemeStatus" class="font-medium ink-primary">MODO ATIVO: CINZA SOBRE CINZA (#57545d · MENUS #8e8999)</span>
+                    </div>
+                    <span>COMPÊNDIO DE EFEITOS, COMPOSIÇÃO, MOTION & ARQUÉTIPOS DE APP</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+                    <div class="lg:col-span-8">
+                        <h1 class="text-4xl sm:text-6xl font-light tracking-tight leading-[1.04] mb-5">
+                            Nunca mais esqueça <span class="font-semibold">qual efeito pedir</span>.<br>
+                            Um vocabulário visual de <span class="font-serif-editorial italic font-normal accent-text">alta precisão</span>.
+                        </h1>
+                        <p class="text-base sm:text-lg ink-secondary font-normal leading-relaxed max-w-3xl">
+                            Inspirado na arquitetura de controles do <strong class="ink-primary font-semibold">WinUI 3 Gallery</strong> e adaptado ao seu padrão <strong class="ink-primary font-semibold">Ex Umbris Ad Lucem</strong>. Use este documento como seu menu de consulta rápida antes de criar qualquer aplicativo: escolha os efeitos de superfície, os painéis de layout, as curvas de movimento e os estilos de página (muito além de formulários e gráficos) clicando em <code class="font-mono-tech text-xs px-1.5 py-0.5 rounded surface-elevated">+ Incluir no Pedido</code>.
+                        </p>
+                    </div>
+
+                    <!-- Card de Atalho Rápido & Seletor de Cor Pontual (2%) -->
+                    <div class="lg:col-span-4 surface-card border border-strong rounded-2xl p-5 shadow-architectural space-y-4">
+                        <div class="flex items-center justify-between border-b border-hair pb-3">
+                            <span class="font-mono-tech text-[11px] uppercase tracking-wider ink-primary font-semibold">Calibrar Cor de Objetivo (2%)</span>
+                            <span id="activeAccentBadge" class="font-mono-tech text-[10px] accent-text font-medium">#e13535 · Editorial</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs font-mono-tech">
+                            <button onclick="setAccentPreset('red')" class="p-2 rounded-lg surface-elevated border border-hair flex items-center space-x-2 hover:border-strong transition-all text-left">
+                                <span class="w-3.5 h-3.5 rounded-full bg-[#e13535] shrink-0"></span>
+                                <span class="truncate">Carmim #e13535</span>
+                            </button>
+                            <button onclick="setAccentPreset('blue')" class="p-2 rounded-lg surface-elevated border border-hair flex items-center space-x-2 hover:border-strong transition-all text-left">
+                                <span class="w-3.5 h-3.5 rounded-full bg-[#35acd8] shrink-0"></span>
+                                <span class="truncate">Azul IA #35acd8</span>
+                            </button>
+                            <button onclick="setAccentPreset('green')" class="p-2 rounded-lg surface-elevated border border-hair flex items-center space-x-2 hover:border-strong transition-all text-left">
+                                <span class="w-3.5 h-3.5 rounded-full bg-[#10B981] shrink-0"></span>
+                                <span class="truncate">Médico #10B981</span>
+                            </button>
+                            <button onclick="setAccentPreset('amber')" class="p-2 rounded-lg surface-elevated border border-hair flex items-center space-x-2 hover:border-strong transition-all text-left">
+                                <span class="w-3.5 h-3.5 rounded-full bg-[#D97706] shrink-0"></span>
+                                <span class="truncate">Âmbar #D97706</span>
+                            </button>
+                        </div>
+                        <div class="pt-2 border-t border-hair">
+                            <label class="font-mono-tech text-[10px] uppercase ink-muted block mb-1.5">Fonte de Alta Nitidez (Zero Embaçamento):</label>
+                            <div class="grid grid-cols-3 gap-1.5 text-[11px] font-mono-tech">
+                                <button onclick="setFontFamily('inter')" id="fontBtnInter" class="px-2 py-1.5 rounded-lg accent-bg text-center transition-all">Inter + JetBrains</button>
+                                <button onclick="setFontFamily('jakarta')" id="fontBtnJakarta" class="px-2 py-1.5 rounded-lg surface-elevated border border-hair ink-primary text-center transition-all">Plus Jakarta</button>
+                                <button onclick="setFontFamily('ibm')" id="fontBtnIbm" class="px-2 py-1.5 rounded-lg surface-elevated border border-hair ink-primary text-center transition-all">IBM Plex</button>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-hair">
+                            <button onclick="toggleSquint()" id="squintBtn" aria-pressed="false" class="px-3 py-1.5 text-[11px] font-mono-tech rounded-full surface-elevated border border-hair ink-primary hover:border-strong transition-all">
+                                Testar Squint (Blur)
+                            </button>
+                            <button onclick="downloadMarkdownReference()" class="px-3.5 py-1.5 text-[11px] font-mono-tech rounded-full accent-bg hover:opacity-90 transition-all">
+                                ↓ Salvar Guia (.md)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Pilares Resumo (Alternando Superfície Padrão e Alto Contraste Terrixa) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12">
+                    <div class="terrixa-card surface-card border border-strong p-5 shadow-architectural flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-hair">
+                                <span class="font-mono-tech text-base font-semibold">01 // MATERIAIS & LUZ</span>
+                                <span class="w-2 h-2 rounded-full accent-bg"></span>
+                            </div>
+                            <p class="text-xs ink-secondary leading-relaxed">
+                                <strong>AcrylicBrush</strong>, <strong>SystemBackdrop (Mica)</strong>, <strong>ThemeShadow</strong> em 3 camadas, <strong>Rim Light 1px</strong> e <strong>ContentIsland</strong> para profundidade tátil sem poluição de cores.
+                            </p>
+                        </div>
+                        <span class="font-mono-tech text-[10px] ink-muted mt-4 pt-2 border-t border-hair block">6 EFEITOS DE SUPERFÍCIE</span>
+                    </div>
+
+                    <div class="terrixa-card surface-contrast border border-strong p-5 shadow-architectural flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/15">
+                                <span class="font-mono-tech text-base font-semibold">02 // ARQUITETURA & LAYOUT</span>
+                                <span class="font-mono-tech text-[10px] px-2 py-0.5 rounded-full bg-white/10">WinUI Layout</span>
+                            </div>
+                            <p class="text-xs opacity-85 leading-relaxed">
+                                <strong>Grid Assimétrico (Bento)</strong>, <strong>SplitView</strong> (Master-Detail), <strong>Expander</strong> (Revelação Progressiva), <strong>Canvas Z-Index</strong>, <strong>Viewbox A4</strong> e <strong>Compact Sizing</strong>.
+                            </p>
+                        </div>
+                        <span class="font-mono-tech text-[10px] opacity-65 mt-4 pt-2 border-t border-white/15 block">8 ESTRUTURAS ESPACIAIS</span>
+                    </div>
+
+                    <div class="terrixa-card surface-card border border-strong p-5 shadow-architectural flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-hair">
+                                <span class="font-mono-tech text-base font-semibold">03 // MOTION & MICROINTERAÇÃO</span>
+                                <span class="w-2 h-2 rounded-full bg-[#35acd8]"></span>
+                            </div>
+                            <p class="text-xs ink-secondary leading-relaxed">
+                                <strong>Implicit Transitions</strong>, <strong>Connected Animation</strong> (card que vira modal), <strong>Easing Functions</strong> físicas (<code class="font-mono-tech">0.16, 1, 0.3, 1</code>), <strong>ParallaxView</strong> e <strong>Theme Transitions</strong>.
+                            </p>
+                        </div>
+                        <span class="font-mono-tech text-[10px] ink-muted mt-4 pt-2 border-t border-hair block">6 MECÂNICAS DE MOVIMENTO</span>
+                    </div>
+
+                    <div class="terrixa-card surface-contrast border border-strong p-5 shadow-architectural flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/15">
+                                <span class="font-mono-tech text-base font-semibold">04 // ALÉM DE FORMS & CHARTS</span>
+                                <span class="font-mono-tech text-[10px] px-2 py-0.5 rounded-full bg-white/10">6 Arquétipos</span>
+                            </div>
+                            <p class="text-xs opacity-85 leading-relaxed">
+                                <strong>Split-Screen Live Preview</strong>, <strong>Timeline Clínica/Editorial</strong>, <strong>Kanban de Fluxo</strong>, <strong>Canvas de Nós/Decisão</strong>, <strong>Command Palette (Ctrl+K)</strong> e <strong>Wizard Modo Foco</strong>.
+                            </p>
+                        </div>
+                        <span class="font-mono-tech text-[10px] opacity-65 mt-4 pt-2 border-t border-white/15 block">8 CONTROLES + 6 ESTILOS DE PÁGINA</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SEÇÃO 01: CATÁLOGO INTERATIVO DE EFEITOS, LAYOUTS, MOTION & CONTROLES (28 ITENS) -->
+        <section id="catalogo-winui" class="py-20 border-b border-hair">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-10 gap-6">
+                    <div>
+                        <span class="font-mono-tech text-xs uppercase tracking-[0.2em] accent-text">01 // Vocabulário Completo de Componentes & Efeitos</span>
+                        <h2 class="text-3xl sm:text-5xl font-light tracking-tight mt-2">
+                            Catálogo <span class="font-serif-editorial italic font-normal">WinUI & Ex Umbris</span> por Categoria
+                        </h2>
+                    </div>
+                    <p class="text-sm ink-secondary max-w-md leading-relaxed">
+                        Cada cartão abaixo traz: <strong>o que é</strong>, <strong>variações técnicas para deixar bonito</strong>, <strong>exemplos de uso real</strong>, <strong>quando usar vs. quando evitar</strong> e um botão para adicionar direto ao seu prompt.
+                    </p>
+                </div>
+
+                <!-- Barra de Filtros (SelectorBar Estilo WinUI + Busca Rápida + Filtro por Contexto) -->
+                <div class="surface-card border border-strong rounded-2xl p-4 mb-8 shadow-architectural flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+                    
+                    <!-- SelectorBar por Categoria -->
+                    <div class="flex items-center space-x-1.5 overflow-x-auto no-scrollbar pb-1 lg:pb-0" id="categoryFilterBar" role="tablist" aria-label="Categorias de Efeitos">
+                        <button onclick="filterCatalog('all')" data-cat="all" role="tab" aria-selected="true" class="cat-pill-btn px-3.5 py-2 rounded-xl text-xs font-mono-tech font-medium accent-bg transition-all shrink-0">
+                            Todos (28)
+                        </button>
+                        <button onclick="filterCatalog('materials')" data-cat="materials" role="tab" aria-selected="false" class="cat-pill-btn px-3.5 py-2 rounded-xl text-xs font-mono-tech surface-elevated ink-primary hover:border-strong border border-hair transition-all shrink-0">
+                            Materiais & Luz (6)
+                        </button>
+                        <button onclick="filterCatalog('layout')" data-cat="layout" role="tab" aria-selected="false" class="cat-pill-btn px-3.5 py-2 rounded-xl text-xs font-mono-tech surface-elevated ink-primary hover:border-strong border border-hair transition-all shrink-0">
+                            Layout & Espaço (8)
+                        </button>
+                        <button onclick="filterCatalog('motion')" data-cat="motion" role="tab" aria-selected="false" class="cat-pill-btn px-3.5 py-2 rounded-xl text-xs font-mono-tech surface-elevated ink-primary hover:border-strong border border-hair transition-all shrink-0">
+                            Motion & Animação (6)
+                        </button>
+                        <button onclick="filterCatalog('controls')" data-cat="controls" role="tab" aria-selected="false" class="cat-pill-btn px-3.5 py-2 rounded-xl text-xs font-mono-tech surface-elevated ink-primary hover:border-strong border border-hair transition-all shrink-0">
+                            Controles & Fluxo (8)
+                        </button>
+                    </div>
+
+                    <!-- Busca por Palavra-Chave + Filtro por Caso de Uso -->
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                        <input type="text" id="catalogSearchInput" aria-label="Buscar efeito no catálogo" oninput="renderCatalogCards()" placeholder="Buscar efeito (ex: Acrylic, SplitView, TDAH, APAC)..." class="input-ex-umbris w-full sm:w-64">
+                        <select id="useCaseFilterSelect" aria-label="Filtrar por tipo de aplicativo" onchange="renderCatalogCards()" class="input-ex-umbris font-mono-tech text-xs">
+                            <option value="all">Qualquer Tipo de App</option>
+                            <option value="medtech">MedTech / Prontuário / SUS</option>
+                            <option value="tdah">Produtividade / Anti-TDAH</option>
+                            <option value="saas">SaaS / IA / Telemetria</option>
+                            <option value="editorial">Landing Page / Portfólio</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Grid Dinâmico de Cartões do Catálogo -->
+                <div id="catalogGridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+            </div>
+        </section>
+
+        <!-- SEÇÃO 02: PLAYGROUNDS INTERATIVOS ESTILO WINUI 3 GALLERY (COM SLIDERS + SOURCE CODE) -->
+        <section id="playgrounds" class="py-20 border-b border-hair">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-6">
+                    <div>
+                        <span class="font-mono-tech text-xs uppercase tracking-[0.2em] accent-text">02 // Simulador Visual de Propriedades (Estilo WinUI Gallery)</span>
+                        <h2 class="text-3xl sm:text-5xl font-light tracking-tight mt-2">
+                            Playgrounds <span class="font-serif-editorial italic font-normal">Interativos</span> com Código Ao Vivo
+                        </h2>
+                    </div>
+                    <p class="text-sm ink-secondary max-w-md leading-relaxed">
+                        Assim como nas capturas do WinUI Gallery (<em>Grid Control</em> e <em>Canvas Control</em>), manipule os controles deslizantes à direita para ver como cada propriedade técnica transforma a aparência da página e abra o <strong>Source code & Prompt</strong> abaixo.
+                    </p>
+                </div>
+
+                <!-- Abas do Playground -->
+                <div class="flex flex-wrap items-center gap-2 mb-6" role="tablist" aria-label="Laboratórios Interativos">
+                    <button onclick="switchPlaygroundTab('grid')" id="pgTabGrid" role="tab" aria-selected="true" class="px-4 py-2.5 rounded-xl font-mono-tech text-xs font-medium accent-bg transition-all">
+                        Lab A // Grid 3x3, Bento Span & Compact Sizing
+                    </button>
+                    <button onclick="switchPlaygroundTab('canvas')" id="pgTabCanvas" role="tab" aria-selected="false" class="px-4 py-2.5 rounded-xl font-mono-tech text-xs font-medium surface-card border border-hair ink-primary transition-all">
+                        Lab B // Canvas.Top, Canvas.Left, Z-Index & AcrylicBrush
+                    </button>
+                    <button onclick="switchPlaygroundTab('motion')" id="pgTabMotion" role="tab" aria-selected="false" class="px-4 py-2.5 rounded-xl font-mono-tech text-xs font-medium surface-card border border-hair ink-primary transition-all">
+                        Lab C // Motion: Easing Functions, Implicit & Connected Animation
+                    </button>
+                </div>
+
+                <!-- PLAYGROUND A: GRID 3x3 + BENTO SPAN + COMPACT SIZING (Inspirado na Captura 6) -->
+                <div id="pgPanelGrid" class="surface-card border border-strong rounded-2xl shadow-architectural overflow-hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-12">
+                        
+                        <!-- Palco Esquerdo -->
+                        <div class="lg:col-span-8 p-6 sm:p-10 surface-canvas architectural-grid flex flex-col justify-between min-h-[420px]">
+                            <div class="flex items-center justify-between text-[11px] font-mono-tech ink-muted pb-4 border-b border-hair">
+                                <span>VISUALIZADOR DE GRADE ARQUITETÔNICA (3 COLUNAS)</span>
+                                <span id="gridTelemetryLabel" class="accent-text font-medium">ColSpacing: 16px · RowSpacing: 16px · Span: 2x1</span>
+                            </div>
+
+                            <!-- O Grid Interativo -->
+                            <div class="my-auto py-6">
+                                <div id="interactiveGridStage" class="grid grid-cols-3 transition-all duration-300" style="column-gap: 16px; row-gap: 16px;">
+                                    <!-- Bloco Principal (Red Block equivalente, estilizado em Ex Umbris) -->
+                                    <div id="gridFocalBlock" class="terrixa-card accent-bg p-5 shadow-architectural transition-all duration-300 flex flex-col justify-between" style="grid-column: span 2;">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-mono-tech text-[10px] uppercase tracking-wider opacity-90">BLOCO FOCAL (2% COR)</span>
+                                            <span class="font-mono-tech text-xs font-bold">01</span>
+                                        </div>
+                                        <div class="mt-4">
+                                            <div class="text-xl font-semibold">Card com Expansão Bento</div>
+                                            <p class="text-xs opacity-90 mt-1">Altere o ColSpan e a posição nos controles ao lado para testar o equilíbrio assimétrico.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bloco 02: Alto Contraste -->
+                                    <div class="grid-cell-item terrixa-card surface-contrast border border-strong p-5 shadow-architectural flex flex-col justify-between">
+                                        <span class="font-mono-tech text-[10px] opacity-65">02 // CONTRASTE</span>
+                                        <div class="mt-3">
+                                            <div class="text-sm font-semibold">Bloco Escuro #232127</div>
+                                            <p class="text-[11px] opacity-75 mt-1">Cria ritmo sem adicionar nova cor.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bloco 03: Superfície Padrão -->
+                                    <div class="grid-cell-item terrixa-card surface-card border border-hair p-5 shadow-architectural flex flex-col justify-between">
+                                        <span class="font-mono-tech text-[10px] ink-muted">03 // SUPERFÍCIE</span>
+                                        <div class="mt-3">
+                                            <div class="text-sm font-semibold ink-primary">Métrica Secundária</div>
+                                            <p class="text-[11px] ink-secondary mt-1">Repouso visual em grafite.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bloco 04 -->
+                                    <div class="grid-cell-item terrixa-card surface-card border border-hair p-5 shadow-architectural flex flex-col justify-between">
+                                        <span class="font-mono-tech text-[10px] ink-muted">04 // DADOS</span>
+                                        <div class="mt-3">
+                                            <div class="text-sm font-semibold ink-primary">Telemetria Estável</div>
+                                            <p class="text-[11px] ink-secondary mt-1">98% da área neutra.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bloco 05 -->
+                                    <div class="grid-cell-item terrixa-card surface-elevated border border-hair p-5 flex flex-col justify-between">
+                                        <span class="font-mono-tech text-[10px] ink-muted">05 // ELEVADO</span>
+                                        <div class="mt-3">
+                                            <div class="text-sm font-semibold ink-primary">Sub-Contêiner</div>
+                                            <p class="text-[11px] ink-secondary mt-1">Fundo --bg-elevated.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-[11px] font-mono-tech ink-muted pt-3 border-t border-hair flex justify-between">
+                                <span>DICA TÉCNICA: Grades simétricas demais cansam; use Span 2x1 no item prioritário.</span>
+                                <span>WINUI: Grid + VariableSizedWrapGrid</span>
+                            </div>
+                        </div>
+
+                        <!-- Painel Direito de Sliders (Estilo WinUI Gallery) -->
+                        <div class="lg:col-span-4 p-6 surface-card border-t lg:border-t-0 lg:border-l border-hair space-y-5">
+                            <div class="pb-3 border-b border-hair">
+                                <span class="font-mono-tech text-xs uppercase font-semibold ink-primary block">Propriedades do Grid</span>
+                                <span class="text-[11px] ink-muted">Ajuste o espaçamento e a ocupação das células</span>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-mono-tech mb-1.5">
+                                    <span>ColumnSpacing (gap-x)</span>
+                                    <span id="valColSpacing" class="accent-text">16px</span>
+                                </div>
+                                <input type="range" id="sliderColSpacing" aria-label="ColumnSpacing" min="0" max="40" value="16" oninput="updateGridPlayground()" class="w-full">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-mono-tech mb-1.5">
+                                    <span>RowSpacing (gap-y)</span>
+                                    <span id="valRowSpacing" class="accent-text">16px</span>
+                                </div>
+                                <input type="range" id="sliderRowSpacing" aria-label="RowSpacing" min="0" max="40" value="16" oninput="updateGridPlayground()" class="w-full">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-mono-tech mb-1.5">
+                                    <span>Bloco Focal: ColumnSpan (Largura)</span>
+                                    <span id="valColSpan" class="accent-text">2 Colunas</span>
+                                </div>
+                                <input type="range" id="sliderColSpan" aria-label="ColumnSpan" min="1" max="3" value="2" oninput="updateGridPlayground()" class="w-full">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-mono-tech mb-1.5">
+                                    <span>Ordem do Bloco Focal (Grid.Order)</span>
+                                    <span id="valGridOrder" class="ink-muted">Posição 1</span>
+                                </div>
+                                <input type="range" id="sliderGridOrder" aria-label="Grid.Order" min="1" max="4" value="1" oninput="updateGridPlayground()" class="w-full">
+                            </div>
+
+                            <!-- Toggle Compact Sizing -->
+                            <div class="pt-3 border-t border-hair flex items-center justify-between">
+                                <div>
+                                    <span class="text-xs font-semibold block">Compact Sizing (Alta Densidade)</span>
+                                    <span class="text-[11px] ink-muted">Reduz padding interno p/ telas técnicas</span>
+                                </div>
+                                <button onclick="toggleGridCompact()" id="btnGridCompact" aria-pressed="false" class="px-3 py-1.5 rounded-lg font-mono-tech text-xs surface-elevated border border-hair">
+                                    Normal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Barra Expander "Source code & Prompt" (Idêntica à base do WinUI Gallery) -->
+                    <div class="border-t border-hair surface-elevated">
+                        <button onclick="toggleExpander('gridSourceBox')" class="w-full px-6 py-3.5 flex items-center justify-between text-xs font-mono-tech ink-primary hover:opacity-80">
+                            <span>Source code & Prompt para pedir à IA (Grid & Bento Layout)</span>
+                            <span>▾ Expandir / Ocultar</span>
+                        </button>
+                        <div id="gridSourceBox" class="hidden px-6 pb-5 pt-2 border-t border-hair">
+                            <pre id="gridCodeOutput" class="font-mono-tech text-[11px] surface-card p-4 rounded-xl border border-hair overflow-x-auto ink-secondary leading-relaxed"></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PLAYGROUND B: CANVAS ABSOLUTO, Z-INDEX & ACRYLIC BRUSH (Inspirado nas Capturas 1 e 4) -->
+                <div id="pgPanelCanvas" class="hidden surface-card border border-strong rounded-2xl shadow-architectural overflow-hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-12">
+                        
+                        <div class="lg:col-span-8 p-6 sm:p-10 surface-canvas architectural-grid flex flex-col justify-between min-h-[420px] relative overflow-hidden">
+                            <div class="flex items-center justify-between text-[11px] font-mono-tech ink-muted pb-4 border-b border-hair z-20">
+                                <span>PALCO DE CAMADAS: CANVAS.TOP, CANVAS.LEFT, Z-INDEX & ACRYLIC BLUR</span>
+                                <span id="canvasTelemetryLabel" class="accent-text font-medium">Top: 48px · Left: 72px · Z-Index: 20 · Blur: 16px</span>
+                            </div>
+
+                            <!-- Área do Canvas -->
+                            <div class="relative w-full h-72 my-4 rounded-2xl surface-card border border-hair overflow-hidden p-6">
+                                <!-- Camada Estática 1 (Z-index 10) -->
+                                <div class="absolute top-6 left-6 w-52 h-36 rounded-xl surface-contrast border border-strong p-4 shadow-architectural z-10 flex flex-col justify-between">
+                                    <span class="font-mono-tech text-[10px] opacity-60">Z-INDEX: 10 // BASE</span>
+                                    <div>
+                                        <span class="text-xs font-semibold block">Camada de Prontuário / Mapa</span>
+                                        <span class="text-[10px] opacity-75">Fica atrás quando Z-Index &gt; 10</span>
+                                    </div>
+                                </div>
+
+                                <!-- Camada Estática 2 (Z-index 30) -->
+                                <div class="absolute bottom-6 right-8 w-56 h-36 rounded-xl surface-elevated border border-strong p-4 shadow-architectural z-30 flex flex-col justify-between">
+                                    <span class="font-mono-tech text-[10px] ink-muted">Z-INDEX: 30 // PAINEL SUPERIOR</span>
+                                    <div>
+                                        <span class="text-xs font-semibold ink-primary block">Inspetor Flutuante</span>
+                                        <span class="text-[10px] ink-secondary">Suba o Z-Index para 40 para sobrepor este card</span>
+                                    </div>
+                                </div>
+
+                                <!-- Camada Móvel Controlada pelos Sliders (AcrylicBrush + Ponto Focal) -->
+                                <div id="canvasFloatingLayer" class="absolute w-64 h-40 rounded-2xl border-2 accent-border p-4 transition-all duration-150 flex flex-col justify-between" style="top: 48px; left: 72px; z-index: 20; background-color: rgba(25, 24, 30, 0.65); backdrop-filter: blur(16px); color: #FFFFFF; box-shadow: var(--shadow-sculpted);">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-mono-tech text-[10px] uppercase tracking-wider px-2 py-0.5 rounded accent-bg">ACRYLIC LAYER</span>
+                                        <span id="canvasBadgeZ" class="font-mono-tech text-[10px] opacity-80">Z: 20</span>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-semibold">Card Translúcido (AcrylicBrush)</div>
+                                        <p class="text-[11px] opacity-85 mt-1">Deslize Top, Left, Z-Index e o Blur Acrílico para sentir o efeito de vidro fosco sobre as camadas.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-[11px] font-mono-tech ink-muted pt-3 border-t border-hair flex justify-between">
+                                <span>USO REAL: Mapas anatômicos, HUDs de telemetria, barras flutuantes e popovers contextuais.</span>
+                                <span>WINUI: Canvas + AcrylicBrush + ThemeShadow</span>
+                            </div>
+                        </div>
+
+                        <!-- Sliders do Canvas & Acrylic -->
+                        <div class="lg:col-span-4 p-6 surface-card border-t lg:border-t-0 lg:border-l border-hair space-y-5">
+                            <div class="pb-3 border-b border-hair">
+                                <span class="font-mono-tech text-xs uppercase font-semibold ink-primary block">Controles Canvas & Acrylic</span>
+                                <span class="text-[11px] ink-muted">Posição absoluta, empilhamento Z e vidro</span>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-mono-tech mb-1.5">
+                                    <span>Canvas.Top (Eixo Y)</span>
+                                    <span id="valCanvasTop" class="accent-text">48px</span>
+                                </div>
+                                <input type="range" id="sliderCanvasTop" aria-label="Canvas.Top" min="8" max="120" value="48" oninput="updateCanvasPlayground()" class="w-full">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-mono-tech mb-1.5">
+                                    <span>Canvas.Left (Eixo X)</span>
+                                    <span id="valCanvasLeft" class="accent-text">72px</span>
+                                </div>
+                                <input type="range" id="sliderCanvasLeft" aria-label="Canvas.Left" min="12" max="240" value="72" oninput="updateCanvasPlayground()" class="w-full">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-mono-tech mb-1.5">
+                                    <span>Canvas.ZIndex (Camada)</span>
+                                    <span id="valCanvasZ" class="accent-text">20 (Meio)</span>
+                                </div>
+                                <input type="range" id="sliderCanvasZ" aria-label="Canvas.ZIndex" min="5" max="45" step="5" value="20" oninput="updateCanvasPlayground()" class="w-full">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-mono-tech mb-1.5">
+                                    <span>AcrylicBrush Blur (Desfoque)</span>
+                                    <span id="valAcrylicBlur" class="accent-text">16px</span>
+                                </div>
+                                <input type="range" id="sliderAcrylicBlur" aria-label="AcrylicBrush Blur" min="0" max="32" value="16" oninput="updateCanvasPlayground()" class="w-full">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-hair surface-elevated">
+                        <button onclick="toggleExpander('canvasSourceBox')" class="w-full px-6 py-3.5 flex items-center justify-between text-xs font-mono-tech ink-primary hover:opacity-80">
+                            <span>Source code & Prompt para pedir à IA (Canvas Z-Index & AcrylicBrush)</span>
+                            <span>▾ Expandir / Ocultar</span>
+                        </button>
+                        <div id="canvasSourceBox" class="hidden px-6 pb-5 pt-2 border-t border-hair">
+                            <pre id="canvasCodeOutput" class="font-mono-tech text-[11px] surface-card p-4 rounded-xl border border-hair overflow-x-auto ink-secondary leading-relaxed"></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PLAYGROUND C: MOTION, EASING FUNCTIONS & CONNECTED ANIMATION (Inspirado na Captura 5) -->
+                <div id="pgPanelMotion" class="hidden surface-card border border-strong rounded-2xl shadow-architectural overflow-hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-12">
+                        
+                        <div class="lg:col-span-8 p-6 sm:p-10 surface-canvas architectural-grid flex flex-col justify-between min-h-[420px]">
+                            <div class="flex items-center justify-between text-[11px] font-mono-tech ink-muted pb-4 border-b border-hair">
+                                <span>LABORATÓRIO DE CINEMÁTICA (EASING FUNCTIONS & CONNECTED ANIMATION)</span>
+                                <span id="motionTelemetryLabel" class="accent-text font-medium">Curva: cubic-bezier(0.16, 1, 0.3, 1) · 450ms</span>
+                            </div>
+
+                            <!-- Pista de Comparação de Easing + Simulador de Connected Animation -->
+                            <div class="space-y-6 my-auto py-4">
+                                <div class="surface-card border border-hair rounded-xl p-5 space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-mono-tech text-xs font-semibold ink-primary">1. Comparador de Curvas de Velocidade (Easing Functions)</span>
+                                        <button onclick="triggerMotionRace()" class="px-3.5 py-1.5 rounded-full text-xs font-mono-tech accent-bg hover:opacity-90 transition-all">
+                                            ▶ Disparar Movimento
+                                        </button>
+                                    </div>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <span class="font-mono-tech text-[10px] ink-muted block mb-1">A. Linear (Robótico / Amador — Evitar em UI)</span>
+                                            <div class="w-full h-7 surface-elevated rounded-full p-1 overflow-hidden">
+                                                <div id="racePuckLinear" class="w-16 h-5 rounded-full bg-zinc-500 text-[10px] font-mono-tech text-white flex items-center justify-center" style="transition: transform 600ms linear;">Linear</div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="font-mono-tech text-[10px] accent-text block mb-1">B. Ex Umbris Quint Out: cubic-bezier(0.16, 1, 0.3, 1) (Desaceleração Física Elegante)</span>
+                                            <div class="w-full h-7 surface-elevated rounded-full p-1 overflow-hidden">
+                                                <div id="racePuckQuint" class="w-20 h-5 rounded-full accent-bg text-[10px] font-mono-tech flex items-center justify-center" style="transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);">Ex Umbris</div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="font-mono-tech text-[10px] ink-secondary block mb-1">C. Spring Overshoot: cubic-bezier(0.34, 1.56, 0.64, 1) (Elástico p/ Badges & Toasts)</span>
+                                            <div class="w-full h-7 surface-elevated rounded-full p-1 overflow-hidden">
+                                                <div id="racePuckSpring" class="w-16 h-5 rounded-full surface-contrast text-[10px] font-mono-tech flex items-center justify-center" style="transition: transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1);">Spring</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Simulador de Connected Animation (Card -> Detalhe Expandido) -->
+                                <div class="surface-card border border-hair rounded-xl p-5">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="font-mono-tech text-xs font-semibold ink-primary">2. Connected Animation (Continuidade Espacial Anti-TDAH)</span>
+                                        <span class="font-mono-tech text-[10px] ink-muted">Clique no card para expandir mantendo o contexto</span>
+                                    </div>
+                                    <div id="connectedAnimCard" tabindex="0" role="button" aria-expanded="false" onclick="toggleConnectedCard()" class="cursor-pointer surface-elevated border border-strong rounded-xl p-4 transition-all duration-500" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-2.5">
+                                                <span class="w-2.5 h-2.5 rounded-full accent-bg"></span>
+                                                <span class="font-mono-tech text-xs font-semibold">PROTOCOLO #04 // PACIENTE OU TAREFA</span>
+                                            </div>
+                                            <span id="connectedAnimHint" class="font-mono-tech text-[11px] accent-text">Expandir no lugar ↘</span>
+                                        </div>
+                                        <div id="connectedAnimBody" class="hidden mt-4 pt-4 border-t border-hair text-xs ink-secondary space-y-2">
+                                            <p><strong class="ink-primary">Por que isso ajuda no TDAH?</strong> Quando uma tela muda bruscamente com um corte seco, o cérebro perde a âncora espacial e esquece o que estava procurando. A <em>Connected Animation</em> expande o próprio cartão clicado, preservando a memória de trabalho.</p>
+                                            <div class="flex gap-2 pt-1 font-mono-tech text-[10px]">
+                                                <span class="px-2 py-1 rounded surface-card border border-hair">Transição: 450ms</span>
+                                                <span class="px-2 py-1 rounded surface-card border border-hair">Foco Retiniano Preservado</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-[11px] font-mono-tech ink-muted pt-3 border-t border-hair flex justify-between">
+                                <span>REGRA DE OURO: Animações devem durar entre 200ms e 450ms (nunca mais de 600ms em uso diário).</span>
+                                <span>WINUI: Easing + Connected + Implicit</span>
+                            </div>
+                        </div>
+
+                        <!-- Controles de Motion -->
+                        <div class="lg:col-span-4 p-6 surface-card border-t lg:border-t-0 lg:border-l border-hair space-y-5">
+                            <div class="pb-3 border-b border-hair">
+                                <span class="font-mono-tech text-xs uppercase font-semibold ink-primary block">Calibragem de Motion</span>
+                                <span class="text-[11px] ink-muted">Ajuste a duração e teste a fluidez</span>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-mono-tech mb-1.5">
+                                    <span>Duração da Transição (ms)</span>
+                                    <span id="valMotionDuration" class="accent-text">450ms</span>
+                                </div>
+                                <input type="range" id="sliderMotionDuration" aria-label="Duração da Transição" min="150" max="1000" step="50" value="450" oninput="updateMotionDuration()" class="w-full">
+                            </div>
+
+                            <div class="p-4 rounded-xl surface-elevated border border-hair space-y-2 text-xs">
+                                <span class="font-mono-tech text-[11px] uppercase ink-primary font-semibold block">Quando Usar Cada Curva:</span>
+                                <p class="ink-secondary text-[11px] leading-relaxed">
+                                    • <strong>Quint Out (0.16, 1, 0.3, 1):</strong> Padrão para abrir gavetas (SplitView), modais, trocas de aba e hover de cartões.<br>
+                                    • <strong>Spring (0.34, 1.56, 0.64, 1):</strong> Ideal para micro-feedbacks (marcar tarefa concluída, notificações toast).<br>
+                                    • <strong>Linear:</strong> Use apenas para barras de progresso contínuas ou spinners de carregamento.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-hair surface-elevated">
+                        <button onclick="toggleExpander('motionSourceBox')" class="w-full px-6 py-3.5 flex items-center justify-between text-xs font-mono-tech ink-primary hover:opacity-80">
+                            <span>Source code & Prompt para pedir à IA (Motion & Easing Functions)</span>
+                            <span>▾ Expandir / Ocultar</span>
+                        </button>
+                        <div id="motionSourceBox" class="hidden px-6 pb-5 pt-2 border-t border-hair">
+                            <pre class="font-mono-tech text-[11px] surface-card p-4 rounded-xl border border-hair overflow-x-auto ink-secondary leading-relaxed">/* CSS de Transições Implícitas & Curvas Físicas Ex Umbris */
+.morph-quint {
+    transition: all 450ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.morph-spring {
+    transition: transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+/* Respeito automático a usuários sensíveis a movimento */
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}</pre>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SEÇÃO 03: OUTROS ESTILOS DE PÁGINA E COMPOSIÇÃO (MUITO ALÉM DE FORMULÁRIOS E GRÁFICOS) -->
+        <section id="arquetipos" class="py-20 border-b border-hair">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-6">
+                    <div>
+                        <span class="font-mono-tech text-xs uppercase tracking-[0.2em] accent-text">03 // Arquétipos de Composição de Página</span>
+                        <h2 class="text-3xl sm:text-5xl font-light tracking-tight mt-2">
+                            6 Estilos de App <span class="font-serif-editorial italic font-normal">além de formulários e gráficos</span>
+                        </h2>
+                    </div>
+                    <p class="text-sm ink-secondary max-w-md leading-relaxed">
+                        Quando pedimos um app à IA sem especificar a estrutura espacial, ela quase sempre entrega um formulário simples ou um dashboard de gráficos. Use estes <strong>6 arquétipos visuais</strong> para criar ferramentas muito mais ricas e intuitivas.
+                    </p>
+                </div>
+
+                <!-- Seletor de Demonstração Visual Ao Vivo dos 6 Arquétipos -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    
+                    <!-- Lista dos 6 Arquétipos à Esquerda -->
+                    <div class="lg:col-span-5 space-y-3" id="archetypeButtonsList"></div>
+
+                    <!-- Mini-Protótipo Ao Vivo do Arquétipo Selecionado à Direita -->
+                    <div class="lg:col-span-7 surface-card border border-strong rounded-2xl shadow-architectural overflow-hidden">
+                        <div class="px-6 py-4 surface-elevated border-b border-hair flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-center space-x-2.5">
+                                <span class="w-2.5 h-2.5 rounded-full accent-bg"></span>
+                                <span id="archPreviewTitle" class="font-mono-tech text-xs font-semibold uppercase tracking-wider ink-primary">
+                                    ARQUÉTIPO 01 // SPLIT-SCREEN WORKBENCH
+                                </span>
+                            </div>
+                            <button id="archAddPromptBtn" onclick="toggleCurrentArchetypeInPrompt()" class="px-3.5 py-1.5 rounded-full text-xs font-mono-tech accent-bg hover:opacity-90 transition-all">
+                                + Incluir este Estilo no Pedido
+                            </button>
+                        </div>
+
+                        <!-- Palco do Mini-Protótipo -->
+                        <div id="archLiveStage" class="p-6 sm:p-8 surface-canvas architectural-grid min-h-[360px] flex flex-col justify-between"></div>
+
+                        <!-- Explicação de Uso Real, Variação Técnica e Prompt do Arquétipo -->
+                        <div class="p-6 surface-card border-t border-hair space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                <div class="p-3.5 rounded-xl surface-elevated border border-hair">
+                                    <span class="font-mono-tech text-[10px] uppercase accent-text font-semibold block mb-1">✓ QUANDO USAR & EXEMPLOS REAIS</span>
+                                    <p id="archWhenToUse" class="ink-secondary leading-relaxed"></p>
+                                </div>
+                                <div class="p-3.5 rounded-xl surface-elevated border border-hair">
+                                    <span class="font-mono-tech text-[10px] uppercase ink-muted font-semibold block mb-1">✕ QUANDO NÃO USAR & SEGREDO ESTÉTICO</span>
+                                    <p id="archWhenNotToUse" class="ink-secondary leading-relaxed"></p>
+                                </div>
+                            </div>
+                            <div class="p-3.5 rounded-xl surface-elevated border border-hair">
+                                <span class="font-mono-tech text-[10px] uppercase ink-muted block mb-1">COMO PEDIR À IA (FRASE PRONTA):</span>
+                                <p id="archPromptSnippet" class="font-mono-tech text-xs ink-primary select-all"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SEÇÃO 04: MATRIZ CRITERIOSA DE DECISÃO E TÉCNICAS DE POLIMENTO -->
+        <section id="matriz-decisao" class="py-20 border-b border-hair">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-10 gap-6">
+                    <div>
+                        <span class="font-mono-tech text-xs uppercase tracking-[0.2em] accent-text">04 // Engenharia de Aparência & Critério Visual</span>
+                        <h2 class="text-3xl sm:text-5xl font-light tracking-tight mt-2">
+                            Variações Técnicas: <span class="font-serif-editorial italic font-normal">O que deixa bonito</span> vs. O que estraga
+                        </h2>
+                    </div>
+                    <p class="text-sm ink-secondary max-w-md leading-relaxed">
+                        Consulte esta tabela sempre que sentir que uma página está com cara de "template genérico de IA" e quiser aplicar acabamento de estúdio.
+                    </p>
+                </div>
+
+                <div class="surface-card border border-strong rounded-2xl shadow-architectural overflow-x-auto">
+                    <table class="table-ex-umbris">
+                        <thead>
+                            <tr>
+                                <th>Elemento / Efeito</th>
+                                <th>O Erro Comum (Cara de Amador / IA Genérica)</th>
+                                <th>A Variação Técnica Criteriosa (Padrão Ex Umbris)</th>
+                                <th>Quando Usar vs. Quando Evitar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="font-semibold ink-primary font-mono-tech">1. Acrílico & Vidro<br><span class="text-[10px] ink-muted">(AcrylicBrush)</span></td>
+                                <td>Usar transparência alta (`opacity: 0.2`) sem `backdrop-filter` em todos os cards da página, deixando o texto ilegível.</td>
+                                <td>Aplicar `backdrop-filter: blur(16px)` com opacidade entre `0.85` e `0.92` e filete `1px solid var(--border-hairline)`.</td>
+                                <td><strong>Usar:</strong> Navbar fixa, popovers, Command Palette.<br><strong>Evitar:</strong> Tabelas longas e textos de leitura densa.</td>
+                            </tr>
+                            <tr>
+                                <td class="font-semibold ink-primary font-mono-tech">2. Sombras & Relevo<br><span class="text-[10px] ink-muted">(ThemeShadow)</span></td>
+                                <td>Sombra preta de 1 camada dura (`0 4px 10px rgba(0,0,0,0.5)`) ou cards sem contorno em fundo escuro.</td>
+                                <td>Sombra de 3 camadas (umbra + penumbra + difusão) coroada por `inset 0 1px 0 0 var(--rim-light)` no topo do card.</td>
+                                <td><strong>Usar:</strong> Cards principais, modais e botões.<br><strong>Evitar:</strong> Células internas de tabelas ou listas de 50 itens.</td>
+                            </tr>
+                            <tr>
+                                <td class="font-semibold ink-primary font-mono-tech">3. Ritmo de Grade<br><span class="text-[10px] ink-muted">(Bento / Terrixa)</span></td>
+                                <td>Grades 100% iguais (4 cards idênticos da mesma cor e tamanho) ou usar 4 cores diferentes para diferenciar cards.</td>
+                                <td>Alternar superfície padrão (`#49464f`) com bloco de contraste escuro (`#232127`) e expandir o card principal em `col-span-2`.</td>
+                                <td><strong>Usar:</strong> Resumos executivos, abertura de sistemas e catálogos.<br><strong>Evitar:</strong> Formulários sequenciais de preenchimento rápido.</td>
+                            </tr>
+                            <tr>
+                                <td class="font-semibold ink-primary font-mono-tech">4. Animação & Easing<br><span class="text-[10px] ink-muted">(Motion System)</span></td>
+                                <td>Transições `linear` lentas (`800ms+`) ou elementos que piscam/aparecem com corte seco sem contexto espacial.</td>
+                                <td>Curva `cubic-bezier(0.16, 1, 0.3, 1)` entre `250ms` e `450ms`, com expansão no lugar (<em>Connected Animation</em>).</td>
+                                <td><strong>Usar:</strong> Abrir gavetas (`SplitView`), abas e acordeões (`Expander`).<br><strong>Evitar:</strong> Digitação em tempo real ou alertas de emergência.</td>
+                            </tr>
+                            <tr>
+                                <td class="font-semibold ink-primary font-mono-tech">5. Densidade de Dados<br><span class="text-[10px] ink-muted">(Compact Sizing)</span></td>
+                                <td>Espaçamento frouxo demais que obriga a rolar 4 telas para ver 10 linhas de exames ou parâmetros.</td>
+                                <td>Ativar `Compact Sizing` (`py-1.5 px-3`, fonte `12px`, `tabular-nums` em `IBM Plex Mono`) com divisórias `1px` sutis.</td>
+                                <td><strong>Usar:</strong> Prontuários, tabelas SIGTAP, logs e IDEs.<br><strong>Evitar:</strong> Telas de boas-vindas, leitura longa ou modo foco.</td>
+                            </tr>
+                            <tr>
+                                <td class="font-semibold ink-primary font-mono-tech">6. Carga Cognitiva<br><span class="text-[10px] ink-muted">(Anti-TDAH)</span></td>
+                                <td>Mostrar 30 opções, configurações avançadas e códigos abertos ao mesmo tempo na tela inicial.</td>
+                                <td>Usar <strong>Revelação Progressiva (`Expander`)</strong> + <strong>Command Palette (`Ctrl+K`)</strong> + <strong>1 Único Ponto Focal de 2%</strong>.</td>
+                                <td><strong>Usar:</strong> Em absolutamente qualquer aplicativo complexo.<br><strong>Evitar:</strong> Esconder o botão de ação principal dentro de menus.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SEÇÃO 05: MONTADOR DE PEDIDO ANTI-TDAH (GERADOR DE PROMPT PRONTO PARA COLAR NA IA) -->
+        <section id="montador-tdah" class="py-20 relative overflow-hidden">
+            <div class="architectural-grid absolute inset-0 opacity-40 pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-10 gap-6">
+                    <div>
+                        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full surface-card border border-hair mb-3">
+                            <span class="w-2 h-2 rounded-full accent-bg"></span>
+                            <span class="font-mono-tech text-[11px] uppercase tracking-[0.18em] ink-primary">05 // Ferramenta Prática Anti-Esquecimento</span>
+                        </div>
+                        <h2 class="text-3xl sm:text-5xl font-light tracking-tight">
+                            Montador de <span class="font-semibold">Pedido para IA</span> (Checklist Rápido)
+                        </h2>
+                    </div>
+                    <p class="text-sm ink-secondary max-w-md leading-relaxed">
+                        Não precisa tentar lembrar o nome dos efeitos de cabeça. Clique nos itens do catálogo acima (ou escolha um pacote pronto abaixo) e copie o prompt completo já com a sua skill <code class="font-mono-tech text-xs">@minimal-impact-ui</code> configurada.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    
+                    <!-- Painel Esquerdo: Presets Rápidos por Tipo de App + Itens Selecionados -->
+                    <div class="lg:col-span-5 space-y-5">
+                        <div class="surface-card border border-strong rounded-2xl p-6 shadow-architectural space-y-5">
+                            <div class="flex items-center justify-between pb-3 border-b border-hair">
+                                <span class="font-mono-tech text-xs uppercase font-semibold ink-primary">1. Pacotes Prontos (1 Clique)</span>
+                                <button onclick="clearPromptSelection()" class="font-mono-tech text-[11px] ink-muted hover:underline">Limpar Seleção</button>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                                <button onclick="applyPresetBundle('medtech')" class="p-3 rounded-xl surface-elevated border border-hair hover:border-strong text-left transition-all">
+                                    <span class="font-mono-tech text-[10px] ink-primary font-semibold border-l-2 border-[#10B981] pl-1.5 block">PRESET 01 // MEDTECH</span>
+                                    <span class="font-semibold block mt-0.5">Clínica, Prontuário & SUS</span>
+                                    <span class="text-[11px] ink-muted block mt-1">Split-Screen + Timeline + Compact Sizing + Viewbox A4</span>
+                                </button>
+                                <button onclick="applyPresetBundle('tdah')" class="p-3 rounded-xl surface-elevated border border-hair hover:border-strong text-left transition-all">
+                                    <span class="font-mono-tech text-[10px] accent-text font-semibold block">PRESET 02 // ANTI-TDAH</span>
+                                    <span class="font-semibold block mt-0.5">Produtividade & Segundo Cérebro</span>
+                                    <span class="text-[11px] ink-muted block mt-1">Wizard Foco + Command Ctrl+K + Kanban + Connected Anim</span>
+                                </button>
+                                <button onclick="applyPresetBundle('saas')" class="p-3 rounded-xl surface-elevated border border-hair hover:border-strong text-left transition-all">
+                                    <span class="font-mono-tech text-[10px] ink-primary font-semibold border-l-2 border-[#35acd8] pl-1.5 block">PRESET 03 // IA & DADOS</span>
+                                    <span class="font-semibold block mt-0.5">Workbench de Agentes & Logs</span>
+                                    <span class="text-[11px] ink-muted block mt-1">Canvas de Nós + SplitView + Expander + Terminal IBM</span>
+                                </button>
+                                <button onclick="applyPresetBundle('editorial')" class="p-3 rounded-xl surface-elevated border border-hair hover:border-strong text-left transition-all">
+                                    <span class="font-mono-tech text-[10px] ink-primary font-semibold border-l-2 border-[#D97706] pl-1.5 block">PRESET 04 // EDITORIAL</span>
+                                    <span class="font-semibold block mt-0.5">Portfólio & Apresentação</span>
+                                    <span class="text-[11px] ink-muted block mt-1">Bento Grid + AcrylicBrush + ThemeShadow + Parallax sutil</span>
+                                </button>
+                            </div>
+
+                            <div class="pt-3 border-t border-hair">
+                                <label for="customAppGoalInput" class="font-mono-tech text-[11px] uppercase ink-muted block mb-2">
+                                    2. Descreva em 1 frase o que o seu App vai fazer:
+                                </label>
+                                <input type="text" id="customAppGoalInput" oninput="updateGeneratedPrompt()" placeholder="Ex: Gerador de Evolução Médica e APAC com cálculo automático..." class="input-ex-umbris w-full">
+                            </div>
+
+                            <div class="pt-3 border-t border-hair">
+                                <span class="font-mono-tech text-[11px] uppercase ink-muted block mb-2">
+                                    3. Efeitos & Componentes Selecionados (<span id="selectedCountLabel">0</span>):
+                                </span>
+                                <div id="selectedChipsContainer" class="flex flex-wrap gap-1.5 min-h-[44px] p-3 rounded-xl surface-elevated border border-hair"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Painel Direito: Prompt Gerado Pronto para Copiar + Exportação -->
+                    <div class="lg:col-span-7 surface-card border border-strong rounded-2xl shadow-architectural overflow-hidden flex flex-col">
+                        <div class="px-6 py-4 surface-elevated border-b border-hair flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-center space-x-2.5">
+                                <span class="w-2.5 h-2.5 rounded-full accent-bg"></span>
+                                <span class="font-mono-tech text-xs font-semibold ink-primary">PROMPT PRONTO PARA COLAR NO GEMINI</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span id="promptCopyFeedback" class="font-mono-tech text-[11px] accent-text opacity-0 transition-opacity">✓ Copiado!</span>
+                                <button onclick="copyGeneratedPrompt()" class="px-4 py-1.5 rounded-full text-xs font-mono-tech font-medium accent-bg hover:opacity-90 transition-all shadow-sm">
+                                    Copiar Prompt Completo
+                                </button>
+                                <button onclick="downloadMarkdownReference()" class="px-3.5 py-1.5 rounded-full text-xs font-mono-tech surface-card border border-strong ink-primary hover:opacity-80 transition-all">
+                                    ↓ Baixar Compêndio (.md)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="p-6 surface-card">
+                            <pre id="generatedPromptOutput" class="font-mono-tech text-xs leading-relaxed ink-primary overflow-x-auto max-h-[460px] whitespace-pre-wrap select-all p-4 rounded-xl surface-elevated border border-hair"></pre>
+                        </div>
+
+                        <div class="px-6 py-3.5 surface-elevated border-t border-hair flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] font-mono-tech ink-muted">
+                            <span>DICA: Você também pode pressionar <strong class="ink-primary">Ctrl+P</strong> para imprimir ou salvar este guia em PDF A4 limpo.</span>
+                            <span class="ink-primary font-semibold">ATLAS EX UMBRIS // V1.0</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- NOTIFICAÇÃO TOAST FLUTUANTE -->
+    <div id="floatingToast" role="status" aria-live="polite" class="fixed bottom-5 right-5 z-50 hidden surface-contrast border border-strong px-4 py-3 rounded-xl shadow-architectural font-mono-tech text-xs flex items-center space-x-2.5">
+        <span class="w-2 h-2 rounded-full accent-bg"></span>
+        <span id="floatingToastText">Item adicionado ao seu pedido!</span>
+    </div>
+
+    <script>
+        // ==========================================================================
+        // BASE DE DADOS RICA: 28 EFEITOS, LAYOUTS, MOTION & CONTROLES (WINUI + EX UMBRIS)
+        // ==========================================================================
+        const CATALOG_ITEMS = [
+            // CATEGORIA 1: MATERIAIS, LUZ & ATMOSFERA (6)
+            {
+                id: 'acrylic-brush',
+                name: 'AcrylicBrush (Vidro Acromático)',
+                category: 'materials',
+                catLabel: 'Materiais & Luz',
+                tags: ['medtech', 'tdah', 'saas', 'editorial'],
+                summary: 'Material translúcido com desfoque de fundo (backdrop-filter) recomendado para barras de navegação fixas, painéis flutuantes e paletas de comando.',
+                beautyTip: 'Combine opacidade entre 85% e 92% com backdrop-filter: blur(16px) e uma borda fina de 1px (rgba(255,255,255,0.14)). Nunca deixe transparente demais a ponto de embaralhar as letras.',
+                realUse: 'Barra superior fixa com seletor de temas (#8e8999 translúcido), painel lateral de filtros sobre um mapa ou modal de busca rápida Ctrl+K.',
+                whenToUse: 'Em elementos que flutuam sobre o conteúdo ao rolar a página, criando sensação de profundidade.',
+                whenNotToUse: 'Nunca use em cartões de leitura longa, tabelas de dados ou formulários extensos (reduz o contraste e cansa a vista).',
+                cssSnippet: 'background: rgba(73, 70, 79, 0.86); backdrop-filter: blur(16px); border: 1px solid var(--border-hairline);'
+            },
+            {
+                id: 'system-backdrop-mica',
+                name: 'SystemBackdrop / Superfície Mica',
+                category: 'materials',
+                catLabel: 'Materiais & Luz',
+                tags: ['medtech', 'tdah', 'saas'],
+                summary: 'Material de base opaco e aveludado que estabelece a atmosfera principal da janela (como o Cinza Monolítico #57545d e superfície #49464f) sem brilho excessivo.',
+                beautyTip: 'Mantenha uma diferença sutil de luminosidade (6% a 10%) entre o fundo do palco (--bg-canvas: #57545d), os cartões (--bg-surface: #49464f) e os campos elevados (--bg-elevated: #635f6a).',
+                realUse: 'Fundo principal de sistemas médicos, prontuários eletrônicos e IDEs onde o usuário passa 4 a 8 horas seguidas sem fadiga ocular.',
+                whenToUse: 'Sempre como camada estrutural base (60% a 85% da tela) para sustentar a regra dos 98% neutro.',
+                whenNotToUse: 'Evite misturar mais de 3 tons de fundo na mesma seção para não fragmentar a unidade monolítica.',
+                cssSnippet: 'background-color: var(--bg-canvas); /* #57545d no tema cinza */'
+            },
+            {
+                id: 'theme-shadow-rim',
+                name: 'ThemeShadow + Luz Especular (Rim Light)',
+                category: 'materials',
+                catLabel: 'Materiais & Luz',
+                tags: ['medtech', 'tdah', 'saas', 'editorial'],
+                summary: 'Sombra física em 3 camadas (umbra curta, penumbra média e difusão longa) combinada com 1px de luz refletida na borda superior interna do card.',
+                beautyTip: 'Em fundos cinza (#57545d) ou pretos (#070709), a sombra preta sozinha não destaca o card; o segredo é o inset 0 1px 0 0 rgba(255,255,255,0.22) no topo.',
+                realUse: 'Destacar o card de resultado de uma calculadora médica, o painel principal de um dashboard ou um modal de confirmação.',
+                whenToUse: 'Nos contêineres principais e cartões interativos que precisam parecer objetos táteis esculpidos.',
+                whenNotToUse: 'Não aplique em células individuais de tabelas, badges pequenos ou itens repetitivos de listas longas.',
+                cssSnippet: 'box-shadow: 0 2px 6px rgba(15,14,18,0.35), 0 16px 36px -6px rgba(15,14,18,0.5), inset 0 1px 0 0 var(--rim-light);'
+            },
+            {
+                id: 'content-island-terrixa',
+                name: 'ContentIsland & Contraste Alternado',
+                category: 'materials',
+                catLabel: 'Materiais & Luz',
+                tags: ['medtech', 'tdah', 'saas', 'editorial'],
+                summary: 'Ilhas de conteúdo autocontidas que alternam entre a superfície padrão (#49464f / #FFFFFF) e blocos de alto contraste escuro (#232127 / #18181C).',
+                beautyTip: 'Numa grade de 4 cartões (01, 02, 03, 04), faça os cartões 01 e 03 na cor da superfície e os cartões 02 e 04 em bloco escuro (.surface-contrast) com cantos de 14px.',
+                realUse: 'Separar módulos independentes (ex: Dados Vitais do Paciente vs. Conduta Imediata em bloco escuro) sem gastar cores novas.',
+                whenToUse: 'Quando você quer impacto visual e separação clara de blocos mantendo a sobriedade monocromática.',
+                whenNotToUse: 'Não use bloco escuro invertido para textos longos de mais de 3 parágrafos se o restante da página for claro.',
+                cssSnippet: '.surface-contrast { background-color: var(--bg-contrast-card); color: var(--ink-contrast-card); border-radius: 14px; }'
+            },
+            {
+                id: 'compact-sizing',
+                name: 'Compact Sizing (Modo Alta Densidade)',
+                category: 'materials',
+                catLabel: 'Materiais & Luz',
+                tags: ['medtech', 'saas'],
+                summary: 'Redução calibrada de espaçamentos internos, altura de inputs e entrelinhas para exibir até 40% mais dados na mesma tela sem precisar rolar.',
+                beautyTip: 'Combine padding compacto (py-1.5 px-2.5) com tipografia IBM Plex Mono em tabular-nums (números perfeitamente alinhados na vertical) e linhas divisórias hairline.',
+                realUse: 'Tabelas de exames laboratoriais, listagem de códigos SIGTAP/CID-10, planilhas financeiras e painéis de telemetria.',
+                whenToUse: 'Em ferramentas operacionais de uso diário onde bater o olho em todas as informações sem rolar a página é essencial.',
+                whenNotToUse: 'Evite em landing pages editoriais, apresentações ou fluxos passo a passo para iniciantes.',
+                cssSnippet: '.compact-mode td, .compact-mode th { padding: 0.4rem 0.65rem; font-size: 0.75rem; font-variant-numeric: tabular-nums; }'
+            },
+            {
+                id: 'architectural-grid-bg',
+                name: 'Grade Arquitetônica de Fundo (Blueprint)',
+                category: 'materials',
+                catLabel: 'Materiais & Luz',
+                tags: ['saas', 'editorial'],
+                summary: 'Malha geométrica sutil de 64x64px desenhada com linhas de 1px na cor --border-hairline no fundo de seções de destaque ou palcos interativos.',
+                beautyTip: 'Aplique opacidade de 40% a 60% e pointer-events: none para criar atmosfera de engenharia/estúdio sem competir com o texto.',
+                realUse: 'Seção de abertura (Hero), palco de simuladores interativos, áreas de preview de documentos e canvas de fluxogramas.',
+                whenToUse: 'Para dar textura técnica a áreas com bastante espaço negativo (whitespace).',
+                whenNotToUse: 'Não coloque atrás de tabelas densas ou textos longos, pois as linhas da grade cruzam com as letras.',
+                cssSnippet: 'background-size: 64px 64px; background-image: linear-gradient(to right, var(--border-hairline) 1px, transparent 1px), linear-gradient(to bottom, var(--border-hairline) 1px, transparent 1px);'
+            },
+
+            // CATEGORIA 2: LAYOUT & ESPAÇO (8)
+            {
+                id: 'bento-wrap-grid',
+                name: 'Grid & VariableSizedWrapGrid (Bento Grid)',
+                category: 'layout',
+                catLabel: 'Layout & Espaço',
+                tags: ['medtech', 'tdah', 'saas', 'editorial'],
+                summary: 'Grade responsiva onde o cartão mais importante ocupa 2 colunas ou 2 linhas (Span 2x1 ou 2x2), enquanto os secundários ocupam 1x1.',
+                beautyTip: 'Coloque a cor pontual de 2% apenas no cartão expandido (2x1) ou no seu indicador principal; mantenha os cartões 1x1 em tons de grafite.',
+                realUse: 'Painel de resumo clínico (Hipótese Diagnóstica em 2x1 + Sinais Vitais, Alergias e Exames Pendentes em cards 1x1).',
+                whenToUse: 'Sempre que houver 4 a 7 blocos de informação com pesos hierárquicos diferentes.',
+                whenNotToUse: 'Quando todos os itens têm exatamente o mesmo peso (ex: galeria de 12 ícones iguais).',
+                cssSnippet: 'display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; /* Card principal: grid-column: span 2; */'
+            },
+            {
+                id: 'split-view',
+                name: 'SplitView (Painel Duplo / Master-Detail)',
+                category: 'layout',
+                catLabel: 'Layout & Espaço',
+                tags: ['medtech', 'tdah', 'saas'],
+                summary: 'Divide a tela em 2 áreas coordenadas: uma lista/navegação ou entrada de dados de um lado e o painel de detalhes ou preview ao vivo do outro.',
+                beautyTip: 'Permita colapsar a barra lateral no mobile ou em telas menores, mantendo uma borda divisória fina (border-r border-hair).',
+                realUse: 'Lista de pacientes/notas à esquerda e prontuário aberto à direita; ou dados brutos à esquerda e documento APAC/Evolução formatado à direita.',
+                whenToUse: 'Quando o usuário precisa consultar vários itens em sequência sem perder o contexto da lista (excelente para TDAH).',
+                whenNotToUse: 'Em páginas simples de leitura única onde uma barra lateral só roubaria espaço horizontal.',
+                cssSnippet: 'display: grid; grid-template-columns: 320px 1fr; min-height: calc(100vh - 4rem);'
+            },
+            {
+                id: 'expander-accordion',
+                name: 'Expander (Revelação Progressiva)',
+                category: 'layout',
+                catLabel: 'Layout & Espaço',
+                tags: ['medtech', 'tdah', 'saas', 'editorial'],
+                summary: 'Contêiner retrátil com cabeçalho sempre visível que esconde detalhes técnicos, códigos-fonte, critérios diagnósticos ou filtros avançados até ser clicado.',
+                beautyTip: 'Coloque um resumo curto já no cabeçalho fechado (ex: "Critérios de Inclusão · 4 itens") para que o usuário saiba o que há dentro antes de abrir.',
+                realUse: 'Esconder a memória de cálculo de uma fórmula médica, o código-fonte de um exemplo (como no WinUI Gallery) ou observações secundárias.',
+                whenToUse: 'Essencial para evitar sobrecarga visual (TDAH): mostre apenas os 20% essenciais na tela e guarde os 80% técnicos dentro de Expanders.',
+                whenNotToUse: 'Nunca esconda campos obrigatórios de preenchimento imediato ou o botão de salvar dentro de um Expander fechado.',
+                cssSnippet: '/* Cabeçalho clicável + corpo com transição suave de altura/opacidade */'
+            },
+            {
+                id: 'canvas-zindex',
+                name: 'Canvas (Posicionamento Livre & Camadas Z)',
+                category: 'layout',
+                catLabel: 'Layout & Espaço',
+                tags: ['medtech', 'saas'],
+                summary: 'Palco de coordenadas absolutas (Top, Left, Z-Index) para sobrepor elementos livremente, desenhar conexões entre nós ou posicionar marcadores sobre imagens.',
+                beautyTip: 'Use um fundo com grade arquitetônica discreta e aplique ThemeShadow nas camadas com maior Z-Index para deixar claro quem está por cima.',
+                realUse: 'Mapa corporal de lesões dermatológicas/dor, fluxograma de protocolo clínico, arquitetura de agentes de IA ou quadro branco espacial.',
+                whenToUse: 'Quando a relação espacial 2D/camadas entre os objetos importa mais do que uma lista vertical.',
+                whenNotToUse: 'Nunca use posicionamento absoluto (Canvas) para montar o layout geral de textos e formulários (quebra no celular).',
+                cssSnippet: '.canvas-stage { position: relative; overflow: hidden; } .canvas-node { position: absolute; top: var(--y); left: var(--x); z-index: var(--z); }'
+            },
+            {
+                id: 'selector-tab-view',
+                name: 'SelectorBar & TabView em Pílula',
+                category: 'layout',
+                catLabel: 'Layout & Espaço',
+                tags: ['medtech', 'tdah', 'saas', 'editorial'],
+                summary: 'Barra de alternância rápida entre visões ou categorias usando contêineres arredondados (rounded-full) com alto contraste tipográfico.',
+                beautyTip: 'No tema Cinza (#8e8999) e Claro, use texto grafite escuro (#16151A) nas abas inativas e fundo escuro sólido (#1E1C22) com texto claro na aba ativa.',
+                realUse: 'Alternar entre "1. Triagem", "2. Exames", "3. Conduta" e "4. Folha A4" dentro do mesmo aplicativo sem recarregar a página.',
+                whenToUse: 'Quando você tem de 2 a 6 modos ou seções que não precisam aparecer empilhados ao mesmo tempo.',
+                whenNotToUse: 'Se houver mais de 7 categorias, prefira uma navegação lateral (SplitView) ou busca por Command Palette.',
+                cssSnippet: '.nav-pill-container { background: var(--nav-pill-bg); border-radius: 9999px; padding: 0.25rem; }'
+            },
+            {
+                id: 'viewbox-a4',
+                name: 'Viewbox & Folha A4 Proporcional',
+                category: 'layout',
+                catLabel: 'Layout & Espaço',
+                tags: ['medtech', 'editorial'],
+                summary: 'Contêiner que escala seu conteúdo proporcionalmente para preservar o formato exato de um documento impresso (A4 210x297mm), receita, APAC ou certificado.',
+                beautyTip: 'Renderize a folha A4 sempre em fundo claro editorial (#FFFFFF) com sombra esculpida sobre o palco cinza (#57545d), criando o efeito de papel real sobre a mesa.',
+                realUse: 'Preview em tempo real de formulários SUS (APAC, LME, SISREG), prescrições médicas, relatórios executivos e laudos prontos para impressão.',
+                whenToUse: 'Sempre que o produto final do app for um documento oficial ou folha para imprimir/assinar.',
+                whenNotToUse: 'Não use escala fixa de papel para interfaces que serão lidas apenas na tela do celular.',
+                cssSnippet: '.a4-sheet { width: 210mm; min-height: 297mm; background: #FFF; color: #111; box-shadow: var(--shadow-sculpted); }'
+            },
+            {
+                id: 'stack-wrap-panel',
+                name: 'StackPanel & WrapPanel (Fluxo de Tags/Chips)',
+                category: 'layout',
+                catLabel: 'Layout & Espaço',
+                tags: ['medtech', 'tdah', 'saas'],
+                summary: 'Empilhamento linear (vertical/horizontal) ou fila inteligente que quebra linha automaticamente para acomodar pílulas de filtros, sintomas, CIDs ou atalhos.',
+                beautyTip: 'Use gap uniforme (gap-2) e pílulas em --bg-elevated com borda --border-hairline; quando selecionada, a pílula ganha borda --punctual-accent.',
+                realUse: 'Seleção rápida de comorbidades (HAS, DM2, DRC), filtros de exames solicitados ou tags de prioridade em tarefas.',
+                whenToUse: 'Para substituir caixas de seleção múltipla (select multiple) feias e difíceis de clicar.',
+                whenNotToUse: 'Evite empilhar mais de 25 chips visíveis de uma vez; agrupe os menos usados em um Expander.',
+                cssSnippet: 'display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;'
+            },
+            {
+                id: 'border-hairline-frame',
+                name: 'Border & Molduras Técnicas Hairline',
+                category: 'layout',
+                catLabel: 'Layout & Espaço',
+                tags: ['medtech', 'tdah', 'saas', 'editorial'],
+                summary: 'Uso de linhas divisórias estruturais ultrafinas (1px) com opacidade calibrada (--border-hairline e --border-strong) que organizam a página como uma planta arquitetônica.',
+                beautyTip: 'Combine bordas externas mais firmes (--border-strong: 24% a 28%) nos cartões principais com divisórias internas suaves (--border-hairline: 10% a 14%).',
+                realUse: 'Separar o cabeçalho técnico de um card (01 // TÍTULO) do seu corpo de dados e do rodapé de telemetria.',
+                whenToUse: 'Em toda a estrutura Ex Umbris para dar precisão geométrica sem pesar.',
+                whenNotToUse: 'Nunca use bordas grossas (2px ou 3px) em todos os lados, exceto para indicar o único card atualmente selecionado.',
+                cssSnippet: 'border: 1px solid var(--border-hairline);'
+            },
+
+            // CATEGORIA 3: MOTION & TRANSIÇÕES (6)
+            {
+                id: 'implicit-transitions',
+                name: 'Implicit Transitions (Transição Automática)',
+                category: 'motion',
+                catLabel: 'Motion & Animação',
+                tags: ['medtech', 'tdah', 'saas', 'editorial'],
+                summary: 'Qualquer alteração de estado (filtrar lista, mudar tamanho de coluna, trocar cor de status ou atualizar número) acontece com interpolação suave automática.',
+                beautyTip: 'Aplique transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) nos cartões para que mudanças de layout pareçam físicas e naturais.',
+                realUse: 'Quando o usuário filtra os cards por categoria ou ativa o modo Compact Sizing e os elementos deslizam suavemente para a nova posição.',
+                whenToUse: 'Em contêineres que mudam de dimensão, cor ou visibilidade em resposta ao clique do usuário.',
+                whenNotToUse: 'Não aplique transition: all em elementos arrastáveis pelo mouse em tempo real (causa atraso/lag no cursor).',
+                cssSnippet: 'transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);'
+            },
+            {
+                id: 'connected-animation',
+                name: 'Connected Animation (Continuidade Espacial)',
+                category: 'motion',
+                catLabel: 'Motion & Animação',
+                tags: ['tdah', 'medtech', 'editorial'],
+                summary: 'Quando o usuário clica em um card resumido, o próprio card se expande suavemente ou seu título viaja até o topo da visão detalhada.',
+                beautyTip: 'Mantenha o cabeçalho do item visível durante toda a expansão para que o olho do usuário não perca o ponto de referência.',
+                realUse: 'Clicar no card de um paciente ou protocolo e expandir os detalhes ali mesmo ou em um painel conectado, evitando perder o fio da meada (ideal para TDAH).',
+                whenToUse: 'Na transição entre uma lista de cartões e a visualização completa do item escolhido.',
+                whenNotToUse: 'Quando o usuário precisa comparar 2 itens ao mesmo tempo (nesse caso, use SplitView lado a lado).',
+                cssSnippet: '/* Expansão coordenada mantendo a mesma âncora visual e curva 0.16, 1, 0.3, 1 */'
+            },
+            {
+                id: 'easing-functions',
+                name: 'Easing Functions Físicas (Quint Out & Spring)',
+                category: 'motion',
+                catLabel: 'Motion & Animação',
+                tags: ['medtech', 'tdah', 'saas', 'editorial'],
+                summary: 'Substituição das curvas lineares padrão por desaceleração rápida (Quint Out) ou leve elasticidade (Spring) que imitam a inércia do mundo real.',
+                beautyTip: 'Use cubic-bezier(0.16, 1, 0.3, 1) para painéis e layouts (rápido no início, pouso suave no fim) e cubic-bezier(0.34, 1.56, 0.64, 1) para pequenos ícones/badges.',
+                realUse: 'Abertura de gavetas laterais, hover de pílulas de menu e entrada de notificações toast.',
+                whenToUse: 'Em 100% das microinterações da interface.',
+                whenNotToUse: 'Nunca use curvas elásticas exageradas (bounce pesado) em telas médicas ou financeiras sérias.',
+                cssSnippet: 'transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);'
+            },
+            {
+                id: 'theme-transitions',
+                name: 'Theme Transitions (Metamorfose de Tema)',
+                category: 'motion',
+                catLabel: 'Motion & Animação',
+                tags: ['medtech', 'tdah', 'saas', 'editorial'],
+                summary: 'Transição sincronizada de 450ms ao alternar entre os 3 temas (Claro Editorial, Cinza #57545d e Preto Terminal IBM) e as 4 cores pontuais.',
+                beautyTip: 'Transicione background-color e color no body com durações levemente escalonadas (0.45s no fundo, 0.25s no texto) para evitar piscadas bruscas.',
+                realUse: 'Mudar do tema Cinza #57545d (uso diurno confortável) para o tema Claro (conferência de impressão) ou Preto IBM (plantão noturno).',
+                whenToUse: 'Sempre que incluir o seletor triplo de temas na barra superior.',
+                whenNotToUse: 'Desative durante a geração de PDF/impressão (@media print) para captura instantânea.',
+                cssSnippet: 'body { transition: background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease; }'
+            },
+            {
+                id: 'page-stagger-transitions',
+                name: 'Page Transitions & Entrada Escalonada (Stagger)',
+                category: 'motion',
+                catLabel: 'Motion & Animação',
+                tags: ['editorial', 'saas'],
+                summary: 'Ao abrir uma página ou trocar de aba, os cartões surgem com um leve movimento ascendente (translateY(10px) -> 0) com atraso de 40ms entre cada card.',
+                beautyTip: 'Mantenha o deslocamento curto (8px a 12px) e duração rápida (300ms) para transmitir agilidade, nunca lentidão.',
+                realUse: 'Abertura de dashboards, catálogos de projetos e troca entre módulos em Single-Page Apps.',
+                whenToUse: 'Na carga inicial da página ou ao alternar entre grandes visões no SelectorBar.',
+                whenNotToUse: 'Evite atrasos longos (> 100ms por item) que façam o usuário esperar para clicar.',
+                cssSnippet: '@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }'
+            },
+            {
+                id: 'parallax-view-subtle',
+                name: 'ParallaxView Sutil & Scroll Depth',
+                category: 'motion',
+                catLabel: 'Motion & Animação',
+                tags: ['editorial'],
+                summary: 'Deslocamento em velocidades ligeiramente diferentes entre a grade arquitetônica de fundo e os cartões em primeiro plano durante a rolagem.',
+                beautyTip: 'Use apenas em elementos decorativos de fundo (como a malha geométrica ou numeração gigante 01/02), mantendo os textos de leitura firmes.',
+                realUse: 'Landing pages editoriais, portfólios de arquitetura de produto e apresentações interativas.',
+                whenToUse: 'Quando o objetivo principal é impacto estético e narrativa visual.',
+                whenNotToUse: 'Não use em calculadoras médicas, formulários de digitação rápida ou tabelas operacionais.',
+                cssSnippet: '/* Deslocamento sutil de 10% a 15% na camada de fundo durante o scroll */'
+            },
+
+            // CATEGORIA 4: CONTROLES AVANÇADOS, FEEDBACK & FLUXO ANTI-TDAH (8)
+            {
+                id: 'command-palette-ctrlk',
+                name: 'Command Palette (Busca Universal Ctrl+K)',
+                category: 'controls',
+                catLabel: 'Controles & Fluxo',
+                tags: ['medtech', 'tdah', 'saas'],
+                summary: 'Caixa de comando flutuante acionada por atalho ou clique que permite buscar qualquer função, calculadora, código CID/SIGTAP ou trocar de tema digitando poucas letras.',
+                beautyTip: 'Estilize com AcrylicBrush, borda forte e lista de resultados navegável pelas setas do teclado com badges em IBM Plex Mono.',
+                realUse: 'Em um sistema médico ou painel pessoal, digitar "clea" para abrir direto a calculadora de Clearance ou "apac" para gerar o formulário.',
+                whenToUse: 'Indispensável para quem tem TDAH: elimina a necessidade de procurar em qual menu ou aba uma função foi guardada.',
+                whenNotToUse: 'Em páginas mínimas com apenas 1 única função visível.',
+                cssSnippet: '/* Modal centralizado no topo (top: 15%) com backdrop-filter: blur(16px) e filtro instantâneo */'
+            },
+            {
+                id: 'toast-badge-notifications',
+                name: 'App Notifications (Toasts) & Badges',
+                category: 'controls',
+                catLabel: 'Controles & Fluxo',
+                tags: ['medtech', 'tdah', 'saas'],
+                summary: 'Pequenos avisos temporários no canto da tela ("✓ Copiado para o prontuário!") e contadores numéricos discretos em pílulas de menu.',
+                beautyTip: 'Nunca use alerta nativo do navegador. Crie um toast no canto inferior direito com fundo .surface-contrast e um ponto de 8px na cor pontual.',
+                realUse: 'Confirmar que a evolução clínica foi copiada, que o rascunho foi salvo automaticamente no localStorage ou mostrar quantos itens estão selecionados.',
+                whenToUse: 'Para dar feedback imediato de toda ação do usuário sem interromper o fluxo de trabalho.',
+                whenNotToUse: 'Não use toasts que somem sozinhos para erros graves que exigem leitura detalhada.',
+                cssSnippet: '.toast-ex { position: fixed; bottom: 1.25rem; right: 1.25rem; z-index: 50; }'
+            },
+            {
+                id: 'contextual-popup-popover',
+                name: 'Popup & Popover Contextual de Referência',
+                category: 'controls',
+                catLabel: 'Controles & Fluxo',
+                tags: ['medtech', 'tdah', 'saas'],
+                summary: 'Micro-painel ancorado a um botão ou sigla que mostra valores de referência, doses pediátricas ou explicação técnica sem sair da tela atual.',
+                beautyTip: 'Use superfície elevada, sombra esculpida de 3 camadas e feche automaticamente ao clicar fora ou pressionar Esc.',
+                realUse: 'Clicar em "(Ver doses habituais)" ao lado de um medicamento e abrir a tabela de posologia ali mesmo, sem perder o texto que você estava digitando.',
+                whenToUse: 'Para consultas rápidas de apoio à decisão (evita abrir outra aba do navegador e se distrair no meio da tarefa).',
+                whenNotToUse: 'Para conteúdos longos que exigem rolagem extensa (nesses casos, use uma gaveta lateral SplitView).',
+                cssSnippet: '/* Posicionamento ancorado com z-index: 40 e --shadow-sculpted */'
+            },
+            {
+                id: 'directional-pill-cta',
+                name: 'Botão Pílula Direcional (Estilo Terrixa ↘)',
+                category: 'controls',
+                catLabel: 'Controles & Fluxo',
+                tags: ['medtech', 'tdah', 'saas', 'editorial'],
+                summary: 'Gatilho de ação principal em formato pílula (rounded-full) preenchido com a cor pontual de 2% e acompanhado de um círculo interno contendo a seta direcional ↘ ou →.',
+                beautyTip: 'Garanta contraste perfeito do texto dentro do botão: branco (#FFFFFF) sobre Carmim (#e13535) ou Âmbar (#D97706), e grafite escuro (#091318 / #062016) sobre Azul (#35acd8) ou Verde (#10B981).',
+                realUse: 'Botão único de "Gerar Evolução Estruturada ↘", "Calcular Score Clínico ↘" ou "Exportar Documento ↘".',
+                whenToUse: 'Apenas 1 ou 2 por tela, reservado exclusivamente para a ação mais importante da página.',
+                whenNotToUse: 'Não use em botões secundários ("Limpar", "Cancelar", "Voltar"), que devem ficar em grafite discreto.',
+                cssSnippet: '<button class="pl-5 pr-2.5 py-2 rounded-full accent-bg flex items-center space-x-3"><span>Ação</span><span class="w-6 h-6 rounded-full bg-black/20 flex items-center justify-center">↘</span></button>'
+            },
+            {
+                id: 'rich-structured-editor',
+                name: 'RichEditBox & Editor com Templates Clínicos',
+                category: 'controls',
+                catLabel: 'Controles & Fluxo',
+                tags: ['medtech', 'tdah'],
+                summary: 'Área de edição de texto assistida por barra de macros/snippets rápidos (ex: inserir modelo de Exame Físico Normal, Sinais Vitais ou Queixa Principal com 1 clique).',
+                beautyTip: 'Combine fonte Plus Jakarta Sans para leitura confortável ou IBM Plex Mono para alinhamento técnico, com contador de caracteres e auto-save em localStorage.',
+                realUse: 'Redação de História Clínica, Evolução de Admissões, Laudos de Exames ou Notas de Reunião onde digitar tudo do zero dá preguiça ou bloqueio.',
+                whenToUse: 'Sempre que o aplicativo envolver escrita de texto livre ou notas estruturadas.',
+                whenNotToUse: 'Quando a entrada puder ser resolvida apenas com pílulas clicáveis (Chips) ou números.',
+                cssSnippet: '/* Textarea/ContentEditable com barra superior de pílulas de inserção rápida */'
+            },
+            {
+                id: 'storage-dropzone',
+                name: 'Storage Picker & Zona Drag-and-Drop Tátil',
+                category: 'controls',
+                catLabel: 'Controles & Fluxo',
+                tags: ['medtech', 'saas'],
+                summary: 'Área tracejada elegante que reage quando o usuário arrasta arquivos (PDFs de exames, imagens, planilhas CSV/JSON) ou cola imagens da área de transferência (Ctrl+V).',
+                beautyTip: 'Em repouso, use borda tracejada em --border-strong; quando o arquivo passa por cima (dragover), mude a borda para --punctual-accent e o fundo para --punctual-soft.',
+                realUse: 'Importar fotos de exames laboratoriais, carregar um backup JSON do sistema ou anexar documentos para extração.',
+                whenToUse: 'Em qualquer ferramenta que processe arquivos locais ou imagens coladas.',
+                whenNotToUse: 'Não ocupe metade da tela com a zona de upload depois que o arquivo já foi carregado (recolha para uma barra compacta).',
+                cssSnippet: '.dropzone.dragover { border-color: var(--punctual-accent); background-color: var(--punctual-soft); }'
+            },
+            {
+                id: 'ink-canvas-annotation',
+                name: 'InkCanvas (Desenho, Assinatura & Marcação)',
+                category: 'controls',
+                catLabel: 'Controles & Fluxo',
+                tags: ['medtech', 'editorial'],
+                summary: 'Superfície HTML5 <canvas> integrada para desenhar à mão livre (mouse, caneta ou toque), assinar documentos ou circular achados em uma imagem ou esquema anatômico.',
+                beautyTip: 'Ofereça apenas 3 espessuras de traço, botão "Desfazer último traço" e paleta restrita ao grafite e à cor pontual (#e13535) para manter a estética limpa.',
+                realUse: 'Marcar localização de dor/lesão em um diagrama corporal, desenhar um esquema rápido para explicar ao paciente ou assinar um termo.',
+                whenToUse: 'Quando uma marcação visual rápida substitui 3 linhas de descrição textual.',
+                whenNotToUse: 'Não exija desenho manual quando um clique em regiões pré-mapeadas (SVG clicável) for mais rápido.',
+                cssSnippet: '<canvas class="surface-card border border-strong rounded-xl cursor-crosshair"></canvas>'
+            },
+            {
+                id: 'squint-focus-mode',
+                name: 'Squint Test & Modo Foco Anti-Distração',
+                category: 'controls',
+                catLabel: 'Controles & Fluxo',
+                tags: ['tdah', 'editorial', 'medtech'],
+                summary: 'Botão de auditoria visual (desfoque de 5px para testar se o ponto focal de 2% continua óbvio) e modo que escurece/recolhe painéis secundários durante o preenchimento.',
+                beautyTip: 'Ao ativar o Modo Foco em uma etapa crítica, reduza a opacidade das barras secundárias para 35% até o usuário concluir a tarefa.',
+                realUse: 'Revisar a hierarquia de uma página recém-criada ou focar 100% na redação de uma conduta médica complexa sem distrações periféricas.',
+                whenToUse: 'Em ferramentas de uso prolongado por pessoas com TDAH ou alta carga de trabalho.',
+                whenNotToUse: 'Mantenha sempre como opção reversível por 1 clique na barra superior.',
+                cssSnippet: 'body.squint-active main { filter: blur(5px); }'
+            }
+        ];
+
+        // ==========================================================================
+        // 6 ARQUÉTIPOS DE PÁGINA ALÉM DE FORMULÁRIOS E GRÁFICOS
+        // ==========================================================================
+        const PAGE_ARCHETYPES = [
+            {
+                id: 'arch-split-workbench',
+                number: '01',
+                name: 'Split-Screen Live Workbench (Entrada + Documento Ao Vivo)',
+                subtitle: 'Edição rápida na esquerda · Documento oficial / Preview renderizado na direita',
+                whenToUse: 'Perfeito para geradores de Evolução Médica, APAC/LME/SISREG, criadores de prompts/skills ou editores de laudos. Você clica em pílulas rápidas na esquerda e vê a folha pronta na direita em tempo real.',
+                whenNotToUse: 'Evite em telas exclusivamente mobile sem transformar o preview direito em uma aba deslizante ou modal rápido.',
+                promptText: 'Estruture a página como um Split-Screen Live Workbench (SplitView): na metade esquerda, coloque controles rápidos em pílulas, busca e campos compactos; na metade direita, exiba o preview ao vivo do documento/resultado formatado (com opção de folha A4 e botão de copiar em 1 clique).',
+                renderHtml: `
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 h-full">
+                        <div class="md:col-span-5 surface-card border border-hair rounded-xl p-4 flex flex-col justify-between space-y-3">
+                            <div>
+                                <span class="font-mono-tech text-[10px] ink-muted uppercase block">PAINEL ESQUERDO // ENTRADA RÁPIDA</span>
+                                <div class="text-xs font-semibold mt-1">Pílulas de Inserção (1 Clique)</div>
+                                <div class="flex flex-wrap gap-1.5 mt-2">
+                                    <span class="px-2 py-1 rounded-md surface-elevated border border-strong font-mono-tech text-[10px]">+ Lúcido/Orientado</span>
+                                    <span class="px-2 py-1 rounded-md accent-soft accent-text border accent-border font-mono-tech text-[10px]">✓ RCR 2T BNF</span>
+                                    <span class="px-2 py-1 rounded-md surface-elevated border border-hair font-mono-tech text-[10px]">+ MV+ s/ RA</span>
+                                </div>
+                                <div class="mt-3 p-2.5 rounded-lg surface-elevated border border-hair text-[11px] ink-secondary font-mono-tech">
+                                    PA: 120x80 mmHg | FC: 76 bpm | SpO2: 98%
+                                </div>
+                            </div>
+                            <div class="text-[10px] font-mono-tech ink-muted pt-2 border-t border-hair">Auto-save ativo · Sincronizado →</div>
+                        </div>
+                        <div class="md:col-span-7 bg-white text-zinc-900 rounded-xl p-5 shadow-architectural border border-zinc-300 flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-center border-b border-zinc-200 pb-2 mb-3">
+                                    <span class="font-mono-tech text-[10px] font-bold tracking-wider text-zinc-500">PREVIEW AO VIVO // FOLHA PADRONIZADA</span>
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-mono-tech accent-bg">PRONTO P/ COPIAR</span>
+                                </div>
+                                <div class="space-y-2 text-xs leading-relaxed text-zinc-700">
+                                    <p><strong>1. SUBJETIVO / ADMISSÃO:</strong> Paciente admitido em bom estado geral, lúcido e orientado no tempo e espaço.</p>
+                                    <p><strong>2. EXAME FÍSICO:</strong> PA 120x80 mmHg, FC 76 bpm. ACV: RCR em 2T, BNF, sem sopros. AR: MV fisiológico sem ruídos adventícios.</p>
+                                </div>
+                            </div>
+                            <div class="pt-3 border-t border-zinc-200 flex justify-between items-center text-[10px] font-mono-tech text-zinc-500">
+                                <span>FORMATO AUDITÁVEL</span>
+                                <span class="text-zinc-900 font-semibold">Copiar Texto / Imprimir A4 ↘</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'arch-timeline-stream',
+                number: '02',
+                name: 'Linha do Tempo Cronológica (Timeline Clínica / Editorial / Auditoria)',
+                subtitle: 'Eventos conectados por um eixo vertical com marcos de decisão e filtros de período',
+                whenToUse: 'Excelente para evolução hospitalar dia a dia (D1, D2, D3 de internação ou antibiótico), histórico de exames comparativos, linha do tempo de sintomas ou roadmap de projetos.',
+                whenNotToUse: 'Não use quando a ordem cronológica não importa (ex: catálogo de ferramentas sem relação de tempo).',
+                promptText: 'Estruture a visualização principal como uma Linha do Tempo Cronológica (Timeline Vertical/Horizontal) com eixo contínuo em --border-strong, nós numerados (D1, D2, D3), cartões expansíveis por evento e destaque na cor pontual apenas para o marco atual ou evento crítico.',
+                renderHtml: `
+                    <div class="surface-card border border-hair rounded-xl p-5 space-y-4">
+                        <div class="flex items-center justify-between border-b border-hair pb-2.5">
+                            <span class="font-mono-tech text-[10px] uppercase ink-muted">LINHA DO TEMPO // EVOLUÇÃO DE INTERNAÇÃO</span>
+                            <span class="font-mono-tech text-[10px] accent-text font-semibold">D4 ATUAL · ATB D3/7</span>
+                        </div>
+                        <div class="relative pl-6 border-l-2 border-strong space-y-4">
+                            <div class="relative">
+                                <span class="w-3 h-3 rounded-full accent-bg accent-glow absolute -left-[31px] top-1"></span>
+                                <div class="surface-elevated border border-strong rounded-xl p-3">
+                                    <div class="flex justify-between font-mono-tech text-[10px]">
+                                        <span class="accent-text font-semibold">HOJE · D4 INTERNAÇÃO (08:30)</span>
+                                        <span class="ink-muted">Afebril há 48h</span>
+                                    </div>
+                                    <p class="text-xs ink-primary mt-1 font-medium">Queda importante de PCR (142 → 28 mg/L). Avaliar descalonamento oral.</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <span class="w-2.5 h-2.5 rounded-full bg-zinc-400 absolute -left-[29px] top-1.5"></span>
+                                <div class="surface-canvas border border-hair rounded-xl p-3 opacity-85">
+                                    <div class="flex justify-between font-mono-tech text-[10px] ink-muted">
+                                        <span>D2 INTERNAÇÃO · INÍCIO CEFTRIAXONA</span>
+                                        <span>Cultura Coletada</span>
+                                    </div>
+                                    <p class="text-xs ink-secondary mt-1">Iniciado esquema empírico após coleta de 2 pares de hemocultura.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'arch-kanban-board',
+                number: '03',
+                name: 'Quadro Kanban Operacional (Fluxo de Status em Colunas)',
+                subtitle: 'Colunas de estágio (Triagem → Em Andamento → Revisão → Concluído) com limite visual',
+                whenToUse: 'Ideal para gestão de leitos/pacientes do turno, acompanhamento de processos APAC/SISREG pendentes, organização de tarefas pessoais (TDAH) ou pipeline de criação de conteúdo.',
+                whenNotToUse: 'Evite quando houver mais de 5 colunas (cria rolagem horizontal excessiva) ou centenas de itens sem filtro.',
+                promptText: 'Crie um Quadro Kanban Operacional dividido em 3 a 4 colunas de estágio, com contador de itens no topo de cada coluna, cartões compactos em superfície elevada e destaque de 2% de cor apenas no item prioritário ou urgente.',
+                renderHtml: `
+                    <div class="grid grid-cols-3 gap-3 h-full">
+                        <div class="surface-card border border-hair rounded-xl p-3 space-y-2.5">
+                            <div class="flex justify-between items-center font-mono-tech text-[10px] pb-2 border-b border-hair">
+                                <span class="ink-muted">01. PENDENTE</span>
+                                <span class="px-1.5 py-0.5 rounded surface-elevated">2</span>
+                            </div>
+                            <div class="p-2.5 rounded-lg surface-elevated border-l-2 accent-border text-xs space-y-1">
+                                <span class="font-mono-tech text-[9px] accent-text block">URGENTE // LEITO 04</span>
+                                <span class="font-semibold block">Solicitar TC Crânio</span>
+                            </div>
+                            <div class="p-2.5 rounded-lg surface-elevated border border-hair text-xs space-y-1">
+                                <span class="font-mono-tech text-[9px] ink-muted block">LEITO 09</span>
+                                <span class="font-medium block">Checar Ionograma</span>
+                            </div>
+                        </div>
+                        <div class="surface-card border border-hair rounded-xl p-3 space-y-2.5">
+                            <div class="flex justify-between items-center font-mono-tech text-[10px] pb-2 border-b border-hair">
+                                <span class="ink-primary font-semibold">02. EM ANÁLISE</span>
+                                <span class="px-1.5 py-0.5 rounded surface-elevated">1</span>
+                            </div>
+                            <div class="p-2.5 rounded-lg surface-contrast border border-strong text-xs space-y-1">
+                                <span class="font-mono-tech text-[9px] opacity-70 block">APAC ONCO</span>
+                                <span class="font-semibold block">Revisar CID e Laudo</span>
+                                <span class="font-mono-tech text-[9px] opacity-65 block pt-1">Falta CNS do médico</span>
+                            </div>
+                        </div>
+                        <div class="surface-card border border-hair rounded-xl p-3 space-y-2.5">
+                            <div class="flex justify-between items-center font-mono-tech text-[10px] pb-2 border-b border-hair">
+                                <span class="ink-muted">03. CONCLUÍDO</span>
+                                <span class="px-1.5 py-0.5 rounded surface-elevated">3</span>
+                            </div>
+                            <div class="p-2.5 rounded-lg surface-canvas border border-hair text-xs opacity-70">
+                                <span class="font-mono-tech text-[9px] block">[OK] ALTA HOSPITALAR</span>
+                                <span class="line-through block">Receita e Resumo</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'arch-node-canvas',
+                number: '04',
+                name: 'Canvas Espacial de Nós / Árvore de Decisão Interativa',
+                subtitle: 'Fluxograma clicável de conduta clínica, protocolo de triagem ou arquitetura de agentes',
+                whenToUse: 'Excelente para transformar diretrizes médicas longas (fluxogramas de manejo de sepse, dor torácica, regulação SUS) ou fluxos de automação em um mapa visual onde você clica em "Sim / Não" e o caminho acende.',
+                whenNotToUse: 'Não use para substituir cadastros tabulares simples.',
+                promptText: 'Construa a interface como uma Árvore de Decisão / Canvas de Nós interativo sobre grade arquitetônica: cada nó é um cartão clicável conectado visualmente ao próximo passo, iluminando o caminho escolhido com a cor pontual de 2%.',
+                renderHtml: `
+                    <div class="surface-card border border-hair rounded-xl p-5 flex flex-col items-center justify-center space-y-3 relative">
+                        <div class="px-4 py-2.5 rounded-xl surface-contrast border border-strong text-xs font-mono-tech text-center shadow-architectural">
+                            NÓ RAIZ // SUSPEITA CLÍNICA OU GATILHO INICIAL
+                        </div>
+                        <div class="h-4 w-px bg-zinc-400"></div>
+                        <div class="grid grid-cols-2 gap-6 w-full max-w-md">
+                            <div class="p-3 rounded-xl surface-elevated border-2 accent-border text-xs text-center space-y-1 shadow-architectural">
+                                <span class="font-mono-tech text-[10px] accent-text font-semibold block">CAMINHO ATIVO (SIM)</span>
+                                <span class="font-semibold block">Critério de Alto Risco</span>
+                                <span class="text-[10px] ink-secondary block">Acionar Protocolo Imediato ↘</span>
+                            </div>
+                            <div class="p-3 rounded-xl surface-canvas border border-hair text-xs text-center space-y-1 opacity-75">
+                                <span class="font-mono-tech text-[10px] ink-muted block">CAMINHO B (NÃO)</span>
+                                <span class="font-medium block">Baixo Risco / Ambulatorial</span>
+                                <span class="text-[10px] ink-muted block">Seguimento em 48h</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'arch-focus-wizard',
+                number: '05',
+                name: 'Wizard Modo Foco (1 Decisão por Tela — Anti-Sobrecarga TDAH)',
+                subtitle: 'Divide processos complexos em cartões passo a passo com progresso claro e zero distração',
+                whenToUse: 'O melhor formato quando você está cansado ou com TDAH atacado e precisa preencher ou decidir algo complexo sem encarar uma parede de 40 campos de uma vez.',
+                whenNotToUse: 'Evite quando o usuário experiente precisa editar apenas 1 campo isolado no meio de uma ficha já pronta (ofereça um botão "Ver Tudo Compacto" ao lado).',
+                promptText: 'Implemente um Wizard Modo Foco Anti-TDAH: apresente apenas 1 etapa lógica por vez em um monólito centralizado com barra de progresso superior em IBM Plex Mono, botões grandes de escolha rápida e resumo final pronto para copiar.',
+                renderHtml: `
+                    <div class="surface-card border border-strong rounded-2xl p-6 max-w-lg mx-auto space-y-4 shadow-architectural">
+                        <div class="flex items-center justify-between font-mono-tech text-[10px]">
+                            <span class="accent-text font-semibold">PASSO 02 DE 04 // CLASSIFICAÇÃO</span>
+                            <span class="ink-muted">50% CONCLUÍDO</span>
+                        </div>
+                        <div class="w-full h-1.5 surface-elevated rounded-full overflow-hidden">
+                            <div class="w-1/2 h-full accent-bg"></div>
+                        </div>
+                        <div class="py-2">
+                            <h4 class="text-base font-semibold">Qual a modalidade principal da solicitação?</h4>
+                            <p class="text-xs ink-secondary mt-1">Escolha apenas uma opção para carregar automaticamente os códigos SIGTAP corretos.</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2.5 text-xs">
+                            <div class="p-3 rounded-xl surface-elevated border-2 accent-border font-medium">01. APAC Alta Complexidade</div>
+                            <div class="p-3 rounded-xl surface-elevated border border-hair ink-secondary">02. LME Componente Especializado</div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'arch-bento-gallery',
+                number: '06',
+                name: 'Catálogo Interativo & Cofre de Conhecimento (Estilo WinUI Gallery)',
+                subtitle: 'Grade de cartões filtráveis por pílulas + Busca instantânea + Gaveta de código/detalhes',
+                whenToUse: 'Ideal para salvar seu próprio bulário pessoal, biblioteca de prompts e skills, guia de condutas rápidas, catálogo de exames ou portfólio de ferramentas.',
+                whenNotToUse: 'Não use para entrada sequencial de dados de um único paciente.',
+                promptText: 'Construa a página como um Catálogo Interativo estilo WinUI 3 Gallery: SelectorBar em pílulas no topo, busca instantânea por palavra-chave, cartões estruturados com tags técnicas e Expander de código/copiar em cada item.',
+                renderHtml: `
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between surface-card border border-hair px-3.5 py-2 rounded-xl text-xs font-mono-tech">
+                            <div class="flex gap-1.5">
+                                <span class="px-2.5 py-1 rounded-lg accent-bg text-[10px]">Todos</span>
+                                <span class="px-2.5 py-1 rounded-lg surface-elevated text-[10px]">Protocolos</span>
+                                <span class="px-2.5 py-1 rounded-lg surface-elevated text-[10px]">Calculadoras</span>
+                            </div>
+                            <span class="ink-muted text-[10px]">Busca instantânea ⌘K</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="surface-card border border-strong rounded-xl p-3.5 space-y-1.5">
+                                <div class="flex justify-between font-mono-tech text-[10px]">
+                                    <span class="accent-text font-semibold">PROTOCOLO #01</span>
+                                    <span class="ink-muted">Copiar ↘</span>
+                                </div>
+                                <div class="text-xs font-semibold">Reposição de Potássio EV</div>
+                                <p class="text-[11px] ink-secondary">Diluição segura, velocidade máxima em veia periférica vs. central.</p>
+                            </div>
+                            <div class="surface-contrast border border-strong rounded-xl p-3.5 space-y-1.5">
+                                <div class="flex justify-between font-mono-tech text-[10px] opacity-75">
+                                    <span>PROTOCOLO #02</span>
+                                    <span>Copiar ↘</span>
+                                </div>
+                                <div class="text-xs font-semibold">Intubação de Sequência Rápida</div>
+                                <p class="text-[11px] opacity-80">Doses por peso (Fentanil, Etomidato/Quetamina, Succinil/Rocurônio).</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        // ==========================================================================
+        // ESTADO GLOBAL DO APLICATIVO
+        // ==========================================================================
+        let activeCategory = 'all';
+        let selectedItemIds = new Set(['acrylic-brush', 'theme-shadow-rim', 'bento-wrap-grid', 'split-view', 'expander-accordion', 'implicit-transitions', 'command-palette-ctrlk']);
+        let currentArchetypeIndex = 0;
+        let isGridCompact = false;
+        let raceToggled = false;
+
+        const ACCENT_PRESETS = {
+            red:   { hex: '#e13535', soft: 'rgba(225,53,53,0.12)',  glow: 'rgba(225,53,53,0.35)',  ink: '#FFFFFF', label: '#e13535 · Editorial & Foco' },
+            blue:  { hex: '#35acd8', soft: 'rgba(53,172,216,0.14)', glow: 'rgba(53,172,216,0.38)', ink: '#091318', label: '#35acd8 · IA & Engenharia' },
+            green: { hex: '#10B981', soft: 'rgba(16,185,129,0.13)', glow: 'rgba(16,185,129,0.35)', ink: '#062016', label: '#10B981 · MedTech & Saúde' },
+            amber: { hex: '#D97706', soft: 'rgba(217,119,6,0.13)',  glow: 'rgba(217,119,6,0.35)',  ink: '#FFFFFF', label: '#D97706 · FinTech & Executivo' }
+        };
+
+        // 1. CONTROLE DE TEMA E COR PONTUAL
+        function setThemeMode(mode) {
+            document.documentElement.setAttribute('data-theme', mode);
+            try { localStorage.setItem('ex-umbris-atlas-theme', mode); } catch (e) {}
+
+            ['Light', 'Gray', 'Dark'].forEach(t => {
+                const btn = document.getElementById('themeBtn' + t);
+                if (btn) {
+                    const isActive = t.toLowerCase() === mode;
+                    btn.classList.toggle('active', isActive);
+                    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                }
+            });
+
+            const statusEl = document.getElementById('heroThemeStatus');
+            if (mode === 'gray') {
+                statusEl.textContent = 'MODO ATIVO: CINZA SOBRE CINZA (#57545d · MENUS #8e8999 COM TINTA ESCURA)';
+            } else if (mode === 'light') {
+                statusEl.textContent = 'MODO ATIVO: AD LUCEM (CLARO EDITORIAL #F3F3F5)';
+            } else {
+                statusEl.textContent = 'MODO ATIVO: PRETO TERMINAL IBM (#070709 + TIPOGRAFIA IBM PLEX MONO)';
+            }
+        }
+
+        function setAccentPreset(key) {
+            const p = ACCENT_PRESETS[key] || ACCENT_PRESETS.red;
+            const root = document.documentElement.style;
+            root.setProperty('--punctual-accent', p.hex);
+            root.setProperty('--punctual-soft', p.soft);
+            root.setProperty('--punctual-glow', p.glow);
+            root.setProperty('--punctual-btn-ink', p.ink);
+            document.getElementById('activeAccentBadge').textContent = p.label;
+            updateGeneratedPrompt();
+        }
+
+        function setFontFamily(fontKey) {
+            const root = document.documentElement.style;
+            const btns = { inter: 'fontBtnInter', jakarta: 'fontBtnJakarta', ibm: 'fontBtnIbm' };
+            Object.keys(btns).forEach(k => {
+                const b = document.getElementById(btns[k]);
+                if (b) {
+                    b.className = (k === fontKey)
+                        ? 'px-2 py-1.5 rounded-lg accent-bg text-center transition-all'
+                        : 'px-2 py-1.5 rounded-lg surface-elevated border border-hair ink-primary text-center transition-all';
+                }
+            });
+            if (fontKey === 'inter') {
+                root.setProperty('--font-sans', "'Inter', -apple-system, BlinkMacSystemFont, sans-serif");
+                root.setProperty('--font-mono', "'JetBrains Mono', monospace");
+            } else if (fontKey === 'jakarta') {
+                root.setProperty('--font-sans', "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif");
+                root.setProperty('--font-mono', "'JetBrains Mono', monospace");
+            } else {
+                root.setProperty('--font-sans', "'IBM Plex Sans', -apple-system, sans-serif");
+                root.setProperty('--font-mono', "'IBM Plex Mono', monospace");
+            }
+        }
+
+        function toggleSquint() {
+            document.body.classList.toggle('squint-active');
+            const isBlur = document.body.classList.contains('squint-active');
+            const btn = document.getElementById('squintBtn');
+            btn.textContent = isBlur ? 'Desativar Squint (Normal)' : 'Testar Squint (Blur)';
+            btn.setAttribute('aria-pressed', isBlur ? 'true' : 'false');
+        }
+
+        // 2. RENDERIZAÇÃO DO CATÁLOGO DE 28 EFEITOS & CONTROLES
+        function filterCatalog(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.cat-pill-btn').forEach(btn => {
+                const isSelected = btn.getAttribute('data-cat') === cat;
+                btn.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+                if (isSelected) {
+                    btn.className = 'cat-pill-btn px-3.5 py-2 rounded-xl text-xs font-mono-tech font-medium accent-bg transition-all shrink-0';
+                } else {
+                    btn.className = 'cat-pill-btn px-3.5 py-2 rounded-xl text-xs font-mono-tech surface-elevated ink-primary hover:border-strong border border-hair transition-all shrink-0';
+                }
+            });
+            renderCatalogCards();
+        }
+
+        function renderCatalogCards() {
+            const container = document.getElementById('catalogGridContainer');
+            const query = (document.getElementById('catalogSearchInput').value || '').toLowerCase().trim();
+            const useCase = document.getElementById('useCaseFilterSelect').value;
+
+            const filtered = CATALOG_ITEMS.filter(item => {
+                const matchCat = activeCategory === 'all' || item.category === activeCategory;
+                const matchUseCase = useCase === 'all' || item.tags.includes(useCase);
+                const matchQuery = !query || 
+                    item.name.toLowerCase().includes(query) ||
+                    item.summary.toLowerCase().includes(query) ||
+                    item.realUse.toLowerCase().includes(query) ||
+                    item.beautyTip.toLowerCase().includes(query);
+                return matchCat && matchUseCase && matchQuery;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div role="alert" class="col-span-full surface-card border border-hair rounded-2xl p-10 text-center space-y-2">
+                        <div class="font-mono-tech text-xs accent-text">NENHUM EFEITO ENCONTRADO</div>
+                        <p class="text-sm ink-secondary">Tente limpar o campo de busca ou mudar o filtro de categoria acima.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map((item, idx) => {
+                const isSelected = selectedItemIds.has(item.id);
+                const cardBorderClass = isSelected ? 'border-2 accent-border' : 'border border-strong';
+                const btnClass = isSelected
+                    ? 'accent-bg font-semibold'
+                    : 'surface-elevated border border-hair ink-primary hover:border-strong';
+                const btnLabel = isSelected ? '✓ No Pedido' : '+ Incluir no Pedido';
+
+                return `
+                    <article data-state="${isSelected ? 'pressed' : 'idle'}" class="terrixa-card surface-card ${cardBorderClass} p-5 shadow-architectural flex flex-col justify-between transition-all duration-200">
+                        <div>
+                            <!-- Cabeçalho do Card (Estilo WinUI + Ex Umbris) -->
+                            <div class="flex items-center justify-between gap-2 pb-3 mb-3 border-b border-hair">
+                                <span class="font-mono-tech text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full surface-elevated ink-secondary">
+                                    ${String(idx + 1).padStart(2, '0')} // ${item.catLabel}
+                                </span>
+                                <button onclick="toggleSelectItem('${item.id}')" aria-pressed="${isSelected}" class="px-3 py-1 rounded-full font-mono-tech text-[11px] transition-all ${btnClass}">
+                                    ${btnLabel}
+                                </button>
+                            </div>
+
+                            <h3 class="text-base font-semibold ink-primary mb-1.5">${item.name}</h3>
+                            <p class="text-xs ink-secondary leading-relaxed mb-4">${item.summary}</p>
+
+                            <!-- Bloco Técnico: Segredo de Aparência & Exemplo Real -->
+                            <div class="space-y-2 text-[11.5px] surface-elevated p-3.5 rounded-xl border border-hair mb-3">
+                                <div>
+                                    <span class="font-mono-tech text-[10px] uppercase accent-text font-semibold block">★ Variação p/ Ficar Bonito:</span>
+                                    <p class="ink-primary leading-relaxed mt-0.5">${item.beautyTip}</p>
+                                </div>
+                                <div class="pt-2 border-t border-hair">
+                                    <span class="font-mono-tech text-[10px] uppercase ink-muted font-semibold block">Exemplo de Uso Real:</span>
+                                    <p class="ink-secondary leading-relaxed mt-0.5">${item.realUse}</p>
+                                </div>
+                            </div>
+
+                            <!-- Quando Usar vs Quando Evitar -->
+                            <div class="grid grid-cols-2 gap-2 text-[11px] mb-3">
+                                <div class="p-2.5 rounded-lg surface-canvas border border-hair">
+                                    <span class="font-mono-tech text-[9.5px] uppercase ink-primary font-semibold border-l-2 border-[#10B981] pl-1.5 block">✓ Quando Usar</span>
+                                    <span class="ink-secondary leading-snug block mt-0.5">${item.whenToUse}</span>
+                                </div>
+                                <div class="p-2.5 rounded-lg surface-canvas border border-hair">
+                                    <span class="font-mono-tech text-[9.5px] uppercase accent-text font-semibold block">✕ Quando Evitar</span>
+                                    <span class="ink-secondary leading-snug block mt-0.5">${item.whenNotToUse}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rodapé: Expander de Snippet CSS/HTML -->
+                        <div class="pt-2 border-t border-hair">
+                            <button onclick="toggleExpander('code-${item.id}')" class="w-full flex items-center justify-between font-mono-tech text-[10.5px] ink-muted hover:ink-primary py-1">
+                                <span>Ver Token / Snippet Técnico</span>
+                                <span>▾</span>
+                            </button>
+                            <div id="code-${item.id}" class="hidden mt-2">
+                                <pre class="font-mono-tech text-[10px] surface-canvas p-2.5 rounded-lg border border-hair overflow-x-auto ink-primary select-all">${item.cssSnippet.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function toggleExpander(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('hidden');
+        }
+
+        // 3. PLAYGROUNDS INTERATIVOS (GRID, CANVAS & MOTION)
+        function switchPlaygroundTab(tab) {
+            const tabs = ['grid', 'canvas', 'motion'];
+            tabs.forEach(t => {
+                const panel = document.getElementById('pgPanel' + t.charAt(0).toUpperCase() + t.slice(1));
+                const btn = document.getElementById('pgTab' + t.charAt(0).toUpperCase() + t.slice(1));
+                if (t === tab) {
+                    panel.classList.remove('hidden');
+                    btn.setAttribute('aria-selected', 'true');
+                    btn.className = 'px-4 py-2.5 rounded-xl font-mono-tech text-xs font-medium accent-bg transition-all';
+                } else {
+                    panel.classList.add('hidden');
+                    btn.setAttribute('aria-selected', 'false');
+                    btn.className = 'px-4 py-2.5 rounded-xl font-mono-tech text-xs font-medium surface-card border border-hair ink-primary transition-all';
+                }
+            });
+        }
+
+        function updateGridPlayground() {
+            const colGap = document.getElementById('sliderColSpacing').value;
+            const rowGap = document.getElementById('sliderRowSpacing').value;
+            const colSpan = document.getElementById('sliderColSpan').value;
+            const order = document.getElementById('sliderGridOrder').value;
+
+            document.getElementById('valColSpacing').textContent = colGap + 'px';
+            document.getElementById('valRowSpacing').textContent = rowGap + 'px';
+            document.getElementById('valColSpan').textContent = colSpan + (colSpan === '1' ? ' Coluna' : ' Colunas');
+            document.getElementById('valGridOrder').textContent = 'Posição ' + order;
+
+            const stage = document.getElementById('interactiveGridStage');
+            const focal = document.getElementById('gridFocalBlock');
+            stage.style.columnGap = colGap + 'px';
+            stage.style.rowGap = rowGap + 'px';
+            focal.style.gridColumn = 'span ' + colSpan;
+            focal.style.order = order;
+
+            document.getElementById('gridTelemetryLabel').textContent =
+                `ColSpacing: ${colGap}px · RowSpacing: ${rowGap}px · Span: ${colSpan}x1 · Order: ${order}`;
+
+            document.getElementById('gridCodeOutput').textContent =
+`/* CSS do Grid Assimétrico (Bento Layout) */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: ${colGap}px;
+    row-gap: ${rowGap}px;
+}
+.bento-focal-card {
+    grid-column: span ${colSpan};
+    order: ${order};
+    padding: ${isGridCompact ? '0.75rem' : '1.25rem'};
+}
+
+/* Como pedir no Prompt: */
+"Use um Bento Grid de 3 colunas com gap horizontal de ${colGap}px, gap vertical de ${rowGap}px e o card principal expandido em ${colSpan} colunas."`;
+        }
+
+        function toggleGridCompact() {
+            isGridCompact = !isGridCompact;
+            const btn = document.getElementById('btnGridCompact');
+            btn.textContent = isGridCompact ? 'Compacto (Ativo)' : 'Normal';
+            btn.setAttribute('aria-pressed', isGridCompact ? 'true' : 'false');
+            btn.className = isGridCompact
+                ? 'px-3 py-1.5 rounded-lg font-mono-tech text-xs accent-bg'
+                : 'px-3 py-1.5 rounded-lg font-mono-tech text-xs surface-elevated border border-hair';
+
+            document.querySelectorAll('#interactiveGridStage > div').forEach(el => {
+                el.style.padding = isGridCompact ? '0.65rem 0.85rem' : '1.25rem';
+            });
+            updateGridPlayground();
+        }
+
+        function updateCanvasPlayground() {
+            const topVal = document.getElementById('sliderCanvasTop').value;
+            const leftVal = document.getElementById('sliderCanvasLeft').value;
+            const zVal = document.getElementById('sliderCanvasZ').value;
+            const blurVal = document.getElementById('sliderAcrylicBlur').value;
+
+            document.getElementById('valCanvasTop').textContent = topVal + 'px';
+            document.getElementById('valCanvasLeft').textContent = leftVal + 'px';
+            document.getElementById('valCanvasZ').textContent = zVal + (zVal < 15 ? ' (Atrás)' : (zVal > 30 ? ' (Frente Total)' : ' (Meio)'));
+            document.getElementById('valAcrylicBlur').textContent = blurVal + 'px';
+
+            const layer = document.getElementById('canvasFloatingLayer');
+            layer.style.top = topVal + 'px';
+            layer.style.left = leftVal + 'px';
+            layer.style.zIndex = zVal;
+            layer.style.backdropFilter = `blur(${blurVal}px)`;
+            document.getElementById('canvasBadgeZ').textContent = 'Z: ' + zVal;
+
+            document.getElementById('canvasTelemetryLabel').textContent =
+                `Top: ${topVal}px · Left: ${leftVal}px · Z-Index: ${zVal} · Blur: ${blurVal}px`;
+
+            document.getElementById('canvasCodeOutput').textContent =
+`/* CSS da Camada Flutuante com AcrylicBrush & Z-Index */
+.floating-acrylic-panel {
+    position: absolute;
+    top: ${topVal}px;
+    left: ${leftVal}px;
+    z-index: ${zVal};
+    background-color: rgba(25, 24, 30, 0.68);
+    backdrop-filter: blur(${blurVal}px);
+    -webkit-backdrop-filter: blur(${blurVal}px);
+    box-shadow: var(--shadow-sculpted);
+}`;
+        }
+
+        function triggerMotionRace() {
+            raceToggled = !raceToggled;
+            const dist = raceToggled ? 'translateX(220px)' : 'translateX(0px)';
+            ['racePuckLinear', 'racePuckQuint', 'racePuckSpring'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.transform = dist;
+            });
+        }
+
+        function updateMotionDuration() {
+            const dur = document.getElementById('sliderMotionDuration').value;
+            document.getElementById('valMotionDuration').textContent = dur + 'ms';
+            document.getElementById('motionTelemetryLabel').textContent = `Curva: cubic-bezier(0.16, 1, 0.3, 1) · ${dur}ms`;
+            ['racePuckLinear', 'racePuckQuint', 'racePuckSpring'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.transitionDuration = dur + 'ms';
+            });
+        }
+
+        function toggleConnectedCard() {
+            const body = document.getElementById('connectedAnimBody');
+            const hint = document.getElementById('connectedAnimHint');
+            const card = document.getElementById('connectedAnimCard');
+            const isHidden = body.classList.contains('hidden');
+            body.classList.toggle('hidden');
+            card.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+            hint.textContent = isHidden ? 'Recolher ↑' : 'Expandir no lugar ↘';
+        }
+
+        // 4. SEÇÃO DE ARQUÉTIPOS DE PÁGINA (ALÉM DE FORMULÁRIOS E GRÁFICOS)
+        function renderArchetypeSelector() {
+            const listEl = document.getElementById('archetypeButtonsList');
+            listEl.innerHTML = PAGE_ARCHETYPES.map((arch, idx) => {
+                const isActive = idx === currentArchetypeIndex;
+                const borderCls = isActive ? 'border-2 accent-border surface-card' : 'border border-hair surface-elevated opacity-85 hover:opacity-100';
+                return `
+                    <button onclick="selectArchetype(${idx})" aria-pressed="${isActive}" class="w-full text-left p-4 rounded-xl ${borderCls} transition-all shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <span class="font-mono-tech text-[10px] uppercase tracking-wider ${isActive ? 'accent-text font-semibold' : 'ink-muted'}">
+                                ESTILO DE PÁGINA // ${arch.number}
+                            </span>
+                            <span class="font-mono-tech text-xs">${isActive ? '● Ativo' : '○ Ver'}</span>
+                        </div>
+                        <div class="text-sm font-semibold ink-primary mt-1">${arch.name}</div>
+                        <div class="text-xs ink-secondary mt-0.5">${arch.subtitle}</div>
+                    </button>
+                `;
+            }).join('');
+
+            const activeArch = PAGE_ARCHETYPES[currentArchetypeIndex];
+            document.getElementById('archPreviewTitle').textContent = `ARQUÉTIPO ${activeArch.number} // ${activeArch.name.toUpperCase()}`;
+            document.getElementById('archLiveStage').innerHTML = activeArch.renderHtml;
+            document.getElementById('archWhenToUse').textContent = activeArch.whenToUse;
+            document.getElementById('archWhenNotToUse').textContent = activeArch.whenNotToUse;
+            document.getElementById('archPromptSnippet').textContent = activeArch.promptText;
+
+            const isAdded = selectedItemIds.has(activeArch.id);
+            const btn = document.getElementById('archAddPromptBtn');
+            btn.textContent = isAdded ? '✓ Estilo Incluído no Pedido' : '+ Incluir este Estilo no Pedido';
+        }
+
+        function selectArchetype(idx) {
+            currentArchetypeIndex = idx;
+            renderArchetypeSelector();
+        }
+
+        function toggleCurrentArchetypeInPrompt() {
+            const arch = PAGE_ARCHETYPES[currentArchetypeIndex];
+            toggleSelectItem(arch.id);
+            renderArchetypeSelector();
+        }
+
+        // 5. MONTADOR DE PEDIDO ANTI-TDAH (PROMPT COMPOSER)
+        function toggleSelectItem(id) {
+            if (selectedItemIds.has(id)) {
+                selectedItemIds.delete(id);
+                showToast('Removido do seu pedido.');
+            } else {
+                selectedItemIds.add(id);
+                showToast('✓ Adicionado ao seu pedido de UI!');
+            }
+            renderCatalogCards();
+            updateGeneratedPrompt();
+        }
+
+        function applyPresetBundle(bundleKey) {
+            selectedItemIds.clear();
+            if (bundleKey === 'medtech') {
+                setAccentPreset('green');
+                ['arch-split-workbench', 'arch-timeline-stream', 'system-backdrop-mica', 'theme-shadow-rim', 'compact-sizing', 'split-view', 'viewbox-a4', 'rich-structured-editor', 'contextual-popup-popover'].forEach(id => selectedItemIds.add(id));
+            } else if (bundleKey === 'tdah') {
+                setAccentPreset('red');
+                ['arch-focus-wizard', 'arch-kanban-board', 'acrylic-brush', 'content-island-terrixa', 'expander-accordion', 'connected-animation', 'command-palette-ctrlk', 'toast-badge-notifications', 'squint-focus-mode'].forEach(id => selectedItemIds.add(id));
+            } else if (bundleKey === 'saas') {
+                setAccentPreset('blue');
+                ['arch-node-canvas', 'arch-split-workbench', 'architectural-grid-bg', 'compact-sizing', 'canvas-zindex', 'split-view', 'implicit-transitions', 'command-palette-ctrlk', 'storage-dropzone'].forEach(id => selectedItemIds.add(id));
+            } else if (bundleKey === 'editorial') {
+                setAccentPreset('amber');
+                ['arch-bento-gallery', 'acrylic-brush', 'theme-shadow-rim', 'content-island-terrixa', 'bento-wrap-grid', 'easing-functions', 'page-stagger-transitions', 'directional-pill-cta'].forEach(id => selectedItemIds.add(id));
+            }
+            renderCatalogCards();
+            renderArchetypeSelector();
+            updateGeneratedPrompt();
+            showToast('✓ Pacote aplicado ao Montador de Pedido!');
+        }
+
+        function clearPromptSelection() {
+            selectedItemIds.clear();
+            renderCatalogCards();
+            renderArchetypeSelector();
+            updateGeneratedPrompt();
+        }
+
+        function updateGeneratedPrompt() {
+            const count = selectedItemIds.size;
+            document.getElementById('selectedCountLabel').textContent = count;
+            document.getElementById('navSelectedCount').textContent = count;
+
+            const chipsContainer = document.getElementById('selectedChipsContainer');
+            const allItemsMap = {};
+            CATALOG_ITEMS.forEach(i => allItemsMap[i.id] = i);
+            PAGE_ARCHETYPES.forEach(a => allItemsMap[a.id] = { id: a.id, name: 'Arquétipo: ' + a.name, summary: a.promptText, category: 'archetype' });
+
+            const selectedList = Array.from(selectedItemIds).map(id => allItemsMap[id]).filter(Boolean);
+
+            if (selectedList.length === 0) {
+                chipsContainer.innerHTML = `<span class="text-xs ink-muted font-mono-tech">Nenhum item marcado. Clique em "+ Incluir no Pedido" nos cards acima ou escolha um Preset.</span>`;
+            } else {
+                chipsContainer.innerHTML = selectedList.map(item => `
+                    <button onclick="toggleSelectItem('${item.id}')" class="px-2.5 py-1 rounded-full surface-card border border-strong text-[11px] font-mono-tech ink-primary flex items-center space-x-1.5 hover:opacity-80">
+                        <span>${item.name}</span>
+                        <span class="accent-text font-bold">×</span>
+                    </button>
+                `).join('');
+            }
+
+            const goal = document.getElementById('customAppGoalInput').value.trim() || '[Descreva aqui o tema ou objetivo do seu aplicativo]';
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'gray';
+            const themeDesc = currentTheme === 'gray'
+                ? 'Cinza sobre Cinza (#57545d fundo + #8e8999 menus com tinta escura #16151A)'
+                : (currentTheme === 'light' ? 'Claro Editorial Ad Lucem (#F3F3F5)' : 'Preto Terminal IBM (#070709 + IBM Plex Mono)');
+            const accentLabel = document.getElementById('activeAccentBadge').textContent;
+
+            const archetypesChosen = selectedList.filter(i => i.category === 'archetype');
+            const effectsChosen = selectedList.filter(i => i.category !== 'archetype');
+
+            let promptLines = [
+                `@minimal-impact-ui Crie uma aplicação web completa, interativa e criteriosa para: ${goal}.`,
+                ``,
+                `### 1. Direção Visual & Tema (Ex Umbris Ad Lucem)`,
+                `- **Tema Inicial:** ${themeDesc} (inclua seletor ao vivo para os 3 temas: Claro, Cinza #57545d e IBM Preto com persistência em localStorage).`,
+                `- **Cor Pontual Calibrada (Regra dos 2%):** ${accentLabel}. Mantenha 98% da interface em tons neutros/grafite.`,
+                `- **Menus Nítidos:** Barra superior em pílula com tinta grafite escura (#16151A) sobre #8e8999 e suporte mobile rolável.`
+            ];
+
+            if (archetypesChosen.length > 0) {
+                promptLines.push(``, `### 2. Arquitetura e Estilo da Página (Além de Formulários/Gráficos Comuns)`);
+                archetypesChosen.forEach(a => {
+                    promptLines.push(`- **${a.name}:** ${a.summary}`);
+                });
+            }
+
+            if (effectsChosen.length > 0) {
+                promptLines.push(``, `### 3. Efeitos, Layouts, Motion & Controles Obrigatórios`);
+                effectsChosen.forEach(e => {
+                    promptLines.push(`- **${e.name}:** ${e.summary} (${e.beautyTip})`);
+                });
+            }
+
+            promptLines.push(
+                ``,
+                `### 4. Critérios de Qualidade e Acabamento`,
+                `- Use sombras esculpidas em 3 camadas com filete de luz especular de 1px no topo (--shadow-sculpted).`,
+                `- Aplique curvas de animação física cubic-bezier(0.16, 1, 0.3, 1) e suporte a impressão limpa A4 (@media print).`
+            );
+
+            document.getElementById('generatedPromptOutput').textContent = promptLines.join('\n');
+        }
+
+        function copyGeneratedPrompt() {
+            const text = document.getElementById('generatedPromptOutput').textContent;
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+
+            const fb = document.getElementById('promptCopyFeedback');
+            fb.classList.add('opacity-100');
+            setTimeout(() => fb.classList.remove('opacity-100'), 2500);
+            showToast('✓ Prompt copiado para a área de transferência!');
+        }
+
+        function downloadMarkdownReference() {
+            let md = `# Atlas & Guia de Referência de UI/UX — Ex Umbris Ad Lucem (WinUI 3 + Minimal Impact UI)\n\n`;
+            md += `> Documento de consulta rápida (Anti-TDAH) com efeitos de superfície, estruturas de layout, curvas de movimento, controles avançados e arquétipos de página além de formulários e gráficos.\n\n`;
+
+            md += `## 1. Arquétipos de Página (Além de Formulários e Gráficos)\n\n`;
+            PAGE_ARCHETYPES.forEach(a => {
+                md += `### ${a.number}. ${a.name}\n`;
+                md += `- **Subtítulo:** ${a.subtitle}\n`;
+                md += `- **Quando Usar (Exemplos Reais):** ${a.whenToUse}\n`;
+                md += `- **Quando Evitar:** ${a.whenNotToUse}\n`;
+                md += `- **Como pedir à IA:** \`${a.promptText}\`\n\n`;
+            });
+
+            md += `## 2. Catálogo Completo de Efeitos, Layouts, Motion e Controles (28 Itens)\n\n`;
+            CATALOG_ITEMS.forEach((item, idx) => {
+                md += `### ${String(idx + 1).padStart(2, '0')}. ${item.name} (${item.catLabel})\n`;
+                md += `- **O que é:** ${item.summary}\n`;
+                md += `- **Variação Técnica para Ficar Bonito:** ${item.beautyTip}\n`;
+                md += `- **Exemplos de Uso Real:** ${item.realUse}\n`;
+                md += `- **Quando Usar:** ${item.whenToUse}\n`;
+                md += `- **Quando NÃO Usar:** ${item.whenNotToUse}\n`;
+                md += `- **Snippet / Token:** \`${item.cssSnippet}\`\n\n`;
+            });
+
+            md += `## 3. Seu Último Prompt Montado\n\n\`\`\`markdown\n${document.getElementById('generatedPromptOutput').textContent}\n\`\`\`\n`;
+
+            const blob = new Blob([md], { type: 'text/markdown;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'atlas-referencia-ui-ex-umbris.md';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('✓ Arquivo atlas-referencia-ui-ex-umbris.md baixado!');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('floatingToast');
+            const text = document.getElementById('floatingToastText');
+            text.textContent = msg;
+            toast.classList.remove('hidden');
+            clearTimeout(window.__toastTimer);
+            window.__toastTimer = setTimeout(() => toast.classList.add('hidden'), 2400);
+        }
+
+        // Inicialização
+        window.addEventListener('DOMContentLoaded', () => {
+            let savedTheme = 'gray';
+            try { savedTheme = localStorage.getItem('ex-umbris-atlas-theme') || 'gray'; } catch (e) {}
+            setThemeMode(savedTheme);
+            renderCatalogCards();
+            updateGridPlayground();
+            updateCanvasPlayground();
+            renderArchetypeSelector();
+            updateGeneratedPrompt();
+        });
+    </script>
+</body>
+</html>

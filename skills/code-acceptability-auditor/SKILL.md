@@ -6,9 +6,9 @@ license: MIT
 compatibility: Python 3.11+, Pydantic 2.x, Git
 metadata:
   author: "Gemini Notebook AI Engineering & Melki"
-  version: "1.0.0"
+  version: "1.1.0"
   category: "Auditoria e Qualidade de Código"
-  updated_at: "2026-10-18"
+  updated_at: "2026-10-19"
   tags:
     - "ast"
     - "python-audit"
@@ -16,13 +16,14 @@ metadata:
     - "type-hints"
     - "pre-commit"
     - "quality-gate"
-version: 1.0.0
-updated_at: 2026-10-18
+    - "cyclomatic-complexity"
+version: 1.1.0
+updated_at: 2026-10-19
 author: Gemini Notebook AI Engineering & Melki
 category: Auditoria e Qualidade de Código
 ---
 
-# 🛡️ Code Acceptability Auditor (`code-acceptability-auditor` v1.0.0)
+# 🛡️ Code Acceptability Auditor (`code-acceptability-auditor` v1.1.0)
 
 ## 1. Visão Geral e Objetivo
 Esta Skill fornece um procedimento automatizado e determinístico para auditoria estática de código-fonte Python. Ela mapeia o código utilizando o analisador **AST** (*Abstract Syntax Tree*) e valida se os artefatos atendem aos **critérios de aceite institucionais**, prevenindo o vazamento de credenciais, falhas de tipagem e exceções silenciadas sem necessidade de executar scripts não confiáveis.
@@ -70,6 +71,8 @@ Esta Skill fornece um procedimento automatizado e determinístico para auditoria
 | **`TYP001`** | Tipagem | **MÉDIO** | `-5.0` | Parâmetro de função sem anotação de tipo (*Type Hint*). | Adicionar anotações de tipo explícitas nos argumentos. |
 | **`TYP002`** | Tipagem | **MÉDIO** | `-5.0` | Função sem indicação do tipo de retorno (`-> Type`). | Declarar o tipo de retorno explicitamente na assinatura. |
 | **`ARCH001`** | Arquitetura | **BAIXO** | `-2.0` | Função muito longa (`> 60` linhas de código). | Refatorar dividindo responsabilidades (Princípio SRP). |
+| **`ARCH002`** | Complexidade Cognitiva | **MÉDIO** | `-5.0` | Aninhamento de controle (`if/for/while`) `> 3` níveis. | Aplicar *Early Return* (*Guard Clauses*) ou extrair subfunções. |
+| **`ARCH003`** | Complexidade Ciclomática | **MÉDIO** | `-5.0` | Complexidade ciclomática McCabe $M = E - N + 2P > 10$. | Reduzir ramificações ($M \le 10$) com despacho por dicionário ou helpers. |
 
 ### 4.2. Algoritmo de Avaliação e Quality Gate
 A pontuação de qualidade (**Quality Score**) é calculada deterministicamente a partir de um valor base de **100.0**, subtraindo penalidades acumuladas:

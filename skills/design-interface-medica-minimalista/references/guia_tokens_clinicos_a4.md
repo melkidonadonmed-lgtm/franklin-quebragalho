@@ -1,81 +1,78 @@
-# Guia de Tokens Clínicos, Tipografia Tabular e Impressão A4 (`design-interface-medica-minimalista` v2.2.0)
+# Guia de Tokens Clínicos, Calculadoras Determinísticas e Folha A4 (`v3.0.0`)
 
-Referência técnica de Tier 3 para interfaces clínicas, prontuários eletrônicos (PEP), calculadoras médicas e receituários sob o contrato **`DESIGN.md v4.5-soft`** (Módulos **M3** e **M7**).
-
----
-
-## 1. Presets Tonais Clínicos (`DESIGN.md v4.5-soft` — Zero Cobalto)
-
-| Preset Clínico | `--surface-canvas` (60%) | `--surface-raised` (30%) | `--surface-inset` | `--accent-point` (10%) | Uso Clínico Recomendado |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **`slate` (Diurno Padrão)** | `#F1F4F8` | `#F1F4F8` (`.ui-card-soft` 135°) | `#E5E9F0` | `#0284C7` (*Cerulean Sapphire*) | Prontuário ambulatorial, calculadoras e prescrição hospitalar |
-| **`sapphire` (Leitura Longa)** | `#F5F4EE` | `#FAF9F5` (`.ui-card-soft` 135°) | `#EAE8DF` | `#1E6091` (*Ocean Sapphire*) | Evolução clínica extensa, anamnese e revisão de prontuários |
-| **`moss` (Conforto Cirúrgico)** | `#F4F3EC` | `#F9F8F3` (`.ui-card-soft` 135°) | `#E6E5DC` | `#174930` (*Forest Moss*) | Farmácia clínica, checagem de aprazamento e protocolos |
-| **`obsidian` (Plantão Noturno)** | `#12151B` | `#181D26` ($L_{\text{card}} > L_{\text{canvas}}$) | `#0D1015` | `#38BDF8` (*Mineral Ice*) | UTI, emergência e plantão noturno com baixa luminância ambiente |
-
-> **Banimento Estrito (`AUDIT-VIS-01`)**: Proibido `#0044FF`, `#0057FF`, `#233DFF`, `#1D4ED8`, `backdrop-filter: blur()`, bordas duras `1px` (`border-slate-200`) e qualquer emoji em componentes clínicos.
+Referência de Tier 3 para implementação de interfaces médicas sob `design-interface-medica-minimalista`.
 
 ---
 
-## 2. Tipografia Tabular e Blindagem de Unidades Médicas
+## 1. Tokens Semânticos Clínicos (`globals.css`)
 
 ```css
-/* Precisão numérica obrigatória para doses, exames laboratoriais e escores */
-.clinical-metric,
-.dosage-value,
-.lab-result-table td {
-  font-family: 'JetBrains Mono', monospace;
+:root,
+[data-theme="clinical-day"] {
+  --bg-canvas: #F4F6F8;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #E8ECEF;
+  --bg-contrast-card: #0F172A;
+  --contrast-card-ink: #F8FAFC;
+
+  --ink-primary: #0F172A;
+  --ink-secondary: #334155;
+  --ink-muted: #64748B;
+  --ink-subtle: #94A3B8;
+
+  --punctual-accent: #0284C7;
+  --clinical-emerald: #059669;
+  --clinical-amber: #D97706;
+  --clinical-danger: #DC2626;
+
+  --border-hairline: rgba(15, 23, 42, 0.08);
+  --rim-light: rgba(255, 255, 255, 0.9);
+  --shadow-sculpted:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 8px 20px -4px rgba(15, 23, 42, 0.05),
+    inset 0 1px 0 0 var(--rim-light);
+
+  --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+}
+
+[data-theme="clinical-night"] {
+  --bg-canvas: #0B0E14;
+  --bg-surface: #121721;
+  --bg-elevated: #1A2130;
+  --bg-contrast-card: #F4F6F8;
+  --contrast-card-ink: #0F172A;
+  --ink-primary: #F1F5F9;
+  --ink-secondary: #CBD5E1;
+  --ink-muted: #94A3B8;
+  --punctual-accent: #38BDF8;
+  --border-hairline: rgba(255, 255, 255, 0.08);
+  --rim-light: rgba(255, 255, 255, 0.07);
+}
+
+.clinical-unit {
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
-}
-
-/* Blindagem Anti-Squish para botões de conduta e badges de unidades (mg/dL, mL/min, mcg/kg/min) */
-.clinical-action-btn,
-.unit-badge-soft {
-  min-height: 44px;
-  flex-shrink: 0;
   white-space: nowrap;
+  flex-shrink: 0;
 }
-```
 
----
-
-## 3. Folha de Estilo de Impressão Clínica A4 (`@media print`)
-
-Receituários, sumários de alta e prescrições devem colapsar a navegação e remover sombras neumórficas na impressão física/PDF para máxima nitidez em impressoras térmicas ou laser monocromáticas:
-
-```css
 @media print {
   @page {
     size: A4 portrait;
-    margin: 15mm 18mm;
+    margin: 15mm;
   }
-
-  body,
-  .ui-card-soft {
+  body {
     background: #FFFFFF !important;
-    color: #0F172A !important;
-    box-shadow: none !important;
+    color: #000000 !important;
   }
-
-  aside,
-  nav,
-  #sidebar-active-tracker,
-  .no-print {
+  .no-print, nav, aside {
     display: none !important;
   }
-
-  .prescription-block {
-    break-inside: avoid;
+  .sculpted-card {
+    box-shadow: none !important;
+    border: 1px solid #CBD5E1 !important;
     page-break-inside: avoid;
-    padding: 8mm 0;
   }
 }
 ```
-
----
-
-## 4. Segurança Clínica e Delegação Determinística (`M7`)
-
-1. **Zero Cálculo de Dose por LLM**: Toda fórmula médica (ex.: Cockcroft-Gault, CKD-EPI, Parkland, infusão em `mL/h`) deve residir em função pura tipada com testes unitários determinísticos ou na tool `agy_deterministic_calc_suite`.
-2. **Faixas Fisiológicas Explícitas**: Inputs numéricos (`surface-inset`) devem validar limites fisiológicos plausíveis (ex.: Peso `0.5–350 kg`, Creatinina `0.1–25 mg/dL`) exibindo erro semântico `role="alert" aria-live="assertive"` fora da faixa.

@@ -1,30 +1,31 @@
 {
   "skill_name": "design-md",
-  "version": "4.5.0",
+  "version": "5.0.0",
   "evals": [
     {
-      "eval_id": "design-md-v45-soft-tokens",
-      "prompt": "Gere o arquivo DESIGN.md v4.5 para o meu dashboard de agentes usando Minimalist Impact, Nexus Bento e um azul melhor no lugar do cobalto.",
+      "eval_id": "design-md-purpose-driven-tokens",
+      "prompt": "Gere o arquivo DESIGN.md para o meu projeto analisando o propósito (observabilidade e telemetria de baixa latência) e escolha o melhor tema, tipografia, contraste e camadas sem usar paleta fixa repetida.",
       "expected_assertions": [
-        "Inclui version 4.5-soft e regra 60-30-10",
-        "Substitui azul cobalto (#0057FF/#0044FF) por Cerulean/Ocean Sapphire (#0284C7 ou #1E6091)",
-        "Define surface-canvas, surface-raised, surface-inset e surface-contrast com iluminação 135 graus",
-        "Proíbe glassmorphism (backdrop-filter: blur) e neons"
+        "Identifica o propósito do projeto (DevTools / Telemetria) e recomenda atmosfera coerente como Ex Umbris / Terminal IBM ou Cinza Monolítico",
+        "Acopla tipografia IBM Plex Sans e IBM Plex Mono com tabular-nums para dados técnicos",
+        "Define camadas (--bg-canvas, --bg-surface, --bg-elevated, --bg-contrast-card), 4 níveis de tinta e sombra esculpida em 3 camadas com 1px Rim Light",
+        "Aplica isolamento de acento (98/2 ou 60-30-10) com 1 único CTA primário sólido vs .btn-ghost"
       ]
     },
     {
       "eval_id": "design-md-atomic-structure",
-      "prompt": "Documente no DESIGN.md a arquitetura de pastas src/ com Design Atômico e auditoria de testes FSM.",
+      "prompt": "Documente no DESIGN.md a arquitetura de pastas src/ com Design Atômico, espaçamento concêntrico e auditoria de testes FSM.",
       "expected_assertions": [
         "Mapeia src/components/ui, src/components/bento, src/components/layout, src/config, src/styles e src/types",
-        "Integra frontend-code-architect (v4.0.0) e frontend-testing-auditor (v2.5.0)"
+        "Inclui fórmula de raios concêntricos e estados finitos FSM (idle, loading, error, pressed)",
+        "Integra frontend-code-architect e frontend-testing-auditor"
       ]
     }
   ],
   "trigger_eval_queries": {
     "should_trigger": [
-      "Crie o DESIGN.md v4.5 na raiz do projeto com Minimalist Impact",
-      "Atualize o DESIGN.md tirando o cobalto e aplicando Soft UI 135 graus"
+      "Crie o DESIGN.md na raiz do projeto adaptando o estilo ao propósito do produto",
+      "Defina a arquitetura visual, tipografia, espaçamento e tema no DESIGN.md"
     ],
     "near_misses": [
       "Otimize esta query SQL no BigQuery",

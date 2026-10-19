@@ -136,13 +136,13 @@ def build_franklin_agent_card(
     total_skills = (
         sum(1 for f in skills_dir.iterdir() if f.is_dir() and (f / "SKILL.md").exists())
         if skills_dir.exists()
-        else 29
-    ) or 29
+        else 26
+    ) or 26
 
     raw_card: Dict[str, Any] = {
         "name": "Franklin Quebra-Galho (A2A + MCP Orchestrator)",
         "description": (
-            f"Orquestrador multiagente e catálogo de {total_skills} Skills canônicas (Python, TS/JS, Go, MCP, Harness e Design Tátil) "
+            f"Orquestrador multiagente e catálogo de {total_skills} Skills canônicas (Python, TS/JS, Go, MCP, Harness e Arquitetura Visual por Propósito) "
             "com suporte nativo a Agent2Agent (A2A v1.0) e Model Context Protocol (MCP)."
         ),
         "version": "1.2.0",

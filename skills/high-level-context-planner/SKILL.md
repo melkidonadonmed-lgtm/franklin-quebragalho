@@ -57,29 +57,27 @@ Esta skill **DEVE** ser acionada nas seguintes circunstâncias:
 
 ---
 
-## 4. Diretrizes Canônicas de Design e Preferências Melki (`DESIGN.md v4.5-soft`)
+## 4. Diretrizes de Estilo por Propósito e Arquitetura Visual (`preferencias_estilo_e_temas.md`)
 
-Sempre que o planejamento envolver entregas de interfaces, arquiteturas frontend, painéis de controle ou relatórios visuais, a skill embute os 4 módulos canônicos:
+Sempre que o planejamento envolver entregas de interfaces, arquiteturas frontend, painéis de controle ou relatórios visuais, a skill aplica as preferências de estilo guiadas pelo **propósito do projeto** (consulte [`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md)):
 
-### Módulo 1: Paleta de Cores Canônica (Economia Tonal 60-30-10 & Acentos Minerais)
-- **Dark Mode (`obsidian`)**: Canvas (`#12151B` / `#090B10`), Cartões Elevados (`#181D26` / `#141824`) e Cavidade (`#0D1016`).
-- **Light Mode (`slate` / `moss` / `sapphire`)**: Canvas (`#F1F4F8`, `#F4F3EC`, `#F5F4EE`) com Cavidades `surface-inset` (`#E5E9F0`) e Âncora Terrixa (`#1E293B`).
-- **Acentos Minerais Autorizados**: Cerulean Sapphire (`#0284C7`), Ocean Sapphire (`#1E6091`), Mineral Ice (`#38BDF8`), Forest Moss (`#174930`), Clinical Emerald (`#059669`) e Ouro Champanhe (`#D4AF37`).
-- ❌ **Banimento Anti-Cobalto**: Proibição terminante de azul cobalto puro (`#0044FF`, `#0057FF`, `#233DFF`, `#1D4ED8`) em wireframes, dashboards ou componentes propostos no plano.
+### Módulo 1: Seleção da Atmosfera pelo Propósito (Sem Paleta Fixa)
+- **Ad Lucem (Claro Editorial/Técnico)**: Canvas (`#F3F3F5` / `#F6F6F4`), Card (`#FFFFFF`), Elevado (`#E6E6EA`) e Bloco de Contraste Alternado (`#18181C`).
+- **Cinza sobre Cinza Monolítico**: Canvas (`#57545d`), Card (`#49464f`), Elevado (`#635f6a`) e Menus em pílula `#8e8999` com tinta escura nítida (`#16151A`).
+- **Preto Terminal IBM (`Ex Umbris`)**: Canvas (`#070709`), Card (`#101014`), Elevado (`#18181E`), acoplado à tipografia **`IBM Plex Sans` + `IBM Plex Mono`**.
+- **Acento Pontual de Intenção (98/2 ou 60-30-10)**: Escolhido conforme o objetivo do sistema e isolado em **1 único CTA primário sólido** por dobra vs. `.btn-ghost`.
 
-### Módulo 2: Diretrizes de Design Tátil e Composição Visual (`Minimalist Impact & Soft UI 135°`)
-- **Anti-Glassmorphism & Zero Bordas Duras**: Banimento de vidros translúcidos borrados (`backdrop-filter: blur`), gradientes neon e bordas duras de `1px` em interfaces planejadas.
-- **Regra de Ouro da Profundidade**: Em planos de frontend, os cartões devem ser estritamente mais claros que o fundo ($L_{\text{card}} > L_{\text{canvas}}$).
-- **Iluminação Direcional a 135°**: Especificação mandatória de relevo `.ui-card-soft` (`8px 8px 20px rgba(166,180,200,0.42), -8px -8px 20px rgba(255,255,255,0.95)`) e cavidades `surface-inset`.
-- **Anti-Squish**: Requisito explícito de proteção anti-deformação em botões e badges (`flex-shrink: 0; white-space: nowrap;`).
+### Módulo 2: Contraste, Espaçamento, Tipografia e Camadas Esculpidas
+- **Profundidade e Luz de Borda**: No dark mode, $L_{\text{card}} > L_{\text{canvas}}$. Elevação com sombra esculpida em 3 camadas (`--shadow-sculpted`) + `1px` Rim Light superior (`inset 0 1px 0 0 var(--rim-light)`).
+- **Espaçamento, Tipografia & Anti-Squish**: Respiro $\ge 25\%$ do canvas, escala `clamp()`, `tabular-nums` em métricas e alvos $\ge 44\times44\text{px}$ (`flex-shrink: 0; white-space: nowrap;`).
 
 ### Módulo 3: Mapeamento de Opções das Preferências do Desenvolvedor
-- **Prioridade para o Ecossistema shadcn/ui & Design Atômico**: Todo plano envolvendo UI prioriza bibliotecas modulares "copy-paste" (**shadcn/ui**, **Radix UI**, **Lucide Icons**) estruturadas nas 5 camadas do `frontend-code-architect` (`v4.0`).
+- **Prioridade para Design Atômico em 5 Camadas**: Todo plano envolvendo UI prioriza componentes modulares (**shadcn/ui**, **Radix UI**, **Lucide Icons**) estruturados nas 5 camadas do `frontend-code-architect` (`v5.0`).
 - **Bifurcações com `ask_question`**: Quando houver alternativas concorrentes de arquitetura, incluir paradas controladas com formulários de múltipla escolha.
 
 ### Módulo 4: Matriz de Detecção de Discrepâncias com as Preferências
 - Checklist determinístico que governa as fases planejadas:
-  * `[PASS / FAIL]` **Ausência de Cobalto Neon (`AUDIT-VIS-01`)**: A esteira planejada veta azuis elétricos.
+  * `[PASS / FAIL]` **Tema Alinhado ao Propósito (`AUDIT-VIS-01`)**: Sem paleta fixa repetitiva e com isolamento de 1 CTA primário.
   * `[PASS / FAIL]` **Fase 0 Obrigatória**: Presença de alinhamento e pré-requisitos antes do código.
   * `[PASS / FAIL]` **Critérios Go/No-Go Falsificáveis**: Regras determinísticas de transição de fase.
   * `[PASS / FAIL]` **Prevenção de Sobre-Engenharia (KISS)**: Sem servidores mockados ou stacks web pesadas quando primitivas locais bastam.

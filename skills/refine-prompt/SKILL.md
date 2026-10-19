@@ -97,7 +97,7 @@ category: "Engenharia de Prompts, Auditoria Epistêmica e Segurança Zero-Trust"
 ## 5. Exceções, Limites e Armadilhas (*Gotchas*)
 - **Zero Fragmentação no Módulo 2**: Nunca quebre o artefato plug-and-play em múltiplos blocos desconexos nem use `"// ... repita as regras acima"`.
 - **Teto Estrito de 3 Perguntas no Módulo 3**: Nunca faça perguntas abertas sem oferecer de 2 a 3 alternativas técnicas viáveis com seus *trade-offs*.
-- **Conformidade Visual Sob Demanda (`Módulo 3 UI`)**: Quando o artefato envolver interfaces, aplique os tokens `DESIGN.md v4.5-soft` (Luz 135°, `Cerulean Sapphire #0284C7`, $L_{\text{card}} > L_{\text{canvas}}$, zero cobalto/blur/bordas `1px`) descritos em `_template/references/paleta_estilo_melki.md`.
+- **Conformidade Visual Sob Demanda (`Módulo 3 UI`)**: Quando o artefato envolver interfaces, selecione o tema e atmosfera de acordo com o **propósito do projeto** (espaçamento, contraste WCAG AA/AAA, tipografia `clamp()` + `tabular-nums`, sombra esculpida 3 camadas + `1px` Rim Light e isolamento de 1 CTA primário) descritos em `_template/references/preferencias_estilo_e_temas.md`.
 
 ---
 

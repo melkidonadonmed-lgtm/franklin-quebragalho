@@ -1,4 +1,4 @@
-# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REJEIÇÃO
+# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REJEIÇÃO (`auditoria-projetos-sistema` v3.0.0)
 
 Para evitar simulações vazias e auditorias inventadas, o agente auditor deve emitir estritamente um dos seguintes status determinísticos:
 - `[PASS]`: Requisito comprovado e verificado contra âncoras documentais ou código real inspecionado.
@@ -30,17 +30,17 @@ Para evitar simulações vazias e auditorias inventadas, o agente auditor deve e
   - Funções exportadas que não possuem consumidores -> `[FAIL: EXPORT_MORTO]`
   - Árvore de dependências 100% conectada -> `[PASS]`
 
-### Regra 4: Conformidade UI/UX, Fontes e Diretrizes de Alto Padrão (Dimensão 4 - 20 pts)
-- **Critério**: A paleta de cores é uniforme e livre de cobalto neon, alvos de toque são adequados (>= 40px), botões possuem anti-squish, menus não estão compactados e nós executam ações reais (validadas por AST ou `agent-browser snapshot -i`)?
+### Regra 4: Adequação ao Propósito, Estilo, Espaçamento, Contraste, Tipografia, Camadas e Nós (Dimensão 4 - 20 pts)
+- **Critério**: O estilo visual reflete o **propósito do projeto** (sem paletas fixas artificiais), respeitando espaçamento/respiro ($\ge 25\%$), contraste perceptual (WCAG 2.1 AA/AAA, tinta escura em menus claros/`#8e8999`), tipografia fluida (`clamp()`, `tabular-nums`, `IBM Plex` em tema Preto Terminal), elevação em camadas (sombra esculpida tripla + `1px` Rim Light + blocos de contraste alternados), isolamento de 1 CTA primário e nós interativos funcionais (`@eX`)?
 - **Teste**:
-  - Menus e navegação compactados de forma claustrofóbica (`gap < 8px` ou padding espremido) -> `[FAIL: MENU_COMPACTADO_CLAUSTROFOBICO]`
-  - Botão menor que 40px ou sem classes anti-squish (`shrink-0 whitespace-nowrap`) -> `[FAIL: BOTAO_PEQUENO_OU_SQUISH]`
-  - Presença de azul cobalto puro (`#0044FF`, `#233DFF`, `#1D4ED8`) -> `[FAIL: AZUL_COBALTO_NEON]`
-  - Ícones com traços e proporções heterogêneas sem padrão Lucide -> `[FAIL: ICONES_HETEROGENEOS]`
-  - Tag `<div>` simulando botão sem `tabIndex` ou acessibilidade de teclado -> `[FAIL: DIVSOUP_ACESSIBILIDADE]`
-  - Botão ou link com `onClick={() => {}}`, `onClick={void 0}` ou preventDefault vazio -> `[FAIL: NO_INERTE_SEM_ACAO]`
-  - Conflito grave de contraste (texto ilegível ou quebra Dark/Light) -> `[FAIL: WCAG_CONTRASTE]`
-  - Menus nobres, escala tipográfica e botões ergonômicos comprovados -> `[PASS]`
+  - Tema incompatível com o domínio/propósito do projeto ou repetição mecânica de paleta sem contexto -> `[FAIL: TEMA_DESALINHADO_AO_PROPOSITO]`
+  - Menus e navegação compactados (`gap < 8px`), texto branco lavado sobre menu claro/cinza (`#8e8999`) ou contraste WCAG $< 4.5:1$ -> `[FAIL: CONTRASTE_MENU_OU_WCAG]`
+  - Múltiplos CTAs primários coloridos competindo na mesma vista ou acento cromático dominando $> 15\%$ da tela -> `[FAIL: POLUICAO_CROMATICA_SEM_ISOLAMENTO]`
+  - Ausência de escala fluida `clamp()`, falta de `tabular-nums` em métricas/tabelas ou ausência de `IBM Plex` em tema Preto Terminal -> `[FAIL: HIERARQUIA_OU_TIPOGRAFIA_FRACA]`
+  - Falta de respiro ($\text{whitespace} < 25\%$), ausência de camadas (sombra esculpida 3 estágios + `1px` Rim Light) ou raios internos não concêntricos -> `[FAIL: ESPACAMENTO_OU_CAMADAS_RUINS]`
+  - Botão menor que $44\times44\text{px}$ ou sem classes anti-squish (`flex-shrink: 0; white-space: nowrap`) -> `[FAIL: BOTAO_PEQUENO_OU_SQUISH]`
+  - Tag `<div>` simulando botão sem `tabIndex`/ARIA ou botão com `onClick` vazio -> `[FAIL: DIVSOUP_OU_NO_INERTE]`
+  - Tema alinhado ao propósito, contraste nítido, tipografia calibrada, camadas esculpidas e nós ergonômicos comprovados -> `[PASS]`
 
 ### Regra 5: Protocolo Human-in-the-Loop para Execução Visual com agent-browser (Dimensão 5 - 15 pts)
 - **Critério**: O pipeline automatizado de navegação e screenshots via `agent-browser` foi disparado com consentimento explícito e parâmetros delimitados?

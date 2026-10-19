@@ -70,7 +70,7 @@ Extraia do pedido bruto:
    - `description` em 3ª pessoa ($\le 300$ chars recomendado, máx. 1024) declarando explicitamente **quando usar** e **quando NÃO usar** (*near-misses* para evitar colisão de Softmax com skills vizinhas).
 3. **Seleção do Módulo de Domínio (`M1`..`M7` sem Redundância)**:
    - Consulte [`skills/_template/references/guardrails_por_modulo.md`](../_template/references/guardrails_por_modulo.md) e selecione **apenas** o módulo pertinente (`M1` a `M7`).
-   - Se for `M3` (Frontend/UI), referencie os 4 Módulos Táteis Melki (`DESIGN.md v4.5-soft`) de `_template/references/paleta_estilo_melki.md` sem copiar tabelas inteiras de cores para o `SKILL.md`.
+   - Se for `M3` (Frontend/UI), referencie as **Preferências de Estilo e Arquitetura Visual por Propósito** de `_template/references/preferencias_estilo_e_temas.md` sem copiar tabelas inteiras de cores para o `SKILL.md`.
 4. **Separação Cognitivo vs. Determinístico**:
    - Julgamento contextual, fluxo e *Gotchas* ficam no `SKILL.md` (Tier 2, $< 500$ linhas, focado no *"Porquê"*).
    - Tabelas estáticas e schemas extensos vão para `references/` (Tier 3).

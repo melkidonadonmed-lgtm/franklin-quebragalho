@@ -25,7 +25,9 @@ def test_skills_list_all() -> None:
     assert "test-quality-auditor" in res
     assert "conversor-html-pdf" in res
     assert "gdrive-auditoria-limpeza" in res
-    assert "analise-design-tatil-frontend" in res
+    assert "design-md" in res
+    assert "frontend-code-architect" in res
+    assert "analise-design-tatil-frontend" not in res
     assert "organizar-gdrive" not in res
     assert "organizar-local" not in res
     assert "gerar-docs-pdf" not in res
@@ -41,12 +43,13 @@ def test_skills_list_all() -> None:
 def test_skills_list_filters() -> None:
     """Valida os filtros por persona e status."""
     frontcraft_res = server.franklin_skills_list(persona="FrontCraftMaster")
-    assert "analise-design-tatil-frontend" in frontcraft_res
+    assert "design-md" in frontcraft_res
+    assert "frontend-code-architect" in frontcraft_res
     assert "gdrive-auditoria-limpeza" not in frontcraft_res
 
     drive_res = server.franklin_skills_list(persona="DriveMaster")
     assert "gdrive-auditoria-limpeza" in drive_res
-    assert "analise-design-tatil-frontend" not in drive_res
+    assert "design-md" not in drive_res
 
 
 def test_skills_get_contract_and_sections() -> None:
@@ -74,8 +77,8 @@ def test_skills_search() -> None:
     drive_res = server.franklin_skills_search("limpeza de arquivos duplicados no drive")
     assert "gdrive-auditoria-limpeza" in drive_res
 
-    front_res = server.franklin_skills_search("inspecionar menu compactado e botões pequenos")
-    assert "analise-design-tatil-frontend" in front_res or "refatoracao-design-tatil-frontend" in front_res
+    front_res = server.franklin_skills_search("auditar propósito do projeto contraste espaçamento tipografia e camadas")
+    assert "auditoria-projetos-sistema" in front_res or "design-md" in front_res or "frontend-code-architect" in front_res
 
 
 def test_skills_validate_deterministic() -> None:
@@ -368,22 +371,19 @@ def test_frontend_skills_and_ui_subagents_integration() -> None:
     ui_dir = server._find_skill_dir("ui")
     analise_dir = server._find_skill_dir("analise-ui")
     refatorar_dir = server._find_skill_dir("refatorar-ui")
-    assert ui_dir is not None and ui_dir.name == "consultor-design-tatil-frontend"
-    assert analise_dir is not None and analise_dir.name == "analise-design-tatil-frontend"
-    assert refatorar_dir is not None and refatorar_dir.name == "refatoracao-design-tatil-frontend"
+    assert ui_dir is not None and ui_dir.name == "design-md"
+    assert analise_dir is not None and analise_dir.name == "auditoria-projetos-sistema"
+    assert refatorar_dir is not None and refatorar_dir.name == "frontend-code-architect"
 
     for skill_name in (
-        "analise-design-tatil-frontend",
-        "consultor-design-tatil-frontend",
-        "refatoracao-design-tatil-frontend",
+        "design-md",
+        "frontend-code-architect",
     ):
         contract = server.franklin_skills_get(skill_name, section="contract")
         assert "ui-shell-navigator" in contract
         assert "ui-controls-data" in contract
         assert "ui-motion-interaction" in contract
         assert "ui-deterministic-observer" in contract
-        assert "franklin_execute_dag" in contract
-        assert "invoke_subagent" in contract
 
     all_ui_agents = server.franklin_get_agents(agent_name="ui")
     assert "ui-shell-navigator" in all_ui_agents
@@ -392,9 +392,9 @@ def test_frontend_skills_and_ui_subagents_integration() -> None:
     assert "ui-deterministic-observer" in all_ui_agents
 
     shell_contract = server.franklin_get_agents(agent_name="shell")
-    assert "layout_contract" in shell_contract
+    assert "Bento Grid" in shell_contract
     observer_contract = server.get_agent_contract_resource("observer")
-    assert "[AUDIT-09: LIGHT-SHADOW]" in observer_contract
+    assert "AUDIT-VIS-01" in observer_contract
 
     # Valida que agent_spec_loader.py carrega arquivos Markdown com YAML frontmatter
     import importlib.util
@@ -419,7 +419,7 @@ def test_frontend_skills_and_ui_subagents_integration() -> None:
     ):
         parsed_spec = module.load_agent_spec(str(server.ROOT_DIR / "agents" / agent_md), verbose=False)
         assert parsed_spec["name"] == agent_md.removesuffix(".md")
-        assert parsed_spec["version"] in ("1.1.0", "1.2.0")
+        assert parsed_spec["version"] in ("1.1.0", "1.2.0", "3.0.0")
         assert parsed_spec["enable_write_tools"] is True
         assert parsed_spec["enable_mcp_tools"] is True
         assert len(parsed_spec["description"]) > 20

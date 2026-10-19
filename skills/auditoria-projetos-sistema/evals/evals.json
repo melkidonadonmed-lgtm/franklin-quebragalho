@@ -27,11 +27,13 @@
     }
   },
   {
-    "eval_id": "TC-03-AUDITORIA-NOS-INTERATIVOS",
+    "eval_id": "TC-03-AUDITORIA-PROPOSITO-TEMA-E-NOS-INTERATIVOS",
     "category": "should-trigger",
-    "description": "Valida detecção de nós e botões inertes sem handlers funcionais via snapshot interativo",
-    "input": "Audite os componentes da aplicação usando agent-browser snapshot -i e aponte nós sem ação real",
+    "description": "Valida diagnóstico do propósito do projeto, adequação do tema, contraste, espaçamento, tipografia, camadas e nós @eX",
+    "input": "Audite o propósito visual, contraste, espaçamento, tipografia e componentes da aplicação usando agent-browser snapshot -i",
     "expected_behavior": {
+      "diagnostica_proposito_do_projeto": true,
+      "avalia_espacamento_contraste_tipografia_camadas": true,
       "rastreia_onclick_vazio": true,
       "avalia_acessibilidade_divsoup": true,
       "status_esperado": "[PASS]"
@@ -50,13 +52,13 @@
     }
   },
   {
-    "eval_id": "TC-05-NEAR-MISS-REFATORACAO-SEM-AUDITORIA",
+    "eval_id": "TC-05-NEAR-MISS-SCAFFOLDING-DO-ZERO",
     "category": "should-not-trigger",
-    "description": "Near-miss: pedido para reescrever diretamente as telas React sem diagnóstico de repositório",
-    "input": "Reescreva imediatamente todos os botões de Dashboard.tsx para usar .ui-btn-tactile.",
+    "description": "Near-miss: pedido para criar apenas o scaffolding inicial de pastas src/ do zero sem auditar repositório existente",
+    "input": "Crie do zero a estrutura inicial de pastas src/ em 5 camadas de Design Atômico para um novo app React.",
     "expected_behavior": {
       "aciona_auditoria_projetos": false,
-      "delega_para": "refatoracao-design-tatil-frontend"
+      "delega_para": "frontend-code-architect"
     }
   }
 ]

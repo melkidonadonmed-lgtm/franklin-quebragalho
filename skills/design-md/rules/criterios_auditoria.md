@@ -1,22 +1,22 @@
-# Critérios Determinísticos de Auditoria — `design-md` (`v4.5.0`)
+# Critérios Determinísticos de Auditoria — `design-md` (`v5.0.0`)
 
-Critérios objetivos e falsificáveis (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) para auditar a geração e atualização do contrato arquitetural `DESIGN.md v4.5-soft` (Módulo **M3**).
+Critérios objetivos e falsificáveis (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) para auditar a geração e atualização do contrato arquitetural `DESIGN.md` guiado pelo propósito do projeto (Módulo **M3**).
 
 ---
 
-## 1. Cabeçalho YAML e Economia Tonal 60-30-10 (`[AUDIT-DESIGN-01]`)
-- **`[PASS]`**: O arquivo `DESIGN.md` na raiz do projeto contém frontmatter YAML com `version: "4.5-soft"`, especifica a economia tonal **60-30-10** e declara as 4+1 camadas (`--surface-canvas: #F1F4F8`, `--surface-inset: #E5E9F0`, `--surface-flat: #E9EEF5`, `--surface-raised: #F1F4F8` e `--surface-contrast: #1E293B`).
-- **`[FAIL: CONTRATO_INCOMPLETO]`**: Ausência do frontmatter `version: "4.5-soft"` ou omissão das camadas tonais canônicas.
+## 1. Alinhamento ao Propósito do Projeto e Tokens Semânticos (`[AUDIT-DESIGN-01]`)
+- **`[PASS]`**: O arquivo `DESIGN.md` na raiz do projeto explicita o `project_purpose`, seleciona uma atmosfera coerente com o domínio (*Ad Lucem*, *Cinza Monolítico `#57545d` + Menus `#8e8999`*, *Preto Terminal IBM `Ex Umbris`*, *AETHER 2027* ou paleta própria fundamentada) e declara as camadas de superfície (`--bg-canvas`, `--bg-surface`, `--bg-elevated`, `--bg-contrast-card`) e 4 níveis de tinta (`--ink-primary..subtle`).
+- **`[FAIL: TEMA_FIXO_SEM_PROPOSITO]`**: Aplicação mecânica de paleta fixa sem diagnosticar o propósito do projeto ou omissão das camadas de superfície e tinta.
 - **`[UNVERIFIED]`**: Caminho raiz do projeto inacessível no disco.
 
-## 2. Iluminação Direcional a 135° e Banimento de Bordas Duras / Blur (`[AUDIT-DESIGN-02]`)
-- **`[PASS]`**: Define sombras duplas a **135°** (`--shadow-raised-135` para `.ui-card-soft` e `--shadow-inset-135` para cavidades `surface-inset`), proibindo expressamente `backdrop-filter: blur()` e bordas duras de `1px` em cards Bento.
-- **`[FAIL: VIOLACAO_FISICA_135]`**: Uso de glassmorphism (`backdrop-blur`), sombras genéricas sem par de luz/sombra a 135° ou delimitação por bordas `1px solid`.
+## 2. Camadas Esculpidas, Rim Light e Espaçamento Concêntrico (`[AUDIT-DESIGN-02]`)
+- **`[PASS]`**: Define sombra esculpida em 3 camadas (`--shadow-sculpted`: Umbra + Penumbra + Difusão) combinada com `1px` Rim Light (`inset 0 1px 0 0 var(--rim-light)`), respiro de canvas ($\ge 25\%$) e fórmula de raios concêntricos ($R_{\text{interno}} = R_{\text{externo}} - \text{Padding}$).
+- **`[FAIL: CAMADAS_OU_ESPACAMENTO_AUSENTES]`**: Sombras borradas genéricas sem separação de camadas, falta de respiro ou ausência de diretrizes de espaçamento.
 
-## 3. Banimento Absoluto de Azul Cobalto e Neon (`[AUDIT-DESIGN-03]`)
-- **`[PASS]`**: Paleta 100% livre de azul cobalto elétrico (`#0044FF`, `#0057FF`, `#1D4ED8`, `#233DFF`, `#2563EB`) e neons, adotando **Cerulean Sapphire** (`#0284C7`), **Ocean Sapphire** (`#1E6091`), **Forest Moss** (`#174930`) ou **Mineral Ice** (`#38BDF8` no dark mode).
-- **`[FAIL: COBALTO_DETECTADO]`**: Presença de qualquer código hexadecimal ou token de azul cobalto/neon como cor de destaque.
+## 3. Contraste Perceptual, Isolamento de Acento e Legibilidade de Menus (`[AUDIT-DESIGN-03]`)
+- **`[PASS]`**: Garante contraste WCAG 2.1 AA/AAA (APCA $L_c \ge 60/75$), tinta escura nítida sobre menus claros ou `#8e8999` (`--nav-ink`), e isolamento do acento pontual (proporção 98/2 ou 60-30-10 com 1 único CTA primário sólido vs. `.btn-ghost`).
+- **`[FAIL: CONTRASTE_OU_POLUICAO_CROMATICA]`**: Texto branco sobre fundo claro/cinza médio, múltiplos CTAs primários competindo ou abuso de cores saturadas sem hierarquia.
 
-## 4. Catálogo dos 8 Kits Soft Tactile UI e Integração de Esteira (`[AUDIT-DESIGN-04]`)
-- **`[PASS]`**: Documenta os 8 Kits Soft Tactile UI (`<SoftCard />`, `.ui-btn-tactile`, `.badge-soft`, `.swatch-disc`, `.tactile-thumb`, `.tactile-range`, `.surface-inset-pill`, `.activity-row`), o `#sidebar-active-tracker` deslizante e a integração com `frontend-code-architect` (`v4.1.0`) e `frontend-testing-auditor` (`v2.6.0`).
-- **`[FAIL: KITS_AUSENTES]`**: Omissão dos 8 Kits Soft UI ou ausência de mapeamento para a arquitetura de 5 camadas atômicas.
+## 4. Tipografia Fluida (`clamp()`), `tabular-nums` e Integração Atômica (`[AUDIT-DESIGN-04]`)
+- **`[PASS]`**: Especifica escala fluida com `clamp()`, `font-variant-numeric: tabular-nums` para dados numéricos, acoplamento `IBM Plex Sans` + `IBM Plex Mono` quando o tema for Preto Terminal (`Ex Umbris`), e estrutura `src/` em 5 camadas atômicas com estados FSM (`idle | loading | error | pressed`).
+- **`[FAIL: TIPOGRAFIA_OU_ARQUITETURA_INCOMPLETA]`**: Ausência de `tabular-nums`, falta de escala tipográfica ou omissão dos estados FSM.

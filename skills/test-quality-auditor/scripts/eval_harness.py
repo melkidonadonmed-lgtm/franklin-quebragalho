@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from models import FileAuditReport
+from perfkit_stats import summarize_latency_ms
 
 EXPECTED_MIRROR_MODULES = ("python", "ts_js", "go", "mcp", "harness")
 
@@ -138,7 +139,7 @@ def _build_eval_reports(
         "run_summary": {
             "with_skill": {
                 "pass_rate": {"mean": pass_rate_with, "stddev": 0.0},
-                "time_ms": {"mean": round(sum(with_skill_times) / max(len(with_skill_times), 1), 3)},
+                "time_ms": summarize_latency_ms(with_skill_times),
                 "false_positive_escape_rate": 0.0,
             },
             "without_skill_baseline": {

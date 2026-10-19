@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EX UMBRIS AD LUCEM // Minimalismo de Impacto & Arquitetura de Luz</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans (Menus Geométricos), Instrument Serif (Editorial) & IBM Plex Mono/Sans (Terminal IBM) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================================================
+           ARQUITETURA DE 3 TEMAS:
+           1. AD LUCEM (Claro Editorial — Inspiração Terrixa & Sumi-e)
+           2. CINZA SOBRE CINZA (#57545d Fundo + #8e8999 Menus — Monolítico Suave)
+           3. IBM TERMINAL (Preto Profundo + Tipografia IBM Plex Mono)
+           ========================================================================== */
+        :root, [data-theme="light"] {
+            --bg-canvas: #F3F3F5;
+            --bg-surface: #FFFFFF;
+            --bg-elevated: #E6E6EA;
+            --bg-contrast-card: #18181C;
+            --ink-contrast-card: #F4F4F6;
+            
+            /* Menus com Tipografia Escura Nítida (Zero letras brancas lavadas) */
+            --nav-shell-bg: rgba(255, 255, 255, 0.92);
+            --nav-pill-bg: #EAEAEF;
+            --nav-ink: #18181B;
+            --nav-ink-muted: #52525B;
+            --nav-active-bg: #18181B;
+            --nav-active-ink: #FFFFFF;
+
+            /* Hierarquia de Grafite */
+            --ink-primary: #111115;
+            --ink-secondary: #3F3F46;
+            --ink-muted: #686873;
+            --ink-subtle: #A1A1AA;
+            
+            /* Bordas & Luz Especular */
+            --border-hairline: rgba(24, 24, 27, 0.10);
+            --border-strong: rgba(24, 24, 27, 0.24);
+            --rim-light: rgba(255, 255, 255, 0.95);
+            
+            /* Sombra Esculpida */
+            --shadow-sculpted: 
+                0 1px 2px rgba(17, 17, 21, 0.04),
+                0 10px 28px -6px rgba(17, 17, 21, 0.08),
+                0 28px 56px -14px rgba(17, 17, 21, 0.10),
+                inset 0 1px 0 0 rgba(255, 255, 255, 1);
+
+            /* Tipografia Dinâmica por Tema */
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+
+            /* Cor Pontual (2% da Interface — Vermelho Cinábrio #e13535 por padrão) */
+            --punctual-accent: #e13535;
+            --punctual-soft: rgba(225, 53, 53, 0.12);
+            --punctual-glow: rgba(225, 53, 53, 0.32);
+            --punctual-btn-ink: #FFFFFF;
+        }
+
+        [data-theme="gray"] {
+            /* CINZA SOBRE CINZA (#57545d Fundo + #8e8999 Menus) */
+            --bg-canvas: #57545d;
+            --bg-surface: #49464f;
+            --bg-elevated: #635f6a;
+            --bg-contrast-card: #232127;
+            --ink-contrast-card: #F4F3F7;
+
+            /* Menu em #8e8999 com tipografia grafite-escuro de alto contraste (sem letras brancas apagadas) */
+            --nav-shell-bg: #8e8999;
+            --nav-pill-bg: rgba(35, 33, 39, 0.12);
+            --nav-ink: #16151A;
+            --nav-ink-muted: #2E2C35;
+            --nav-active-bg: #1E1C22;
+            --nav-active-ink: #F5F4F8;
+
+            /* Hierarquia de Luz & Prata sobre Cinza #57545d */
+            --ink-primary: #F7F6F9;
+            --ink-secondary: #DFDDE4;
+            --ink-muted: #BDB9C6;
+            --ink-subtle: #8e8999;
+
+            --border-hairline: rgba(255, 255, 255, 0.14);
+            --border-strong: rgba(255, 255, 255, 0.28);
+            --rim-light: rgba(255, 255, 255, 0.22);
+
+            --shadow-sculpted: 
+                0 2px 6px rgba(15, 14, 18, 0.35),
+                0 16px 36px -6px rgba(15, 14, 18, 0.50),
+                0 32px 64px -14px rgba(15, 14, 18, 0.65),
+                inset 0 1px 0 0 var(--rim-light);
+
+            --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+        }
+
+        [data-theme="dark"] {
+            /* PRETO TERMINAL IBM (Obsidiana + Tipografia IBM Plex Mono em toda a estrutura) */
+            --bg-canvas: #070709;
+            --bg-surface: #101014;
+            --bg-elevated: #18181E;
+            --bg-contrast-card: #1D1D24;
+            --ink-contrast-card: #FAFAFA;
+            
+            /* Menus em Grafite Terminal com contraste cirúrgico */
+            --nav-shell-bg: rgba(16, 16, 20, 0.92);
+            --nav-pill-bg: #18181F;
+            --nav-ink: #E4E4E7;
+            --nav-ink-muted: #A1A1AA;
+            --nav-active-bg: #FAFAFA;
+            --nav-active-ink: #09090B;
+
+            /* Hierarquia de Luz sobre Preto IBM */
+            --ink-primary: #F4F4F6;
+            --ink-secondary: #B4B4BE;
+            --ink-muted: #7D7D8A;
+            --ink-subtle: #3F3F48;
+            
+            --border-hairline: rgba(255, 255, 255, 0.09);
+            --border-strong: rgba(255, 255, 255, 0.22);
+            --rim-light: rgba(255, 255, 255, 0.13);
+            
+            --shadow-sculpted: 
+                0 2px 4px rgba(0, 0, 0, 0.65),
+                0 16px 36px -6px rgba(0, 0, 0, 0.82),
+                0 36px 72px -16px rgba(0, 0, 0, 0.95),
+                inset 0 1px 0 0 var(--rim-light);
+
+            /* No fundo preto, a tipografia IBM assume o protagonismo */
+            --font-sans: 'IBM Plex Sans', monospace;
+            --font-mono: 'IBM Plex Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--ink-primary);
+            font-family: var(--font-sans);
+            transition: background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease, filter 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        /* Modo Terminal IBM aplica espaçamento técnico refinado nos títulos */
+        [data-theme="dark"] h1,
+        [data-theme="dark"] h2,
+        [data-theme="dark"] .ibm-terminal-heading {
+            font-family: 'IBM Plex Mono', monospace;
+            letter-spacing: -0.03em;
+        }
+
+        /* Modo Squint Test (Teste de Desfoque Cognitivo Global) */
+        body.squint-active main {
+            filter: blur(5px);
+        }
+
+        .font-serif-editorial {
+            font-family: 'Instrument Serif', serif;
+        }
+
+        .font-mono-tech {
+            font-family: var(--font-mono);
+        }
+
+        /* Classes Semânticas do Modelo */
+        .surface-canvas { background-color: var(--bg-canvas); }
+        .surface-card { background-color: var(--bg-surface); }
+        .surface-elevated { background-color: var(--bg-elevated); }
+        .surface-contrast { background-color: var(--bg-contrast-card); color: var(--ink-contrast-card); }
+        
+        /* Menu Bar & Pílulas de Navegação Refinadas */
+        .nav-shell {
+            background-color: var(--nav-shell-bg);
+            color: var(--nav-ink);
+            backdrop-filter: blur(16px);
+        }
+        .nav-pill-container {
+            background-color: var(--nav-pill-bg);
+            border: 1px solid var(--border-hairline);
+        }
+        .nav-link-item {
+            color: var(--nav-ink);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: all 0.2s ease;
+        }
+        .nav-link-item:hover {
+            background-color: var(--nav-active-bg);
+            color: var(--nav-active-ink);
+        }
+        .theme-pill-btn {
+            color: var(--nav-ink);
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .theme-pill-btn.active {
+            background-color: var(--nav-active-bg);
+            color: var(--nav-active-ink);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+        }
+
+        .ink-primary { color: var(--ink-primary); }
+        .ink-secondary { color: var(--ink-secondary); }
+        .ink-muted { color: var(--ink-muted); }
+        .ink-subtle { color: var(--ink-subtle); }
+        
+        .border-hair { border-color: var(--border-hairline); }
+        .border-strong { border-color: var(--border-strong); }
+        
+        .accent-bg { background-color: var(--punctual-accent); color: var(--punctual-btn-ink); }
+        .accent-text { color: var(--punctual-accent); }
+        .accent-soft { background-color: var(--punctual-soft); }
+        .accent-border { border-color: var(--punctual-accent); }
+        .accent-glow { box-shadow: 0 0 18px var(--punctual-glow); }
+
+        .shadow-architectural {
+            box-shadow: var(--shadow-sculpted);
+        }
+
+        /* Canto Chanfrado Técnico (Inspirado na Referência Terrixa) */
+        .terrixa-card {
+            position: relative;
+            border-radius: 14px;
+        }
+
+        /* Grade Arquitetônica Minimalista */
+        .architectural-grid {
+            background-size: 64px 64px;
+            background-image: 
+                linear-gradient(to right, var(--border-hairline) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--border-hairline) 1px, transparent 1px);
+        }
+
+        .morph-transition {
+            transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Estilização de Sliders Minimalistas */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--bg-elevated);
+            height: 4px;
+            border-radius: 999px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--ink-primary);
+            cursor: pointer;
+            border: 2px solid var(--bg-surface);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+            transition: transform 0.15s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: var(--punctual-accent);
+        }
+
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-canvas); }
+        ::-webkit-scrollbar-thumb { background: var(--ink-subtle); border-radius: 2px; }
+    
+    /* Canonical A11y, Tabular & Layer Tokens */
+    :root { --bg-canvas: #F3F3F5; --bg-surface: #FFFFFF; --ink-primary: #111113; --shadow-sculpted: 0 8px 24px -4px rgba(9,9,11,0.06), inset 0 1px 0 0 rgba(255,255,255,0.85); }
+    :focus-visible { outline: 2px solid var(--punctual-accent, #35acd8); outline-offset: 2px; }
+    .tabular-nums, .font-mono, code, td { font-variant-numeric: tabular-nums; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
+  </style>
+</head>
+<body data-state="idle" data-theme="ad-lucem" role="status" aria-busy="false" aria-label="Design System Studio" class="antialiased selection:bg-zinc-700 selection:text-white">
+
+    <!-- BARRA DE NAVEGAÇÃO ARQUITETÔNICA (ESTILO PÍLULA DE ALTO CONTRASTE) -->
+    <header class="sticky top-0 z-50 nav-shell border-b border-hair transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+            
+            <!-- Identidade: Ponto Cirúrgico + Tipografia de Alta Legibilidade -->
+            <div class="flex items-center space-x-3 shrink-0">
+                <span class="w-2.5 h-2.5 rounded-full accent-bg accent-glow transition-all duration-500" title="O Ponto Focal de 2%"></span>
+                <span class="font-mono-tech text-xs tracking-[0.16em] uppercase font-semibold" style="color: var(--nav-ink);">EX UMBRIS</span>
+                <span class="hidden xl:inline-block text-xs border-l border-hair pl-3 font-medium" style="color: var(--nav-ink-muted);">
+                    Arquitetura de Contraste
+                </span>
+            </div>
+
+            <!-- Menu Central em Pílula (Inspirado em BellArt & Terrixa — Sem letras brancas ilegíveis) -->
+            <nav class="hidden lg:flex items-center nav-pill-container px-2 py-1 rounded-full space-x-1 text-xs">
+                <a href="#pontualidade" class="nav-link-item px-3.5 py-1.5 rounded-full">01. Pontualidade</a>
+                <a href="#sombras-lab" class="nav-link-item px-3.5 py-1.5 rounded-full">02. Sombra & Luz</a>
+                <a href="#hierarquia-impacto" class="nav-link-item px-3.5 py-1.5 rounded-full">03. Hierarquia</a>
+                <a href="#escala-grafite" class="nav-link-item px-3.5 py-1.5 rounded-full">04. Matriz Cinza</a>
+                <a href="#skill-vault" class="nav-link-item px-3.5 py-1.5 rounded-full font-semibold">05. Skill.md</a>
+            </nav>
+
+            <!-- Controles Globais: Seletor de 3 Temas + Squint Test + Exportar -->
+            <div class="flex items-center space-x-2">
+                <!-- Seletor Triplo de Tema: Claro | Cinza #57545d | Preto IBM -->
+                <div class="nav-pill-container p-1 rounded-full flex items-center space-x-0.5 text-[11px] font-mono-tech">
+                    <button onclick="setThemeMode('light')" id="themeBtnLight" class="theme-pill-btn px-2.5 py-1 rounded-full" title="Tema Claro Editorial (Ad Lucem)">
+                        Claro
+                    </button>
+                    <button onclick="setThemeMode('gray')" id="themeBtnGray" class="theme-pill-btn active px-2.5 py-1 rounded-full" title="Cinza sobre Cinza (#57545d fundo / #8e8999 menus)">
+                        Cinza·#57545d
+                    </button>
+                    <button onclick="setThemeMode('dark')" id="themeBtnDark" class="theme-pill-btn px-2.5 py-1 rounded-full" title="Fundo Preto com Tipografia Terminal IBM">
+                        IBM·Preto
+                    </button>
+                </div>
+
+                <!-- Botão Squint Test -->
+                <button id="squintToggleBtn" onclick="toggleGlobalSquint()" class="px-3 py-1.5 text-xs font-mono-tech font-medium nav-pill-container rounded-full hover:opacity-80 transition-all flex items-center space-x-1.5" style="color: var(--nav-ink);" title="Desfoca a página para testar a hierarquia">
+                    <span class="w-1.5 h-1.5 rounded-full bg-zinc-500" id="squintIndicator"></span>
+                    <span class="hidden sm:inline">Squint</span>
+                </button>
+
+                <!-- Atalho Rápido para a Skill Oficial -->
+                <a href="#skill-vault" class="px-3.5 py-1.5 text-xs font-mono-tech font-medium accent-bg rounded-full hover:opacity-90 transition-all shadow-sm flex items-center space-x-1.5">
+                    <span>SKILL.md</span>
+                </a>
+
+                <!-- Exportar Boilerplate CSS -->
+                <button onclick="openBoilerplateModal()" class="hidden sm:inline-flex px-3 py-1.5 text-xs font-mono-tech font-medium nav-pill-container rounded-full hover:opacity-80 transition-all" style="color: var(--nav-ink);">
+                    { } CSS
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="transition-all duration-500">
+        
+        <!-- HERO SECTION: EX UMBRIS AD LUCEM -->
+        <section class="relative border-b border-hair overflow-hidden">
+            <div class="architectural-grid absolute inset-0 opacity-60 pointer-events-none"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-20 md:pt-20 md:pb-28 relative z-10">
+                
+                <!-- Linha Técnica Superior (Inspirada no cabeçalho editorial da referência Terrixa) -->
+                <div class="flex flex-wrap items-center justify-between gap-4 pb-6 mb-10 border-b border-hair text-[11px] font-mono-tech ink-muted uppercase tracking-[0.16em]">
+                    <div class="flex items-center space-x-2.5">
+                        <span class="w-2 h-2 rounded-full accent-bg"></span>
+                        <span id="heroThemeSignature" class="font-medium ink-primary">MODO ATIVO: AD LUCEM (CLARO EDITORIAL)</span>
+                    </div>
+                    <span>PÚBLICO-ALVO — ARQUITETURA DE PRODUTO & UI 2027</span>
+                </div>
+
+                <!-- Título de Impacto -->
+                <h1 class="text-4xl sm:text-6xl lg:text-7xl font-light tracking-tight leading-[1.04] max-w-5xl mb-6">
+                    O silêncio do <span class="font-semibold">cinza e grafite</span>.<br>
+                    A precisão cirúrgica da <span class="font-serif-editorial italic font-normal accent-text">cor pontual</span>.
+                </h1>
+
+                <p class="text-base sm:text-lg ink-secondary max-w-2xl font-normal leading-relaxed mb-10">
+                    Minimalismo de impacto é a <strong class="font-semibold ink-primary">complexidade da simplicidade</strong>. Teste abaixo como os temas claros favorecem a leitura editorial, o <strong class="font-semibold ink-primary">cinza sobre cinza (<code class="font-mono-tech text-xs">#57545d</code> / <code class="font-mono-tech text-xs">#8e8999</code>)</strong> cria uma atmosfera monolítica suave, e o fundo preto ganha força total com a tipografia de <strong class="font-semibold ink-primary">terminal IBM</strong>.
+                </p>
+
+                <!-- Pílulas de Ação com Seta Circular (Inspiradas na referência Terrixa) + Seletor de Cores Calibradas -->
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pt-8 border-t border-hair">
+                    
+                    <div class="flex flex-wrap items-center gap-3">
+                        <a href="#pontualidade" class="pl-5 pr-2.5 py-2 text-xs font-mono-tech font-medium uppercase tracking-wider accent-bg rounded-full hover:opacity-90 transition-all flex items-center space-x-3 shadow-sm">
+                            <span>Lei da Pontualidade</span>
+                            <span class="w-6 h-6 rounded-full bg-black/20 flex items-center justify-center text-[11px]">↘</span>
+                        </a>
+                        <a href="#sombras-lab" class="pl-5 pr-2.5 py-2 text-xs font-mono-tech font-medium uppercase tracking-wider surface-card border border-strong ink-primary rounded-full hover:opacity-80 transition-all flex items-center space-x-3">
+                            <span>Estúdio de Sombra</span>
+                            <span class="w-6 h-6 rounded-full surface-elevated flex items-center justify-center text-[11px]">↘</span>
+                        </a>
+                        <button onclick="cycleThemes()" class="px-4 py-2.5 text-xs font-mono-tech font-medium surface-elevated border border-hair ink-primary rounded-full hover:border-strong transition-all">
+                            Alternar Tema (Claro / #57545d / IBM)
+                        </button>
+                    </div>
+
+                    <!-- Seletor da Cor Pontual por Objetivo (#e13535, #35acd8, Verde Médico, Âmbar) -->
+                    <div class="flex flex-wrap items-center gap-3 surface-card border border-hair px-4 py-2.5 rounded-2xl self-start lg:self-auto shadow-sm">
+                        <span class="font-mono-tech text-[11px] uppercase tracking-wider ink-muted font-medium">
+                            Cor por Objetivo (2%):
+                        </span>
+                        <div class="flex items-center space-x-2.5">
+                            <!-- #e13535 Vermelho Cinábrio -->
+                            <button onclick="setPunctualAccent('#e13535', 'rgba(225,53,53,0.12)', 'rgba(225,53,53,0.35)', 'Carmim Selo (#e13535) · Editorial & Foco', '#FFFFFF')" class="w-5 h-5 rounded-full bg-[#e13535] ring-2 ring-offset-2 ring-offset-zinc-800 ring-zinc-400 transition-transform hover:scale-110" title="#e13535 — Carmim Selo (Foco Cirúrgico & Editorial)"></button>
+                            <!-- #35acd8 Azul Cerúleo Técnico -->
+                            <button onclick="setPunctualAccent('#35acd8', 'rgba(53,172,216,0.14)', 'rgba(53,172,216,0.38)', 'Azul Técnico (#35acd8) · IA & Engenharia', '#091318')" class="w-5 h-5 rounded-full bg-[#35acd8] opacity-85 hover:opacity-100 transition-transform hover:scale-110" title="#35acd8 — Azul Cerúleo (Sistemas de IA, Dados & Engenharia)"></button>
+                            <!-- #10B981 Verde Médico / Clínico -->
+                            <button onclick="setPunctualAccent('#10B981', 'rgba(16,185,129,0.13)', 'rgba(16,185,129,0.35)', 'Esmeralda Clínico (#10B981) · MedTech & Saúde', '#062016')" class="w-5 h-5 rounded-full bg-[#10B981] opacity-85 hover:opacity-100 transition-transform hover:scale-110" title="#10B981 — Esmeralda Clínico (Ideal para Temas Médicos, BioTech & Saúde)"></button>
+                            <!-- #D97706 Âmbar Editorial -->
+                            <button onclick="setPunctualAccent('#D97706', 'rgba(217,119,6,0.13)', 'rgba(217,119,6,0.35)', 'Âmbar Imperial (#D97706) · FinTech & Patrimônio', '#FFFFFF')" class="w-5 h-5 rounded-full bg-[#D97706] opacity-85 hover:opacity-100 transition-transform hover:scale-110" title="#D97706 — Âmbar Imperial"></button>
+                        </div>
+                        <span id="activeAccentName" class="font-mono-tech text-[11px] accent-text font-medium">Carmim Selo (#e13535) · Editorial & Foco</span>
+                    </div>
+
+                </div>
+
+                <!-- 4 Pilares em Dupla Tonalidade (Claro vs Grafite Escuro — Inspirado nos cards 01, 02, 03, 04 da Terrixa) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-14">
+                    <!-- Card 01: Superfície Padrão -->
+                    <div class="terrixa-card surface-card border border-strong p-6 shadow-architectural flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-hair">
+                                <span class="font-mono-tech text-lg font-semibold ink-primary">01</span>
+                                <span class="w-2 h-2 rounded-full accent-bg"></span>
+                            </div>
+                            <h3 class="text-sm font-semibold mb-1.5">Carmim #e13535 & Azul #35acd8</h3>
+                            <p class="text-xs ink-secondary leading-relaxed">
+                                Cores calibradas para não vibrarem excessivamente: o vermelho <code class="font-mono-tech">#e13535</code> age como um selo oriental preciso, e o azul <code class="font-mono-tech">#35acd8</code> traz calma técnica.
+                            </p>
+                        </div>
+                        <span class="font-mono-tech text-[10px] ink-muted mt-4 pt-2 border-t border-hair block">PROPORÇÃO 98% NEUTRO · 2% COR</span>
+                    </div>
+
+                    <!-- Card 02: Bloco de Alto Contraste Escuro (Estilo Card 02 Terrixa) -->
+                    <div class="terrixa-card surface-contrast border border-strong p-6 shadow-architectural flex flex-col justify-between relative overflow-hidden">
+                        <div>
+                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/15">
+                                <span class="font-mono-tech text-lg font-semibold">02</span>
+                                <span class="font-mono-tech text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/10">Contraste</span>
+                            </div>
+                            <h3 class="text-sm font-semibold mb-1.5">Cinza sobre Cinza (#57545d)</h3>
+                            <p class="text-xs opacity-80 leading-relaxed">
+                                Alternar cartões claros e blocos em grafite profundo cria ritmo visual imediato sem precisar adicionar novas cores à página.
+                            </p>
+                        </div>
+                        <span class="font-mono-tech text-[10px] opacity-60 mt-4 pt-2 border-t border-white/15 block">MENUS #8e8999 COM TINTA ESCURA</span>
+                    </div>
+
+                    <!-- Card 03: Superfície Padrão (Foco em Temas Médicos / Verde) -->
+                    <div class="terrixa-card surface-card border border-strong p-6 shadow-architectural flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-hair">
+                                <span class="font-mono-tech text-lg font-semibold ink-primary">03</span>
+                                <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+                            </div>
+                            <h3 class="text-sm font-semibold mb-1.5">Verde em Temas Médicos</h3>
+                            <p class="text-xs ink-secondary leading-relaxed">
+                                O verde esmeralda sobre base branca/alabastro transmite assepsia, precisão clínica e estabilidade biomédica instantânea.
+                            </p>
+                        </div>
+                        <button onclick="applyMedicalDemo()" class="font-mono-tech text-[10px] accent-text font-medium mt-4 pt-2 border-t border-hair text-left hover:underline block">
+                            Testar Preset Médico (Claro + Verde) →
+                        </button>
+                    </div>
+
+                    <!-- Card 04: Bloco de Alto Contraste Escuro (Terminal IBM) -->
+                    <div class="terrixa-card surface-contrast border border-strong p-6 shadow-architectural flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/15">
+                                <span class="font-mono-tech text-lg font-semibold">04</span>
+                                <span class="font-mono-tech text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/10">IBM Plex</span>
+                            </div>
+                            <h3 class="text-sm font-semibold mb-1.5">Preto + Terminal IBM</h3>
+                            <p class="text-xs opacity-80 leading-relaxed">
+                                Fundos pretos puros brilham quando combinados à estética de terminal IBM (<code class="font-mono-tech">IBM Plex Mono</code>), grades técnicas e telemetria.
+                            </p>
+                        </div>
+                        <button onclick="setThemeMode('dark')" class="font-mono-tech text-[10px] text-[#35acd8] font-medium mt-4 pt-2 border-t border-white/15 text-left hover:underline block">
+                            Ativar Modo Terminal IBM →
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SEÇÃO 01: PONTUALIDADE CROMÁTICA (POR QUE MENOS COR CHAMA MAIS ATENÇÃO) -->
+        <section id="pontualidade" class="py-24 border-b border-hair">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-14">
+                    <div>
+                        <span class="font-mono-tech text-xs uppercase tracking-[0.2em] accent-text">01 // Efeito de Isolamento (Von Restorff)</span>
+                        <h2 class="text-3xl sm:text-5xl font-extralight tracking-tight mt-3">
+                            Por que a <span class="font-serif-editorial italic font-normal">pontualidade</span> vence o excesso
+                        </h2>
+                    </div>
+                    <p class="text-sm ink-secondary max-w-md mt-4 lg:mt-0 font-light leading-relaxed">
+                        Quando você colore títulos, badges, bordas e múltiplos botões, o cérebro humano entra em habituamento sensorial. Veja na prática como reduzir a cor para um único ponto cirúrgico multiplica o foco.
+                    </p>
+                </div>
+
+                <!-- Controles do Simulador de Pontualidade -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    
+                    <!-- Painel Esquerdo: Seletor de Estado + Diagnóstico Óptico -->
+                    <div class="lg:col-span-5 space-y-6">
+                        <div class="surface-card border border-hair rounded-xl p-6 shadow-architectural space-y-3">
+                            <span class="font-mono-tech text-[11px] uppercase tracking-wider ink-muted block mb-2">
+                                Selecione a Estratégia Cromática:
+                            </span>
+
+                            <!-- Opção 1: Excesso de Cores -->
+                            <button onclick="setChromaticStrategy('excess')" id="stratBtnExcess" class="w-full text-left p-4 rounded-lg border border-hair surface-elevated transition-all">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium">1. Excesso de Cores (Poluição)</span>
+                                    <div class="flex space-x-1">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-pink-500"></span>
+                                    </div>
+                                </div>
+                                <p class="text-xs ink-muted mt-1 font-light">6 cores competindo simultaneamente. Nada parece prioritário.</p>
+                            </button>
+
+                            <!-- Opção 2: Acromático Puro -->
+                            <button onclick="setChromaticStrategy('monochrome')" id="stratBtnMono" class="w-full text-left p-4 rounded-lg border border-hair surface-elevated transition-all">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium">2. Acromático Absoluto (0% Cor)</span>
+                                    <div class="flex space-x-1">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-zinc-200"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-zinc-500"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-zinc-800"></span>
+                                    </div>
+                                </div>
+                                <p class="text-xs ink-muted mt-1 font-light">Elegância pura em preto, branco e grafite. Zero distração, mas exige leitura ativa.</p>
+                            </button>
+
+                            <!-- Opção 3: Pontualidade Cirúrgica (Ativo) -->
+                            <button onclick="setChromaticStrategy('surgical')" id="stratBtnSurgical" class="w-full text-left p-4 rounded-lg border-2 accent-border surface-card transition-all">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium">3. Pontualidade Cirúrgica (98% Grafite · 2% Cor)</span>
+                                    <div class="flex space-x-1 items-center">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-zinc-700"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-zinc-500"></span>
+                                        <span class="w-3 h-3 rounded-full accent-bg accent-glow"></span>
+                                    </div>
+                                </div>
+                                <p class="text-xs ink-secondary mt-1 font-light">O silêncio do grafite transforma o pequeno detalhe colorido em um ímã inevitável.</p>
+                            </button>
+                        </div>
+
+                        <!-- Telemetria de Atenção Visual -->
+                        <div class="surface-card border border-hair rounded-xl p-6 shadow-architectural space-y-4">
+                            <div class="flex items-center justify-between border-b border-hair pb-3">
+                                <span class="font-mono-tech text-xs uppercase ink-muted">Diagnóstico de Foco Retiniano</span>
+                                <span id="chromaticScoreBadge" class="font-mono-tech text-xs accent-text font-medium">FOCO: 98.4%</span>
+                            </div>
+                            <p id="chromaticAnalysisText" class="text-xs sm:text-sm ink-secondary font-light leading-relaxed">
+                                Como 98% do card está contido em tons de grafite, branco e preto, o córtex visual detecta a anomalia cromática em <strong>menos de 35 milissegundos</strong>. Um único ponto de 8px e um botão pontual guiam a decisão sem esforço.
+                            </p>
+                            <!-- Barra de Dispersão vs Concentração -->
+                            <div class="space-y-1.5 pt-2">
+                                <div class="flex justify-between font-mono-tech text-[11px] ink-muted">
+                                    <span>Dispersão Ocular</span>
+                                    <span id="dispersionValue">Mínima (1 Ponto Focal)</span>
+                                </div>
+                                <div class="w-full h-1.5 surface-elevated rounded-full overflow-hidden">
+                                    <div id="dispersionBar" class="h-full accent-bg w-[12%] morph-transition"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Painel Direito: Espécime de Interface Mutável -->
+                    <div class="lg:col-span-7 surface-card border border-hair rounded-xl p-6 sm:p-12 flex flex-col items-center justify-center min-h-[460px] relative architectural-grid">
+                        
+                        <div id="chromaticSpecimenCard" class="w-full max-w-lg surface-card border border-hair rounded-xl p-8 shadow-architectural morph-transition relative">
+                            
+                            <!-- Cabeçalho Técnico do Card -->
+                            <div class="flex items-center justify-between pb-6 border-b border-hair" id="specHeaderBorder">
+                                <div class="flex items-center space-x-2.5">
+                                    <span id="specPulseDot" class="w-2 h-2 rounded-full accent-bg accent-glow morph-transition"></span>
+                                    <span id="specTag" class="font-mono-tech text-[11px] uppercase tracking-[0.15em] ink-secondary morph-transition">
+                                        NÓ DE ARQUITETURA // 09
+                                    </span>
+                                </div>
+                                <span id="specBadgeRight" class="font-mono-tech text-[11px] px-2.5 py-0.5 rounded border border-hair ink-muted morph-transition">
+                                    LATÊNCIA: 1.4ms
+                                </span>
+                            </div>
+
+                            <!-- Corpo de Dados -->
+                            <div class="py-7 space-y-2">
+                                <span id="specLabelMetric" class="font-mono-tech text-[11px] uppercase tracking-widest ink-muted block">
+                                    Rendimento de Conversão Limpa
+                                </span>
+                                <div class="flex items-baseline space-x-4">
+                                    <span id="specBigNumber" class="text-5xl sm:text-6xl font-extralight tracking-tight ink-primary morph-transition">
+                                        +412.8%
+                                    </span>
+                                    <span id="specMicroDelta" class="font-mono-tech text-xs accent-text font-medium morph-transition">
+                                        ▲ PICO ÓPTICO
+                                    </span>
+                                </div>
+                                <p id="specDescription" class="text-xs sm:text-sm ink-secondary font-light leading-relaxed pt-2 morph-transition">
+                                    Quando removemos gradientes decorativos e ícones multicor, o olhar humano repousa sobre a estrutura de grafite e converge instantaneamente para o único gatilho colorido.
+                                </p>
+                            </div>
+
+                            <!-- Mini-Grade de Métricas Secundárias (Sempre em Grafite no modo cirúrgico) -->
+                            <div class="grid grid-cols-3 gap-3 py-4 border-y border-hair mb-6" id="specSubGrid">
+                                <div id="specBox1" class="p-3 surface-elevated rounded-lg morph-transition">
+                                    <span class="font-mono-tech text-[10px] ink-muted block">SUPERFÍCIE</span>
+                                    <span class="text-xs font-medium mt-0.5 block">Obsidiana</span>
+                                </div>
+                                <div id="specBox2" class="p-3 surface-elevated rounded-lg morph-transition">
+                                    <span class="font-mono-tech text-[10px] ink-muted block">SOMBRA</span>
+                                    <span class="text-xs font-medium mt-0.5 block">5 Camadas</span>
+                                </div>
+                                <div id="specBox3" class="p-3 surface-elevated rounded-lg morph-transition">
+                                    <span class="font-mono-tech text-[10px] ink-muted block">ACENTO</span>
+                                    <span class="text-xs font-medium mt-0.5 block">2% Cirúrgico</span>
+                                </div>
+                            </div>
+
+                            <!-- Rodapé de Ação -->
+                            <div class="flex items-center justify-between gap-4">
+                                <button id="specSecondaryAction" class="px-4 py-2.5 text-xs font-mono-tech ink-muted hover:opacity-80 rounded-md morph-transition">
+                                    Inspecionar Logs
+                                </button>
+                                <button id="specPrimaryAction" class="px-6 py-2.5 text-xs font-mono-tech uppercase tracking-wider text-white accent-bg rounded-md shadow-sm hover:opacity-90 morph-transition">
+                                    Ativar Protocolo →
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 02: EX UMBRIS AD LUCEM — COMO UMA SOMBRA FAZ TOTAL DIFERENÇA -->
+        <section id="sombras-lab" class="py-24 border-b border-hair">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-14">
+                    <div>
+                        <span class="font-mono-tech text-xs uppercase tracking-[0.2em] accent-text">02 // Física de Iluminação & Elevação</span>
+                        <h2 class="text-3xl sm:text-5xl font-extralight tracking-tight mt-3">
+                            Como uma <span class="font-serif-editorial italic font-normal">sombra</span> faz total diferença
+                        </h2>
+                    </div>
+                    <p class="text-sm ink-secondary max-w-md mt-4 lg:mt-0 font-light leading-relaxed">
+                        No minimalismo, não usamos caixas coloridas para separar elementos. Usamos <strong>luz e sombra</strong>. Uma sombra amadora suja o layout; uma sombra física multi-camadas com luz de borda (<em>rim light</em>) transforma um retângulo HTML em um objeto tátil.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                    
+                    <!-- Controles do Estúdio de Sombra -->
+                    <div class="lg:col-span-5 surface-card border border-hair rounded-xl p-6 shadow-architectural flex flex-col justify-between space-y-6">
+                        
+                        <div class="space-y-4">
+                            <span class="font-mono-tech text-[11px] uppercase tracking-wider ink-muted block">
+                                1. Compare os 4 Níveis de Engenharia de Sombra:
+                            </span>
+
+                            <div class="grid grid-cols-2 gap-2.5">
+                                <button onclick="setShadowPreset('flat')" id="shBtnFlat" class="p-3 text-left rounded-lg border border-hair surface-elevated text-xs transition-all">
+                                    <span class="font-mono-tech text-[10px] ink-muted block">01. ZERO SOMBRA</span>
+                                    <span class="font-medium mt-0.5 block">Flat / Chapado</span>
+                                </button>
+                                <button onclick="setShadowPreset('amateur')" id="shBtnAmateur" class="p-3 text-left rounded-lg border border-hair surface-elevated text-xs transition-all">
+                                    <span class="font-mono-tech text-[10px] ink-muted block">02. SOMBRA COMUM</span>
+                                    <span class="font-medium mt-0.5 block">1 Camada Dura</span>
+                                </button>
+                                <button onclick="setShadowPreset('ambient')" id="shBtnAmbient" class="p-3 text-left rounded-lg border border-hair surface-elevated text-xs transition-all">
+                                    <span class="font-mono-tech text-[10px] ink-muted block">03. OCLUSÃO SUAVE</span>
+                                    <span class="font-medium mt-0.5 block">Penumbra Difusa</span>
+                                </button>
+                                <button onclick="setShadowPreset('exumbris')" id="shBtnExUmbris" class="p-3 text-left rounded-lg border-2 accent-border surface-card text-xs transition-all">
+                                    <span class="font-mono-tech text-[10px] accent-text block">04. EX UMBRIS</span>
+                                    <span class="font-medium mt-0.5 block">Multi-Camadas + Luz</span>
+                                </button>
+                            </div>
+
+                            <!-- Sliders de Luz Físicos -->
+                            <div class="pt-4 border-t border-hair space-y-4">
+                                <span class="font-mono-tech text-[11px] uppercase tracking-wider ink-muted block">
+                                    2. Manipular Fonte de Luz em Tempo Real:
+                                </span>
+
+                                <div>
+                                    <div class="flex justify-between text-xs font-mono-tech mb-1.5">
+                                        <span class="ink-secondary">Elevação Z (Distância do Fundo)</span>
+                                        <span id="zElevationLabel" class="accent-text">28px</span>
+                                    </div>
+                                    <input type="range" id="zElevationSlider" min="0" max="60" value="28" oninput="updateCustomShadowPhysics()" class="w-full">
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-xs font-mono-tech mb-1.5">
+                                        <span class="ink-secondary">Ângulo Horizontal da Luz (Eixo X)</span>
+                                        <span id="xLightLabel" class="ink-muted">0px (Zenital)</span>
+                                    </div>
+                                    <input type="range" id="xLightSlider" min="-30" max="30" value="0" oninput="updateCustomShadowPhysics()" class="w-full">
+                                </div>
+
+                                <!-- Toggle de Borda Especular (Rim Light) -->
+                                <div class="flex items-center justify-between pt-2">
+                                    <div>
+                                        <span class="text-xs font-medium block">Luz Especular de Topo (Inset 1px)</span>
+                                        <span class="text-[11px] ink-muted">Essencial no grafite escuro para criar relevo</span>
+                                    </div>
+                                    <button onclick="toggleRimLight()" id="rimLightBtn" class="px-3 py-1 rounded text-xs font-mono-tech accent-bg text-white transition-all">
+                                        ATIVO
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Código CSS da Sombra Gerada -->
+                        <div class="pt-4 border-t border-hair">
+                            <span class="font-mono-tech text-[10px] uppercase ink-muted block mb-1.5">CSS Box-Shadow Gerado:</span>
+                            <pre id="shadowCssOutput" class="font-mono-tech text-[11px] surface-elevated p-3 rounded-lg overflow-x-auto ink-secondary leading-relaxed"></pre>
+                        </div>
+
+                    </div>
+
+                    <!-- Palco de Demonstração da Sombra -->
+                    <div class="lg:col-span-7 surface-canvas border border-hair rounded-xl p-8 sm:p-14 flex flex-col items-center justify-center relative overflow-hidden min-h-[480px]">
+                        
+                        <!-- Indicador Visual da Lâmpada / Sol -->
+                        <div class="absolute top-5 flex items-center space-x-2 px-3 py-1 rounded-full surface-card border border-hair text-[11px] font-mono-tech ink-muted">
+                            <span class="w-2 h-2 rounded-full accent-bg"></span>
+                            <span id="lightSourceStatus">FONTE DE LUZ: ZENITAL SUPERIOR (90°)</span>
+                        </div>
+
+                        <!-- O Monólito Esculpido pela Sombra -->
+                        <div id="shadowMonolithCard" class="w-full max-w-md surface-card rounded-2xl p-8 transition-all duration-200 relative">
+                            
+                            <div class="flex items-center justify-between mb-8">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 rounded-lg surface-elevated border border-hair flex items-center justify-center font-mono-tech text-xs font-semibold">
+                                        Z+
+                                    </div>
+                                    <div>
+                                        <span class="text-xs font-medium block">Monólito de Superfície</span>
+                                        <span class="font-mono-tech text-[10px] ink-muted">Mesma cor do entorno · Separado pela luz</span>
+                                    </div>
+                                </div>
+                                <span class="w-2 h-2 rounded-full accent-bg"></span>
+                            </div>
+
+                            <div class="space-y-3 mb-8">
+                                <h3 id="shadowVerdictTitle" class="text-xl font-light tracking-tight">
+                                    Umbra, Penumbra & Reflexo Especular
+                                </h3>
+                                <p id="shadowVerdictDesc" class="text-xs sm:text-sm ink-secondary font-light leading-relaxed">
+                                    Na vida real, nenhuma sombra tem apenas uma camada. Combinamos uma sombra curta de contato (umbra), uma sombra média e uma penumbra longa difusa, coroando o topo com 1px de luz refletida.
+                                </p>
+                            </div>
+
+                            <div class="pt-5 border-t border-hair flex items-center justify-between font-mono-tech text-[11px]">
+                                <span class="ink-muted">PERCEPÇÃO DE VALOR:</span>
+                                <span id="shadowValuePerception" class="accent-text font-medium">ALTA PRECISÃO TÁTIL</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 03: COMO MANTER HIERARQUIA VISUAL E CAUSAR IMPACTO NO MINIMALISMO -->
+        <section id="hierarquia-impacto" class="py-24 border-b border-hair">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-14">
+                    <div>
+                        <span class="font-mono-tech text-xs uppercase tracking-[0.2em] accent-text">03 // A Complexidade da Simplicidade</span>
+                        <h2 class="text-3xl sm:text-5xl font-extralight tracking-tight mt-3">
+                            Como causar <span class="font-serif-editorial italic font-normal">impacto</span> sem poluir
+                        </h2>
+                    </div>
+                    <p class="text-sm ink-secondary max-w-md mt-4 lg:mt-0 font-light leading-relaxed">
+                        O erro comum ao tentar ser minimalista é criar algo monótono e sem força. O impacto no minimalismo nasce da <strong>assimetria drástica</strong>: contraste de escala, espaço negativo generoso e gradação rigorosa de grafite.
+                    </p>
+                </div>
+
+                <!-- 3 Interruptores de Impacto Minimalista -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    
+                    <div class="lg:col-span-4 space-y-4">
+                        <div class="surface-card border border-hair rounded-xl p-6 shadow-architectural space-y-5">
+                            <span class="font-mono-tech text-[11px] uppercase tracking-wider ink-muted block">
+                                Ative os 3 Multiplicadores de Impacto:
+                            </span>
+
+                            <!-- Alavanca 1: Contraste Extremo de Escala -->
+                            <div class="p-4 surface-elevated rounded-lg border border-hair">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="text-xs font-medium">1. Tensão de Escala (80px vs 11px)</span>
+                                    <input type="checkbox" id="toggleScaleTension" checked onchange="updateMinimalImpactLab()" class="w-4 h-4 accent-red-600 cursor-pointer">
+                                </div>
+                                <p class="text-[11px] ink-muted font-light leading-relaxed">
+                                    Elimina tamanhos médios indecisos. O dado principal é colossal e leve; os metadados são microscópicos e espaçados.
+                                </p>
+                            </div>
+
+                            <!-- Alavanca 2: Gradação de Grafite (Hierarquia de Luminosidade) -->
+                            <div class="p-4 surface-elevated rounded-lg border border-hair">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="text-xs font-medium">2. Degradação de Grafite (4 Tons)</span>
+                                    <input type="checkbox" id="toggleGraphiteSteps" checked onchange="updateMinimalImpactLab()" class="w-4 h-4 accent-red-600 cursor-pointer">
+                                </div>
+                                <p class="text-[11px] ink-muted font-light leading-relaxed">
+                                    Silencia informações secundárias em grafite médio/escuro para que apenas o título brilhe em branco ou preto puro.
+                                </p>
+                            </div>
+
+                            <!-- Alavanca 3: Espaço Negativo Arquitetônico -->
+                            <div class="p-4 surface-elevated rounded-lg border border-hair">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="text-xs font-medium">3. Respiro de Galeria (Whitespace)</span>
+                                    <input type="checkbox" id="toggleLuxurySpace" checked onchange="updateMinimalImpactLab()" class="w-4 h-4 accent-red-600 cursor-pointer">
+                                </div>
+                                <p class="text-[11px] ink-muted font-light leading-relaxed">
+                                    O espaço vazio ao redor do texto não é desperdício; é a moldura silenciosa que amplifica a gravidade da mensagem.
+                                </p>
+                            </div>
+
+                            <div class="pt-3 border-t border-hair flex items-center justify-between font-mono-tech text-xs">
+                                <span class="ink-muted">IMPACTO PERCEBIDO:</span>
+                                <span id="impactMeterLabel" class="accent-text font-medium">MÁXIMO (3/3 ATIVOS)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Palco Direito: Composição Editorial que Muta conforme os 3 Pilares -->
+                    <div class="lg:col-span-8">
+                        <div id="impactStageCard" class="surface-card border border-hair rounded-xl p-10 sm:p-16 shadow-architectural morph-transition relative overflow-hidden">
+                            
+                            <!-- Linha Superior Técnica -->
+                            <div class="flex flex-wrap items-center justify-between gap-2 pb-8 border-b border-hair">
+                                <span id="impMetaLeft" class="font-mono-tech text-[11px] uppercase tracking-[0.22em] ink-muted morph-transition">
+                                    MANIFESTO DE PRECISÃO // 2027
+                                </span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 rounded-full accent-bg"></span>
+                                    <span id="impMetaRight" class="font-mono-tech text-[11px] uppercase tracking-[0.18em] ink-secondary morph-transition">
+                                        ÍNDICE DE CLAREZA COGNITIVA
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Bloco Central de Impacto -->
+                            <div id="impContentBody" class="py-12 morph-transition">
+                                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-end">
+                                    <div class="md:col-span-7">
+                                        <span id="impKicker" class="font-mono-tech text-[11px] uppercase tracking-[0.2em] accent-text block mb-3 morph-transition">
+                                            01 · A FORMA SEGUE O SILÊNCIO
+                                        </span>
+                                        <h3 id="impHeadline" class="text-4xl sm:text-6xl font-extralight tracking-tight leading-[1.05] ink-primary morph-transition">
+                                            Menos ruído.<br>
+                                            Mais <span class="font-serif-editorial italic font-normal">gravidade</span>.
+                                        </h3>
+                                    </div>
+                                    <div class="md:col-span-5 border-l border-hair pl-0 md:pl-6">
+                                        <div id="impGiantStat" class="text-5xl sm:text-7xl font-extralight tracking-tighter ink-primary morph-transition">
+                                            0.04<span class="text-lg font-mono-tech accent-text ml-1">s</span>
+                                        </div>
+                                        <p id="impStatCaption" class="text-xs ink-muted font-light mt-2 leading-relaxed morph-transition">
+                                            Tempo necessário para o olho humano localizar a informação principal quando há contraste extremo de escala e grafite.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rodapé do Manifesto -->
+                            <div class="pt-8 border-t border-hair flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <p id="impFooterNote" class="text-xs ink-secondary font-light max-w-md morph-transition">
+                                    Desmarque as caixas ao lado para ver como a perda de escala, de respiro ou da gradação de grafite achata imediatamente a autoridade do layout.
+                                </p>
+                                <button class="px-5 py-2.5 text-xs font-mono-tech uppercase tracking-widest text-white accent-bg rounded-md self-start sm:self-auto">
+                                    Ação Primária Única
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 04: MATRIZ DE CORES & SOMBRAS (MODELO PRONTO PARA COPIAR) -->
+        <section id="escala-grafite" class="py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                    <div>
+                        <span class="font-mono-tech text-xs uppercase tracking-[0.2em] accent-text">04 // Sistema Cromático para Reuso</span>
+                        <h2 class="text-3xl sm:text-5xl font-extralight tracking-tight mt-3">
+                            A Paleta <span class="font-serif-editorial italic font-normal">Branco, Preto, Grafite</span> & Ponto
+                        </h2>
+                    </div>
+                    <p class="text-xs font-mono-tech ink-muted mt-4 md:mt-0">
+                        CLIQUE EM QUALQUER BLOCO PARA COPIAR O TOKEN OU HEXADECIMAL
+                    </p>
+                </div>
+
+                <!-- Grade Interativa de Tokens (5 Neutros + 1 Pontual) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+                    
+                    <!-- Swatch 1: Canvas -->
+                    <button onclick="copyTokenValue('--bg-canvas')" class="text-left surface-card border border-hair rounded-xl p-5 shadow-architectural hover:border-strong transition-all group">
+                        <div class="w-full h-20 rounded-lg surface-canvas border border-hair mb-4 flex items-end p-2.5">
+                            <span class="font-mono-tech text-[10px] ink-muted">60% · FUNDO</span>
+                        </div>
+                        <span class="font-mono-tech text-xs font-medium block">--bg-canvas</span>
+                        <span class="text-[11px] ink-muted block mt-0.5" id="swatchCanvasHex">#F3F3F5 / #57545d / #070709</span>
+                        <span class="font-mono-tech text-[10px] accent-text opacity-0 group-hover:opacity-100 transition-opacity mt-2 block">Copiar Token →</span>
+                    </button>
+
+                    <!-- Swatch 2: Surface / Menu #8e8999 -->
+                    <button onclick="copyTokenValue('--nav-shell-bg')" class="text-left surface-card border border-hair rounded-xl p-5 shadow-architectural hover:border-strong transition-all group">
+                        <div class="w-full h-20 rounded-lg bg-[#8e8999] border border-hair mb-4 flex items-end p-2.5">
+                            <span class="font-mono-tech text-[10px] text-[#16151A] font-semibold">25% · MENU #8e8999</span>
+                        </div>
+                        <span class="font-mono-tech text-xs font-medium block">--nav-shell-bg</span>
+                        <span class="text-[11px] ink-muted block mt-0.5" id="swatchSurfaceHex">#8e8999 · Tinta Escura</span>
+                        <span class="font-mono-tech text-[10px] accent-text opacity-0 group-hover:opacity-100 transition-opacity mt-2 block">Copiar Token →</span>
+                    </button>
+
+                    <!-- Swatch 3: Fundo Cinza #57545d -->
+                    <button onclick="copyTokenValue('#57545d')" class="text-left surface-card border border-hair rounded-xl p-5 shadow-architectural hover:border-strong transition-all group">
+                        <div class="w-full h-20 rounded-lg bg-[#57545d] border border-hair mb-4 flex items-end p-2.5">
+                            <span class="font-mono-tech text-[10px] text-white">8% · CINZA BASE</span>
+                        </div>
+                        <span class="font-mono-tech text-xs font-medium block">#57545d</span>
+                        <span class="text-[11px] ink-muted block mt-0.5">Cinza sobre Cinza</span>
+                        <span class="font-mono-tech text-[10px] accent-text opacity-0 group-hover:opacity-100 transition-opacity mt-2 block">Copiar Hex →</span>
+                    </button>
+
+                    <!-- Swatch 4: Azul Técnico #35acd8 -->
+                    <button onclick="setPunctualAccent('#35acd8', 'rgba(53,172,216,0.14)', 'rgba(53,172,216,0.38)', 'Azul Técnico (#35acd8) · IA & Engenharia', '#091318')" class="text-left surface-card border border-hair rounded-xl p-5 shadow-architectural hover:border-strong transition-all group">
+                        <div class="w-full h-20 rounded-lg bg-[#35acd8] border border-hair mb-4 flex items-end p-2.5">
+                            <span class="font-mono-tech text-[10px] text-[#091318] font-semibold">2% · AZUL #35acd8</span>
+                        </div>
+                        <span class="font-mono-tech text-xs font-medium block">#35acd8</span>
+                        <span class="text-[11px] ink-muted block mt-0.5">Cerúleo Técnico / IA</span>
+                        <span class="font-mono-tech text-[10px] accent-text opacity-0 group-hover:opacity-100 transition-opacity mt-2 block">Aplicar Cor →</span>
+                    </button>
+
+                    <!-- Swatch 5: Verde Médico #10B981 -->
+                    <button onclick="applyMedicalDemo()" class="text-left surface-card border border-hair rounded-xl p-5 shadow-architectural hover:border-strong transition-all group">
+                        <div class="w-full h-20 rounded-lg bg-[#10B981] border border-zinc-300 mb-4 flex items-end p-2.5">
+                            <span class="font-mono-tech text-[10px] text-[#062016] font-semibold">2% · MEDTECH</span>
+                        </div>
+                        <span class="font-mono-tech text-xs font-medium block">#10B981</span>
+                        <span class="text-[11px] ink-muted block mt-0.5">Ideal p/ Tema Médico</span>
+                        <span class="font-mono-tech text-[10px] accent-text opacity-0 group-hover:opacity-100 transition-opacity mt-2 block">Testar Tema Médico →</span>
+                    </button>
+
+                    <!-- Swatch 6: O Ponto Cirúrgico #e13535 -->
+                    <button onclick="setPunctualAccent('#e13535', 'rgba(225,53,53,0.12)', 'rgba(225,53,53,0.35)', 'Carmim Selo (#e13535) · Editorial & Foco', '#FFFFFF')" class="text-left surface-card border-2 accent-border rounded-xl p-5 shadow-architectural transition-all group">
+                        <div class="w-full h-20 rounded-lg bg-[#e13535] mb-4 flex items-end p-2.5">
+                            <span class="font-mono-tech text-[10px] text-white font-semibold">2% · SELO #e13535</span>
+                        </div>
+                        <span class="font-mono-tech text-xs font-medium accent-text block">#e13535</span>
+                        <span class="text-[11px] ink-muted block mt-0.5">Vermelho Calibrado</span>
+                        <span class="font-mono-tech text-[10px] accent-text mt-2 block">Aplicar Cor →</span>
+                    </button>
+
+                </div>
+
+                <!-- Notificação Flutuante de Cópia -->
+                <div id="toastCopyNotice" class="mt-6 hidden p-3 rounded-lg surface-elevated border border-hair text-center font-mono-tech text-xs accent-text">
+                    ✓ Token copiado para a área de transferência!
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SEÇÃO 05: COFRE & GERADOR DE SKILL (SKILL.MD / CURSORRULES / PROMPT DE SISTEMA) -->
+        <section id="skill-vault" class="py-24 border-t border-hair relative overflow-hidden">
+            <div class="architectural-grid absolute inset-0 opacity-40 pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                
+                <!-- Cabeçalho da Seção 05 -->
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-6">
+                    <div>
+                        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full surface-card border border-hair mb-3">
+                            <span class="w-2 h-2 rounded-full accent-bg"></span>
+                            <span class="font-mono-tech text-[11px] uppercase tracking-[0.18em] ink-primary">05 // Memória Arquitetônica & Automação</span>
+                        </div>
+                        <h2 class="text-3xl sm:text-5xl font-light tracking-tight">
+                            Sua <span class="font-semibold">Skill de Criação HTML</span> & Preferências de Estilo
+                        </h2>
+                    </div>
+                    <p class="text-sm ink-secondary max-w-md font-normal leading-relaxed">
+                        Guarde todas as decisões que validamos — o tema <strong class="ink-primary">Cinza sobre Cinza (<code class="font-mono-tech text-xs">#57545d</code> / <code class="font-mono-tech text-xs">#8e8999</code>)</strong>, o contraste de tinta escura nos menus, a tipografia <strong class="ink-primary">IBM Plex</strong> para fundos pretos e as cores calibradas — em um arquivo <code class="font-mono-tech text-xs">SKILL.md</code> pronto para reutilizar.
+                    </p>
+                </div>
+
+                <!-- Grid Principal: Configurador da Skill (Esquerda) + Código SKILL.md Ao Vivo (Direita) -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    
+                    <!-- Coluna Esquerda: Preferências Salvas na Skill -->
+                    <div class="lg:col-span-5 space-y-5">
+                        
+                        <div class="surface-card border border-strong rounded-2xl p-6 shadow-architectural space-y-5">
+                            <div class="flex items-center justify-between pb-3 border-b border-hair">
+                                <span class="font-mono-tech text-xs uppercase tracking-wider font-semibold ink-primary">
+                                    Parâmetros da Skill
+                                </span>
+                                <span class="font-mono-tech text-[10px] px-2.5 py-0.5 rounded-full accent-soft accent-text font-semibold">
+                                    PRONTO P/ IA & DEV
+                                </span>
+                            </div>
+
+                            <!-- 1. Formato do Arquivo -->
+                            <div>
+                                <label class="font-mono-tech text-[11px] uppercase tracking-wider ink-muted block mb-2">
+                                    1. Formato de Exportação:
+                                </label>
+                                <div class="grid grid-cols-3 gap-2 font-mono-tech text-xs">
+                                    <button onclick="setSkillFormat('skillmd')" id="fmtBtnSkill" class="p-2.5 rounded-lg border-2 accent-border surface-elevated font-medium text-center transition-all">
+                                        SKILL.md
+                                    </button>
+                                    <button onclick="setSkillFormat('cursorrules')" id="fmtBtnCursor" class="p-2.5 rounded-lg border border-hair surface-elevated ink-secondary text-center transition-all">
+                                        .cursorrules
+                                    </button>
+                                    <button onclick="setSkillFormat('prompt')" id="fmtBtnPrompt" class="p-2.5 rounded-lg border border-hair surface-elevated ink-secondary text-center transition-all">
+                                        Prompt IA
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 2. Tema Favorito Padrão na Skill -->
+                            <div>
+                                <label class="font-mono-tech text-[11px] uppercase tracking-wider ink-muted block mb-2">
+                                    2. Tema Principal (Default do Projeto):
+                                </label>
+                                <select id="skillDefaultThemeSelect" onchange="generateSkillDocument()" class="w-full surface-elevated border border-strong rounded-lg px-3.5 py-2.5 text-xs font-mono-tech ink-primary focus:outline-none">
+                                    <option value="gray" selected>Cinza Monolítico (#57545d Fundo + #8e8999 Menus)</option>
+                                    <option value="light">Claro Editorial — Ad Lucem (#F3F3F5 + Contraste)</option>
+                                    <option value="dark">Preto Terminal IBM (#070709 + IBM Plex Mono)</option>
+                                </select>
+                            </div>
+
+                            <!-- 3. Regras Inegociáveis Ativas na Skill -->
+                            <div class="space-y-2.5 pt-2 border-t border-hair">
+                                <span class="font-mono-tech text-[11px] uppercase tracking-wider ink-muted block">
+                                    3. Diretrizes de Estilo Codificadas:
+                                </span>
+
+                                <label class="flex items-start space-x-3 p-3 rounded-xl surface-elevated border border-hair cursor-pointer">
+                                    <input type="checkbox" id="chkMenuContrast" checked onchange="generateSkillDocument()" class="mt-0.5 accent-[#e13535]">
+                                    <span class="text-xs leading-relaxed">
+                                        <strong class="font-semibold block ink-primary">Menus #8e8999 com Tinta Escura (#16151A)</strong>
+                                        <span class="ink-secondary text-[11px]">Proíbe letras brancas sem contraste em menus claros ou acinzentados; exige pílulas arredondadas nítidas.</span>
+                                    </span>
+                                </label>
+
+                                <label class="flex items-start space-x-3 p-3 rounded-xl surface-elevated border border-hair cursor-pointer">
+                                    <input type="checkbox" id="chkIbmDark" checked onchange="generateSkillDocument()" class="mt-0.5 accent-[#e13535]">
+                                    <span class="text-xs leading-relaxed">
+                                        <strong class="font-semibold block ink-primary">Fundo Preto = Tipografia Terminal IBM</strong>
+                                        <span class="ink-secondary text-[11px]">Sempre que o fundo for preto puro, mudar a tipografia para <code class="font-mono-tech">IBM Plex Mono</code> e <code class="font-mono-tech">IBM Plex Sans</code>.</span>
+                                    </span>
+                                </label>
+
+                                <label class="flex items-start space-x-3 p-3 rounded-xl surface-elevated border border-hair cursor-pointer">
+                                    <input type="checkbox" id="chkCalibratedAccents" checked onchange="generateSkillDocument()" class="mt-0.5 accent-[#e13535]">
+                                    <span class="text-xs leading-relaxed">
+                                        <strong class="font-semibold block ink-primary">Tríade Pontual (2%): #e13535, #35acd8 e #10B981</strong>
+                                        <span class="ink-secondary text-[11px]">Carmim Selo para foco/editorial, Azul Cerúleo para IA/Tech e Verde Esmeralda para temas médicos.</span>
+                                    </span>
+                                </label>
+
+                                <label class="flex items-start space-x-3 p-3 rounded-xl surface-elevated border border-hair cursor-pointer">
+                                    <input type="checkbox" id="chkTerrixaCards" checked onchange="generateSkillDocument()" class="mt-0.5 accent-[#e13535]">
+                                    <span class="text-xs leading-relaxed">
+                                        <strong class="font-semibold block ink-primary">Ritmo de Cards Alternados + Sombras 3 Camadas</strong>
+                                        <span class="ink-secondary text-[11px]">Alterna cartões de superfície com cartões de alto contraste escuro (<code class="font-mono-tech">#232127</code>) e aplica luz especular de 1px.</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Card Resumo Rápido das Cores Guardadas -->
+                        <div class="surface-contrast border border-strong rounded-2xl p-6 shadow-architectural space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="font-mono-tech text-[11px] uppercase tracking-widest opacity-75">CHEATSHEET RÁPIDO</span>
+                                <span class="w-2 h-2 rounded-full accent-bg"></span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2.5 font-mono-tech text-xs pt-1">
+                                <div class="p-2.5 rounded-lg bg-white/5 border border-white/10">
+                                    <span class="text-[10px] opacity-60 block">FUNDO CINZA SHOW</span>
+                                    <span class="font-semibold">#57545d</span>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-white/5 border border-white/10">
+                                    <span class="text-[10px] opacity-60 block">MENUS + TINTA #16151A</span>
+                                    <span class="font-semibold">#8e8999</span>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-white/5 border border-white/10">
+                                    <span class="text-[10px] opacity-60 block">VERMELHO SELO</span>
+                                    <span class="font-semibold text-[#ff6b6b]">#e13535</span>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-white/5 border border-white/10">
+                                    <span class="text-[10px] opacity-60 block">AZUL TÉCNICO / MED</span>
+                                    <span class="font-semibold text-[#35acd8]">#35acd8 · #10B981</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Coluna Direita: Visualizador e Exportador do Arquivo SKILL.md -->
+                    <div class="lg:col-span-7 surface-card border border-strong rounded-2xl shadow-architectural overflow-hidden flex flex-col">
+                        
+                        <!-- Barra de Topo do Editor da Skill -->
+                        <div class="px-6 py-4 surface-elevated border-b border-hair flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-center space-x-2.5">
+                                <span class="w-2.5 h-2.5 rounded-full accent-bg"></span>
+                                <span id="skillFilenameLabel" class="font-mono-tech text-xs font-semibold ink-primary">
+                                    ex-umbris-minimal-ui/SKILL.md
+                                </span>
+                            </div>
+
+                            <div class="flex items-center space-x-2">
+                                <span id="skillCopyStatus" class="font-mono-tech text-[11px] accent-text opacity-0 transition-opacity">
+                                    ✓ Copiado!
+                                </span>
+                                <button onclick="copySkillToClipboard()" class="px-3.5 py-1.5 text-xs font-mono-tech font-medium surface-card border border-strong ink-primary rounded-full hover:opacity-80 transition-all">
+                                    Copiar Skill
+                                </button>
+                                <button onclick="downloadSkillFile()" class="px-4 py-1.5 text-xs font-mono-tech font-medium accent-bg rounded-full hover:opacity-90 transition-all shadow-sm">
+                                    ↓ Baixar Arquivo
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Corpo do Arquivo Gerado -->
+                        <div class="p-6 surface-card">
+                            <pre id="skillMarkdownOutput" class="font-mono-tech text-[11.5px] leading-relaxed ink-primary overflow-x-auto max-h-[540px] whitespace-pre-wrap select-all p-4 rounded-xl surface-elevated border border-hair"></pre>
+                        </div>
+
+                        <!-- Rodapé Explicativo de Uso -->
+                        <div class="px-6 py-3.5 surface-elevated border-t border-hair flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] ink-muted font-mono-tech">
+                            <span>COMO USAR: Salve como <strong class="ink-primary">SKILL.md</strong> ou cole no início de qualquer conversa para criar páginas nesse padrão.</span>
+                            <span class="ink-primary font-semibold">V2027.4 // VALIDADO</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- RODAPÉ MINIMALISTA -->
+    <footer class="py-12 border-t border-hair text-xs ink-muted">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2.5">
+                <span class="w-2 h-2 rounded-full accent-bg"></span>
+                <span class="font-mono-tech ink-primary tracking-widest">EX UMBRIS AD LUCEM</span>
+                <span>— Modelo Base de Minimalismo de Impacto</span>
+            </div>
+            <p class="font-mono-tech text-[11px]">Claro Editorial · Cinza #57545d / #8e8999 · Preto Terminal IBM</p>
+        </div>
+    </footer>
+
+    <!-- MODAL DE EXPORTAÇÃO DO BOILERPLATE CSS PARA USAR COMO MODELO -->
+    <div id="boilerplateModal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="surface-card border border-strong rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-architectural">
+            <div class="flex items-center justify-between pb-4 border-b border-hair">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full accent-bg"></span>
+                    <span class="font-mono-tech text-xs uppercase tracking-wider">Template CSS Base — 3 Temas + Cores Calibradas</span>
+                </div>
+                <button onclick="closeBoilerplateModal()" class="text-sm ink-muted hover:opacity-70">✕</button>
+            </div>
+            <p class="text-xs ink-secondary font-light mt-3">
+                Copie esta estrutura de variáveis CSS com os 3 temas (<strong>Claro</strong>, <strong>Cinza sobre Cinza #57545d / #8e8999</strong> e <strong>Preto Terminal IBM</strong>) e as cores pontuais (<code class="font-mono-tech">#e13535</code>, <code class="font-mono-tech">#35acd8</code> e <code class="font-mono-tech">#10B981</code>):
+            </p>
+            <pre id="boilerplateCode" class="font-mono-tech text-[11px] surface-elevated p-4 rounded-xl my-4 overflow-x-auto max-h-80 leading-relaxed ink-primary border border-hair"></pre>
+            <div class="flex items-center justify-between pt-2">
+                <span id="modalCopyFeedback" class="text-xs font-mono-tech accent-text opacity-0 transition-opacity">✓ Modelo copiado com sucesso!</span>
+                <div class="flex space-x-3">
+                    <button onclick="closeBoilerplateModal()" class="px-4 py-2 text-xs font-mono-tech border border-hair rounded-md">Fechar</button>
+                    <button onclick="copyBoilerplateToClipboard()" class="px-5 py-2 text-xs font-mono-tech accent-bg rounded-md">Copiar Modelo CSS</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado Global do Modelo (Inicia no Tema Cinza #57545d favorito do usuário)
+        let currentThemeMode = 'gray'; // 'light' | 'gray' | 'dark'
+        let isExUmbrisDark = true;
+        let isSquintActive = false;
+        let rimLightEnabled = true;
+        let activeAccentHex = '#e13535';
+        let activeAccentNameText = 'Carmim Selo (#e13535) · Editorial & Foco';
+        let currentSkillFormat = 'skillmd'; // 'skillmd' | 'cursorrules' | 'prompt'
+
+        // 1. Alternar entre os 3 Temas: Claro ('light'), Cinza sobre Cinza ('gray' #57545d/#8e8999) e Preto IBM ('dark')
+        function setThemeMode(mode) {
+            currentThemeMode = mode;
+            isExUmbrisDark = (mode === 'dark' || mode === 'gray');
+            const root = document.documentElement;
+            root.setAttribute('data-theme', mode);
+
+            // Atualiza estado visual dos botões de tema no menu
+            const btnLight = document.getElementById('themeBtnLight');
+            const btnGray = document.getElementById('themeBtnGray');
+            const btnDark = document.getElementById('themeBtnDark');
+            [btnLight, btnGray, btnDark].forEach(b => b.classList.remove('active'));
+
+            const sig = document.getElementById('heroThemeSignature');
+            if (mode === 'light') {
+                btnLight.classList.add('active');
+                sig.textContent = 'MODO ATIVO: AD LUCEM (CLARO EDITORIAL & ALTO CONTRASTE)';
+            } else if (mode === 'gray') {
+                btnGray.classList.add('active');
+                sig.textContent = 'MODO ATIVO: CINZA SOBRE CINZA (#57545d FUNDO · #8e8999 MENUS)';
+            } else {
+                btnDark.classList.add('active');
+                sig.textContent = 'MODO ATIVO: IBM TERMINAL (FUNDO PRETO + TIPOGRAFIA IBM PLEX MONO)';
+            }
+
+            updateCustomShadowPhysics();
+        }
+
+        function cycleThemes() {
+            const order = ['light', 'gray', 'dark'];
+            const nextIndex = (order.indexOf(currentThemeMode) + 1) % order.length;
+            setThemeMode(order[nextIndex]);
+        }
+
+        // Preset Rápido: Tema Médico (Modo Claro + Verde Esmeralda Clínico)
+        function applyMedicalDemo() {
+            setThemeMode('light');
+            setPunctualAccent('#10B981', 'rgba(16,185,129,0.13)', 'rgba(16,185,129,0.35)', 'Esmeralda Clínico (#10B981) · MedTech & Saúde', '#062016');
+        }
+
+        // 2. Alternar Squint Test (Teste de Desfoque Cognitivo Global)
+        function toggleGlobalSquint() {
+            isSquintActive = !isSquintActive;
+            const indicator = document.getElementById('squintIndicator');
+            if (isSquintActive) {
+                document.body.classList.add('squint-active');
+                indicator.className = 'w-1.5 h-1.5 rounded-full accent-bg';
+            } else {
+                document.body.classList.remove('squint-active');
+                indicator.className = 'w-1.5 h-1.5 rounded-full bg-zinc-500';
+            }
+        }
+
+        // 3. Trocar a Cor Pontual de 2% em Toda a Página (Com contraste inteligente do texto no botão)
+        function setPunctualAccent(hex, softRgba, glowRgba, name, btnInkColor = '#FFFFFF') {
+            activeAccentHex = hex;
+            activeAccentNameText = name;
+            const root = document.documentElement;
+            root.style.setProperty('--punctual-accent', hex);
+            root.style.setProperty('--punctual-soft', softRgba);
+            root.style.setProperty('--punctual-glow', glowRgba);
+            root.style.setProperty('--punctual-btn-ink', btnInkColor);
+            document.getElementById('activeAccentName').textContent = name;
+        }
+
+        // 4. Simulador da Seção 01: Pontualidade Cromática vs Excesso de Cor
+        function setChromaticStrategy(strategy) {
+            const btnExcess = document.getElementById('stratBtnExcess');
+            const btnMono = document.getElementById('stratBtnMono');
+            const btnSurgical = document.getElementById('stratBtnSurgical');
+
+            [btnExcess, btnMono, btnSurgical].forEach(b => {
+                b.className = 'w-full text-left p-4 rounded-lg border border-hair surface-elevated transition-all';
+            });
+
+            const dot = document.getElementById('specPulseDot');
+            const tag = document.getElementById('specTag');
+            const badgeRight = document.getElementById('specBadgeRight');
+            const bigNumber = document.getElementById('specBigNumber');
+            const delta = document.getElementById('specMicroDelta');
+            const box1 = document.getElementById('specBox1');
+            const box2 = document.getElementById('specBox2');
+            const box3 = document.getElementById('specBox3');
+            const secBtn = document.getElementById('specSecondaryAction');
+            const priBtn = document.getElementById('specPrimaryAction');
+
+            const scoreBadge = document.getElementById('chromaticScoreBadge');
+            const analysisText = document.getElementById('chromaticAnalysisText');
+            const dispVal = document.getElementById('dispersionValue');
+            const dispBar = document.getElementById('dispersionBar');
+
+            if (strategy === 'excess') {
+                btnExcess.className = 'w-full text-left p-4 rounded-lg border-2 accent-border surface-card transition-all';
+                dot.className = 'w-3 h-3 rounded-full bg-pink-500 morph-transition';
+                tag.className = 'font-mono-tech text-[11px] uppercase tracking-[0.15em] text-purple-400 font-bold morph-transition';
+                badgeRight.className = 'font-mono-tech text-[11px] px-2.5 py-0.5 rounded bg-amber-500 text-black font-bold morph-transition';
+                bigNumber.className = 'text-5xl sm:text-6xl font-bold tracking-tight text-cyan-400 morph-transition';
+                delta.className = 'font-mono-tech text-xs bg-lime-500 text-black px-2 py-0.5 rounded font-bold morph-transition';
+                box1.className = 'p-3 bg-indigo-600/30 border border-indigo-400 rounded-lg morph-transition';
+                box2.className = 'p-3 bg-rose-600/30 border border-rose-400 rounded-lg morph-transition';
+                box3.className = 'p-3 bg-emerald-600/30 border border-emerald-400 rounded-lg morph-transition';
+                secBtn.className = 'px-4 py-2.5 text-xs font-mono-tech bg-purple-600 text-white rounded-md morph-transition';
+                priBtn.className = 'px-6 py-2.5 text-xs font-mono-tech uppercase tracking-wider bg-amber-500 text-black font-bold rounded-md morph-transition';
+
+                scoreBadge.textContent = 'FOCO: 21.0% (CAOS)';
+                analysisText.innerHTML = 'Quando tudo tem uma cor saturada (roxo, ciano, amarelo, verde, rosa), <strong>o olho sofre paralisia de decisão</strong>. O botão principal perde sua autoridade porque compete com 7 outros focos cromáticos.';
+                dispVal.textContent = 'Crítica (8 Pontos Competindo)';
+                dispBar.style.width = '92%';
+            } else if (strategy === 'monochrome') {
+                btnMono.className = 'w-full text-left p-4 rounded-lg border-2 accent-border surface-card transition-all';
+                dot.className = 'w-2 h-2 rounded-full bg-zinc-500 morph-transition';
+                tag.className = 'font-mono-tech text-[11px] uppercase tracking-[0.15em] ink-muted morph-transition';
+                badgeRight.className = 'font-mono-tech text-[11px] px-2.5 py-0.5 rounded border border-hair ink-muted morph-transition';
+                bigNumber.className = 'text-5xl sm:text-6xl font-extralight tracking-tight ink-primary morph-transition';
+                delta.className = 'font-mono-tech text-xs ink-secondary morph-transition';
+                box1.className = 'p-3 surface-elevated rounded-lg morph-transition';
+                box2.className = 'p-3 surface-elevated rounded-lg morph-transition';
+                box3.className = 'p-3 surface-elevated rounded-lg morph-transition';
+                secBtn.className = 'px-4 py-2.5 text-xs font-mono-tech ink-muted hover:opacity-80 rounded-md morph-transition';
+                priBtn.className = 'px-6 py-2.5 text-xs font-mono-tech uppercase tracking-wider surface-elevated border border-strong ink-primary rounded-md morph-transition';
+
+                scoreBadge.textContent = 'FOCO: 68.0% (NEUTRO)';
+                analysisText.innerHTML = 'O modo 100% acromático é extremamente sofisticado e calmo, mas sem um único ponto de cor, o CTA final demora alguns milissegundos extras para se destacar da estrutura.';
+                dispVal.textContent = 'Baixa (Repouso Silencioso)';
+                dispBar.style.width = '35%';
+            } else {
+                btnSurgical.className = 'w-full text-left p-4 rounded-lg border-2 accent-border surface-card transition-all';
+                dot.className = 'w-2 h-2 rounded-full accent-bg accent-glow morph-transition';
+                tag.className = 'font-mono-tech text-[11px] uppercase tracking-[0.15em] ink-secondary morph-transition';
+                badgeRight.className = 'font-mono-tech text-[11px] px-2.5 py-0.5 rounded border border-hair ink-muted morph-transition';
+                bigNumber.className = 'text-5xl sm:text-6xl font-extralight tracking-tight ink-primary morph-transition';
+                delta.className = 'font-mono-tech text-xs accent-text font-medium morph-transition';
+                box1.className = 'p-3 surface-elevated rounded-lg morph-transition';
+                box2.className = 'p-3 surface-elevated rounded-lg morph-transition';
+                box3.className = 'p-3 surface-elevated rounded-lg morph-transition';
+                secBtn.className = 'px-4 py-2.5 text-xs font-mono-tech ink-muted hover:opacity-80 rounded-md morph-transition';
+                priBtn.className = 'px-6 py-2.5 text-xs font-mono-tech uppercase tracking-wider text-white accent-bg rounded-md shadow-sm hover:opacity-90 morph-transition';
+
+                scoreBadge.textContent = 'FOCO: 98.4% (CIRÚRGICO)';
+                analysisText.innerHTML = 'Como 98% do card está contido em tons de grafite, branco e preto, o córtex visual detecta a anomalia cromática em <strong>menos de 35 milissegundos</strong>. Um único ponto e um botão pontual guiam a decisão sem esforço.';
+                dispVal.textContent = 'Mínima (1 Ponto Focal Absoluto)';
+                dispBar.style.width = '12%';
+            }
+        }
+
+        // 5. Estúdio de Luz & Sombra (Seção 02)
+        function setShadowPreset(preset) {
+            const btns = ['shBtnFlat', 'shBtnAmateur', 'shBtnAmbient', 'shBtnExUmbris'];
+            btns.forEach(id => {
+                document.getElementById(id).className = 'p-3 text-left rounded-lg border border-hair surface-elevated text-xs transition-all';
+            });
+
+            const card = document.getElementById('shadowMonolithCard');
+            const title = document.getElementById('shadowVerdictTitle');
+            const desc = document.getElementById('shadowVerdictDesc');
+            const perception = document.getElementById('shadowValuePerception');
+            const cssOut = document.getElementById('shadowCssOutput');
+
+            if (preset === 'flat') {
+                document.getElementById('shBtnFlat').className = 'p-3 text-left rounded-lg border-2 accent-border surface-card text-xs transition-all';
+                card.style.boxShadow = 'none';
+                card.style.border = '1px solid transparent';
+                title.textContent = 'Sem Sombra (Flat / Invisível)';
+                desc.textContent = 'Sem sombra e sem borda especular, o card se funde de maneira frouxa com o plano de fundo. A hierarquia de elevação desaparece.';
+                perception.textContent = 'BAIXA (SEM RELEVO)';
+                cssOut.textContent = 'box-shadow: none;';
+            } else if (preset === 'amateur') {
+                document.getElementById('shBtnAmateur').className = 'p-3 text-left rounded-lg border-2 accent-border surface-card text-xs transition-all';
+                const harshShadow = '10px 12px 15px 0px rgba(0, 0, 0, 0.45)';
+                card.style.boxShadow = harshShadow;
+                card.style.border = 'none';
+                title.textContent = 'Sombra Amadora (1 Camada Dura)';
+                desc.textContent = 'Uma única sombra com alto alfa parece artificial e pesada no modo claro, e desaparece sem contorno no modo escuro.';
+                perception.textContent = 'ARTIFICIAL / DATADA';
+                cssOut.textContent = `box-shadow: ${harshShadow};`;
+            } else if (preset === 'ambient') {
+                document.getElementById('shBtnAmbient').className = 'p-3 text-left rounded-lg border-2 accent-border surface-card text-xs transition-all';
+                const softShadow = isExUmbrisDark
+                    ? '0 20px 50px rgba(0, 0, 0, 0.8)'
+                    : '0 20px 50px rgba(9, 9, 11, 0.08)';
+                card.style.boxShadow = softShadow;
+                card.style.border = '1px solid var(--border-hairline)';
+                title.textContent = 'Oclusão Ambiental Difusa';
+                desc.textContent = 'Suave e agradável, mas ainda carece da sombra de contato próxima (umbra) e do reflexo superior de luz que dá nitidez cristalina.';
+                perception.textContent = 'BOA (SUAVE)';
+                cssOut.textContent = `box-shadow: ${softShadow};`;
+            } else {
+                document.getElementById('shBtnExUmbris').className = 'p-3 text-left rounded-lg border-2 accent-border surface-card text-xs transition-all';
+                document.getElementById('zElevationSlider').value = 28;
+                document.getElementById('xLightSlider').value = 0;
+                rimLightEnabled = true;
+                document.getElementById('rimLightBtn').textContent = 'ATIVO';
+                document.getElementById('rimLightBtn').className = 'px-3 py-1 rounded text-xs font-mono-tech accent-bg text-white transition-all';
+                updateCustomShadowPhysics();
+                title.textContent = 'Umbra, Penumbra & Reflexo Especular';
+                desc.textContent = 'Na vida real, nenhuma sombra tem apenas uma camada. Combinamos uma sombra curta de contato (umbra), uma sombra média e uma penumbra longa difusa, coroando o topo com 1px de luz refletida.';
+                perception.textContent = 'ALTA PRECISÃO TÁTIL';
+            }
+        }
+
+        function toggleRimLight() {
+            rimLightEnabled = !rimLightEnabled;
+            const btn = document.getElementById('rimLightBtn');
+            if (rimLightEnabled) {
+                btn.textContent = 'ATIVO';
+                btn.className = 'px-3 py-1 rounded text-xs font-mono-tech accent-bg text-white transition-all';
+            } else {
+                btn.textContent = 'OFF';
+                btn.className = 'px-3 py-1 rounded text-xs font-mono-tech surface-elevated ink-muted border border-hair transition-all';
+            }
+            updateCustomShadowPhysics();
+        }
+
+        function updateCustomShadowPhysics() {
+            const z = parseInt(document.getElementById('zElevationSlider').value, 10);
+            const x = parseInt(document.getElementById('xLightSlider').value, 10);
+
+            document.getElementById('zElevationLabel').textContent = `${z}px`;
+            document.getElementById('xLightLabel').textContent = x === 0 ? '0px (Zenital)' : `${x}px`;
+            document.getElementById('lightSourceStatus').textContent = 
+                `ELEVAÇÃO Z: ${z}px · ÂNGULO X: ${x}px · RIM LIGHT: ${rimLightEnabled ? 'ON' : 'OFF'}`;
+
+            // A sombra se projeta no sentido oposto ao da luz X
+            const shadowX1 = Math.round(-x * 0.25);
+            const shadowX2 = Math.round(-x * 0.6);
+            const shadowX3 = Math.round(-x * 1.1);
+
+            const y1 = Math.max(1, Math.round(z * 0.12));
+            const blur1 = Math.max(2, Math.round(z * 0.2));
+
+            const y2 = Math.max(2, Math.round(z * 0.55));
+            const blur2 = Math.max(6, Math.round(z * 0.9));
+
+            const y3 = Math.max(4, Math.round(z * 1.25));
+            const blur3 = Math.max(12, Math.round(z * 2.1));
+
+            const alpha1 = isExUmbrisDark ? 0.55 : 0.05;
+            const alpha2 = isExUmbrisDark ? 0.75 : 0.08;
+            const alpha3 = isExUmbrisDark ? 0.92 : 0.12;
+            const rimColor = isExUmbrisDark ? 'rgba(255, 255, 255, 0.14)' : 'rgba(255, 255, 255, 1)';
+
+            let layers = [
+                `${shadowX1}px ${y1}px ${blur1}px rgba(0, 0, 0, ${alpha1})`,
+                `${shadowX2}px ${y2}px ${blur2}px -4px rgba(0, 0, 0, ${alpha2})`,
+                `${shadowX3}px ${y3}px ${blur3}px -10px rgba(0, 0, 0, ${alpha3})`
+            ];
+
+            if (rimLightEnabled) {
+                layers.push(`inset 0 1px 0 0 ${rimColor}`);
+            }
+
+            const finalCss = layers.join(',\n  ');
+            const card = document.getElementById('shadowMonolithCard');
+            card.style.boxShadow = layers.join(', ');
+            card.style.border = '1px solid var(--border-hairline)';
+            document.getElementById('shadowCssOutput').textContent = `box-shadow:\n  ${finalCss};`;
+        }
+
+        // 6. Laboratório de Impacto & Hierarquia no Minimalismo (Seção 03)
+        function updateMinimalImpactLab() {
+            const hasScale = document.getElementById('toggleScaleTension').checked;
+            const hasGraphite = document.getElementById('toggleGraphiteSteps').checked;
+            const hasSpace = document.getElementById('toggleLuxurySpace').checked;
+
+            const stage = document.getElementById('impactStageCard');
+            const body = document.getElementById('impContentBody');
+            const headline = document.getElementById('impHeadline');
+            const stat = document.getElementById('impGiantStat');
+            const metaLeft = document.getElementById('impMetaLeft');
+            const statCaption = document.getElementById('impStatCaption');
+            const footerNote = document.getElementById('impFooterNote');
+
+            // 1. Escala Tipográfica
+            if (hasScale) {
+                headline.className = 'text-4xl sm:text-6xl font-extralight tracking-tight leading-[1.05] ink-primary morph-transition';
+                stat.className = 'text-5xl sm:text-7xl font-extralight tracking-tighter ink-primary morph-transition';
+            } else {
+                headline.className = 'text-xl sm:text-2xl font-normal tracking-normal leading-normal ink-primary morph-transition';
+                stat.className = 'text-xl sm:text-2xl font-normal tracking-normal ink-primary morph-transition';
+            }
+
+            // 2. Gradação de Grafite
+            if (hasGraphite) {
+                metaLeft.className = 'font-mono-tech text-[11px] uppercase tracking-[0.22em] ink-muted morph-transition';
+                statCaption.className = 'text-xs ink-muted font-light mt-2 leading-relaxed morph-transition';
+                footerNote.className = 'text-xs ink-secondary font-light max-w-md morph-transition';
+            } else {
+                metaLeft.className = 'font-mono-tech text-sm uppercase tracking-normal ink-primary font-semibold morph-transition';
+                statCaption.className = 'text-sm ink-primary font-normal mt-2 leading-relaxed morph-transition';
+                footerNote.className = 'text-sm ink-primary font-normal max-w-md morph-transition';
+            }
+
+            // 3. Espaço Negativo Arquitetônico
+            if (hasSpace) {
+                stage.className = 'surface-card border border-hair rounded-xl p-10 sm:p-16 shadow-architectural morph-transition relative overflow-hidden';
+                body.className = 'py-12 morph-transition';
+            } else {
+                stage.className = 'surface-card border border-hair rounded-xl p-4 sm:p-5 shadow-architectural morph-transition relative overflow-hidden';
+                body.className = 'py-3 morph-transition';
+            }
+
+            const activeCount = [hasScale, hasGraphite, hasSpace].filter(Boolean).length;
+            const label = document.getElementById('impactMeterLabel');
+            if (activeCount === 3) {
+                label.textContent = 'MÁXIMO (3/3 ATIVOS)';
+            } else if (activeCount === 2) {
+                label.textContent = 'MODERADO (2/3 ATIVOS)';
+            } else if (activeCount === 1) {
+                label.textContent = 'FRACO (1/3 ATIVO)';
+            } else {
+                label.textContent = 'MONÓTONO / SEM HIERARQUIA (0/3)';
+            }
+        }
+
+        // 7. Copiar Tokens Individuais e Modal de Boilerplate Completo
+        function copyTokenValue(tokenName) {
+            const temp = document.createElement('textarea');
+            temp.value = `var(${tokenName})`;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+
+            const toast = document.getElementById('toastCopyNotice');
+            toast.textContent = `✓ Copiado: var(${tokenName}) para usar no seu CSS!`;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 2600);
+        }
+
+        function openBoilerplateModal() {
+            const codeEl = document.getElementById('boilerplateCode');
+            codeEl.textContent = `/* ==========================================================================
+   MODELO BASE: EX UMBRIS AD LUCEM (3 TEMAS + CORES CALIBRADAS)
+   Cor Pontual Ativa: ${activeAccentNameText} (${activeAccentHex})
+   ========================================================================== */
+:root, [data-theme="light"] {
+  /* 1. AD LUCEM (Tema Claro Editorial) */
+  --bg-canvas: #F3F3F5;
+  --bg-surface: #FFFFFF;
+  --nav-shell-bg: rgba(255, 255, 255, 0.92);
+  --nav-ink: #18181B; /* Letras escuras nítidas nos menus */
+  --ink-primary: #111115;
+  --ink-secondary: #3F3F46;
+  --punctual-accent: ${activeAccentHex}; /* #e13535 (Vermelho) | #35acd8 (Azul) | #10B981 (Médico) */
+}
+
+[data-theme="gray"] {
+  /* 2. CINZA SOBRE CINZA (#57545d Fundo + #8e8999 Menus) */
+  --bg-canvas: #57545d;
+  --bg-surface: #49464f;
+  --nav-shell-bg: #8e8999;
+  --nav-ink: #16151A; /* Contraste escuro sobre o menu #8e8999 */
+  --ink-primary: #F7F6F9;
+  --ink-secondary: #DFDDE4;
+}
+
+[data-theme="dark"] {
+  /* 3. PRETO TERMINAL IBM (Tipografia IBM Plex Mono) */
+  --bg-canvas: #070709;
+  --bg-surface: #101014;
+  --font-sans: 'IBM Plex Sans', monospace;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --ink-primary: #F4F4F6;
+  --ink-secondary: #B4B4BE;
+}`;
+            document.getElementById('boilerplateModal').classList.remove('hidden');
+        }
+
+        function closeBoilerplateModal() {
+            document.getElementById('boilerplateModal').classList.add('hidden');
+            document.getElementById('modalCopyFeedback').classList.remove('opacity-100');
+        }
+
+        function copyBoilerplateToClipboard() {
+            const text = document.getElementById('boilerplateCode').textContent;
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+
+            const msg = document.getElementById('modalCopyFeedback');
+            msg.classList.add('opacity-100');
+            setTimeout(() => msg.classList.remove('opacity-100'), 2500);
+        }
+
+        // 8. Gerador Interativo da Skill (SKILL.md / .cursorrules / Prompt IA)
+        function setSkillFormat(fmt) {
+            currentSkillFormat = fmt;
+            const btnSkill = document.getElementById('fmtBtnSkill');
+            const btnCursor = document.getElementById('fmtBtnCursor');
+            const btnPrompt = document.getElementById('fmtBtnPrompt');
+
+            [btnSkill, btnCursor, btnPrompt].forEach(b => {
+                b.className = 'p-2.5 rounded-lg border border-hair surface-elevated ink-secondary text-center transition-all';
+            });
+
+            const fileLabel = document.getElementById('skillFilenameLabel');
+            if (fmt === 'skillmd') {
+                btnSkill.className = 'p-2.5 rounded-lg border-2 accent-border surface-elevated font-medium ink-primary text-center transition-all';
+                fileLabel.textContent = 'ex-umbris-minimal-ui/SKILL.md';
+            } else if (fmt === 'cursorrules') {
+                btnCursor.className = 'p-2.5 rounded-lg border-2 accent-border surface-elevated font-medium ink-primary text-center transition-all';
+                fileLabel.textContent = '.cursorrules';
+            } else {
+                btnPrompt.className = 'p-2.5 rounded-lg border-2 accent-border surface-elevated font-medium ink-primary text-center transition-all';
+                fileLabel.textContent = 'prompt-sistema-minimalismo.md';
+            }
+            generateSkillDocument();
+        }
+
+        function generateSkillDocument() {
+            const defaultTheme = document.getElementById('skillDefaultThemeSelect').value;
+            const incMenuContrast = document.getElementById('chkMenuContrast').checked;
+            const incIbmDark = document.getElementById('chkIbmDark').checked;
+            const incAccents = document.getElementById('chkCalibratedAccents').checked;
+            const incTerrixa = document.getElementById('chkTerrixaCards').checked;
+
+            const themeNameMap = {
+                gray: 'Cinza sobre Cinza Monolítico (data-theme="gray" | Fundo #57545d + Menus #8e8999)',
+                light: 'Claro Editorial Ad Lucem (data-theme="light" | Fundo #F3F3F5 + Superfície #FFFFFF)',
+                dark: 'Preto Terminal IBM (data-theme="dark" | Fundo #070709 + Tipografia IBM Plex Mono)'
+            };
+
+            let headerBlock = '';
+            if (currentSkillFormat === 'skillmd') {
+                headerBlock = `---
+name: ex-umbris-minimal-impact-ui
+description: >
+  Skill de arquitetura visual e criação de interfaces HTML/CSS minimalistas de alto impacto ("Ex Umbris Ad Lucem" / Complexidade da Simplicidade). Use sempre que criar landing pages, dashboards ou aplicações web elegantes.
+---
+
+# SKILL: Arquitetura Visual "Ex Umbris Ad Lucem" (Minimalismo de Impacto)`;
+            } else if (currentSkillFormat === 'cursorrules') {
+                headerBlock = `# .CURSORRULES — DIRETRIZES DE UI/UX & FRONT-END (EX UMBRIS AD LUCEM)
+# Aplique estas regras estéticas, tipográficas e cromáticas em todos os arquivos HTML/CSS/JS do projeto.`;
+            } else {
+                headerBlock = `Atue como um Engenheiro de UI/UX Sênior especialista em "Minimalismo de Impacto" (Ex Umbris Ad Lucem — A Complexidade da Simplicidade). Ao criar qualquer página HTML interativa, siga rigorosamente estas preferências de estilo:`;
+            }
+
+            let sections = [];
+
+            sections.push(`## 1. Filosofia Central & Tema Padrão
+- **Conceito:** *Ex Umbris Ad Lucem* (Das Sombras para a Luz) — 98% da interface é construída em tons neutros (grafite, cinza arquitetônico, branco e preto), reservando apenas **2% para uma única cor pontual cirúrgica** (Efeito de Isolamento de Von Restorff).
+- **Tema Padrão Inicial:** \`${themeNameMap[defaultTheme]}\`
+- **Arquitetura de 3 Temas Suportados:**
+  1. **Cinza sobre Cinza (Favorito — \`[data-theme="gray"]\`):**
+     - Fundo Principal (\`--bg-canvas\`): \`#57545d\`
+     - Superfície de Cards (\`--bg-surface\`): \`#49464f\` | Elevada: \`#635f6a\`
+     - Card de Alto Contraste Escuro (\`--bg-contrast-card\`): \`#232127\` (texto \`#F4F3F7\`)
+     - Barra de Menus (\`--nav-shell-bg\`): \`#8e8999\`
+  2. **Claro Editorial (\`[data-theme="light"]\`):**
+     - Fundo Principal: \`#F3F3F5\` | Cards Brancos: \`#FFFFFF\` | Card de Contraste: \`#18181C\`
+  3. **Preto Terminal IBM (\`[data-theme="dark"]\`):**
+     - Fundo Principal: \`#070709\` | Superfície: \`#101014\` | Elevada: \`#18181E\``);
+
+            if (incMenuContrast) {
+                sections.push(`## 2. Regra de Ouro para Tipografia de Menus (Zero Letras Brancas Lavadas)
+- **PROIBIDO** usar letras brancas puras ou sem contraste sobre menus claros ou acinzentados (como \`#8e8999\`).
+- No tema **Cinza sobre Cinza (\`#8e8999\`)** e no tema **Claro**, os itens do menu devem usar **tinta grafite escura de alta nitidez** (\`#16151A\` ou \`#18181B\`), \`font-weight: 500\`, agrupados dentro de contêineres em formato de **pílula (\`rounded-full\`)**.
+- O item ativo ou em hover recebe fundo escuro sólido (\`#1E1C22\`) com texto claro (\`#F5F4F8\`), inspirado nas referências *BellArt* e *Terrixa*.`);
+            }
+
+            if (incIbmDark) {
+                sections.push(`## 3. Sistema Tipográfico Dinâmico (Editorial vs Terminal IBM)
+- **Fontes Google Fonts Obrigatórias:**
+  - \`Plus Jakarta Sans\` (300, 400, 500, 600, 700) — Corpo e UI nos modos Cinza (\`#57545d\`) e Claro.
+  - \`Instrument Serif\` (Regular & Italic) — Destaque poético/editorial em 1 ou 2 palavras-chave do título.
+  - \`IBM Plex Mono\` & \`IBM Plex Sans\` — Metadados técnicos (\`01 //\`, badges, telemetria).
+- **Regra Exclusiva para Fundo Preto (\`[data-theme="dark"]\`):**
+  - Fundos pretos puros combinam com estética de **Terminal IBM**. Quando o tema escuro estiver ativo, toda a tipografia principal (\`--font-sans\` e \`h1, h2\`) muda automaticamente para \`'IBM Plex Mono'\` e \`'IBM Plex Sans'\` com \`letter-spacing: -0.03em\`.`);
+            }
+
+            if (incAccents) {
+                sections.push(`## 4. Cores Pontuais Calibradas por Objetivo (Regra dos 2%)
+Nunca misture várias cores saturadas no mesmo card. Escolha **1 cor pontual** conforme o objetivo do projeto:
+- **Vermelho Carmim Selo (\`#e13535\`):** Tom sóbrio e elegante (inspirado em carimbos orientais Sumi-e). Ideal para foco cirúrgico, direção de arte, design e conversão limpa. (Texto no botão: \`#FFFFFF\`).
+- **Azul Cerúleo Técnico (\`#35acd8\`):** Ideal para inteligência artificial, engenharia de dados, SaaS técnico e telemetria. (Texto no botão preenchido: \`#091318\` para leitura perfeita).
+- **Verde Esmeralda Clínico (\`#10B981\`):** Ideal para **temas médicos, saúde, clínicas e BioTech**, especialmente combinado ao tema Claro Editorial. (Texto no botão: \`#062016\`).
+- **Âmbar Imperial (\`#D97706\`):** Ideal para FinTech, patrimônio e alertas executivos.`);
+            }
+
+            if (incTerrixa) {
+                sections.push(`## 5. Sombras Esculpidas, Ritmo de Cards & Hierarquia Visual
+- **Ritmo de Cards Alternados (Estilo Terrixa):** Em grades de 4 colunas (\`01, 02, 03, 04\`), alterne cartões na cor da superfície (\`--bg-surface\`) com cartões em bloco de contraste escuro (\`--bg-contrast-card: #232127\`) para criar impacto visual imediato sem poluir com cores extras.
+- **Botões em Pílula com Seta Circular:** CTAs principais usam formato \`rounded-full\` com um círculo interno (\`w-6 h-6 rounded-full\`) contendo a seta direcional \`↘\`.
+- **Física de Sombra em 3 Camadas + Rim Light:** Nunca use sombras chapadas de 1 camada. Combine Umbra curta + Penumbra média + Difusão longa + filete de luz especular no topo:
+  \`\`\`css
+  box-shadow:
+    0 2px 6px rgba(15, 14, 18, 0.35),
+    0 16px 36px -6px rgba(15, 14, 18, 0.50),
+    0 32px 64px -14px rgba(15, 14, 18, 0.65),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
+  \`\`\``);
+            }
+
+            const fullDoc = `${headerBlock}\n\n${sections.join('\n\n')}`;
+            document.getElementById('skillMarkdownOutput').textContent = fullDoc;
+        }
+
+        function copySkillToClipboard() {
+            const text = document.getElementById('skillMarkdownOutput').textContent;
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+
+            const status = document.getElementById('skillCopyStatus');
+            status.classList.add('opacity-100');
+            setTimeout(() => status.classList.remove('opacity-100'), 2500);
+        }
+
+        function downloadSkillFile() {
+            const text = document.getElementById('skillMarkdownOutput').textContent;
+            const filename = currentSkillFormat === 'cursorrules'
+                ? 'cursorrules.txt'
+                : (currentSkillFormat === 'skillmd' ? 'SKILL.md' : 'prompt-estilo-ex-umbris.md');
+            const blob = new Blob([text], { type: 'text/markdown;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Inicializa no Tema Cinza sobre Cinza (#57545d / #8e8999), calcula a física da sombra e gera o SKILL.md
+        window.onload = function () {
+            setThemeMode('gray');
+            generateSkillDocument();
+        };
+    </script>
+</body>
+</html>

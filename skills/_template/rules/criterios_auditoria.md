@@ -37,7 +37,7 @@ Toda skill derivada deste template deve ser verificada contra os 5 eixos determi
 ---
 
 ### Regra 5: Conformidade com o Módulo de Domínio (`M1`..`M7`) e `evals/evals.json` (Eixo 5)
-- **Critério**: A skill aplica os guardrails específicos do seu módulo (`M1` Código, `M2` Design, `M3` Frontend `DESIGN.md v4.5-soft`, `M4` RAG, `M5` Imagem, `M6` Vídeo, `M7` Clínica) e possui `evals/evals.json` válido com casos `should_trigger` e `should_not_trigger` (*near-misses*)?
+- **Critério**: A skill aplica os guardrails específicos do seu módulo (`M1` Código, `M2` Design, `M3` Frontend & Estilo por Propósito `preferencias_estilo_e_temas.md`, `M4` RAG, `M5` Imagem, `M6` Vídeo, `M7` Clínica) e possui `evals/evals.json` válido com casos `should_trigger` e `should_not_trigger` (*near-misses*)?
 - **Resultado**:
   - Guardrails do módulo atendidos e `evals/evals.json` validado -> `[PASS]`
   - Violação de guardrail de domínio ou `evals.json` sem *near-misses* -> `[FAIL: Inconformidade de módulo de domínio ou suíte de evals incompleta]`

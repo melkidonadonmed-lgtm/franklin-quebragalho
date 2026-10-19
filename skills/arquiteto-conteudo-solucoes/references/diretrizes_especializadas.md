@@ -15,10 +15,10 @@ Este documento serve como referência rápida dos **7 Módulos de Guardrails por
 - **NÃO ultrapasse a densidade visual máxima**: Respeite o **teto estrito de até 35 palavras por bloco/slide** e entre **6 a 10 blocos por tela**.
 - **NÃO use elementos puramente decorativos**: Todo ícone ou vetor deve possuir função semântica clara (indicar fluxo, comparação ou estado).
 
-## 3. Frontend & Interfaces Acessíveis (`Módulo 3` — `DESIGN.md v4.5-soft`)
+## 3. Frontend & Interfaces Acessíveis por Propósito (`Módulo 3` — `preferencias_estilo_e_temas.md`)
 - **NÃO use `divsoup` ou elementos não semânticos**: Estruture com `<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<footer>` e `<button>` nativos.
 - **NÃO insira dados não sanitizados no DOM**: Proibido `innerHTML` ou `dangerouslySetInnerHTML` sem sanitização estrita contra XSS.
-- **NÃO use azul cobalto (`#0044FF`/`#1D4ED8`), glassmorphism (`blur`) ou bordas duras `1px`**: Aplique iluminação direcional a **135°** (`.ui-card-soft`, `surface-inset`), **Cerulean Sapphire (`#0284C7`)**, $L_{\text{card}} > L_{\text{canvas}}$ no dark mode, alvos $\ge 44\times44\text{px}$ com anti-squish e WCAG 2.1 AA.
+- **NÃO aplique paleta de cores fixa sem analisar o propósito do projeto**: Escolha a atmosfera adequada ao objetivo (*Ad Lucem*, *Cinza `#57545d` + Menus `#8e8999`*, *Preto Terminal IBM `Ex Umbris` + `IBM Plex`* ou *AETHER 2027*), garantindo contraste WCAG 2.1 AA/AAA ($L_{\text{card}} > L_{\text{canvas}}$ no escuro, tinta escura em menus claros/`#8e8999`), sombra esculpida em 3 camadas + `1px` Rim Light, `tabular-nums` e alvos $\ge 44\times44\text{px}$ com anti-squish.
 
 ## 4. Investigação, Pesquisa & RAG (`Módulo 4`)
 - **NÃO trate a memória do agente como fonte autoritativa de verdade**: Consulte sempre o sistema transacional ou documento primário antes de validar decisões.

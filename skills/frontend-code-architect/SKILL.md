@@ -1,187 +1,208 @@
 ---
 name: frontend-code-architect
 description: >-
-  Scaffolding estrutural de diretórios src/ em 5 camadas de Design Atômico e templates base (globals.css e <SoftCard />) sob DESIGN.md v4.5-soft. Use apenas para criar a estrutura de pastas ou componentes novos do zero. Não use para diagnosticar UI existente (use analise-design-tatil-frontend) nem para refatorar telas (use refatoracao-design-tatil-frontend).
-version: "4.1.0"
+  Arquitetura, scaffolding e implementação de código frontend (src/ em 5 camadas de Design Atômico, globals.css, tokens e componentes) adaptando tema, estilo, espaçamento, contraste, tipografia e camadas ao propósito do projeto (Conversão/SaaS, Editorial, FinTech, IA Nativa/AETHER, MedTech ou Terminal IBM Ex Umbris), sem impor paletas fixas. Não use para auditoria somente-leitura (use frontend-testing-auditor ou auditoria-projetos-sistema).
+version: "5.0.0"
 license: MIT
-compatibility: "React 18+, TypeScript 5+, Tailwind CSS v3+, CSS Variables, Next.js 14+"
+compatibility: "React 18+, TypeScript 5+, Tailwind CSS v3/v4, CSS Variables, Next.js 14+"
 metadata:
   author: "FrontCraftMaster & Melki"
-  version: "4.1.0"
-  category: "Frontend Engineering & Design Systems"
-  updated_at: "2026-10-18"
+  version: "5.0.0"
+  category: "Frontend Engineering, Design Atômico & Arquitetura Visual por Propósito"
+  updated_at: "2026-10-19"
   tags:
     - "frontend-architect"
     - "atomic-design"
-    - "minimalist-impact"
-    - "soft-ui"
-    - "anti-cobalto"
-updated_at: 2026-10-18
+    - "estilo-por-proposito"
+    - "ex-umbris-ad-lucem"
+    - "aether-2027"
+updated_at: 2026-10-19
 author: FrontCraftMaster & Melki
-category: Frontend Engineering & Design Systems
+category: Frontend Engineering, Design Atômico & Arquitetura Visual por Propósito
 authorized_sub_skills:
+  - name: minimal-impact-ui
+    role: "Atlas Ex Umbris + WinUI 3 Gallery (6 arquétipos de página, 28 efeitos e boilerplate HTML/CSS/JS)"
   - name: design-md
-    role: "Síntese e atualização do contrato DESIGN.md v4.5-soft"
+    role: "Síntese e atualização do contrato DESIGN.md guiado pelo propósito do projeto"
   - name: frontend-testing-auditor
-    role: "Auditoria determinística FSM + Axe-Core + audit_tactile_ui.py dos componentes gerados"
+    role: "Auditoria determinística de contraste, tipografia, camadas, FSM e Axe-Core via scripts/audit_tactile_ui.py"
 ---
 
-# 🎨 Frontend Code Architect Skill (`frontend-code-architect` v4.1.0 — Minimalist Impact & Soft Tactile Architecture)
+# 🎨 Frontend Code Architect (`frontend-code-architect` v5.0.0 — Design Atômico & Estilo Guiado por Propósito)
 
 ## 1. OBJETIVO E DIRETRIZES DE ATIVAÇÃO
 
-Esta Skill fornece procedimentos padronizados para estruturar, organizar e implementar aplicações frontend modernas de nível industrial e estética minimalista tátil (*Minimalist Impact*, *Soft UI*, *Tonal Layering 135°*).
+Esta Skill fornece procedimentos padronizados para estruturar, implementar e evoluir aplicações frontend modernas em **5 camadas de Design Atômico**, selecionando **tema, atmosfera, arquétipo de página, espaçamento, contraste, tipografia e camadas** de acordo com o **propósito do projeto** (consulte [`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md), [`../minimal-impact-ui/SKILL.md`](../minimal-impact-ui/SKILL.md) e o modelo [`../minimal-impact-ui/references/atlas_ex_umbris_winui.html`](../minimal-impact-ui/references/atlas_ex_umbris_winui.html)).
 
-### 🚫 PROIBIÇÕES ABSOLUTAS DE DESIGN (Anti-Patterns):
-- ❌ **Não utilizar Glassmorphism / Vidro Fosco:** Proibido o uso de caixas semi-transparentes reluzentes com `backdrop-filter: blur()`.
-- ❌ **Não utilizar Neons, Múltiplos Acentos ou Azul Cobalto:** Proibida a poluição visual com bordas brilhantes ou azul cobalto elétrico (`#0044FF`, `#0057FF`, `#1D4ED8`, `#233DFF`). Utilize azuis minerais serenos (**Cerulean Sapphire** `#0284C7`, **Ocean Sapphire** `#1E6091` ou **Mineral Ice** `#38BDF8`).
-- ❌ **Não utilizar Bordas Duras de 1px, Micro-Texto (`10px`/`11px`) ou Emojis em Controles:** Divisões de cards e painéis devem ser feitas por variação sutil de tom de superfície ou elevação neumórfica suave a 135°. Proibido deixar `<SoftCard />` órfão sem importação nas views reais (`App.tsx`, `Sidebar.tsx`, `*Workspace.tsx`).
+### 🚫 ANTI-PADRÕES A EVITAR:
+- ❌ **Paleta Fixa Repetitiva ou Letras Vermelhas Embaçadas sobre Cinza/Escuro:** Proibido `color: #e13535` puro ou serifa fina embaçada sobre `#57545d`, `#49464f` ou `#070709`. Use `.highlight-surgical` (Semibold + sublinhado `2px` em `--punctual-accent`) em títulos e `.accent-text` (`#FFFFFF` no cinza/escuro ou `#991B1B` no claro + fundo `--punctual-soft` + `border-left: 2.5px solid var(--punctual-accent)`) em badges.
+- ❌ **Texto Branco Lavado em Menus Claros/`#8e8999` ou em Botões Azul/Verde:** Em menus `#8e8999`, os rótulos devem usar tinta escura (`--nav-ink: #16151A`); em botões preenchidos Azul (`#35acd8`) ou Verde (`#10B981`), use `--punctual-btn-ink` escuro (`#091318` / `#062016`).
+- ❌ **Poluição de CTAs, Números Desalinhados ou Componentes Órfãos:** Respeite o isolamento 98/2 (1 CTA primário sólido vs. `.btn-ghost` secundários), `font-variant-numeric: tabular-nums` em dados numéricos e consumo real de todo componente criado em `src/components/ui/`.
 
 ### ✅ Gatilhos Positivos (Quando Usar):
-- Pedidos de criação de estrutura de pastas/diretórios (`src/`) para projetos frontend.
-- Organização de componentes em **Design Atômico** (Átomos, Moléculas, Organismos, Templates e Pages).
-- Criação de sistemas de **Design Tokens (`DESIGN.md` v4.5-soft)** e variáveis globais CSS baseados em **Camadas Tonais**.
-- Construção de layouts BENTO, Sidebars com Tracker de Ícone (`surface-inset`) e dashboards limpos com **Neumorfismo Suave (*Soft UI*)**.
-- Refatoração de código frontend para desacoplamento, tipagem estrita em TypeScript ($\le 300$ linhas/arquivo) e acessibilidade (WCAG 2.1 AA).
+- Criação ou refatoração da estrutura `src/` em **Design Atômico** (Átomos, Moléculas, Organismos, Templates Bento e Pages/Views) e implementação dos **6 Arquétipos de Página** (*Split-Screen Workbench*, *Timeline*, *Kanban*, *Canvas de Nós*, *Wizard Foco Anti-TDAH*, *Catálogo WinUI Gallery*) e **28 Efeitos WinUI 3 + Ex Umbris**.
+- Implementação de sistemas de **Design Tokens (`DESIGN.md` + `globals.css`)** adaptados ao propósito do projeto (*Ad Lucem*, *Cinza Monolítico `#57545d` + Menus `#8e8999`*, *Preto Terminal IBM `Ex Umbris` + `IBM Plex`*, ou *AETHER 2027* `oklch()`).
 
 ### ❌ Quando NÃO Usar (Limites e Exceções):
-- Criação simples de scripts backend isolados sem interface visual.
-- Dúvidas puramente conceituais de algoritmos sem relação com UI/UX.
+- Scripts puramente backend/CLI sem interface visual, diagnóstico read-only (`auditoria-projetos-sistema`) ou execução isolada de testes (`frontend-testing-auditor`).
 
 ---
 
-## 2. ENTRADAS OBRIGATÓRIAS
-
-1. **Stack Tecnológica:** (ex.: React + TypeScript + CSS Variables / Tailwind CSS, Next.js App Router, ou HTML5 + CSS3 puro).
-2. **Estilo Visual Target:** *Minimalist Impact* / *Soft Neumorphism* (Paleta restrita monocromática/duo-tone em OKLCH/HEX com elevação por profundidade tonal e zero cobalto).
-3. **Escopo da Aplicação:** (ex.: Dashboard BENTO, Centro de Operações Agênticas, SaaS B2B, App Clínico).
+## 📥 Entradas e Pré-requisitos
+- `project_root_path`: Caminho raiz da aplicação frontend.
+- `project_purpose`: Objetivo do sistema (`conversao_saas`, `editorial_leitura`, `fintech_confianca`, `ia_nativa_aether`, `medtech_clinico`, `devtools_terminal_ibm`).
 
 ---
 
-## 3. FLUXO OPERACIONAL PASSO A PASSO
+## 2. FLUXO OPERACIONAL PASSO A PASSO
 
-### Passo 1: Definição dos Design Tokens (`DESIGN.md` v4.5-soft)
-Compile as variáveis essenciais no padrão W3C/YAML focando em conforto e legibilidade:
-- **Regra 60-30-10 Tonal Restrita:**
-  - **60% Fundo Base Contínuo (`Layer 0`):** `--surface-canvas` (`#F1F4F8` Off-white macio no Light; `#12151B` / `#0B0E14` Slate Matte escuro no Dark).
-  - **30% Camadas e Elevação (`Layers 1–4`):**
-    - `Layer 1`: `--surface-inset` (`#E5E9F0`) e `--surface-sunken` (`#DCE3EC` — plano escavado para inputs, busca, Surface Wells e berço deslizante `#sidebar-active-tracker`).
-    - `Layer 2`: `--surface-flat` (`#E9EEF5` — placa intermediária sem bordas duras).
-    - `Layer 3`: `--surface-raised` (`#F1F4F8` / `#F8FAFC` / `.ui-card-soft` — plano esculpido a 135°).
-    - `Layer 4`: `--surface-contrast` (`#1E293B` / `.terrixa-notched` — âncora de inversão tonal monocromática).
-  - **10% Accent Focal Único (`--accent-point`):** Tom único mineral (**Cerulean Sapphire** `#0284C7`, **Moss** `#174930`, **Ocean Sapphire** `#1E6091` ou **Mineral Ice** `#38BDF8`).
-- **Física Tactile / Soft UI (Sombras Difusas Duplas em 135°):**
-  - Combine uma sombra suave inferior/direita com uma iluminação de topo superior/esquerda sobre a mesma cor do fundo (`--shadow-card`, `--shadow-ambient`, `--shadow-float`, `--shadow-inset`).
-  - Substitua bordas duras por transições suaves de relevo.
+### Passo 1: Enquadramento do Propósito, Arquétipo de Página e Atmosfera
+1. Identifique o objetivo central e o **Arquétipo Espacial** (além de formulários e gráficos comuns):
+   - **Conversão & SaaS / Editorial**: *Ad Lucem* (`--bg-canvas: #F3F3F5`, `--bg-surface: #FFFFFF`, `--bg-elevated: #E6E6EA`, bloco de contraste `--bg-contrast-card: #18181C`).
+   - **Estúdio Analítico / Produtividade Anti-TDAH / FinTech**: *Cinza sobre Cinza Monolítico* (`--bg-canvas: #57545d`, `--bg-surface: #49464f`, `--bg-elevated: #635f6a`, contraste `#232127`, menus em pílula `--nav-bg: #8e8999` com tinta escura `--nav-ink: #16151A`).
+   - **DevTools / Observabilidade / Terminal Técnico**: *Preto Terminal IBM (`Ex Umbris`)* (`--bg-canvas: #070709`, `--bg-surface: #101014`, `--bg-elevated: #18181E`) acoplado a **`IBM Plex Sans` + `IBM Plex Mono`**.
+2. Defina o **Acento Pontual de Intenção** (`--punctual-accent`: `#e13535`, `#35acd8`, `#10B981` ou `#D97706`) ocupando 2% da tela.
 
-### Passo 2: Mapeamento da Hierarquia Atômica (5 Camadas)
-Classifique a interface em 5 camadas funcionais:
-1. **Átomos:** Botões táteis (`.ui-btn-tactile`), Inputs escavados (`surface-inset`), Badges tonais (`.badge-soft`), Ícones vetoriais Lucide (`stroke-width: 1.75`, zero emojis), Typography Labels.
-2. **Moléculas:** Barra de busca escavada (`.surface-inset-pill`), Linhas de atividade tátil (`.activity-row`), Módulos de estatística tátil (`tabular-nums`).
-3. **Organismos:** Tactile Companion Sidebar com `#sidebar-active-tracker` deslizante, Headers integrados, Cards BENTO esculpidos (`<SoftCard />`).
-4. **Templates:** Grids assimétricos BENTO (12 colunas, `col-span-8` + `col-span-4`, respiro amplo e `gap >= 24px`).
-5. **Pages / Views:** Páginas completas importando efetivamente `<SoftCard />` e `.ui-btn-tactile` (proibido criar `<SoftCard />` como componente órfão).
-
-### Passo 3: Organização Modular do Diretório de Código
+### Passo 2: Mapeamento da Hierarquia Atômica (5 Camadas) e Árvore `src/`
 ```text
 src/
-├── assets/           # Mídia estática, SVGs, fontes
+├── assets/           # Mídia estática, SVGs vetoriais (Lucide stroke 1.75), fontes
 ├── components/       # Componentes desacoplados por camada atômica (<= 300 linhas/arquivo)
-│   ├── ui/           # Átomos e Moléculas reutilizáveis (SoftCard.tsx, Button, Badge, Input)
-│   ├── bento/        # Cards BENTO e organismos visuais
-│   └── layout/       # Header, Tactile Companion Sidebar, Container
+│   ├── ui/           # Átomos e Moléculas (SurfaceCard.tsx, ActionButton.tsx, Badge, Input)
+│   ├── bento/        # Organismos Bento Grid (12 colunas, spans assimétricos, gap 16px..24px)
+│   └── layout/       # Navegação (Pill Nav #8e8999 / Sidebar com tracker ativo), Header, Shell
 ├── config/           # Configurações de tema, constantes e tokens
-│   ├── tokens.ts     # Mapeamento JS/TS dos Design Tokens v4.5-soft (Zero Cobalt)
-│   └── DESIGN.md     # Especificação YAML pública do sistema de design (v4.5-soft)
-├── hooks/            # Custom Hooks React para lógica de UI (useTheme, useTactileFeedback)
+│   ├── tokens.ts     # Mapeamento JS/TS dos tokens semânticos por propósito
+│   └── DESIGN.md     # Contrato arquitetural do sistema de design
+├── hooks/            # Custom Hooks React (useThemeAtmosphere, useFSMState)
 ├── styles/           # Estilos globais e variáveis CSS
-│   ├── globals.css   # Variáveis :root, resets e física tátil (Soft UI 135°)
-│   └── theme.css     # Paletas tonais (Nexus Slate, Moss, Soft Sapphire, Obsidian Dark)
-├── types/            # Interfaces e types TypeScript estritos
-│   └── index.ts      # Contratos de Props de UI, TonalLayer e ComponentFSMState
-└── views/            # Páginas e telas da aplicação
+│   ├── globals.css   # Variáveis :root, famílias de tema, sombras 3 camadas + 1px Rim Light
+│   └── theme.css     # Presets adaptáveis ao domínio do projeto
+├── types/            # Interfaces e types TypeScript estritos (zero any)
+│   └── index.ts      # Contratos de UIState ('idle' | 'loading' | 'error' | 'pressed')
+└── views/            # Páginas e telas consumindo efetivamente os componentes de ui/ e bento/
 ```
-
-### Passo 4: Implementação com Tipagem e Acessibilidade (WCAG 2.1 AA)
-- Exija **TypeScript estrito** (`strict: true`) sem `any`.
-- Garanta atributos **ARIA** (`aria-label`, `role="status"`, `role="alert"`, `aria-busy`, `aria-live`).
-- Assegure contraste tipográfico mínimo de $4.5:1$ para texto normal e $7:1$ para títulos.
-- Garanta suporte total a navegação por teclado (`:focus-visible` com `outline: 2px solid var(--accent-point); outline-offset: 3px;`).
 
 ---
 
-## 4. TEMPLATE DE CÓDIGO PADRÃO (SOFT UI / MINIMALIST IMPACT)
+## 3. TEMPLATES BASE ADAPTÁVEIS POR PROPÓSITO
 
-### A. Variáveis Globais CSS (`src/styles/globals.css`)
+### A. Variáveis Globais e Física de Camadas (`src/styles/globals.css`)
 ```css
-:root {
-  --surface-sunken: #DCE3EC;
-  --surface-canvas: #F1F4F8;
-  --surface-inset: #E5E9F0;
-  --surface-flat: #E9EEF5;
-  --surface-raised: #F1F4F8;
-  --surface-contrast: #1E293B;
+:root,
+[data-theme="ad-lucem"] {
+  --bg-canvas: #F3F3F5;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #E6E6EA;
+  --bg-contrast-card: #18181C;
+  --contrast-card-ink: #FAFAFA;
 
-  --text-primary: #0F172A;
-  --text-secondary: #334155;
-  --text-muted: #64748B;
+  --ink-primary: #111113;
+  --ink-secondary: #4A4A52;
+  --ink-muted: #71717A;
+  --ink-subtle: #A1A1AA;
 
-  --accent-point: #0284C7;
-  --accent-secondary: #1E6091;
-  --accent-soft-bg: #E0F2FE;
+  --nav-bg: rgba(228, 228, 233, 0.88);
+  --nav-ink: #18181B;
+  --nav-active-bg: #18181C;
+  --nav-active-ink: #FFFFFF;
 
-  --shadow-card: 10px 10px 24px rgba(148, 163, 184, 0.32), -8px -8px 20px rgba(255, 255, 255, 0.92);
-  --shadow-ambient: 0 12px 28px rgba(15, 23, 42, 0.06), 0 4px 10px rgba(15, 23, 42, 0.04);
-  --shadow-float: 14px 14px 32px rgba(148, 163, 184, 0.42), -10px -10px 26px rgba(255, 255, 255, 0.98);
-  --shadow-inset: inset 3px 3px 7px rgba(148, 163, 184, 0.35), inset -3px -3px 7px rgba(255, 255, 255, 0.85);
+  --punctual-accent: #35acd8;
+  --border-hairline: rgba(24, 24, 27, 0.08);
+  --rim-light: rgba(255, 255, 255, 0.9);
+  --shadow-sculpted:
+    0 1px 2px rgba(9, 9, 11, 0.05),
+    0 8px 24px -4px rgba(9, 9, 11, 0.06),
+    0 20px 40px -12px rgba(9, 9, 11, 0.04),
+    inset 0 1px 0 0 var(--rim-light);
 
-  --radius-lg: 24px;
-  --radius-md: 14px;
-  --radius-sm: 8px;
-  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.ui-card-soft {
-  background-color: var(--surface-raised);
-  color: var(--text-primary);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
+[data-theme="monolith-gray"] {
+  --bg-canvas: #57545d;
+  --bg-surface: #49464f;
+  --bg-elevated: #635f6a;
+  --bg-contrast-card: #232127;
+  --contrast-card-ink: #F4F4F6;
+  --ink-primary: #F4F3F6;
+  --ink-secondary: #DFDCE5;
+  --ink-muted: #BCB7C6;
+  --ink-subtle: #9A94A6;
+  --nav-bg: #8e8999;
+  --nav-ink: #16151A;
+  --nav-active-bg: #18181C;
+  --nav-active-ink: #FFFFFF;
+  --border-hairline: rgba(255, 255, 255, 0.12);
+  --rim-light: rgba(255, 255, 255, 0.14);
+}
+
+[data-theme="ibm-terminal-dark"] {
+  --bg-canvas: #070709;
+  --bg-surface: #101014;
+  --bg-elevated: #18181E;
+  --bg-contrast-card: #F3F3F5;
+  --contrast-card-ink: #09090B;
+  --ink-primary: #F4F4F6;
+  --ink-secondary: #A1A1AA;
+  --ink-muted: #71717A;
+  --ink-subtle: #52525B;
+  --nav-bg: rgba(24, 24, 30, 0.9);
+  --nav-ink: #E4E4E7;
+  --nav-active-bg: #F4F4F6;
+  --nav-active-ink: #09090B;
+  --border-hairline: rgba(255, 255, 255, 0.08);
+  --rim-light: rgba(255, 255, 255, 0.08);
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+.sculpted-card {
+  background-color: var(--bg-surface);
+  color: var(--ink-primary);
+  border: 1px solid var(--border-hairline);
+  border-radius: 20px;
   padding: 1.75rem;
-  transition: transform 0.25s var(--ease-spring), box-shadow 0.25s var(--ease-spring);
-  position: relative;
+  box-shadow: var(--shadow-sculpted);
+  transition: transform 0.28s var(--ease-spring), box-shadow 0.28s var(--ease-spring);
 }
 
-.ui-card-soft:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-float);
+.sculpted-card[data-variant="contrast"] {
+  background-color: var(--bg-contrast-card);
+  color: var(--contrast-card-ink);
 }
 
-.ui-btn-tactile {
-  background-color: var(--surface-raised);
-  color: var(--text-primary);
-  font-weight: 600;
+.btn-primary-intent,
+.btn-ghost {
   min-height: 44px;
   min-width: 44px;
   padding: 0.65rem 1.25rem;
-  border-radius: var(--radius-md);
-  border: none;
-  box-shadow: var(--shadow-card);
+  border-radius: 12px;
+  font-weight: 600;
   flex-shrink: 0;
   white-space: nowrap;
   cursor: pointer;
-  transition: transform 0.15s var(--ease-spring), box-shadow 0.15s var(--ease-spring), color 0.15s ease;
+  transition: transform 0.18s var(--ease-spring), background-color 0.18s ease;
 }
 
-.ui-btn-tactile:hover {
-  color: var(--accent-point);
-  transform: translateY(-2px);
+.btn-primary-intent {
+  background-color: var(--punctual-accent);
+  color: #FFFFFF;
+  border: none;
 }
 
-.ui-btn-tactile:active,
-.ui-btn-tactile[aria-pressed="true"] {
-  background-color: var(--surface-inset);
-  transform: translateY(1px);
-  box-shadow: var(--shadow-inset);
+.btn-ghost {
+  background-color: transparent;
+  color: var(--ink-primary);
+  border: 1px solid var(--border-hairline);
+}
+
+.tabular-metric {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -192,43 +213,39 @@ src/
 }
 ```
 
-### B. Componente Reutilizável com FSM em React + TS (`src/components/ui/SoftCard.tsx`)
+### B. Componente de Superfície com Máquina de Estados FSM (`src/components/ui/SurfaceCard.tsx`)
 ```tsx
 import React, { useState } from 'react';
 
 export type UIState = 'idle' | 'loading' | 'error' | 'pressed';
-export type SoftCardVariant = 'raised' | 'well' | 'contrast';
+export type CardVariant = 'surface' | 'elevated' | 'contrast';
 
-export interface SoftCardProps {
+export interface SurfaceCardProps {
   title: string;
-  badgeText?: string;
-  colSpan?: 3 | 4 | 6 | 8 | 12;
-  variant?: SoftCardVariant;
+  eyebrow?: string;
+  colSpan?: 3 | 4 | 5 | 6 | 7 | 8 | 12;
+  variant?: CardVariant;
   isLoading?: boolean;
   error?: string | null;
   children: React.ReactNode;
   className?: string;
 }
 
-const COL_SPAN_MAP: Record<NonNullable<SoftCardProps['colSpan']>, string> = {
+const COL_SPAN_MAP: Record<NonNullable<SurfaceCardProps['colSpan']>, string> = {
   3: 'col-span-3',
   4: 'col-span-4',
+  5: 'col-span-5',
   6: 'col-span-6',
+  7: 'col-span-7',
   8: 'col-span-8',
   12: 'col-span-12',
 };
 
-const VARIANT_CLASS_MAP: Record<SoftCardVariant, string> = {
-  raised: 'ui-card-soft',
-  well: 'surface-inset p-6 rounded-2xl',
-  contrast: 'ui-card-soft terrixa-notched',
-};
-
-export const SoftCard: React.FC<SoftCardProps> = ({
+export const SurfaceCard: React.FC<SurfaceCardProps> = ({
   title,
-  badgeText,
+  eyebrow,
   colSpan = 4,
-  variant = 'raised',
+  variant = 'surface',
   isLoading = false,
   error = null,
   children,
@@ -237,11 +254,11 @@ export const SoftCard: React.FC<SoftCardProps> = ({
   const [isPressed, setIsPressed] = useState(false);
   const currentState: UIState = error ? 'error' : isLoading ? 'loading' : isPressed ? 'pressed' : 'idle';
   const spanClass = COL_SPAN_MAP[colSpan] ?? 'col-span-4';
-  const surfaceClass = VARIANT_CLASS_MAP[variant] ?? 'ui-card-soft';
 
   return (
     <article
-      className={`${surfaceClass} ${spanClass} ${className}`.trim()}
+      className={`sculpted-card ${spanClass} ${className}`.trim()}
+      data-variant={variant}
       data-state={currentState}
       tabIndex={0}
       aria-label={title}
@@ -250,21 +267,14 @@ export const SoftCard: React.FC<SoftCardProps> = ({
       onMouseUp={() => setIsPressed(false)}
       onMouseLeave={() => setIsPressed(false)}
     >
-      <div className="flex justify-between items-center mb-5">
-        <h3 style={{ color: 'var(--text-primary)' }} className="text-lg font-semibold tracking-tight">
-          {title}
-        </h3>
-        {badgeText && <span className="badge-soft">{badgeText}</span>}
-      </div>
-
+      <header className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold tracking-tight">{title}</h3>
+        {eyebrow && <span className="text-xs font-mono uppercase tracking-wider">{eyebrow}</span>}
+      </header>
       {isLoading ? (
-        <div role="status" aria-busy="true" aria-live="polite" className="surface-inset p-4 rounded-xl">
-          Sincronizando camada tonal...
-        </div>
+        <div role="status" aria-busy="true" aria-live="polite" className="p-4 rounded-xl">Carregando superfície...</div>
       ) : error ? (
-        <div role="alert" aria-live="assertive" className="surface-inset p-4 rounded-xl font-medium">
-          {error}
-        </div>
+        <div role="alert" aria-live="assertive" className="p-4 rounded-xl font-medium">{error}</div>
       ) : (
         <div className="card-body">{children}</div>
       )}
@@ -273,26 +283,14 @@ export const SoftCard: React.FC<SoftCardProps> = ({
 };
 ```
 
-### C. Arquétipos de Layout por Domínio (Anti-Monotonia Visual)
-Combine os 3 arquétipos conforme o domínio da tela em vez de repetir o mesmo grid em todas as páginas:
-1. **`Tactile Raised Card` (`variant="raised"`)**: Para KPIs, métricas operacionais e Bento Dashboards em relevo 135° (`--surface-raised: #F8FAFC`).
-2. **`Surface Well` (`variant="well"`)**: Para leitura longa, prontuários clínicos, logs e tabelas densas acomodadas em cavidade `--surface-inset`.
-3. **`Split-Pane Studio` (`variant="contrast"` + Sidebar `#sidebar-active-tracker`)**: Para IDEs, cockpits agênticos e editores multi-painel.
-
----
-
 ## 🤖 ATIVAÇÃO DE SUBAGENTES E ORQUESTRAÇÃO (`Topologia 3+1`)
 - **Persona Coordenadora:** `FrontCraftMaster`
 - **Subagentes Vinculados:** `ui-shell-navigator`, `ui-controls-data`, `ui-motion-interaction` e `ui-deterministic-observer`.
-- **Disparo Automático:** Utilize `invoke_subagent` ou `franklin_execute_dag(plan_path_or_json="ui", target_dir="<project_root_path>")` para validar o scaffolding gerado.
+- **Disparo Automático:** Utilize `invoke_subagent` ou `franklin_execute_dag(plan_path_or_json="ui", target_dir="<project_root_path>")` para validar a implementação.
 
----
-
-## 5. SAÍDAS E ENTREGÁVEIS (CHECKLIST DE ACEITE SELF-REFINE)
-
-Toda entrega desta skill produz a árvore `src/` modularizada, o `DESIGN.md` (`v4.5-soft`) e valida:
-- [ ] Foram eliminados glassmorphism (`backdrop-filter: blur`), luzes neon, azul cobalto (`#0044FF`, `#0057FF`, `#1D4ED8`) e bordas duras de 1px?
-- [ ] A paleta de cores segue a regra 60-30-10 com Cerulean/Ocean Sapphire (`#0284C7` / `#1E6091`) e elevação tonal a 135°?
-- [ ] O arquivo `DESIGN.md` (`v4.5-soft`) foi incluído com os tokens de Neumorfismo Suave?
-- [ ] O código é 100% modularizado em Design Atômico (5 camadas) com arquivos $\le 300$ linhas e mapeamento estático `COL_SPAN_MAP`?
-- [ ] O componente é acessível (WCAG 2.1 AA), tipado em TypeScript estrito e pronto para o `frontend-testing-auditor`?
+## 4. SAÍDAS, ENTREGÁVEIS E CHECKLIST DE ACEITE SELF-REFINE
+- [ ] O tema e o acento cromático foram escolhidos com base no **propósito do projeto** (sem paleta fixa engessada)?
+- [ ] A hierarquia respeita 4 níveis de tinta, contraste WCAG AA/AAA, tinta escura em menus claros/`#8e8999`, zero texto vermelho ou serifa fina no cinza/escuro (`.highlight-surgical`) e isolamento de 1 CTA primário sólido vs. `.btn-ghost`?
+- [ ] Métricas e tabelas usam `tabular-nums` (e `IBM Plex` caso o tema seja Preto Terminal `Ex Umbris`)?
+- [ ] O espaçamento preserva $\ge 25\%$ de respiro, raios concêntricos e sombra esculpida em 3 camadas + `1px` Rim Light?
+- [ ] O código está particionado em 5 camadas atômicas ($\le 300$ linhas/arquivo) com estados FSM acessíveis (`idle | loading | error | pressed`)?

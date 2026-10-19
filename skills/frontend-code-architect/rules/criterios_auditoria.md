@@ -1,6 +1,6 @@
-# Critérios Determinísticos de Auditoria — `frontend-code-architect` (`v4.1.0`)
+# Critérios Determinísticos de Auditoria — `frontend-code-architect` (`v5.0.0`)
 
-Critérios objetivos e falsificáveis (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) para auditar o scaffolding estrutural em Design Atômico e os templates base sob `DESIGN.md v4.5-soft` (Módulo **M3**).
+Critérios objetivos e falsificáveis (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) para auditar a arquitetura modular em Design Atômico e os templates de estilo adaptados ao propósito do projeto (Módulo **M3**).
 
 ---
 
@@ -9,14 +9,14 @@ Critérios objetivos e falsificáveis (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) para 
 - **`[FAIL: MONOLITO_FRONTEND]`**: Componentes monolíticos na raiz, arquivos $> 300$ linhas ou ausência de separação nas 5 camadas atômicas.
 - **`[UNVERIFIED]`**: Diretório `src/` ainda não inicializado no caminho informado.
 
-## 2. Paridade de Tokens Tonais 60-30-10 e Iluminação 135° (`[AUDIT-ARCH-02]`)
-- **`[PASS]`**: `src/styles/globals.css` e `src/config/tokens.ts` implementam `--surface-canvas: #F1F4F8`, `--surface-inset: #E5E9F0`, `--surface-raised: #F1F4F8`, `--surface-contrast: #1E293B` e `--accent-point: #0284C7` (*Cerulean Sapphire*), com sombras duplas a 135° e `@media (prefers-reduced-motion: reduce)`.
-- **`[FAIL: DIVERGENCIA_DE_TOKENS]`**: Presença de `backdrop-filter: blur()`, bordas duras de `1px`, azul cobalto (`#0044FF`, `#0057FF`, `#1D4ED8`, `#233DFF`) ou ausência de `--ease-spring`.
+## 2. Alinhamento do Tema ao Propósito, Camadas Esculpidas e Contraste (`[AUDIT-ARCH-02]`)
+- **`[PASS]`**: `src/styles/globals.css` e `src/config/tokens.ts` implementam superfícies semânticas (`--bg-canvas`, `--bg-surface`, `--bg-elevated`, `--bg-contrast-card`), 4 níveis de tinta (`--ink-primary..subtle`), tinta escura nítida em menus claros/`#8e8999` (`--nav-ink`), sombra esculpida em 3 camadas + `1px` Rim Light (`--shadow-sculpted`), acoplamento `IBM Plex` quando em tema Preto Terminal (`Ex Umbris`) e `@media (prefers-reduced-motion: reduce)`.
+- **`[FAIL: TEMA_DESALINHADO_OU_CONTRASTE_RUIM]`**: Aplicação de paleta fixa sem relação com o propósito do projeto, texto branco lavado em menus claros/cinzas ou ausência de camadas de elevação.
 
-## 3. Adoção Real de `<SoftCard />` e Tracker Deslizante (`[AUDIT-ARCH-03]`)
-- **`[PASS]`**: `<SoftCard />` (`src/components/ui/SoftCard.tsx`) é importado e instanciado em $\ge 50\%$ das views não-primitivas, e a Tactile Companion Sidebar implementa `#sidebar-active-tracker` como elemento posicional deslizante em `surface-inset`.
-- **`[FAIL: PLACEBO_ORFAO_OU_TRACKER_FAKE]`**: `<SoftCard />` criado mas órfão (views usando `<div className="border-slate-800">`) ou `#sidebar-active-tracker` aplicado como `id` condicional estático dentro de `.map()`.
+## 3. Adoção Real de Componentes nas Views e Isolamento de CTA (`[AUDIT-ARCH-03]`)
+- **`[PASS]`**: Os componentes criados em `src/components/ui/` (`SurfaceCard` / `SoftCard`, botões `.btn-primary-intent` e `.btn-ghost`) são efetivamente importados nas views reais (zero componentes órfãos), mantendo 1 único CTA primário sólido por dobra (proporção 98/2 ou 60-30-10).
+- **`[FAIL: COMPONENTE_ORFAO_OU_POLUICAO_CTA]`**: Componentes criados em `ui/` mas nunca importados nas views, ou múltiplos CTAs primários coloridos competindo na mesma vista.
 
-## 4. Tipagem TypeScript Estrita e Estados Finitos FSM (`[AUDIT-ARCH-04]`)
-- **`[PASS]`**: Contratos TypeScript estritos (zero `any`), alvos interativos $\ge 44\times44\text{px}$ com `flex-shrink: 0; white-space: nowrap`, números com `tabular-nums` e suporte executável aos estados FSM (`Idle`, `Loading` com `aria-busy="true"`, `Error` com `role="alert"` e `Pressed`).
-- **`[FAIL: TIPAGEM_FRACA_OU_SEM_FSM]`**: Uso de `any`, ausência de estados WAI-ARIA executáveis ou uso de emojis em controles.
+## 4. Tipagem TypeScript Estrita, `tabular-nums` e Estados Finitos FSM (`[AUDIT-ARCH-04]`)
+- **`[PASS]`**: Contratos TypeScript estritos (zero `any`), alvos interativos $\ge 44\times44\text{px}$ com `flex-shrink: 0; white-space: nowrap`, números com `font-variant-numeric: tabular-nums` e suporte executável aos estados FSM (`idle`, `loading` com `aria-busy="true"`, `error` com `role="alert"` e `pressed`).
+- **`[FAIL: TIPAGEM_FRACA_OU_SEM_FSM]`**: Uso de `any`, ausência de estados WAI-ARIA executáveis ou ausência de `tabular-nums` em KPIs/tabelas.
