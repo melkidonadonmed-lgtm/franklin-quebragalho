@@ -1,7 +1,26 @@
 [
   {
-    "eval_id": "eval-001-estrutura-basica",
-    "prompt": "Execute a rotina básica do template",
-    "expected_behavior": "Executa a verificação determinística e retorna os entregáveis conforme o modelo de saída."
+    "eval_id": "eval-001-scaffolding-anatomia-9-pontos",
+    "trigger_type": "should_trigger",
+    "prompt": "Use o template oficial para estruturar o esqueleto de uma nova skill com as 9 perguntas ontológicas, seção de gotchas e seleção de módulo de domínio.",
+    "expected_behavior": "Aplica o contrato v2.0.0 do _template mantendo o SKILL.md enxuto (< 500 linhas), inclui orçamento operacional (max_steps) e seção de Gotchas, e referencia references/guardrails_por_modulo.md para o módulo correspondente."
+  },
+  {
+    "eval_id": "eval-002-consulta-modulo-dominio-ssot",
+    "trigger_type": "should_trigger",
+    "prompt": "Quais são os guardrails canônicos do template para uma skill do Módulo 3 (Frontend UI) e do Módulo 7 (Saúde Clínica)?",
+    "expected_behavior": "Carrega references/guardrails_por_modulo.md sob demanda e apresenta os critérios exatos do Módulo 3 (HTML5 semântico, anti-XSS, WCAG 2.1 AA, FSM 4 estados, DESIGN.md v4.5-soft sem cobalto) e do Módulo 7 (PII/PHI, cadeia causal em 4 passos e prescrição em 6 pilares)."
+  },
+  {
+    "eval_id": "eval-003-near-miss-auditoria-skill-existente",
+    "trigger_type": "should_not_trigger",
+    "prompt": "Audite e enxugue a skill organizar-gdrive que passou de 500 linhas e está com gatilhos colidindo.",
+    "expected_behavior": "Reconhece como near-miss negativo (cirurgia e auditoria de skill existente) e delega para skill-auditor-refatorador-skills."
+  },
+  {
+    "eval_id": "eval-004-near-miss-arquitetura-adk-runtime",
+    "trigger_type": "should_not_trigger",
+    "prompt": "Implemente um agente em Go usando Google ADK 2.x com Circuit Breaker e cálculo de Pass@k.",
+    "expected_behavior": "Reconhece como near-miss negativo (engenharia de código de agentes e métricas de runtime) e delega para aprimoramento-expansibilidade-agentes-skills."
   }
 ]

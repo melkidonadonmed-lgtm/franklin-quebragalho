@@ -1,170 +1,104 @@
 {
-  "version": "2.6.0-2026",
-  "typographyPresets": {
-    "humanist-tech": {
-      "label": "Plus Jakarta + JetBrains Mono",
-      "fontDisplay": "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif",
-      "fontSans": "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif",
-      "fontMono": "'JetBrains Mono', monospace",
-      "trackingDisplay": "-0.025em"
+  "version": "4.5.0-soft",
+  "phase": "1-read-only-diagnostic",
+  "contract": "DESIGN.md v4.5-soft (Minimalist Impact, Nexus Bento & Soft Tactile Elevation 135deg)",
+  "diagnostic_thresholds": {
+    "min_readiness_score": 90.0,
+    "min_tokens_vis_score": 85.0,
+    "min_fsm_score": 85.0,
+    "max_hard_borders_1px": 6,
+    "min_tactile_view_adoption_ratio": 0.5
+  },
+  "softUiPresetsV4_5": {
+    "slate": {
+      "id": "slate",
+      "name": "Nexus Slate Cerulean (Default Light)",
+      "mode": "light",
+      "--surface-sunken": "#DCE3EC",
+      "--surface-canvas": "#F1F4F8",
+      "--surface-inset": "#E5E9F0",
+      "--surface-flat": "#E9EEF5",
+      "--surface-raised": "#F1F4F8",
+      "--surface-contrast": "#1E293B",
+      "--text-primary": "#0F172A",
+      "--text-secondary": "#334155",
+      "--text-muted": "#64748B",
+      "--accent-point": "#0284C7",
+      "--accent-secondary": "#1E6091",
+      "--accent-soft-bg": "#E0F2FE",
+      "--shadow-card": "8px 8px 18px rgba(166, 180, 200, 0.45), -8px -8px 18px rgba(255, 255, 255, 0.92)",
+      "--shadow-ambient": "0 12px 28px rgba(15, 23, 42, 0.06), 0 4px 10px rgba(15, 23, 42, 0.04)",
+      "--shadow-float": "12px 12px 24px rgba(166, 180, 200, 0.52), -10px -10px 22px rgba(255, 255, 255, 0.98)",
+      "--shadow-inset": "inset 4px 4px 9px rgba(166, 180, 200, 0.52), inset -4px -4px 9px rgba(255, 255, 255, 0.88)"
     },
-    "editorial-serif": {
-      "label": "Instrument Serif + Jakarta",
-      "fontDisplay": "'Instrument Serif', Georgia, serif",
-      "fontSans": "'Plus Jakarta Sans', -apple-system, sans-serif",
-      "fontMono": "'JetBrains Mono', monospace",
-      "trackingDisplay": "-0.015em"
+    "moss": {
+      "id": "moss",
+      "name": "Biophilic Moss & Stone (Warm Light)",
+      "mode": "light",
+      "--surface-sunken": "#D3DDD2",
+      "--surface-canvas": "#F4F3EC",
+      "--surface-inset": "#E6E5DC",
+      "--surface-flat": "#E4EBE3",
+      "--surface-raised": "#F9F8F3",
+      "--surface-contrast": "#14241B",
+      "--text-primary": "#14241B",
+      "--text-secondary": "#2D4235",
+      "--text-muted": "#536B5C",
+      "--accent-point": "#174930",
+      "--accent-secondary": "#2E6F40",
+      "--accent-soft-bg": "#DCFCE7",
+      "--shadow-card": "10px 10px 24px rgba(130, 148, 134, 0.30), -8px -8px 20px rgba(255, 255, 255, 0.90)",
+      "--shadow-ambient": "0 12px 28px rgba(20, 36, 27, 0.06), 0 4px 10px rgba(20, 36, 27, 0.04)",
+      "--shadow-float": "14px 14px 32px rgba(130, 148, 134, 0.40), -10px -10px 26px rgba(255, 255, 255, 0.96)",
+      "--shadow-inset": "inset 3px 3px 7px rgba(130, 148, 134, 0.34), inset -3px -3px 7px rgba(255, 255, 255, 0.85)"
     },
-    "swiss-grotesk": {
-      "label": "Space Grotesk + Inter",
-      "fontDisplay": "'Space Grotesk', -apple-system, sans-serif",
-      "fontSans": "'Inter', -apple-system, sans-serif",
-      "fontMono": "'JetBrains Mono', monospace",
-      "trackingDisplay": "-0.03em"
+    "sapphire": {
+      "id": "sapphire",
+      "name": "Ocean Sapphire & Glacier (Clinical Light)",
+      "mode": "light",
+      "--surface-sunken": "#D5E2EA",
+      "--surface-canvas": "#F5F4EE",
+      "--surface-inset": "#EAE8DF",
+      "--surface-flat": "#E6EFF5",
+      "--surface-raised": "#FAF9F5",
+      "--surface-contrast": "#0C1928",
+      "--text-primary": "#0C1928",
+      "--text-secondary": "#2B445E",
+      "--text-muted": "#58728C",
+      "--accent-point": "#1E6091",
+      "--accent-secondary": "#0369A1",
+      "--accent-soft-bg": "#E0F2FE",
+      "--shadow-card": "10px 10px 24px rgba(140, 165, 188, 0.32), -8px -8px 20px rgba(255, 255, 255, 0.94)",
+      "--shadow-ambient": "0 12px 28px rgba(12, 25, 40, 0.06), 0 4px 10px rgba(12, 25, 40, 0.04)",
+      "--shadow-float": "14px 14px 32px rgba(140, 165, 188, 0.42), -10px -10px 26px rgba(255, 255, 255, 0.98)",
+      "--shadow-inset": "inset 3px 3px 7px rgba(140, 165, 188, 0.35), inset -3px -3px 7px rgba(255, 255, 255, 0.88)"
     },
-    "classic-garamond": {
-      "label": "Cormorant Garamond + Jakarta",
-      "fontDisplay": "'Cormorant Garamond', Georgia, serif",
-      "fontSans": "'Plus Jakarta Sans', -apple-system, sans-serif",
-      "fontMono": "'JetBrains Mono', monospace",
-      "trackingDisplay": "-0.015em"
+    "obsidian": {
+      "id": "obsidian",
+      "name": "Phantom Obsidian 4K (Dark Matte)",
+      "mode": "dark",
+      "--surface-sunken": "#05070A",
+      "--surface-canvas": "#12151B",
+      "--surface-inset": "#0D1015",
+      "--surface-flat": "#10141D",
+      "--surface-raised": "#181D26",
+      "--surface-contrast": "#E2E8F0",
+      "--text-primary": "#F1F5F9",
+      "--text-secondary": "#94A3B8",
+      "--text-muted": "#64748B",
+      "--accent-point": "#38BDF8",
+      "--accent-secondary": "#0284C7",
+      "--accent-soft-bg": "rgba(56, 189, 248, 0.14)",
+      "--shadow-card": "8px 8px 20px rgba(5, 7, 11, 0.78), -6px -6px 16px rgba(32, 39, 52, 0.42)",
+      "--shadow-ambient": "0 14px 30px rgba(2, 4, 9, 0.65), 0 4px 12px rgba(2, 4, 9, 0.45)",
+      "--shadow-float": "14px 14px 34px rgba(2, 4, 9, 0.85), -8px -8px 22px rgba(30, 41, 59, 0.35)",
+      "--shadow-inset": "inset 4px 4px 10px rgba(5, 7, 11, 0.85), inset -3px -3px 8px rgba(32, 39, 52, 0.35)"
     }
   },
-  "geometryPresets": {
-    "sharp": { "name": "Brutalista 6px", "radius": 6, "radiusMd": 6, "radiusSm": 4 },
-    "editorial": { "name": "Editorial 12px", "radius": 12, "radiusMd": 10, "radiusSm": 6 },
-    "technical": { "name": "Técnico 16px", "radius": 16, "radiusMd": 12, "radiusSm": 8 },
-    "tactile": { "name": "Tátil 20px", "radius": 20, "radiusMd": 14, "radiusSm": 8 },
-    "organic": { "name": "Orgânico 24px", "radius": 24, "radiusMd": 18, "radiusSm": 10 }
-  },
-  "archetypes": {
-    "tactile_matte": {
-      "id": "tactile-matte",
-      "name": "Tactile Matte Minimalist",
-      "category": "studio",
-      "canvas": "#090B10",
-      "card": "#141824",
-      "surface_2": "#1D2436",
-      "accent": "#3B82F6",
-      "text": "#F3F5F9",
-      "typographyPreset": "humanist-tech",
-      "geometryPreset": "tactile",
-      "radius": 20
-    },
-    "phantom_obsidian": {
-      "id": "phantom-4k",
-      "name": "Phantom Obsidian 4K",
-      "category": "studio",
-      "canvas": "#060709",
-      "card": "#11141D",
-      "surface_2": "#1B2130",
-      "accent": "#38BDF8",
-      "text": "#F8FAFC",
-      "typographyPreset": "swiss-grotesk",
-      "geometryPreset": "technical",
-      "radius": 16
-    },
-    "polar_sand": {
-      "id": "polar-sand",
-      "name": "Polar Sand Light",
-      "category": "studio",
-      "canvas": "#EEF2F6",
-      "card": "#FFFFFF",
-      "surface_2": "#E5EBF2",
-      "accent": "#0284C7",
-      "text": "#0F172A",
-      "typographyPreset": "humanist-tech",
-      "geometryPreset": "tactile",
-      "radius": 20
-    },
-    "warm_editorial_paper": {
-      "id": "warm-editorial-paper",
-      "name": "Warm Editorial Paper",
-      "category": "trends2026",
-      "canvas": "#EFECE6",
-      "card": "#FCFBF8",
-      "accent": "#9A3412",
-      "text": "#1C1917",
-      "typographyPreset": "editorial-serif",
-      "geometryPreset": "editorial",
-      "radius": 12
-    },
-    "quiet_luxury_titanium": {
-      "id": "quiet-luxury-titanium",
-      "name": "Quiet Luxury Titanium",
-      "category": "trends2026",
-      "canvas": "#0B0C0E",
-      "card": "#16181D",
-      "accent": "#C5A880",
-      "text": "#F4F4F6",
-      "typographyPreset": "swiss-grotesk",
-      "geometryPreset": "technical",
-      "radius": 16
-    },
-    "neo_swiss_grid": {
-      "id": "neo-swiss-grid",
-      "name": "Neo-Swiss Architectural Grid",
-      "category": "trends2026",
-      "canvas": "#E6E9EF",
-      "card": "#FFFFFF",
-      "accent": "#BE123C",
-      "text": "#090D16",
-      "typographyPreset": "swiss-grotesk",
-      "geometryPreset": "sharp",
-      "radius": 6
-    },
-    "biophilic_matcha_stone": {
-      "id": "biophilic-matcha-stone",
-      "name": "Biophilic Matcha & Alabaster",
-      "category": "trends2026",
-      "canvas": "#E7ECE6",
-      "card": "#FBFDF9",
-      "accent": "#2E6F40",
-      "text": "#16261C",
-      "typographyPreset": "classic-garamond",
-      "geometryPreset": "organic",
-      "radius": 24
-    },
-    "tactile_carbon_2026": {
-      "id": "tactile-carbon-2026",
-      "name": "Tactile Carbon & Violet Slate",
-      "category": "trends2026",
-      "canvas": "#07080C",
-      "card": "#12141E",
-      "accent": "#8B5CF6",
-      "text": "#F3F4F8",
-      "typographyPreset": "swiss-grotesk",
-      "geometryPreset": "editorial",
-      "radius": 14
-    }
-  },
-  "canonicalPalettes": [
-    "steadfast-stainless",
-    "window-tide",
-    "cotton-dandelions",
-    "ocean-window",
-    "mermaid-lagoon",
-    "nightfall-ambiance",
-    "sky-balloons",
-    "grained-memories",
-    "living-a-dream",
-    "van-goghs-dream"
-  ],
-  "metrics": {
-    "button_min_height": "40px",
-    "button_optimal_height": "44px",
-    "sidebar_min_width": "240px",
-    "sidebar_optimal_width": "280px",
-    "grid_column_min_width": "350px",
-    "menu_gap_min": "12px",
-    "card_max_tilt_deg": 5.5,
-    "transition_default": "150ms cubic-bezier(0.16, 1, 0.3, 1)"
-  },
-  "forbidden_colors": [
-    "#0044FF",
-    "#233DFF",
-    "#1D4ED8",
-    "#0000FF",
-    "#00E5FF"
-  ]
+  "forbidden_patterns": {
+    "colors_cobalt_neon": ["#0044FF", "#0057FF", "#233DFF", "#1D4ED8", "#2563EB", "#00FF66", "#FF00FF"],
+    "css_properties": ["backdrop-filter: blur", "backdrop-blur"],
+    "tailwind_generic_ai": ["border-slate-800", "bg-gradient-to-tr", "text-[10px]", "text-[11px]"],
+    "ui_anti_patterns": ["orphan_softcard", "fsm_comment_gaming", "emojis_in_buttons", "static_sidebar_tracker_id"]
+  }
 }

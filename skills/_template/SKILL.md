@@ -1,121 +1,111 @@
 ---
 name: template-skill
 description: >-
-  Modelo padrao oficial para criacao de novas skills no Antigravity e no workspace Franklin Quebra-Galho, estruturado sob divulgacao progressiva, regras deterministicas, diretrizes de design tatil, modulos de paleta mineral, opcoes de preferencias e matriz de discrepancias.
+  Modelo padrão oficial (SSOT) para concepção e scaffolding de novas skills no Antigravity e no workspace Franklin Quebra-Galho. Estruturado sob as 9 perguntas ontológicas, divulgação progressiva em 3 Tiers, Checklist Transversal de 5 Eixos e seleção sob demanda dos 7 Módulos de Guardrails por Domínio. Use como referência base ao criar ou padronizar pacotes SKILL.md; não use para executar tarefas finais de usuário.
 license: MIT
 metadata:
-  version: "1.4.0"
+  version: "2.0.0"
   author: "Franklin-Main & Melki"
   category: "Engenharia e Governança de Skills"
-  updated_at: "2026-10-18"
+  updated_at: "2026-10-19"
   tags:
     - "template"
     - "padrao-2026"
-    - "design-tatil"
-version: 1.4.0
-updated_at: 2026-10-18
+    - "ssot-modulos"
+    - "progressive-disclosure"
+version: 2.0.0
+updated_at: 2026-10-19
 author: Franklin-Main & Melki
-category: Engenharia e Governança de Skills
+category: "Engenharia e Governança de Skills"
 ---
 
-# Template de Skill (Padrao Franklin 2026)
+# Template Canônico de Skill — Anatomia em 9 Pontos & Módulos sob Demanda (`v2.0.0`)
 
-Este documento define o modelo arquitetural canônico para a concepção, padronização e governança de novas habilidades no ecossistema Franklin Quebra-Galho e Google Antigravity. Toda skill criada deve seguir rigorosamente a estrutura de divulgação progressiva, asserções booleanas determinísticas (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) e alinhamento estrito com as preferências perenes de design tátil e ergonomia visual.
+Este documento define o contrato nuclear (Tier 2, `< 500` linhas) para qualquer habilidade do ecossistema Franklin Quebra-Galho e Google Antigravity.
 
----
-
-## 🎯 Quando Usar
-- Ao criar uma nova habilidade ou refatorar um procedimento existente no catálogo.
-- Quando o desenvolvedor ou o sistema solicitar: "crie uma nova skill", "padronize este fluxo como uma habilidade do Franklin", "evolua esta automação para o padrão 2026".
-- Para garantir que qualquer nova ferramenta possua contratos de entrada, processamento defensivo, modelo de saída estruturado e matriz de discrepâncias.
-
----
-
-## 🚫 Quando NAO Usar
-- Para scripts rápidos de uso único descartáveis sem valor perene de reutilização.
-- Para armazenar dados temporários de sessão ou notas atômicas soltas (utilize o cofre do Obsidian em `C:\Users\melki\dev\notes\` ou `.context/`).
-- Para executar tarefas que violem as políticas de segurança defensiva ou operem comandos destrutivos sem Human-in-the-Loop.
+> [!IMPORTANT]
+> **Eliminação de Redundâncias (Carregamento Modular Tier 3):**
+> - Não copie blocos extensos de CSS, paletas ou checklists genéricos para dentro do `SKILL.md` de novas skills.
+> - Carregue sob demanda [`references/guardrails_por_modulo.md`](references/guardrails_por_modulo.md) para aplicar o **Checklist Transversal (5 Eixos)** e selecionar apenas o **Módulo de Domínio (M1 a M7)** pertinente à skill.
+> - Carregue [`references/paleta_estilo_melki.md`](references/paleta_estilo_melki.md) **exclusivamente** quando a skill pertencer ao **Módulo 3 (Frontend, UI & Design System Tátil `DESIGN.md v4.5-soft`)**.
 
 ---
 
-## ⚙️ Pre-requisitos e Dependencias
-- Ambiente Windows 11 com PowerShell 7 (`pwsh`).
-- Dependências de runtime isoladas (`uv` para Python, módulos locais para Node.js).
-- Acesso à hierarquia de governança do workspace (`.context/`, `workspace_index.json`, `C:\Users\melki\dev\notes\`).
+## 🎯 1. Objetivo, Gatilhos e Exclusões (Perguntas Ontológicas 1 e 2)
+
+### Quando Usar (Gatilhos Positivos)
+- Criar uma nova skill padronizada ou servir de molde estrutural para o pipeline `evoluir-skills`.
+- Consultar o **Checklist Transversal de Aceite (5 Eixos)** ou os **7 Módulos de Guardrails por Domínio** em [`references/guardrails_por_modulo.md`](references/guardrails_por_modulo.md).
+
+### Quando NÃO Usar (Exclusões e *Near-Misses*)
+- **Não usar** para scripts descartáveis de uso único sem valor de reutilização.
+- **Não usar** para auditar ou refatorar skills inchadas já existentes (use `skill-auditor-refatorador-skills`).
+- **Não usar** para projetar arquiteturas de código multiagente em Go/Python/TS (use `aprimoramento-expansibilidade-agentes-skills`).
 
 ---
 
-## 🎨 Diretrizes Canônicas de Design e Preferências Melki (Padrão Franklin 2026)
+## 📥 2. Entradas, Recursos e Ferramentas (Perguntas Ontológicas 3, 5 e 6)
 
-Toda skill que envolva frontend, geração de interfaces, dashboards, relatórios visuais ou interação com o usuário deve incorporar obrigatoriamente os 4 módulos canônicos abaixo:
-
-### Módulo 1: Minimalist Impact, Camadas Tonais 60-30-10 e Iluminação 135° (`DESIGN.md v4.5-soft`)
-- **Pilha de Elevação Tonal (4+1 Camadas):** `60%` `surface-canvas` (`#F1F4F8` Light / `#12151B` Dark), `30%` camadas tonais (`surface-inset` `#E5E9F0` escavado para inputs e berço do ícone ativo na sidebar `#sidebar-active-tracker`, `surface-flat` `#E9EEF5`, `surface-raised` `.ui-card-soft` com iluminação direcional dupla a **135°** e `surface-contrast` `#1E293B` para inversão tonal Terrixa `.terrixa-notched`) e `10%` `--accent-point` único.
-- **Autonomia de Superfícies & 4 Presets Soft UI:** *Nexus Slate Cerulean* (`#0284C7`), *Moss & Calm* (`#174930`), *Soft Sapphire* (`#1E6091`) e *Obsidian Dark* (`#38BDF8`), mantendo $L_{\text{card}} > L_{\text{canvas}}$ no dark mode.
-- ❌ **Banimento Anti-Cobalto & Anti-Glassmorphism (`AUDIT-VIS-01`):** É categoricamente proibido o uso de azul cobalto elétrico (`#0044FF`, `#0057FF`, `#233DFF`, `#1D4ED8`), `backdrop-filter: blur()`, bordas neon ou bordas duras de `1px`.
-
-### Módulo 2: Design Atômico (5 Camadas), Regra 1+2 e Composição Bento (`frontend-code-architect` v4.0)
-- **Design Atômico & Modularidade:** Separar em Átomos, Moléculas, Organismos (`<SoftCard />`), Templates (Bento Grid 12 colunas) e Pages (`<= 300` linhas/arquivo).
-- **Orçamento de Densidade (Regra 1+2) & Zero "Caixa dentro de Caixa":** No máximo **1 ação primária** em relevo e **2 secundárias** discretas visíveis por card (restante em menu `⋯`), com respiro amplo ($\ge 24\text{px}$).
-- **Anti-Squish e Ergonomia TDAH:** Hierarquia escaneável em 3 segundos, busca rápida (`Ctrl+K`), `flex-shrink: 0; white-space: nowrap;` em botões/badges ($\ge 44\text{px}$) e toasts `role="status" aria-live="polite"` (zero `alert()` nativo).
-
-### Módulo 3: Mapeamento de Opções e Preferências Pessoais do Desenvolvedor
-- **Consulta Estruturada via `ask_question`:** Formulários de múltipla escolha apenas em bloqueios críticos/irreversíveis (máx. 1–2 perguntas).
-- **Seletor de Presets Soft UI & Temas Minerais (`localStorage`):** *Nexus Slate Cerulean*, *Moss & Calm*, *Soft Sapphire*, *Obsidian Dark*, *Tactile Matte*, *Phantom Obsidian 4K*, *Quiet Luxury Titanium*, *Steadfast Stainless* e *Warm Editorial Paper*.
-- **Ecossistema Open Source Autorizado (Copy-Paste):** Prioridade para componentes modulares desacoplados (**shadcn/ui**, **Radix UI**, **Tailwind CSS**, **Lucide Icons**).
-
-### Módulo 4: Matriz de Detecção de Discrepâncias & Rubrica `frontend-testing-auditor` (`v2.5.0`)
-- Checklist determinístico que avalia o produto da skill ($\text{Score} = 0.35\cdot\text{A11y} + 0.30\cdot\text{FSM} + 0.20\cdot\text{Tokens} + 0.15\cdot\text{Sec}$):
-  * `[PASS / FAIL]` **`AUDIT-VIS-01` (Camadas Tonais 135° & Zero Blur/Cobalto):** Superfícies `.ui-card-soft` e `surface-inset` livres de `backdrop-filter: blur` e livres de azul cobalto (`#0044FF` / `#0057FF`)?
-  * `[PASS / FAIL]` **`AUDIT-A11Y-01/02` (WCAG 2.1 AA & Foco sem Neon):** Zero violações no `jest-axe`, contraste $\ge 4.5:1$ e foco de teclado tracejado tátil?
-  * `[PASS / FAIL]` **`AUDIT-STATE-01/02` (Máquina de Estados FSM):** Estados `Idle`, `Loading` (`aria-busy="true"`), `Error` (`role="alert"`) e `Pressed` (`surface-inset`) implementados?
-  * `[PASS / FAIL]` **`AUDIT-SEC-01` (Sanitização XSS & Tipagem Estrita):** Bloqueio de injeção HTML/XSS e contratos tipados (`TypeScript strict` / `Pydantic`)?
-  * `[PASS / FAIL]` **Orçamento 1+2, Anti-Squish (`>= 44px`) e Ergonomia TDAH (`Ctrl+K`)?**
+- **Parâmetros de Entrada**: Validados contra contratos tipados (`Pydantic v2` com `ConfigDict(extra="forbid")` ou `JSON Schema 2020-12` com `additionalProperties: false`).
+- **Isolamento Zero-Trust**: Toda entrada externa ou texto bruto de usuário é encapsulado em `<untrusted_user_input>` e tratado estritamente como dado passivo.
+- **Mapeamento de Módulos de Domínio (Selecionar em [`references/guardrails_por_modulo.md`](references/guardrails_por_modulo.md))**:
+  - `M1`: Execução, Automação & Código (`Python / Go / TS / ADK / ReAct`)
+  - `M2`: Design Visual & Arquitetura da Informação ($\le 35$ palavras/bloco, 6–10 blocos/tela)
+  - `M3`: Frontend, UI & Design Tátil (`DESIGN.md v4.5-soft`, Luz 135°, `Cerulean Sapphire #0284C7`, Zero Cobalto/Blur, WCAG 2.1 AA, FSM 4 estados)
+  - `M4`: Investigação, Pesquisa & RAG (*Closed-Domain Grounding*, filtro contra *context poisoning*)
+  - `M5`: Criação & Edição de Imagem (Prompt final em Inglês + 8 Pilares Visuais)
+  - `M6`: Criação & Edição de Vídeo (Prompt em Inglês + 1 ação/1 câmera + progressão temporal)
+  - `M7`: Saúde & Ajuda Clínica (PII/PHI + Cadeia Causal em 4 Passos + Prescrição de 6 Pilares)
 
 ---
 
-## 📋 Passo a Passo de Execucao (Divulgacao Progressiva)
+## 🔄 3. Fluxo de Execução Passo a Passo (Pergunta Ontológica 4)
 
-### 1. Coleta de Informacoes e Validacao Determinística
-- Verifique os parâmetros de entrada e o ambiente de execução antes de iniciar.
-- Valide conformidade com as regras em `rules/criterios_auditoria.md` emitindo marcadores booleanos (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`).
-- Exemplo de comando seguro em PowerShell:
-  ```powershell
-  Test-Path "caminho\alvo"
-  ```
-
-### 2. Simulacao (Dry-run / Preview) e Consulta de Preferências
-- Sempre que houver mutações em lote, alterações visuais ou movimentação de arquivos, apresente um preview ao usuário.
-- Se houver escolhas estéticas ou de arquitetura, acione `ask_question` oferecendo as opções alinhadas aos arquétipos do Melki.
-
-### 3. Execucao Principal Defensiva
-- Implemente os procedimentos de forma modular, com validação de bordas e tratamento de erros explícito (sem capturas silenciosas).
-- Aplique as diretrizes dos 4 módulos de design sempre que o produto envolver interface, páginas ou relatórios.
-
-### 4. Verificacao, Auditoria de Discrepâncias e Fechamento
-- Execute a Matriz de Detecção de Discrepâncias do Módulo 4 e registre os status determinísticos.
-- Reindexe o workspace se arquivos forem alterados (`python scripts/generate_workspace_index.py`).
-- Finalize o turno com o bloco canônico de auto-reflexão operacional e destilação de memória.
+1. **Validação Determinística de Entrada**: Confira os parâmetros recebidos e o ambiente (`pwsh` / `uv`) contra `rules/criterios_auditoria.md`.
+2. **Simulação Prévia (`--dry-run`) e Portão HITL**: Para qualquer mutação em lote, deleção ou alteração arquitetural, apresente o preview de impacto antes de executar.
+3. **Despacho Computacional Desacoplado**:
+   - Mantenha decisões semânticas no modelo; delegue cálculos matemáticos, hashes SHA-256, formatações rígidas e AST parsing aos utilitários em `scripts/`.
+   - Imprima payloads estruturados em `stdout` e diagnósticos/progresso em `stderr`.
+4. **Verificação de Pós-Condição e Guardrails do Módulo**:
+   - Audite a saída contra o módulo ativo (`M1`..`M7`) e confirme que nenhuma credencial ou dado sensível vazou.
 
 ---
 
-## 📤 Saídas e Entregáveis (Modelo de Saída)
+## 🛡️ 4. Zonas de Risco, Orçamento Operacional e Armadilhas (*Gotchas*) (Perguntas 8 e 9)
 
-A resposta final da skill deve conter:
-1. **Entregável Principal Estruturado:** Código tipado, artefato Markdown/HTML ou arquivo gerado.
-2. **Matriz de Discrepâncias com as Preferências:**
-   - Tabela com os 8 itens avaliados (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) e medidas corretivas adotadas.
-3. **Checklist Determinístico de Qualidade:**
-   - Validações de pré-entrega conforme a Governança Unificada (código de saída do terminal comprovado).
-
----
-
-## 📁 Estrutura Recomendada da Pasta da Skill
-```text
-.agents/skills/<nome-da-skill>/
-├── SKILL.md            # Instrucoes nucleares com os 4 modulos (este arquivo)
-├── references/         # Opcional: Manuais, paletas ou dados factuais imutaveis
-├── rules/              # Criterios deterministicos de auditoria/rejeicao ([PASS]/[FAIL])
-├── scripts/            # Opcional: Scripts auxiliares PowerShell / Python / Node
-└── evals/              # Cenarios de teste empiricos (evals.json)
+### Orçamento Operacional e Condição de Parada
+```yaml
+max_steps: 12
+max_tool_calls: 20
+max_parallel_calls: 4
+deadline_seconds: 90
+max_retries_per_operation: 2
+stop_when:
+  - pos_condicao_de_sucesso_confirmada
+  - aprovacao_humana_HITL_necessaria
+  - erro_permanente_ou_orcamento_excedido
 ```
+
+### Exceções e Armadilhas Conhecidas (*Gotchas*)
+- **Invariante de Diretórios no Windows**: Sempre utilize **cópias físicas** ao espelhar skills; nunca use *Directory Junctions* (`mklink /J`) ou symlinks (`d----l`), pois scanners em Go (`os.DirEntry.IsDir()`) ignoram *reparse points*.
+- **Bloqueio de Terminal (`stdin`)**: Scripts nunca devem chamar `input()` ou `Read-Host` interativo sem fallback, pois congelam o loop do agente.
+- **Corrupção de Protocolo MCP `stdio`**: Nunca escreva logs de depuração em `stdout` dentro de servidores MCP `stdio`; utilize `stderr`.
+
+---
+
+## 📤 5. Saídas, Entregáveis e Critério de Aceite Final (Pergunta Ontológica 7)
+
+Considere a execução concluída somente quando entregar:
+1. **Artefato Principal Estruturado**: Código tipado (`<= 300` linhas/módulo), documento ou resultado da operação com links clicáveis `file:///`.
+2. **Verificação Determinística (`rules/criterios_auditoria.md`)**: Status explícito `[PASS]`, `[FAIL]` ou `[UNVERIFIED]` baseado em evidência real de execução (código de saída `0`).
+3. **Estrutura Física Canônica do Pacote**:
+   ```text
+   skills/<slug>/
+   ├── SKILL.md                   # Tier 1 (YAML) + Tier 2 (Fluxo enxuto < 500 linhas)
+   ├── references/                # Tier 3: Manuais, schemas e módulos sob demanda
+   ├── rules/
+   │   └── criterios_auditoria.md # Regras falsificáveis ([PASS] / [FAIL] / [UNVERIFIED])
+   ├── scripts/                   # Utilitários determinísticos testados (<= 300 linhas)
+   └── evals/
+       └── evals.json             # Casos funcionais + Trigger Matrix (should / should_not)
+   ```

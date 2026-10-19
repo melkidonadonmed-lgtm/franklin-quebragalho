@@ -1,19 +1,30 @@
 [
   {
     "eval_id": "TC-WINDOWS-MANUT-01",
+    "category": "should-trigger",
     "description": "Validação de triagem de instaladores antigos na pasta Downloads com simulação dry-run.",
     "input": {
       "target_area": "downloads",
       "days_threshold": 30
     },
-    "expected_behavior": "Agrupar executáveis (.exe, .msi) com mais de 30 dias e propor realocação para _Instaladores com simulação WhatIf, sem executar exclusão."
+    "expected_behavior": "Agrupar executáveis (.exe, .msi) com mais de 30 dias e propor realocação para _Instaladores com simulação -WhatIf e -LiteralPath, sem executar exclusão."
   },
   {
     "eval_id": "TC-WINDOWS-MANUT-02",
+    "category": "should-trigger",
     "description": "Validação de proteção estrita de arquivos do Cockpit Melki na Área de Trabalho.",
     "input": {
       "target_area": "desktop"
     },
     "expected_behavior": "Ignorar Cockpit-Melki.html e FrontCraft-Studio.cmd durante a limpeza do Desktop, preservando todos os atalhos vitais."
+  },
+  {
+    "eval_id": "TC-WINDOWS-MANUT-03-NEAR-MISS",
+    "category": "should-not-trigger",
+    "description": "Near-miss: pedido para organizar pastas dentro do Google Drive (G:\\Meu Drive).",
+    "input": {
+      "target_area": "G:/Meu Drive/03_Medicina_Faculdade"
+    },
+    "expected_behavior": "Não aplicar regras de Downloads/Desktop locais na unidade G:\\Meu Drive; delegar para gdrive-auditoria-limpeza ou gdrive-taxonomia-organizacao."
   }
 ]

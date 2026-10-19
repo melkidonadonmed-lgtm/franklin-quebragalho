@@ -17,7 +17,7 @@ Este documento contém o cânone visual consolidado do **Minimalist Impact & Sof
 ### 1.2. Os 4 Presets Soft UI (`DESIGN.md v4.5-soft` — Anti-Cobalto)
 | Preset (`data-theme`) | Canvas (60%) | Raised / Inset (30%) | Contrast Anchor | Accent Focal (10% — Zero Cobalto) | Aplicação Principal |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| **`slate` (Nexus v4.5 Slate)** | `#F1F4F8` | `#F1F4F8` / `#E5E9F0` | `#1E293B` | **Cerulean Sapphire** (`#0284C7`) + `#7DD3FC` | Centros de operações agênticas, Bento Dashboards e SaaS |
+| **`slate` (Nexus v4.5 Slate)** | `#F1F4F8` | `#F8FAFC` / `#E5E9F0` | `#1E293B` | **Cerulean Sapphire** (`#0284C7`) + `#7DD3FC` | Centros de operações agênticas, Bento Dashboards e SaaS |
 | **`moss` (Moss & Calm System)** | `#F4F3EC` | `#F8F7F2` / `#E8E5DC` | `#1A2E22` | **Forest Moss** (`#174930`) + `#B7D3C0` | Saúde serena, escrita reflexiva e leitura longa sem fadiga |
 | **`sapphire` (Soft Sapphire)** | `#F5F4EE` | `#FAF9F5` / `#E6E5DD` | `#1E293B` | **Ocean Sapphire** (`#1E6091`) + `#69ADC6` | Interfaces executivas, prontuários clínicos e sistemas diurnos |
 | **`obsidian` (Obsidian Dark)** | `#12151B` | `#181D26` / `#0D1016` | `#F1F4F8` | **Mineral Ice** (`#38BDF8`) + `#10B981` | Plantões noturnos, IDEs, terminais e monitoramento 4K |
@@ -35,9 +35,9 @@ Este documento contém o cânone visual consolidado do **Minimalist Impact & Sof
 
 ## 2. Banimento Estrito de Cores Agressivas (Anti-Cobalto & Anti-Glassmorphism)
 
-- ❌ **TERMINANTEMENTE PROIBIDO (`AUDIT-VIS-01`):** Tons de azul cobalto ofuscante ou neon elétrico puro (`#0044FF`, `#0057FF`, `#1D4ED8`, `#233DFF`, `#0000FF`, `#00E5FF`).
+- ❌ **TERMINANTEMENTE PROIBIDO (`AUDIT-VIS-01`):** Tons de azul cobalto ofuscante, roxo genérico de IA ou neon elétrico puro (`#0044FF`, `#0057FF`, `#1D4ED8`, `#233DFF`, `#0000FF`, `#00E5FF`).
 - ❌ **TERMINANTEMENTE PROIBIDO (`AUDIT-VIS-01`):** Glassmorphism / vidro fosco com `backdrop-filter: blur()`, bordas neon ou bordas duras de `1px` em containers Bento.
-- ✅ **ACENTOS MINERAIS E SAFIRA AUTORIZADOS:** Cerulean Sapphire (`#0284C7`), Ocean Sapphire (`#1E6091`), Mineral Ice (`#38BDF8`), Safira Fosco (`#3B82F6`), Slate Navy (`#345E7D`), Glacial Navy (`#274472`), Forest Moss (`#174930`), Clinical Emerald (`#059669`), Ouro Champanhe (`#D4AF37`), Titânio Anodizado (`#C5A880`) e Terracota Editorial (`#9A3412`).
+- ✅ **ACENTOS MINERAIS E SAFIRA AUTORIZADOS:** Cerulean Sapphire (`#0284C7`), Ocean Sapphire (`#1E6091`), Mineral Ice (`#38BDF8`), Deep Sapphire (`#0369A1`), Slate Navy (`#345E7D`), Glacial Navy (`#274472`), Forest Moss (`#174930`), Clinical Emerald (`#059669`), Ouro Champanhe (`#D4AF37`), Titânio Anodizado (`#C5A880`) e Terracota Editorial (`#9A3412`).
 
 ---
 
@@ -64,12 +64,12 @@ Este documento contém o cânone visual consolidado do **Minimalist Impact & Sof
 | 12 | **Quiet Luxury Titanium** | `#0B0C0E` | `#16181D` | `#C5A880` | Space Grotesk + Inter • `16px` | Fintechs de patrimônio e hardware precision |
 | 13 | **Neo-Swiss Architectural Grid** | `#E6E9EF` | `#FFFFFF` | `#BE123C` | Space Grotesk + Inter • `6px` | Sistemas de engenharia e design ops suíço |
 | 14 | **Biophilic Matcha & Alabaster** | `#E7ECE6` | `#FBFDF9` | `#2E6F40` | Cormorant Garamond + Jakarta • `24px` | Healthtechs clínicas, longevidade e foco |
-| 15 | **Tactile Carbon & Violet Slate** | `#07080C` | `#12141E` | `#8B5CF6` | Space Grotesk + Inter • `14px` | Orquestradores de agentes de IA e IDEs 2026 |
+| 15 | **Tactile Carbon & Mineral Slate** | `#07080C` | `#12141E` | `#38BDF8` | Space Grotesk + Inter • `14px` | Orquestradores de agentes de IA e IDEs 2026 |
 
 ### 3.3. Os 7 Temas Arquiteturais do Estúdio (`studio`)
 | # | Tema | Canvas | Card | Acento | Tipografia & Raio | Aplicação |
 | :--- | :--- | :---: | :---: | :---: | :--- | :--- |
-| 16 | **Tactile Matte Minimalist** | `#090B10` | `#141824` | `#3B82F6` | Plus Jakarta + JetBrains • `20px` | **Padrão Dark Melki**: Painéis e cockpits |
+| 16 | **Tactile Matte Minimalist** | `#090B10` | `#141824` | `#0284C7` | Plus Jakarta + JetBrains • `20px` | **Padrão Dark Melki**: Painéis e cockpits |
 | 17 | **Phantom Obsidian 4K** | `#060709` | `#11141D` | `#38BDF8` | Space Grotesk + Inter • `16px` | Monitores 4K/OLED e centros de comando |
 | 18 | **Luxury Deep Blue & Mineral** | `#070C18` | `#121C31` | `#60A5FA` | Instrument Serif + Jakarta • `20px` | Relatórios executivos e softwares premium |
 | 19 | **Gilded Navy Heritage** | `#05070D` | `#0E1424` | `#D4AF37` | Cormorant Garamond + Jakarta • `12px` | Private banking e relatórios patrimoniais |
@@ -83,22 +83,26 @@ Este documento contém o cânone visual consolidado do **Minimalist Impact & Sof
 
 ```css
 :root {
-  /* Camadas Tonais 60-30-10 (Nexus Slate Cerulean — Zero Cobalto) */
+  /* Camadas Tonais 60-30-10 (Nexus Slate Cerulean — Zero Cobalto, Delta de Luminância Estrito) */
+  --surface-sunken: #DCE3EC;
+  --surface-inset: #E5E9F0;
   --surface-canvas: #F1F4F8;
   --surface-flat: #E9EEF5;
-  --surface-raised: #F1F4F8;
-  --surface-inset: #E5E9F0;
+  --surface-raised: #F8FAFC;
   --surface-contrast: #1E293B;
   --text-primary: #1E293B;
   --text-secondary: #64748B;
   --accent-point: #0284C7;
   --accent-sapphire: #1E6091;
 
-  /* Iluminação Direcional 135° (Soft Neumorphism) */
+  /* Iluminação Direcional 135° (Soft Neumorphism — Tokens Unificados) */
+  --shadow-card: 8px 8px 20px rgba(166, 180, 200, 0.42), -8px -8px 20px rgba(255, 255, 255, 0.95);
+  --shadow-ambient: 0 12px 28px rgba(15, 23, 42, 0.06), 0 4px 10px rgba(15, 23, 42, 0.04);
+  --shadow-float: 14px 14px 32px rgba(166, 180, 200, 0.48), -10px -10px 26px rgba(255, 255, 255, 0.98);
+  --shadow-inset: inset 4px 4px 10px rgba(166, 180, 200, 0.45), inset -4px -4px 10px rgba(255, 255, 255, 0.85);
   --soft-shadow-main: 8px 8px 20px rgba(166, 180, 200, 0.42);
   --soft-shadow-light: -8px -8px 20px rgba(255, 255, 255, 0.95);
-  --soft-shadow-inset: inset 4px 4px 10px rgba(166, 180, 200, 0.45),
-                       inset -4px -4px 10px rgba(255, 255, 255, 0.85);
+  --soft-shadow-inset: var(--shadow-inset);
 
   /* Geometria e Spring Physics */
   --radius-sm: 10px;

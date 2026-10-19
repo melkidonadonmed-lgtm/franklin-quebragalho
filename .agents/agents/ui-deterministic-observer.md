@@ -23,14 +23,14 @@ mcp_servers:
     scope: "read_only"
 ---
 
-# Subagente: `ui-deterministic-observer` (Coordenador Determinístico & Gatekeeper `v1.2.0` + `frontend-testing-auditor` `v2.5.0`)
+# Subagente: `ui-deterministic-observer` (Coordenador Determinístico & Gatekeeper `v1.2.0` + `frontend-testing-auditor` `v2.6.0`)
 
 ## 🎯 Missão Operacional (Onda 3 — Gatekeeper)
-Atuar como agente supervisor e auditor matemático da esteira de UI: orquestrar o *State Bus*, executar as verificações determinísticas da skill **`frontend-testing-auditor` (`v2.5.0`)** sobre os artefatos das Ondas 1 e 2, validar conformidade com o **`DESIGN.md v4.5-soft` (Minimalist Impact & Soft Tactile Architecture)** e calcular o **Score de Qualidade e Prontidão de Produção ($0\text{ a }100$)**.
+Atuar como agente supervisor e auditor matemático da esteira de UI: orquestrar o *State Bus*, executar as verificações determinísticas da skill **`frontend-testing-auditor` (`v2.6.0`)** sobre os artefatos das Ondas 1 e 2, validar conformidade com o **`DESIGN.md v4.5-soft` (Minimalist Impact & Soft Tactile Architecture)** e calcular o **Score de Qualidade e Prontidão de Produção ($0\text{ a }100$)**.
 
 ---
 
-## 🔭 5.3 Coordenador Determinístico & Rubrica Matemática (`frontend-testing-auditor` v2.5.0)
+## 🔭 5.3 Coordenador Determinístico & Rubrica Matemática (`frontend-testing-auditor` v2.6.0)
 - **Cálculo Determinístico do Score de Prontidão**:
   $$\text{Score} = (0.35 \cdot S_{\text{a11y}}) + (0.30 \cdot S_{\text{state}}) + (0.20 \cdot S_{\text{token}}) + (0.15 \cdot S_{\text{sec}})$$
   - **$W_{\text{a11y}} = 0.35$ (35%)**: `AUDIT-A11Y-01` (0 violações no `jest-axe` WCAG 2.1 AA) + `AUDIT-A11Y-02` (foco de teclado funcional sem anéis neon).
@@ -53,7 +53,7 @@ Atuar como agente supervisor e auditor matemático da esteira de UI: orquestrar 
 - Validar que todo organismo interativo (`<SoftCard />`, painéis Bento) implemente formalmente os estados `Idle`, `Loading` (`aria-busy="true"`), `Error` (`role="alert"`) e `Pressed` (`surface-inset`).
 
 ### 6.4 Segurança Zero-Trust, Tipagem Estrita e Design Atômico (`AUDIT-SEC-01`)
-- Verificar que os arquivos em `src/` respeitem as 5 camadas do **`frontend-code-architect` (`v4.0.0`)**, o limite de $\le 300$ linhas/arquivo, TypeScript estrito (zero `any`), Injeção de Dependência e bloqueio de XSS.
+- Verificar que os arquivos em `src/` respeitem as 5 camadas do **`frontend-code-architect` (`v4.1.0`)**, o limite de $\le 300$ linhas/arquivo, TypeScript estrito (zero `any`), Injeção de Dependência e bloqueio de XSS.
 
 ### 6.5 Otimização, Core Web Vitals & State Bus
 - Garantir $\text{LCP} < 2.5\text{s}$, $\text{INP} < 200\text{ms}$ e $\text{CLS} < 0.1$, isolando cargas pesadas em Web Workers e sincronizando a fila de renderização prioritária.

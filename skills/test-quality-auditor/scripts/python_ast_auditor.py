@@ -66,13 +66,7 @@ class TestQualityASTVisitor(ast.NodeVisitor):
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
         self._inspect_test_function(node)
 
-    def _inspect_test_function(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
-        is_test_fn = node.name.startswith("test_") or node.name.startswith("_test_")
-        if not is_test_fn:
-            self.generic_visit(node)
-            return
-
-        prev_test = self.current_test
+    def _reset_test_state(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
         self.current_test = node.name
         self.current_test_line = node.lineno
         self.assertion_count = 0
@@ -87,9 +81,12 @@ class TestQualityASTVisitor(ast.NodeVisitor):
         exec_body = [
             stmt
             for stmt in node.body
-            if not (isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant) and isinstance(stmt.value.value, str))
+            if not (
+                isinstance(stmt, ast.Expr)
+                and isinstance(stmt.value, ast.Constant)
+                and isinstance(stmt.value.value, str)
+            )
         ]
-
         if len(exec_body) == 0 or (len(exec_body) == 1 and isinstance(exec_body[0], (ast.Pass, ast.Return))):
             self.add_issue(
                 "EMPTY_TEST_BODY",
@@ -103,8 +100,7 @@ class TestQualityASTVisitor(ast.NodeVisitor):
                 "Implemente a lógica completa de teste seguindo o padrão Arrange-Act-Assert.",
             )
 
-        self.generic_visit(node)
-
+    def _evaluate_post_visit_issues(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
         for var_name, ln, col in self.not_none_vars:
             if var_name not in self.strongly_asserted_vars:
                 self.add_issue(
@@ -118,7 +114,6 @@ class TestQualityASTVisitor(ast.NodeVisitor):
                     f"[FATO] O teste '{node.name}' verifica apenas se '{var_name}' não é None (linha {ln}) sem validar nenhum atributo ou valor de negócio.",
                     f"Valide as propriedades ou valor exato de '{var_name}' (ex: assert {var_name}.status == 'EXPECTED').",
                 )
-
         if self.assertion_count == 0 and not any(i.id == "EMPTY_TEST_BODY" for i in self.current_test_issues):
             self.add_issue(
                 "MISSING_ASSERTIONS",
@@ -131,7 +126,6 @@ class TestQualityASTVisitor(ast.NodeVisitor):
                 f"[FATO] O teste '{node.name}' executa código (Act) mas não realiza nenhuma asserção (Assert).",
                 "Adicione asserções explícitas sobre o valor retornado, contrato de tipo ou efeito colateral.",
             )
-
         if self.has_time_sleep_or_now:
             self.add_issue(
                 "NON_DETERMINISTIC_TIME",
@@ -144,7 +138,6 @@ class TestQualityASTVisitor(ast.NodeVisitor):
                 f"[FATO] O teste '{node.name}' invoca time.sleep() ou datetime.now() diretamente.",
                 "Substitua o tempo real por congeladores/injeção de tempo (ex: monkeypatch ou mock de relógio).",
             )
-
         if self.mutates_shared_state and not self.has_try_finally:
             self.add_issue(
                 "GLOBAL_STATE_LEAKAGE",
@@ -158,16 +151,24 @@ class TestQualityASTVisitor(ast.NodeVisitor):
                 "Envolva a limpeza de estado em um bloco 'try...finally' para evitar contaminação.",
             )
 
+    def _inspect_test_function(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+        is_test_fn = node.name.startswith("test_") or node.name.startswith("_test_")
+        if not is_test_fn:
+            self.generic_visit(node)
+            return
+
+        prev_test = self.current_test
+        self._reset_test_state(node)
+        self.generic_visit(node)
+        self._evaluate_post_visit_issues(node)
+
         total_penalty = sum(i.penalty for i in self.current_test_issues)
         score = max(0, 100 - total_penalty)
-        level = classify_quality_level(score)
-        status = "[PASS]" if len(self.current_test_issues) == 0 and score >= 81 else "[FAIL]"
         evidence_str = (
             f"{self.assertion_count} asserção(ões) detectada(s), 0 anomalias AST."
             if not self.current_test_issues
             else "; ".join(f"{i.id} (L{i.line})" for i in self.current_test_issues)
         )
-
         self.dossiers.append(
             TestDossierRecord(
                 test_name=node.name,
@@ -175,8 +176,8 @@ class TestQualityASTVisitor(ast.NodeVisitor):
                 line=node.lineno,
                 assertion_count=self.assertion_count,
                 score=score,
-                level=level,
-                status=status,
+                level=classify_quality_level(score),
+                status="[PASS]" if len(self.current_test_issues) == 0 and score >= 81 else "[FAIL]",
                 issues=[i.id for i in self.current_test_issues],
                 evidence=evidence_str,
                 domain="python",
@@ -184,9 +185,41 @@ class TestQualityASTVisitor(ast.NodeVisitor):
         )
         self.current_test = prev_test
 
+    def _handle_is_not_none_assert(self, left_expr: ast.expr, lineno: int, col_offset: int) -> None:
+        is_regex_call = (
+            isinstance(left_expr, ast.Call)
+            and isinstance(left_expr.func, ast.Attribute)
+            and left_expr.func.attr in ("match", "search", "fullmatch")
+        )
+        if is_regex_call:
+            self.strong_assertion_count += 1
+            for sub in ast.walk(left_expr):
+                if isinstance(sub, ast.Name):
+                    self.strongly_asserted_vars.add(sub.id)
+        else:
+            var_id = left_expr.id if isinstance(left_expr, ast.Name) else ast.unparse(left_expr)
+            self.not_none_vars.append((var_id, lineno, col_offset))
+
+    @staticmethod
+    def _extract_brittle_catalog_len(test_expr: ast.expr) -> Optional[int]:
+        if (
+            isinstance(test_expr, ast.Compare)
+            and len(test_expr.ops) == 1
+            and isinstance(test_expr.ops[0], ast.Eq)
+            and isinstance(test_expr.left, ast.Call)
+            and isinstance(test_expr.left.func, ast.Name)
+            and test_expr.left.func.id == "len"
+            and isinstance(test_expr.comparators[0], ast.Constant)
+            and isinstance(test_expr.comparators[0].value, int)
+            and test_expr.comparators[0].value >= 15
+        ):
+            return int(test_expr.comparators[0].value)
+        return None
+
     def visit_Assert(self, node: ast.Assert) -> None:
         if self.current_test:
             self.assertion_count += 1
+            brittle_len = self._extract_brittle_catalog_len(node.test)
             if isinstance(node.test, ast.Constant) and node.test.value is True:
                 self.add_issue(
                     "TAUTOLOGICAL_ASSERT",
@@ -206,41 +239,17 @@ class TestQualityASTVisitor(ast.NodeVisitor):
                 and isinstance(node.test.comparators[0], ast.Constant)
                 and node.test.comparators[0].value is None
             ):
-                left_expr = node.test.left
-                is_regex_call = (
-                    isinstance(left_expr, ast.Call)
-                    and isinstance(left_expr.func, ast.Attribute)
-                    and left_expr.func.attr in ("match", "search", "fullmatch")
-                )
-                if is_regex_call:
-                    self.strong_assertion_count += 1
-                    for sub in ast.walk(left_expr):
-                        if isinstance(sub, ast.Name):
-                            self.strongly_asserted_vars.add(sub.id)
-                else:
-                    var_id = left_expr.id if isinstance(left_expr, ast.Name) else ast.unparse(left_expr)
-                    self.not_none_vars.append((var_id, node.lineno, node.col_offset))
-            elif (
-                isinstance(node.test, ast.Compare)
-                and len(node.test.ops) == 1
-                and isinstance(node.test.ops[0], ast.Eq)
-                and isinstance(node.test.left, ast.Call)
-                and isinstance(node.test.left.func, ast.Name)
-                and node.test.left.func.id == "len"
-                and isinstance(node.test.comparators[0], ast.Constant)
-                and isinstance(node.test.comparators[0].value, int)
-                and node.test.comparators[0].value >= 15
-            ):
-                lit_val = node.test.comparators[0].value
+                self._handle_is_not_none_assert(node.test.left, node.lineno, node.col_offset)
+            elif brittle_len is not None:
                 self.add_issue(
                     "BRITTLE_CATALOG_COUNT",
-                    f"Contagem Literal Rígida de Catálogo (assert len(...) == {lit_val})",
+                    f"Contagem Literal Rígida de Catálogo (assert len(...) == {brittle_len})",
                     "Acoplamento de Implementação",
                     "Média",
                     node.lineno,
                     node.col_offset,
                     22,
-                    f"[FATO] O teste '{self.current_test}' fixa 'len(...) == {lit_val}' na linha {node.lineno}.",
+                    f"[FATO] O teste '{self.current_test}' fixa 'len(...) == {brittle_len}' na linha {node.lineno}.",
                     "Compare contra a contagem dinâmica real de diretórios válidos no filesystem.",
                 )
             else:

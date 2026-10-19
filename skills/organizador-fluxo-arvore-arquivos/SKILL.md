@@ -50,11 +50,11 @@ Esta skill recebe uma ideia inicial, rascunho de software, especificação de ap
    - Qualquer funcionalidade extra, melhoria de segurança ou refinamento deve ser segregada obrigatoriamente sob o título `Sugestões Opcionais de Melhoria`, sem misturar com o fluxo central.
 
 4. **Elaboração do Fluxo Lógico e Visual**:
-   - Desenhar um diagrama linear ou condicional simples em sintaxe `mermaid` (usando `flowchart TD` ou `flowchart LR`).
-   - Restrição visual: Não usar jargões técnicos herméticos; os nós devem descrever ações claras (ex: `A[Usuário faz Login] --> B[Painel Principal]`).
+   - Desenhar um diagrama linear ou condicional simples em sintaxe `mermaid` (usando `flowchart TD` ou `flowchart LR`), seguindo as regras de blindagem de rótulos entre aspas de [`references/padroes_mermaid_e_arvore.md`](references/padroes_mermaid_e_arvore.md).
+   - Restrição visual: Não usar jargões técnicos herméticos; os nós devem descrever ações claras (ex: `A["Usuário faz Login"] --> B["Painel Principal"]`).
 
 5. **Construção da Árvore de Arquivos**:
-   - Mapear as pastas e arquivos mínimos necessários em formato ASCII tree, acompanhados de comentários explicativos em cada linha sobre o papel do arquivo.
+   - Mapear as pastas e arquivos mínimos necessários em formato ASCII tree (conforme [`references/padroes_mermaid_e_arvore.md`](references/padroes_mermaid_e_arvore.md)), acompanhados de comentários explicativos em cada linha sobre o papel do arquivo.
 
 6. **Montagem da Saída Estruturada**:
    - Preencher estritamente os metadados e o template padronizado solicitado pelo usuário.

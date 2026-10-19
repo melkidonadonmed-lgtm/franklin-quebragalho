@@ -1,13 +1,13 @@
 ---
 name: frontend-testing-auditor
 description: >-
-  Audita componentes e interfaces frontend com rigor técnico e matemático sob o paradigma Minimalist Impact e Soft UI (DESIGN.md v4.5-soft). Mede acessibilidade WCAG 2.1 AA (Axe-Core AUDIT-A11Y-01/02), fidelidade de camadas tonais e ausência de glassmorphism/cobalto/neon (AUDIT-VIS-01), determinismo de estados finitos FSM (AUDIT-STATE-01/02), sanitização XSS (AUDIT-SEC-01) e calcula o Score ponderado de prontidão (0-100).
-version: "2.5.0"
+  Gatekeeper determinístico de testes frontend (scripts/audit_tactile_ui.py + Jest/Vitest + Axe-Core) sob DESIGN.md v4.5-soft. Use para auditar componentes/views, reprovar SoftCard órfão, bordas 1px, micro-texto 10px, emojis, cobalto/blur e comment-gaming de FSM. Não use para scaffolding (use frontend-code-architect).
+version: "2.6.0"
 license: MIT
 compatibility: "React 18+, TypeScript 5+, Jest, Vitest, React Testing Library, Axe-Core, Tailwind CSS / Vanilla CSS"
 metadata:
   author: "FrontCraftMaster & Melki"
-  version: "2.5.0"
+  version: "2.6.0"
   category: "Auditoria de Testes Frontend, A11y e Soft UI"
   updated_at: "2026-10-18"
   tags:
@@ -26,37 +26,44 @@ authorized_sub_skills:
     role: "Verificação do contrato canônico DESIGN.md v4.5-soft"
 ---
 
-# 🛡️ SKILL: Auditor de Testes Frontend & UI de Alto Rigor Técnico (`frontend-testing-auditor` v2.5.0 — Soft Tactile & Minimalist Impact)
+# 🛡️ SKILL: Auditor de Testes Frontend & UI de Alto Rigor Técnico (`frontend-testing-auditor` v2.6.0 — Soft Tactile & Minimalist Impact)
 
 ## 1. OBJETIVO E QUANDO USAR (GATILHOS DE ATIVAÇÃO)
-Esta Skill substitui "testes por testes" (testes superficiais de renderização rasa) por uma esteira de auditoria determinística, matemática e estrutural adaptada para **Minimalist Impact & Neumorfismo Suave (*Soft UI* `v4.5-soft`)**. Cada teste gerado ou executado responde rigorosamente ao **O QUE**, **COMO** e **POR QUE** está sendo auditado.
+Esta Skill substitui "testes por testes" (testes superficiais que importam um componente órfão sem auditar as telas reais) por uma esteira determinística Zero-LLM (`scripts/audit_tactile_ui.py`) combinada com `Jest`/`Vitest` + `jest-axe` sob **Minimalist Impact & Soft Tactile (`DESIGN.md v4.5-soft`)**.
 
 ### Quando Usar:
-- Auditar ou criar suítes de testes (`Jest` / `Vitest` + `React Testing Library` + `jest-axe`) para componentes React, Next.js ou HTML/CSS.
-- Verificar conformidade matemática com o `DESIGN.md v4.5-soft` (`AUDIT-VIS-01`: presença de `.ui-card-soft`, ausência de `backdrop-filter: blur`, ausência de azul cobalto `#0044FF`/`#0057FF` e ausência de neons).
-- Validar transições determinísticas de Máquina de Estados Finita ($FSM = \{\text{Idle}, \text{Loading}, \text{Error}, \text{Pressed}\}$) e bloqueio de injeção XSS (`AUDIT-SEC-01`).
+- Auditar qualquer repositório frontend com o scanner determinístico `scripts/audit_tactile_ui.py` antes de aprovar uma entrega.
+- Criar ou validar suítes `Jest` / `Vitest` + `React Testing Library` + `jest-axe`.
+- Detectar e bloquear **Componentes Placebo** (`<SoftCard />` órfão com 0 imports nas views reais), **Tailwind de IA Genérica** (`border-slate-*`, `bg-gradient-to-*`, `text-[10px]`, emojis em UI) e **Comment-Gaming de FSM** (`// empty | loading | success | error`).
 
 ### 🚫 Quando NÃO Usar (Limites e Exceções):
 - Para testes puramente de backend em Go ou Python sem DOM/UI (utilize `test-quality-auditor`).
 - Para criar o layout visual inicial do zero antes de existir componente a ser testado (utilize `frontend-code-architect`).
 
 ### As 5 Dimensões Invioláveis da Auditoria:
-1. **Contrato & Tipagem Estrita (Zero-Trust Props):** Garante que o componente rejeite propriedades malformadas, respeite generics de TypeScript e previna vazamentos de tipo.
-2. **Acessibilidade WCAG 2.1 AA (Axe-Core & DOM Semântico — `AUDIT-A11Y-01/02`):** Calcula contraste luminoso real ($C \ge 4.5:1$ para corpo de texto, $7:1$ para títulos), mapeia árvore de acessibilidade (ARIA Roles) e valida navegação por teclado sem anéis neon.
-3. **Integridade de Camadas Tonais & Elevação Tactile (`AUDIT-VIS-01`):** Audita a presença de variáveis CSS de superfície (`--surface-canvas`, `--surface-raised`, `--surface-inset`), ausência de bordas duras de 1px, ausência de glassmorphism (`backdrop-filter: blur`), ausência de azul cobalto (`#0044FF`, `#0057FF`, `#1D4ED8`) e presença de sombras difusas duplas a 135°.
-4. **Determinismo de Estados Finitos (`AUDIT-STATE-01/02`) & Resiliência:** Modela o componente como uma Máquina de Estados Finita ($FSM = \{ \text{Idle}, \text{Loading}, \text{Error}, \text{Pressed} \}$), testando transições táticas e estados ativados (`surface-inset`).
-5. **Sanitização XSS & Eficiência de DOM (`AUDIT-SEC-01`):** Valida que strings maliciosas (`<img src=x onerror=alert(1)>`) sejam escapadas como texto seguro e que o componente não provoque re-renderizações em cascata.
+1. **Adoção Real nas Views & Anti-Placebo (`AUDIT-VIS-01`):** Garante que `<SoftCard />`, `.ui-card-soft`, `.ui-btn-tactile` e `--surface-inset` sejam efetivamente usados em $\ge 50\%$ das views reais (`App.tsx`, `Sidebar.tsx`, `*Workspace.tsx`), reprovando componentes órfãos.
+2. **Acessibilidade WCAG 2.1 AA (Axe-Core & DOM Semântico — `AUDIT-A11Y-01/02`):** Calcula contraste luminoso real ($C \ge 4.5:1$), `prefers-reduced-motion`, `tabular-nums`, `aria-live` e foco `:focus-visible` sem anéis neon.
+3. **Pureza Tonal 135° & Anti-IA-Genérica (`AUDIT-VIS-01`):** Reprova `backdrop-filter: blur`, azul cobalto/neon (`#0044FF`, `#0057FF`, `#1D4ED8`, `#233DFF`), excesso de bordas duras `1px` (`border-slate-*`), gradientes lineares (`bg-gradient-to-*`), micro-texto (`text-[10px]`, `text-[11px]`) e emojis em botões.
+4. **Determinismo de Estados Finitos Sem Comment-Gaming (`AUDIT-STATE-01/02`):** Remove todos os comentários (`//` e `/* */`) antes de auditar $FSM = \{ \text{idle}, \text{loading}, \text{error}, \text{pressed} \}$ e verifica se `#sidebar-active-tracker` é um elemento deslizante real (e não um `id` condicional estático).
+5. **Sanitização XSS & Eficiência de DOM (`AUDIT-SEC-01`):** Valida que strings maliciosas sejam escapadas e proíbe `dangerouslySetInnerHTML` sem `DOMPurify`.
 
 ---
 
 ## 2. ENTRADAS OBRIGATÓRIAS E PRÉ-REQUISITOS
-1. **Componente ou Página Alvo:** Arquivo `.tsx`, `.jsx` ou `.html` a ser auditado (ex.: `SoftCard.tsx`).
-2. **Contrato de Tokens (`DESIGN.md` v4.5-soft):** Superfícies tonais e classes esperadas (`.ui-card-soft`, `.ui-btn-tactile`, `.surface-inset`).
-3. **Runner de Testes:** `Jest` ou `Vitest` com `@testing-library/react`, `@testing-library/jest-dom` e `jest-axe`.
+1. **Diretório ou Componente Alvo:** Caminho do projeto frontend (`--target <path>`).
+2. **Contrato de Tokens (`DESIGN.md` v4.5-soft):** Superfícies tonais (`--surface-sunken`, `--surface-canvas`, `--surface-inset`, `--surface-flat`, `--surface-raised`, `--surface-contrast`) e sombras unificadas (`--shadow-card`, `--shadow-ambient`, `--shadow-inset`).
+3. **Runner Determinístico:** `python skills/frontend-testing-auditor/scripts/audit_tactile_ui.py --target <repo>` + `Jest`/`Vitest`.
 
 ---
 
 ## 3. FLUXO OPERACIONAL DE AUDITORIA PASSO A PASSO
+
+### ⚡ PASSO 0 (Obrigatório): Varredura Determinística Zero-LLM (`audit_tactile_ui.py`)
+Antes de qualquer afirmação de conformidade, execute no terminal:
+```powershell
+python C:\Users\melki\dev\repos\franklin-quebragalho\skills\frontend-testing-auditor\scripts\audit_tactile_ui.py --target "<caminho_do_projeto>"
+```
+- O portão de qualidade exige **`Readiness Score >= 90.0`**, **`Tokens/Vis >= 85.0`** e **`FSM >= 85.0`** (`[PASS]`).
 
 ### 📋 PASSO 1: Mapeamento da Máquina de Estados e Contrato Tátil
 
@@ -206,4 +213,4 @@ Onde os pesos canônicos são:
 - [ ] Todos os testes possuem razões explícitas de auditoria no nome (`AUDIT-A11Y-01`, `AUDIT-VIS-01`, `AUDIT-STATE-01`, `AUDIT-SEC-01`)?
 - [ ] O componente foi auditado para garantir ausência de glassmorphism (`backdrop-filter: blur`), azul cobalto e neons brilhantes?
 - [ ] O componente foi testado sob modo de navegação por teclado sem mouse?
-- [ ] O Score ponderado final foi calculado matematicamente?
+- [ ] O Score ponderado final foi calculado matematicamente via `ui-deterministic-observer` (`invoke_subagent` ou `franklin_execute_dag(plan_path_or_json="ui", target_dir="<repo>")` coordenando `ui-shell-navigator`, `ui-controls-data`, `ui-motion-interaction` e `ui-deterministic-observer`)?

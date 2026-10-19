@@ -17,8 +17,8 @@
         "subskill": "static-sanitization-auditor",
         "weight": 0.20,
         "tools": [
-          ".agents/skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py",
-          ".agents/skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js"
+          "skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py",
+          "skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js"
         ],
         "rules": ["ALLOC_IN_LOOP", "DUPLICATE_FUNCTION", "DEAD_CODE_FUNCTION", "UNUSED_VARIABLE"]
       }
@@ -32,8 +32,8 @@
         "subskill": "architecture-hardcoded-auditor",
         "weight": 0.15,
         "tools": [
-          ".agents/skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py",
-          ".agents/skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js"
+          "skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py",
+          "skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js"
         ],
         "rules": ["PHYSICS_RENDER_COUPLING", "RIGID_CONSTRUCTOR", "HARDCODED_MAGIC_NUMBER"]
       }
@@ -47,8 +47,8 @@
         "subskill": "physics-3d-math-auditor",
         "weight": 0.25,
         "tools": [
-          ".agents/skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py",
-          ".agents/skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js"
+          "skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py",
+          "skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js"
         ],
         "rules": ["MISSING_DELTA_TIME", "UNCHECKED_NORMALIZE", "EULER_GIMBAL_LOCK", "STRICT_FLOAT_COMPARE", "MISSING_DAMPING"]
       }
@@ -66,7 +66,7 @@
       "payload": {
         "subskill": "deterministic-tests-auditor",
         "weight": 0.20,
-        "runner": ".agents/skills/code-quality-audit-3d-physics/scripts/physics_test_runner.py",
+        "runner": "skills/code-quality-audit-3d-physics/scripts/physics_test_runner.py",
         "pass_at_k": 10
       },
       "upstream_mapping": {
@@ -89,7 +89,7 @@
       "payload": {
         "subskill": "state-checker-observer",
         "weight": 0.20,
-        "observer_script": ".agents/skills/code-quality-audit-3d-physics/scripts/state_checker_observer.py",
+        "observer_script": "skills/code-quality-audit-3d-physics/scripts/state_checker_observer.py",
         "formula": "S_norm = 0.20*s1 + 0.15*s2 + 0.25*s3 + 0.20*s4 + 0.20*s5"
       },
       "upstream_mapping": {

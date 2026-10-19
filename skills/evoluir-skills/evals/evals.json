@@ -1,25 +1,25 @@
 [
   {
-    "eval_id": "eval-001-pipeline-encadeado-criacao",
+    "eval_id": "eval-001-pipeline-3-passos-criacao-modular",
     "prompt": "Tenho uma ideia geral: quero uma skill chamada monitor-processos-pesados para identificar processos que consomem muita RAM no Windows e gerar relatório.",
     "trigger_type": "should_trigger",
-    "expected_behavior": "Aciona o pipeline de 4 estágios (1. expansao-contexto-adaptativa para estruturar a ideia; 2. aprimoramento-expansibilidade-agentes-skills para desenhar os 3 Tiers e extrair script PowerShell para scripts/; 3. skill-creator/_template para criar SKILL.md, rules/ e evals/; 4. skill-auditor-refatorador-skills + validate_skills.py para validar [PASS], espelhar em skills/ e atualizar MY_SKILLS.md)."
+    "expected_behavior": "Aciona o fluxo Forward Builder em 3 Passos (Passo 1: desambiguação via expansao-contexto-adaptativa e seleção do Módulo M1 Código/Automação em _template/references/guardrails_por_modulo.md; Passo 2: scaffolding físico de SKILL.md com Gotchas e orçamento, scripts/, rules/ e evals/; Passo 3: validação via validate_skills.py, sync_gemini_ecosystem.py e registro em MY_SKILLS.md)."
   },
   {
     "eval_id": "eval-002-evolucao-eval-driven-iteration",
-    "prompt": "Evolua a skill organizar-local para a versão 1.1.0 adicionando testes Baseline vs. Treatment e consultas near-miss no evals.json.",
+    "prompt": "Evolua a skill manuntencao-disco-windows adicionando testes Baseline vs. Treatment e consultas near-miss no evals.json.",
     "trigger_type": "should_trigger",
-    "expected_behavior": "Atualiza evals/evals.json com matriz de gatilhos (should_trigger e should_not_trigger) e asserções determinísticas, incrementa a versão SemVer no frontmatter e em MY_SKILLS.md, sincroniza skills/organizar-local/ e aprova em validate_skills.py."
+    "expected_behavior": "Atualiza evals/evals.json com matriz de gatilhos (should_trigger e should_not_trigger) e asserções determinísticas, incrementa a versão SemVer no frontmatter e em MY_SKILLS.md, sincroniza fisicamente e aprova em validate_skills.py."
   },
   {
     "eval_id": "eval-003-extracao-logica-repetitiva-scripts",
-    "prompt": "As transcrições de execução mostram que a skill sempre reescreve o mesmo parser de JSON do zero a cada chamada. Melhore essa skill.",
+    "prompt": "Quero adicionar um script Python tipado com Pydantic extra='forbid' na skill curadoria-obsidian-vault para validar links quebrados.",
     "trigger_type": "should_trigger",
-    "expected_behavior": "Extrai a lógica repetitiva para um utilitário em scripts/, enxuga o corpo do SKILL.md (Lean Instructions Tier 2) para referenciar o script sob demanda (Tier 3) e valida o pacote."
+    "expected_behavior": "Implementa o utilitário determinístico em scripts/ (<= 300 linhas, stdout separado de stderr, sem input interativo), referencia-o no SKILL.md (Tier 2 enxuto) e valida com code_acceptability_auditor.py e validate_skills.py."
   },
   {
     "eval_id": "eval-004-near-miss-negativo-auditoria-catalogo",
-    "prompt": "Apenas audite todas as 26 skills do repositório em modo diagnóstico para verificar se alguma viola a paleta anti-cobalto.",
+    "prompt": "Apenas audite todas as 29 skills do repositório em modo diagnóstico para verificar se alguma tem redundâncias ou viola a paleta anti-cobalto.",
     "trigger_type": "should_not_trigger",
     "expected_behavior": "Reconhece como near-miss negativo de criação/evolução e delega diretamente para skill-auditor-refatorador-skills em modo diagnostic_only."
   }

@@ -1,6 +1,6 @@
 {
   "skill_name": "frontend-testing-auditor",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "evals": [
     {
       "eval_id": "auditor-softcard-suite",

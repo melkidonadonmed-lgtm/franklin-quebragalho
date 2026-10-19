@@ -1,20 +1,32 @@
 [
   {
     "eval_id": "TC-VAULT-CURADORIA-01",
+    "category": "should-trigger",
     "description": "Validação de detecção de anexos órfãos sem referências em notas markdown no cofre dev/notes.",
     "input": {
       "vault_path": "C:/Users/melki/dev/notes",
       "audit_type": "anexos_orfaos"
     },
-    "expected_behavior": "Escanear o cofre em C:/Users/melki/dev/notes, verificar ausência de referências cruzadas em notas e propor realocação para Arquivo/_anexos_orfaos sem exclusão definitiva."
+    "expected_behavior": "Executar vault_hygiene_scanner.py em C:/Users/melki/dev/notes, verificar ausência de referências cruzadas em notas e propor realocação para Arquivo/_anexos_orfaos sem exclusão definitiva."
   },
   {
     "eval_id": "TC-VAULT-CURADORIA-02",
+    "category": "should-trigger",
     "description": "Validação de proteção estrita da pasta interna de configuração .obsidian e paridade com MemPalace.",
     "input": {
       "vault_path": "C:/Users/melki/dev/notes",
       "audit_type": "completa"
     },
-    "expected_behavior": "Garantir que todos os scripts e comandos excluam terminantemente a pasta .obsidian/ de qualquer alteração e validem as salas canônicas (Inbox, Diário, Medicina, Pessoal, Projetos, Interesses, Modelos, Arquivo, Memória)."
+    "expected_behavior": "Garantir que todos os scripts excluam terminantemente a pasta .obsidian/, validem as salas canônicas e sincronizem ao final com 'mempalace mine C:\\Users\\melki\\dev\\notes'."
+  },
+  {
+    "eval_id": "TC-VAULT-CURADORIA-03-NEAR-MISS",
+    "category": "should-not-trigger",
+    "description": "Near-miss: pedido para converter uma nota Markdown em documento PDF para impressão.",
+    "input": {
+      "file_path": "C:/Users/melki/dev/notes/Projetos/relatorio.md",
+      "action": "export_pdf"
+    },
+    "expected_behavior": "Não executar curadoria do cofre; delegar a geração do PDF para conversor-html-pdf."
   }
 ]

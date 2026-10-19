@@ -63,14 +63,14 @@ def sync_ecosystem() -> dict[str, int | str]:
     for d in required_gemini_dirs:
         d.mkdir(parents=True, exist_ok=True)
 
-    # Remover pastas legadas redundantes caso existam (.gemini/plugins e .gemini/skills)
-    for legacy_dir in (GEMINI_ROOT / "plugins", GEMINI_ROOT / "skills"):
+    # Remover pastas legadas redundantes caso existam (.gemini/plugins, .gemini/skills e .agents/skills local)
+    for legacy_dir in (GEMINI_ROOT / "plugins", GEMINI_ROOT / "skills", ROOT_DIR / ".agents" / "skills"):
         if legacy_dir.exists():
             shutil.rmtree(legacy_dir)
 
-    # 2. Sincronizar Skills: skills/ -> .agents/skills/ e config/plugins/franklin-skills/skills/
+    # 2. Sincronizar Skills: skills/ -> config/plugins/franklin-skills/skills/
     skills_src = ROOT_DIR / "skills"
-    skills_agents_count = _copy_tree(skills_src, ROOT_DIR / ".agents" / "skills")
+    skills_agents_count = 0
     skills_plugin_count = _copy_tree(skills_src, CONFIG_PLUGIN_ROOT / "skills")
 
     # 2.1 Remover de .gemini/config/skills qualquer skill que já exista em franklin-quebragalho/skills/ ou em plugins
@@ -166,7 +166,7 @@ def sync_ecosystem() -> dict[str, int | str]:
     # 7. Regenerar e assinar agent_card.json
     from shared.a2a_bridge import build_franklin_agent_card
 
-    card = build_franklin_agent_card(skills_dir=ROOT_DIR / ".agents" / "skills", sign=True)
+    card = build_franklin_agent_card(skills_dir=ROOT_DIR / "skills", sign=True)
     card_json = json.dumps(card, indent=2, ensure_ascii=False) + "\n"
     (ROOT_DIR / "agent_card.json").write_text(card_json, encoding="utf-8")
     (GEMINI_ROOT / "doc" / "agent_card.json").write_text(card_json, encoding="utf-8")

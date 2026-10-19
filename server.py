@@ -44,16 +44,19 @@ ROOT_DIR = Path(__file__).resolve().parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
+CANONICAL_SKILLS_DIR = ROOT_DIR / "skills"
 AGENTS_SKILLS_DIR = ROOT_DIR / ".agents" / "skills"
 GLOBAL_PLUGIN_SKILLS_DIR = Path(r"C:\Users\melki\.gemini\config\plugins\franklin-skills\skills")
 
-# Resolução dinâmica do diretório de skills com prioridade para o repositório local
-if AGENTS_SKILLS_DIR.exists():
+# Resolução dinâmica do diretório de skills com prioridade para o diretório canônico skills/
+if CANONICAL_SKILLS_DIR.exists():
+    SKILLS_ROOT = CANONICAL_SKILLS_DIR
+elif AGENTS_SKILLS_DIR.exists():
     SKILLS_ROOT = AGENTS_SKILLS_DIR
 elif GLOBAL_PLUGIN_SKILLS_DIR.exists():
     SKILLS_ROOT = GLOBAL_PLUGIN_SKILLS_DIR
 else:
-    SKILLS_ROOT = ROOT_DIR / "skills"
+    SKILLS_ROOT = CANONICAL_SKILLS_DIR
 
 AGENTS_MD_PATH = ROOT_DIR / "AGENTS.md"
 MY_SKILLS_MD_PATH = ROOT_DIR / "MY_SKILLS.md"
@@ -587,8 +590,8 @@ def franklin_skills_validate(
 def _resolve_agents_dir() -> Path:
     """Localiza o diretório de contratos de subagentes (agents/)."""
     for candidate in (
-        ROOT_DIR / ".agents" / "agents",
         ROOT_DIR / "agents",
+        ROOT_DIR / ".agents" / "agents",
         Path(r"C:\Users\melki\.gemini\config\plugins\franklin-skills\agents"),
         Path(r"C:\Users\melki\.gemini\config\agents"),
         Path(r"C:\Users\melki\.gemini\agents"),
@@ -810,13 +813,17 @@ def _resolve_compass_profile(
 
 @mcp.tool()
 def franklin_smart_compass(
-    intent_or_path: str = ""
+    intent_or_path: str = "",
+    auto_dispatch_dag: bool = False,
+    target_dir: str = "",
 ) -> str:
     """Bússola Cognitiva (TDAH-Friendly): Descobre automaticamente o que você já tem pronto no ecossistema
     (Skills, Scripts executáveis, Planos DAG e Guardrails Adaptativos) para qualquer ideia ou pasta de projeto.
 
     Args:
         intent_or_path: Descrição livre do que você quer fazer ou caminho de uma pasta/arquivo.
+        auto_dispatch_dag: Se True, dispara automaticamente o plano DAG recomendado quando aplicável.
+        target_dir: Diretório ou arquivo alvo opcional para injetar na execução automática do DAG.
     """
     skills = _get_all_skills_data()
     q = intent_or_path.strip().lower()
@@ -837,9 +844,16 @@ def franklin_smart_compass(
         lines.append(f"- **`{sc_name}`** (Skill: `{sk}`) — {desc}")
         lines.append(f"  ↳ Disparo rápido: `franklin_run_skill_script(skill_name='{sk}', script_name='{sc_name}', args=['--self-test'])`")
 
+    candidate_path = intent_or_path.strip()
+    target_arg = target_dir.strip() or (candidate_path if candidate_path and Path(candidate_path).exists() else "")
+    dag_line = f"### 3. Planos DAG Disponíveis: `{dag_plan}`"
+    if target_arg and dag_plan.startswith("plans/"):
+        primary_plan = dag_plan.split("|")[0].strip()
+        dag_line += f"\n- Disparo com alvo: `franklin_execute_dag(plan_path_or_json=\"{primary_plan}\", target_dir=\"{target_arg}\")`"
+
     lines.extend([
         "",
-        f"### 3. Planos DAG Disponíveis: `{dag_plan}`",
+        dag_line,
         "### 4. Qualidade Linear Sem Engessar (Regra de Bolso):",
         f"> {linear_guardrail}",
         "",
@@ -847,6 +861,10 @@ def franklin_smart_compass(
         "- `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1` (Menu interativo de agentes, portas e 13 repositórios)",
         "- `franklin_get_agents(agent_name='ecosystem')` (Mapa completo das 5 camadas de agentes)",
     ])
+    if auto_dispatch_dag and dag_plan.startswith("plans/"):
+        primary_plan = dag_plan.split("|")[0].strip()
+        dag_out = franklin_execute_dag(primary_plan, target_dir=target_arg)
+        lines.extend(["", "### 6. Execução Automática do DAG Recomendado:", f"```json\n{dag_out}\n```"])
     return "\n".join(lines)
 
 
@@ -921,7 +939,28 @@ def franklin_run_skill_script(
         return f"Erro ao executar script: {e}"
 
 
-def _resolve_dag_plan_file(plan_str: str) -> Tuple[Optional[Path], Optional[Path], Optional[str]]:
+def _inject_target_dir_into_plan(plan_dict: Dict[str, Any], target_dir: str) -> Tuple[Path, Path]:
+    """Injeta target_dir nos payloads das tasks do DAG (preservando overrides locais) e persiste em arquivo temporário."""
+    import uuid
+
+    clean_target = target_dir.strip()
+    if clean_target and isinstance(plan_dict.get("tasks"), list):
+        for t_item in plan_dict["tasks"]:
+            if isinstance(t_item, dict):
+                payload = t_item.setdefault("payload", {})
+                if isinstance(payload, dict) and not payload.get("target_dir"):
+                    payload["target_dir"] = clean_target
+                input_data = t_item.get("input_data")
+                if isinstance(input_data, dict) and not input_data.get("target_dir"):
+                    input_data["target_dir"] = clean_target
+    temp_dir = ROOT_DIR / ".sessions" / "temp_plans"
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    temp_file = temp_dir / f"plan_{uuid.uuid4().hex[:8]}.json"
+    temp_file.write_text(json.dumps(plan_dict, indent=2, ensure_ascii=False), encoding="utf-8")
+    return temp_file.resolve(), temp_file
+
+
+def _resolve_dag_plan_file(plan_str: str, target_dir: str = "") -> Tuple[Optional[Path], Optional[Path], Optional[str]]:
     """Resolve o arquivo de plano DAG por alias, caminho existente ou JSON inline temporário."""
     plan_aliases = {
         "ui": ROOT_DIR / "plans" / "ui_composition_dag.json",
@@ -939,32 +978,35 @@ def _resolve_dag_plan_file(plan_str: str) -> Tuple[Optional[Path], Optional[Path
         "sample": EPIC_VOLTA_DIR / "examples" / "sample_dag_plan.json",
         "sample_dag_plan.json": EPIC_VOLTA_DIR / "examples" / "sample_dag_plan.json",
     }
-    if plan_str.lower() in plan_aliases:
-        alias_candidate = plan_aliases[plan_str.lower()]
-        if alias_candidate.is_file():
-            return alias_candidate.resolve(), None, None
+    matched_file: Optional[Path] = None
+    if plan_str.lower() in plan_aliases and plan_aliases[plan_str.lower()].is_file():
+        matched_file = plan_aliases[plan_str.lower()].resolve()
+    else:
+        for cp in (
+            Path(plan_str),
+            ROOT_DIR / plan_str,
+            ROOT_DIR / "plans" / plan_str,
+            EPIC_VOLTA_DIR / plan_str,
+            EPIC_VOLTA_DIR / "examples" / plan_str,
+            Path(r"C:\Users\melki\.gemini\plans") / plan_str,
+        ):
+            if cp.exists() and cp.is_file():
+                matched_file = cp.resolve()
+                break
 
-    for cp in (
-        Path(plan_str),
-        ROOT_DIR / plan_str,
-        ROOT_DIR / "plans" / plan_str,
-        EPIC_VOLTA_DIR / plan_str,
-        EPIC_VOLTA_DIR / "examples" / plan_str,
-        Path(r"C:\Users\melki\.gemini\plans") / plan_str,
-    ):
-        if cp.exists() and cp.is_file():
-            return cp.resolve(), None, None
+    if matched_file is not None:
+        if target_dir.strip():
+            parsed_file = json.loads(matched_file.read_text(encoding="utf-8"))
+            resolved, tmp = _inject_target_dir_into_plan(parsed_file, target_dir)
+            return resolved, tmp, None
+        return matched_file, None, None
 
     try:
         parsed = json.loads(plan_str)
         if not isinstance(parsed, dict):
             return None, None, json.dumps({"status": "INVALID_PLAN", "error": "O payload JSON deve ser um objeto compatível com DAGExecutionPlan."}, ensure_ascii=False)
-        import uuid
-        temp_dir = ROOT_DIR / ".sessions" / "temp_plans"
-        temp_dir.mkdir(parents=True, exist_ok=True)
-        temp_file = temp_dir / f"plan_{uuid.uuid4().hex[:8]}.json"
-        temp_file.write_text(json.dumps(parsed, indent=2, ensure_ascii=False), encoding="utf-8")
-        return temp_file.resolve(), temp_file, None
+        resolved, tmp = _inject_target_dir_into_plan(parsed, target_dir)
+        return resolved, tmp, None
     except json.JSONDecodeError as exc:
         return None, None, json.dumps({"status": "FILE_NOT_FOUND_OR_INVALID_JSON", "error": f"Não foi possível localizar o arquivo nem interpretar como JSON válido: {exc}"}, ensure_ascii=False)
 
@@ -975,7 +1017,8 @@ def franklin_execute_dag(
     run_id: str = "",
     resume: bool = False,
     timeout_seconds: float = 0,
-    db_path: str = ""
+    db_path: str = "",
+    target_dir: str = "",
 ) -> str:
     """Executa um plano de orquestração em grafo acíclico dirigido (DAG) via motor do Epic-Volta.
     Args:
@@ -984,11 +1027,12 @@ def franklin_execute_dag(
         resume: Se True, retoma a execução sem reexecutar nós já concluídos no SQLite.
         timeout_seconds: Tempo limite global da execução em segundos (0 para sem limite).
         db_path: Caminho do banco SQLite de persistência.
+        target_dir: Diretório ou arquivo alvo opcional para injetar nos nós de auditoria do DAG.
     """
     if not EPIC_VOLTA_DIR.exists():
         return json.dumps({"status": "FAILED", "error": f"Repositório Epic-Volta não encontrado em {EPIC_VOLTA_DIR}."}, ensure_ascii=False)
 
-    resolved_plan_path, temp_file, err_json = _resolve_dag_plan_file(plan_path_or_json.strip())
+    resolved_plan_path, temp_file, err_json = _resolve_dag_plan_file(plan_path_or_json.strip(), target_dir=target_dir)
     if err_json or not resolved_plan_path:
         return err_json or json.dumps({"status": "FAILED", "error": "Plano inválido."}, ensure_ascii=False)
 
@@ -1178,6 +1222,8 @@ def franklin_a2a_dispatch_task(
     context_id: str = "ctx-default",
     task_id: str = "",
     action: str = "send",
+    execute_dag: bool = False,
+    target_dir: str = "",
 ) -> str:
     """Despacha, consulta ou cancela uma Task no protocolo Agent2Agent (A2A v1.0) acoplado ao Harness HITL.
 
@@ -1187,6 +1233,8 @@ def franklin_a2a_dispatch_task(
         context_id: Identificador de contexto conversacional A2A (isolado de user_id por segurança Zero-Trust).
         task_id: ID opcional da Task A2A (obrigatório para action='get' ou 'cancel').
         action: Operação A2A ('send', 'get', 'cancel').
+        execute_dag: Se True, aciona o motor DAG do Epic-Volta correspondente à skill mapeada.
+        target_dir: Diretório ou arquivo alvo opcional para os subagentes do DAG.
     """
     act = action.strip().lower()
     if act == "send":
@@ -1196,6 +1244,14 @@ def franklin_a2a_dispatch_task(
             context_id=context_id,
             task_id=task_id.strip() or None,
         )
+        if execute_dag and isinstance(task, dict):
+            resolved_skill = str(task.get("metadata", {}).get("skillId") or skill_id).lower()
+            dag_alias = "physics" if "physics" in resolved_skill or "3d" in query.lower() else "ui"
+            dag_raw = franklin_execute_dag(dag_alias, target_dir=target_dir)
+            try:
+                task["dagExecution"] = json.loads(dag_raw)
+            except json.JSONDecodeError:
+                task["dagExecution"] = {"raw": dag_raw}
         return json.dumps(task, indent=2, ensure_ascii=False)
 
     if act == "get":

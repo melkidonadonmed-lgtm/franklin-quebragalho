@@ -1,26 +1,26 @@
 [
   {
-    "eval_id": "eval-001-migracao-monolito-nivel1-para-nivel4",
-    "prompt": "Temos um agente com um System Prompt monolítico de 6.000 palavras e 35 ferramentas soltas que está sofrendo context drift após 15 turnos. Como reestruturar para o Nível 4?",
+    "eval_id": "eval-001-selecao-framework-e-loop-cognitivo",
+    "prompt": "Temos um sistema corporativo que precisa pausar a execução para aprovação humana de reembolso, retomar dias depois e consultar 35 operações financeiras sem estourar a atenção Softmax. Qual arquitetura e contrato implementar?",
     "trigger_type": "should_trigger",
-    "expected_behavior": "Diagnostica a diluição atencional (Softmax) e a Parede de Complexidade; propõe migração para Divulgação Progressiva em 3 Tiers (Tier 1 catálogo, Tier 2 SKILL.md < 500 linhas, Tier 3 references/scripts), agrupa as 35 ferramentas via Envelope Pattern polimórfico (Pydantic), isola sub-tarefas longas com Context Forking (context: fork), separa a memória em 3 camadas e define suíte evals.json Baseline vs. Treatment com Pass@k."
+    "expected_behavior": "Aplica os Módulos A, B e C: seleciona grafo durável com checkpointer (LangGraph ou Google ADK 2.x / Microsoft Agent Framework), consolida as 35 operações via PolyExtensibleSkillEngine (Envelope Pattern Pydantic com extra='forbid' e recovery_hint), separa as 5 camadas de memória da Fonte de Verdade transacional e define orçamento explícito (max_steps, deadline_seconds, idempotency_key)."
   },
   {
-    "eval_id": "eval-002-otimizacao-gatilhos-e-evals",
-    "prompt": "Minha skill está disparando por engano em pedidos parecidos de outras skills e a qualidade das respostas estacionou mesmo adicionando mais 20 regras em caixa-alta.",
+    "eval_id": "eval-002-auditoria-matematica-passk-fnr-tei",
+    "prompt": "Execute a auditoria matemática do nosso agente de código que acertou 19 de 25 execuções (Pass@1 e Pass@5), avalie o guardrail com TP=1000, FP=2, FN=0 e calcule o TEI para 2850 tokens de entrada e 420 de saída.",
     "trigger_type": "should_trigger",
-    "expected_behavior": "Identifica over-constraining no corpo da skill (recomendando Lean Instructions baseadas no 'Porquê' e extração de scripts para scripts/) e estrutura uma Trigger Eval Matrix com consultas should-trigger e should-not-trigger (near-misses) em divisão Treino/Validação para recalibrar a description sem overfitting."
+    "expected_behavior": "Aciona o Módulo E executando scripts/agentic_math_and_engine_auditor.py, reportando deterministicamente Pass@1 = 0.7600, Pass@5 = 0.9987, FNR = 0.0000 (< 0.001 PASS), Snorm = 91.88 e TEI = 889.84."
   },
   {
-    "eval_id": "eval-003-arquitetura-adk-gepa-mcp-a2a",
-    "prompt": "Projete a arquitetura de expansão de um agente corporativo usando Google ADK, barramento MCP e protocolo A2A com guardrails de escrita em banco transacional.",
+    "eval_id": "eval-003-arquitetura-adk-mcp-2026-theranostic",
+    "prompt": "Projete a arquitetura de um agente clínico usando Google ADK, servidor MCP 2026-07-28 e Theranostic Gate com assinatura criptográfica.",
     "trigger_type": "should_trigger",
-    "expected_behavior": "Especifica a topologia Nível 4 com roteador de intenção sem permissão destrutiva (boundary control), servidores MCP via JSON-RPC 2.0, publicação de /.well-known/agent-card.json (A2A), calibração de matriz de confusão do guardrail para FNR < 0.001 com portão HITL e otimização contínua via adk optimize (algoritmo GEPA) e LLM-as-a-Judge normalizado (Snorm)."
+    "expected_behavior": "Especifica o Theranostic Pipeline (Estágio 1 Read-Only -> ConfidenceGate >= 0.95 -> Estágio 3 Action Agent assinado com HMAC-SHA256), protocolo MCP 2026-07-28 stateless com OAuth 2.1 Resource Indicators (ou stdio sem logs em stdout) e FNR < 0.001."
   },
   {
-    "eval_id": "eval-004-near-miss-negativo-auditoria-ui",
-    "prompt": "Inspecione os botões e a paleta de cores desta página React para ver se tem azul cobalto ou glassmorphism.",
+    "eval_id": "eval-004-near-miss-negativo-auditoria-skill-md",
+    "prompt": "Audite e enxugue o arquivo SKILL.md da skill gdrive-auditoria-limpeza que está com linhas redundantes.",
     "trigger_type": "should_not_trigger",
-    "expected_behavior": "Reconhece como near-miss negativo (domínio de UI/UX tátil) e não ativa, delegando para analise-design-tatil-frontend."
+    "expected_behavior": "Reconhece como near-miss negativo (cirurgia e auditoria de arquivo SKILL.md do catálogo) e delega para skill-auditor-refatorador-skills."
   }
 ]

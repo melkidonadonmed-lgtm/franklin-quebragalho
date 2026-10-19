@@ -55,25 +55,19 @@ class AIReadyDataPipeline:
         category: str = "geral",
         extra_metadata: Optional[Dict[str, Any]] = None,
     ) -> List[Dict[str, Any]]:
-        """
-        Gera chunks padronizados com metadados completos (incluindo source_id, chunk_index e byte_range)
-        e deduplicação SHA-256.
-        """
+        """Gera chunks padronizados com metadados completos e deduplicação SHA-256."""
         sanitized = self.sanitize_text(text)
         if not sanitized:
             return []
 
-        # Tokeniza preservando quebras de parágrafo quando possível
         words = sanitized.split()
         chunks: List[Dict[str, Any]] = []
-        i = 0
+        i, running_char_offset = 0, 0
         step = max(1, self.chunk_size - self.overlap)
-        running_char_offset = 0
 
         while i < len(words):
             chunk_words = words[i : i + self.chunk_size]
             chunk_text = " ".join(chunk_words)
-
             chunk_bytes = chunk_text.encode("utf-8")
             start_byte = len(sanitized[:running_char_offset].encode("utf-8"))
             end_byte = start_byte + len(chunk_bytes)
@@ -94,18 +88,10 @@ class AIReadyDataPipeline:
                 "is_duplicate": is_duplicate,
                 "chunk_hash": chunk_hash,
             }
-
             if extra_metadata:
                 chunk_metadata.update(extra_metadata)
 
-            chunks.append(
-                {
-                    "chunk_id": f"{source_id}_{chunk_hash}",
-                    "text": chunk_text,
-                    "metadata": chunk_metadata,
-                }
-            )
-
+            chunks.append({"chunk_id": f"{source_id}_{chunk_hash}", "text": chunk_text, "metadata": chunk_metadata})
             advanced_words = " ".join(words[i : i + step])
             running_char_offset = min(len(sanitized), running_char_offset + len(advanced_words) + 1)
             i += step

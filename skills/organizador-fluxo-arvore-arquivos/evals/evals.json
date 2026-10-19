@@ -1,6 +1,7 @@
 [
   {
     "eval_id": "TC-01-PRESERVACAO-PEDIDO-ORIGINAL",
+    "category": "should-trigger",
     "description": "Garante que o pedido do usuario seja inserido literalmente sem alteracoes",
     "input": "Quero um app simples de cronometro pomodoro para Windows.",
     "expected_behavior": {
@@ -12,6 +13,7 @@
   },
   {
     "eval_id": "TC-02-OPCAO-EXPORTACAO-MD-PDF",
+    "category": "should-trigger",
     "description": "Verifica se a skill apresenta a opcao de salvar em arquivo unico MD ou gerar PDF ao final",
     "input": "Estruture o fluxo e pastas para um script de backup em PowerShell.",
     "expected_behavior": {
@@ -23,11 +25,22 @@
   },
   {
     "eval_id": "TC-03-EXPORTACAO-DIRETA-SOLICITADA",
+    "category": "should-trigger",
     "description": "Verifica se ao solicitar explicitamente em PDF, o agente gera o arquivo ou aciona o pipeline",
     "input": "Crie o fluxo do meu app e gere em PDF formatado direto.",
     "expected_behavior": {
       "aciona_conversao_pdf": true,
       "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-04-NEAR-MISS-AUDITORIA-CODIGO-EXISTENTE",
+    "category": "should-not-trigger",
+    "description": "Near-miss: pedido para auditar vulnerabilidades AST de um arquivo Python existente",
+    "input": "Audite as falhas de segurança e funções longas do arquivo server.py.",
+    "expected_behavior": {
+      "aciona_organizador_fluxo": false,
+      "delega_para": "code-acceptability-auditor"
     }
   }
 ]

@@ -259,20 +259,7 @@ class PhysicsCodeASTVisitor(ast.NodeVisitor):
                         expected_result="100% dos parâmetros físicos configuráveis por injeção no construtor.",
                     )
 
-    def visit_FunctionDef(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
-        prev_function = self.current_function
-        self.current_function = node.name
-
-        is_method = self.current_class is not None
-        has_decorators = len(node.decorator_list) > 0
-        self.function_meta[node.name] = {
-            "line": node.lineno,
-            "col": node.col_offset,
-            "is_method": is_method,
-            "has_decorators": has_decorators,
-        }
-
-        # Check 1 (Módulo 1): DUPLICATE_FUNCTION com AST normalizada
+    def _check_duplicate_function(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
         norm_body = _normalize_function_ast(node)
         if norm_body is not None:
             if norm_body in self.defined_functions.values():
@@ -298,19 +285,27 @@ class PhysicsCodeASTVisitor(ast.NodeVisitor):
         else:
             self.defined_functions[node.name] = f"__trivial_{node.name}_{node.lineno}"
 
-        # Check (Módulo 1): UNUSED_VARIABLE dentro da função
+    def visit_FunctionDef(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+        prev_function = self.current_function
+        self.current_function = node.name
+
+        self.function_meta[node.name] = {
+            "line": node.lineno,
+            "col": node.col_offset,
+            "is_method": self.current_class is not None,
+            "has_decorators": len(node.decorator_list) > 0,
+        }
+
+        self._check_duplicate_function(node)
         self._check_unused_variables(node)
 
-        # Check (Módulo 3): MISSING_DAMPING em funções de passo de física
-        is_physics_step_fn = any(kw in node.name.lower() for kw in ("step_physics", "integrate", "update_physics"))
-        if is_physics_step_fn:
+        if any(kw in node.name.lower() for kw in ("step_physics", "integrate", "update_physics")):
             self._check_missing_damping(node)
 
         is_render_loop_fn = any(kw in node.name.lower() for kw in self.LOOP_FN_KEYWORDS)
         if is_render_loop_fn:
             self.loop_depth += 1
 
-        # Visitar defaults de argumentos sinalizando que não são magic numbers de cálculo
         self.in_default_args = True
         for d in node.args.defaults + node.args.kw_defaults:
             if d is not None:
@@ -419,21 +414,10 @@ class PhysicsCodeASTVisitor(ast.NodeVisitor):
 
         self.generic_visit(node)
 
-    def visit_Call(self, node: ast.Call) -> None:
-        if isinstance(node.func, ast.Name):
-            self.called_functions.add(node.func.id)
-            fn_name = node.func.id
-        elif isinstance(node.func, ast.Attribute):
-            self.called_functions.add(node.func.attr)
-            fn_name = node.func.attr
-        else:
-            fn_name = ""
-
-        # Check 1 (Módulo 1): ALLOC_IN_LOOP (ignorando funções de suíte de teste test_*)
+    def _check_alloc_in_loop(self, node: ast.Call, fn_name: str) -> None:
         is_test_fn = bool(self.current_function and self.current_function.lower().startswith("test_"))
         if (self.in_loop or self.loop_depth > 0) and not is_test_fn:
             if fn_name in self.ALLOC_INDICATORS or any(fn_name.endswith(alloc) for alloc in self.ALLOC_INDICATORS):
-                # Evitar acusar Vector3 dentro de step_physics_bad se for parte de return default, mas no loop é crítico
                 self.add_issue(
                     issue_id="ALLOC_IN_LOOP",
                     title="Alocação de Memória dentro de Laço Crítico",
@@ -461,33 +445,7 @@ class PhysicsCodeASTVisitor(ast.NodeVisitor):
                     expected_result="0 B/s de alocação de objetos temporários no laço de simulação.",
                 )
 
-        # Check 2 (Módulo 3): UNCHECKED_NORMALIZE (dentro OU fora de loops, mas respeitando guardrails!)
-        if fn_name in ("normalize", "normalized"):
-            if not self._has_nearby_guardrail(node.lineno):
-                self.add_issue(
-                    issue_id="UNCHECKED_NORMALIZE",
-                    title="Normalização de Vetor Sem Validação de Magnitude Zero",
-                    category="Física 3D & Matemática Numérica",
-                    subskill="physics-3d-math-auditor",
-                    severity="Alta",
-                    penalty=25,
-                    physics_subdimension="S2_vector_algebra_rotations",
-                    subdimension_penalty=40,
-                    line=node.lineno,
-                    col=node.col_offset,
-                    description=f"Chamada de '{fn_name}()' detectada sem verificação prévia de magnitude > EPSILON.",
-                    recommendation="Garanta que ||v|| > EPSILON (ex: if v.length_sq() > 1e-12:) antes de normalizar para prevenir divisão por zero e contaminação por NaN/Inf.",
-                    root_cause="A normalização divide cada componente pela norma Euclidiana ||v||. Se o vetor for nulo (0,0,0), ocorre divisão 0/0 = NaN, contaminando toda a cena 3D.",
-                    best_fix_code=(
-                        "EPSILON_SQ = 1e-12\n"
-                        "if velocity.length_sq() > EPSILON_SQ:\n"
-                        "    direction = velocity.normalize()"
-                    ),
-                    why_best_fix="Usa length_sq() (evitando sqrt desnecessário quando nulo) e blinda o pipeline contra propagação de NaN.",
-                    expected_result="100% de imunidade a NaN/Inf ao processar forças ou velocidades nulas.",
-                )
-
-        # Check 3 (Módulo 2): PHYSICS_RENDER_COUPLING
+    def _check_physics_render_coupling(self, node: ast.Call) -> None:
         if self.current_class or self.current_function:
             ctx_name = f"{self.current_class or ''}_{self.current_function or ''}".lower()
             if any(k in ctx_name for k in ("physics", "rigidbody", "integrat", "solver", "collider")):
@@ -515,6 +473,43 @@ class PhysicsCodeASTVisitor(ast.NodeVisitor):
                         expected_result="Desacoplamento 100% entre domínio físico e engine visual.",
                     )
 
+    def visit_Call(self, node: ast.Call) -> None:
+        if isinstance(node.func, ast.Name):
+            self.called_functions.add(node.func.id)
+            fn_name = node.func.id
+        elif isinstance(node.func, ast.Attribute):
+            self.called_functions.add(node.func.attr)
+            fn_name = node.func.attr
+        else:
+            fn_name = ""
+
+        self._check_alloc_in_loop(node, fn_name)
+
+        if fn_name in ("normalize", "normalized") and not self._has_nearby_guardrail(node.lineno):
+            self.add_issue(
+                issue_id="UNCHECKED_NORMALIZE",
+                title="Normalização de Vetor Sem Validação de Magnitude Zero",
+                category="Física 3D & Matemática Numérica",
+                subskill="physics-3d-math-auditor",
+                severity="Alta",
+                penalty=25,
+                physics_subdimension="S2_vector_algebra_rotations",
+                subdimension_penalty=40,
+                line=node.lineno,
+                col=node.col_offset,
+                description=f"Chamada de '{fn_name}()' detectada sem verificação prévia de magnitude > EPSILON.",
+                recommendation="Garanta que ||v|| > EPSILON (ex: if v.length_sq() > 1e-12:) antes de normalizar para prevenir divisão por zero e contaminação por NaN/Inf.",
+                root_cause="A normalização divide cada componente pela norma Euclidiana ||v||. Se o vetor for nulo (0,0,0), ocorre divisão 0/0 = NaN, contaminando toda a cena 3D.",
+                best_fix_code=(
+                    "EPSILON_SQ = 1e-12\n"
+                    "if velocity.length_sq() > EPSILON_SQ:\n"
+                    "    direction = velocity.normalize()"
+                ),
+                why_best_fix="Usa length_sq() (evitando sqrt desnecessário quando nulo) e blinda o pipeline contra propagação de NaN.",
+                expected_result="100% de imunidade a NaN/Inf ao processar forças ou velocidades nulas.",
+            )
+
+        self._check_physics_render_coupling(node)
         self.generic_visit(node)
 
     def visit_For(self, node: ast.For) -> None:
@@ -697,26 +692,11 @@ def compute_module_scores(issues: List[Dict[str, Any]]) -> Dict[str, Any]:
         "s3_physics_3d_math": round(s3_direct, 2),
         "s3_subdimensions_weighted": round(s3_subdim_weighted, 2),
         "physics_3d_subdimensions": {
-            "S1_integracao_temporal_dt": {
-                "score": subdim_scores["S1_temporal_integration"],
-                "weight": 0.25,
-            },
-            "S2_algebra_vetorial_rotacoes": {
-                "score": subdim_scores["S2_vector_algebra_rotations"],
-                "weight": 0.25,
-            },
-            "S3_conservacao_estabilidade": {
-                "score": subdim_scores["S3_conservation_stability"],
-                "weight": 0.20,
-            },
-            "S4_colisao_ccd": {
-                "score": subdim_scores["S4_collision_ccd"],
-                "weight": 0.15,
-            },
-            "S5_robustez_numerica_float": {
-                "score": subdim_scores["S5_numerical_robustness"],
-                "weight": 0.15,
-            },
+            "S1_integracao_temporal_dt": {"score": subdim_scores["S1_temporal_integration"], "weight": 0.25},
+            "S2_algebra_vetorial_rotacoes": {"score": subdim_scores["S2_vector_algebra_rotations"], "weight": 0.25},
+            "S3_conservacao_estabilidade": {"score": subdim_scores["S3_conservation_stability"], "weight": 0.20},
+            "S4_colisao_ccd": {"score": subdim_scores["S4_collision_ccd"], "weight": 0.15},
+            "S5_robustez_numerica_float": {"score": subdim_scores["S5_numerical_robustness"], "weight": 0.15},
         },
     }
 
@@ -788,7 +768,7 @@ def main() -> None:
 
     try:
         code_str = filepath.read_text(encoding="utf-8")
-    except Exception as e:
+    except OSError as e:
         print(json.dumps({"error": f"Erro ao ler arquivo: {e}", "issues": []}, ensure_ascii=False))
         sys.exit(1)
 

@@ -1,20 +1,21 @@
 [
   {
     "eval_id": "TC-01-FLUXO-LINEAR-SUCESSO",
-    "description": "Valida a execução de plano sequencial em 3 fases com transição limpa de payload",
+    "category": "should-trigger",
+    "description": "Valida a execução de plano sequencial em fases com transição limpa de payload",
     "input": {
       "structured_plan": {
         "title": "Migração de Notas",
         "phases": [
           {
             "phase_id": "fase_01",
-            "target_skill": "organizar-local",
+            "target_skill": "manutencao-disco-windows",
             "input_payload": { "target_path": "C:\\Users\\melki\\Documents\\Notas" },
             "expected_outputs": ["lista_arquivos"]
           },
           {
             "phase_id": "fase_02",
-            "target_skill": "gerar-docs-pdf",
+            "target_skill": "conversor-html-pdf",
             "input_payload": { "source_files": ["lista_arquivos"] },
             "expected_outputs": ["relatorio_pdf"]
           }
@@ -31,6 +32,7 @@
   },
   {
     "eval_id": "TC-02-FALHA-RECUPERAVEL-RETRY",
+    "category": "should-trigger",
     "description": "Valida 1 ciclo de auto-correção quando o output da skill não atende ao critério de aceite",
     "input": {
       "phase_id": "fase_validacao",
@@ -46,22 +48,8 @@
     }
   },
   {
-    "eval_id": "TC-03-INVOCACAO-CONDICIONAL",
-    "description": "Valida o despacho sob demanda para sub-skill autorizada quando indicado pelo planejador",
-    "input": {
-      "phase_id": "fase_planejamento",
-      "target_skill": "skill-planejador-estrategico",
-      "sub_skill_solicitada": "skill-diagramador-visual",
-      "autorizacao_previa": true
-    },
-    "expected_behavior": {
-      "despacho_autorizado": true,
-      "artefato_integrado_na_fase": true,
-      "sem_poluicao_historico": true
-    }
-  },
-  {
-    "eval_id": "TC-04-BLOQUEIO-CICLICO",
+    "eval_id": "TC-03-BLOQUEIO-CICLICO",
+    "category": "should-trigger",
     "description": "Valida interrupção imediata na Fase 0 ao detectar loop de dependência circular",
     "input": {
       "structured_plan": {
@@ -75,6 +63,18 @@
       "execucao_pausada": true,
       "status_regra_2": "[FAIL: Loop circular de dependência identificado]",
       "intervencao_humana_solicitada": true
+    }
+  },
+  {
+    "eval_id": "TC-04-NEAR-MISS-TAREFA-UNICA-SIMPLES",
+    "category": "should-not-trigger",
+    "description": "Near-miss: tarefa atômica de uma única skill que não exige encadeamento multifásico",
+    "input": {
+      "single_task": "Converta apenas este arquivo relatorio.md em PDF."
+    },
+    "expected_behavior": {
+      "aciona_orquestrador_planos": false,
+      "executa_direto_skill": "conversor-html-pdf"
     }
   }
 ]

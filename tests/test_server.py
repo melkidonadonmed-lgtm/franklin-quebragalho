@@ -503,6 +503,7 @@ def test_gemini_ecosystem_directories() -> None:
 
     assert not (gemini_root / "plugins").exists()
     assert not (gemini_root / "skills").exists()
+    assert not (server.ROOT_DIR / ".agents" / "skills").exists()
     assert (server.ROOT_DIR / "plugin.json").exists()
     assert (gemini_root / "agents" / "ui-shell-navigator.md").exists()
     assert (gemini_root / "config" / "agents" / "ui-shell-navigator.md").exists()
@@ -519,6 +520,12 @@ def test_gemini_ecosystem_directories() -> None:
     assert f"{len(expected_skill_ids)} Skills canônicas" in card_data["description"]
     assert len(card_data["skills"]) == len(expected_skill_ids)
 
+    compass_out = server.franklin_smart_compass(
+        "Refatorar UI tátil minimalista",
+        target_dir=r"C:\Users\melki\dev\repos\franklin-quebragalho\skills\design-md\references",
+    )
+    assert 'target_dir="C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\skills\\design-md\\references"' in compass_out
+
     # Simula injeção de skill duplicada em .gemini/config/skills e valida limpeza determinística
     dup_probe = CONFIG_SKILLS_ROOT / "design-md"
     try:
@@ -533,6 +540,7 @@ def test_gemini_ecosystem_directories() -> None:
             import shutil
 
             shutil.rmtree(dup_probe)
+
 
 
 

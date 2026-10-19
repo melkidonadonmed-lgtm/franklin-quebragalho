@@ -1,20 +1,32 @@
 [
   {
     "eval_id": "TC-GDRIVE-TAXONOMIA-01",
-    "description": "Validação de categorização de arquivo financeiro solto na raiz do Drive.",
+    "category": "should-trigger",
+    "description": "Validação de categorização de arquivo solto na raiz do Drive segundo a taxonomia canônica real.",
     "input": {
       "target_folder": "G:/Meu Drive/",
       "taxonomy_profile": "padrao_melki"
     },
-    "expected_behavior": "Identificar notas fiscais e comprovantes soltos e direcionar para 04_Financeiro_Fiscal com simulação dry-run."
+    "expected_behavior": "Identificar arquivos soltos na raiz e direcionar para as pastas numeradas reais de G:\\Meu Drive (01_Modelos_Rapidos..99_Arquivo_Historico) com simulação dry-run."
   },
   {
     "eval_id": "TC-GDRIVE-TAXONOMIA-02",
+    "category": "should-trigger",
     "description": "Validação de renomeação de arquivo com inserção de data ISO e remoção de caracteres proibidos.",
     "input": {
-      "target_folder": "G:/Meu Drive/02_Documentos_Pessoais",
+      "target_folder": "G:/Meu Drive/10_Pessoal",
       "apply_iso_dates": true
     },
-    "expected_behavior": "Transformar nomes como 'contrato #1 final (novo).pdf' em 'YYYY-MM-DD_Contrato_1_Final_Novo.pdf' preservando a extensão original."
+    "expected_behavior": "Transformar nomes como 'contrato #1 final (novo).pdf' em 'YYYY-MM-DD_Contrato_1_Final_Novo.pdf' usando -LiteralPath e preservando a extensão original."
+  },
+  {
+    "eval_id": "TC-GDRIVE-TAXONOMIA-03-NEAR-MISS",
+    "category": "should-not-trigger",
+    "description": "Near-miss: pedido para varrer duplicatas por hash SHA-256 e arquivos maiores que 100MB no Drive.",
+    "input": {
+      "target_folder": "G:/Meu Drive/",
+      "mode": "find_duplicates_sha256"
+    },
+    "expected_behavior": "Delegar varredura de arquivos pesados e duplicatas SHA-256 para gdrive-auditoria-limpeza."
   }
 ]

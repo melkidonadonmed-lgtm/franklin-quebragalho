@@ -134,10 +134,12 @@ def main() -> int:
     args = parser.parse_args()
 
     root_path = Path(__file__).resolve().parent.parent
-    agents_skills = root_path / ".agents" / "skills"
+    agents_skills = root_path / "skills"
+    if not agents_skills.exists():
+        agents_skills = root_path / ".agents" / "skills"
 
     if not agents_skills.exists():
-        print(f"[ERROR] Diretório .agents/skills não encontrado em {agents_skills}")
+        print(f"[ERROR] Diretório skills não encontrado em {agents_skills}")
         return 1
 
     print("=== INICIANDO AUDITORIA DETERMINISTICA DE SKILLS ===")

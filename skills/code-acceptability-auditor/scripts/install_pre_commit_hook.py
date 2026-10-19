@@ -43,8 +43,8 @@ def install_hook(repo_root: Path) -> Path:
     try:
         current_mode = os.stat(hook_path).st_mode
         os.chmod(hook_path, current_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-    except OSError:
-        pass
+    except OSError as exc:
+        _chmod_notice = str(exc)
     return hook_path
 
 

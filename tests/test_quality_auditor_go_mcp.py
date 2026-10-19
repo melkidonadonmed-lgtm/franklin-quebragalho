@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
-AUDITOR_SCRIPTS_DIR = ROOT_DIR / ".agents" / "skills" / "test-quality-auditor" / "scripts"
+AUDITOR_SCRIPTS_DIR = ROOT_DIR / "skills" / "test-quality-auditor" / "scripts"
 if str(AUDITOR_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(AUDITOR_SCRIPTS_DIR))
 

@@ -14,7 +14,7 @@ from pathlib import Path
 import pytest
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
-SKILL_ROOT = ROOT_DIR / ".agents" / "skills" / "test-quality-auditor"
+SKILL_ROOT = ROOT_DIR / "skills" / "test-quality-auditor"
 AUDITOR_SCRIPTS_DIR = SKILL_ROOT / "scripts"
 
 for p in (str(ROOT_DIR), str(AUDITOR_SCRIPTS_DIR)):

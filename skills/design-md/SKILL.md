@@ -1,12 +1,12 @@
 ---
 name: design-md
 description: >-
-  Sintetiza e gera o contrato canônico DESIGN.md (v4.5-soft — Minimalist Impact, Nexus Bento & Soft Tactile Architecture) na raiz de projetos frontend, documentando economia tonal 60-30-10, 4+1 camadas de elevação 135°, 8 kits Soft UI, Design Atômico em 5 camadas e paleta anti-cobalto.
-version: "4.5.0"
+  Gera ou atualiza apenas o arquivo de contrato DESIGN.md (v4.5-soft) na raiz do projeto ou via Google Stitch. Não use para diagnosticar código (use analise-design-tatil-frontend) nem para refatorar componentes (use refatoracao-design-tatil-frontend).
+version: "4.5.1"
 license: MIT
 metadata:
   author: "FrontCraftMaster & Melki"
-  version: "4.5.0"
+  version: "4.5.1"
   category: "Design System Tátil, Minimalist Impact e Documentação Canônica"
   updated_at: "2026-10-18"
   tags:
@@ -22,7 +22,7 @@ authorized_sub_skills:
   - name: frontend-code-architect
     role: "Estruturação modular src/ em 5 camadas de Design Atômico e componentes Soft UI"
   - name: frontend-testing-auditor
-    role: "Auditoria determinística FSM + Axe-Core (AUDIT-A11Y-01, AUDIT-VIS-01, AUDIT-STATE-01, AUDIT-SEC-01)"
+    role: "Auditoria determinística via scripts/audit_tactile_ui.py + Axe-Core (v2.6.0)"
 ---
 
 # Gerador e Sintetizador Canônico de `DESIGN.md` (`design-md` v4.5.0 — Minimalist Impact & Soft Tactile) 📐
@@ -55,9 +55,9 @@ Utilitário especializado em inspecionar um projeto frontend (local em disco ou 
 2. Aplique a **Regra 60-30-10 Tonal Restrita**:
    - **60% `surface-canvas` (Layer 0)**: Fundo neutro contínuo (`#F1F4F8` no Light; `#12151B` / `#090B10` no Dark).
    - **30% Camadas de Elevação (Layers 1 a 3 + Layer 4 Contrast)**:
-     - `Layer 1 (surface-inset)`: `#E5E9F0` com sombra interna dupla (`inset 4px 4px 10px rgba(166,180,200,0.45), inset -4px -4px 10px rgba(255,255,255,0.85)`) para campos de busca, inputs, trilhos e o berço deslizante do ícone ativo na sidebar (`#sidebar-active-tracker`).
+     - `Layer 1 (surface-inset / surface-sunken)`: `#E5E9F0` (`--surface-sunken: #DCE3EC`) com sombra interna dupla (`inset 4px 4px 10px rgba(166,180,200,0.45), inset -4px -4px 10px rgba(255,255,255,0.85)`) para campos de busca, inputs, trilhos e o berço deslizante do ícone ativo na sidebar (`#sidebar-active-tracker`).
      - `Layer 2 (surface-flat)`: `#E9EEF5` para agrupamento intermediário sem bordas duras de `1px`.
-     - `Layer 3 (surface-raised / .ui-card-soft / .bento-card-soft)`: `#F1F4F8` / `#F8FAFC` esculpido com iluminação direcional dupla a **135°** (`8px 8px 20px rgba(166,180,200,0.42), -8px -8px 20px rgba(255,255,255,0.95)`).
+     - `Layer 3 (surface-raised / .ui-card-soft / .bento-card-soft)`: `#F8FAFC` esculpido com iluminação direcional dupla a **135°** (`8px 8px 20px rgba(166,180,200,0.42), -8px -8px 20px rgba(255,255,255,0.95)`), garantindo delta de luminância real sobre `--surface-canvas` (`#F1F4F8`).
      - `Layer 4 (surface-contrast / .terrixa-notched)`: `#1E293B` para âncoras de alto contraste por inversão tonal monocromática (sem neon).
    - **10% `--accent-point` (Acento Focal Único — Zero Cobalto)**: **Cerulean Sapphire** (`#0284C7`), **Ocean Sapphire** (`#1E6091`), **Moss Forest** (`#174930`) ou **Mineral Ice** (`#38BDF8` no dark mode).
 
@@ -75,9 +75,10 @@ Utilitário especializado em inspecionar um projeto frontend (local em disco ou 
 version: "4.5-soft"
 name: "Minimalist Tactile Prestige + Nexus Operations"
 colors:
+  surface-sunken: "#DCE3EC"     # Layer -1: Profundidade rebaixada (Tactile Wells / Split-Pane)
   surface-canvas: "#F1F4F8"     # Layer 0: Fundo neutro contínuo (60%)
   surface-flat:   "#E9EEF5"     # Layer 2: Placa intermediária sem borda dura
-  surface-raised: "#F1F4F8"     # Layer 3: Placa esculpida neumórfica 135° (30%)
+  surface-raised: "#F8FAFC"     # Layer 3: Placa esculpida neumórfica 135° (30%)
   surface-inset:  "#E5E9F0"     # Layer 1: Cavidade física (inputs/trilhos/berço de ícone ativo)
   surface-contrast: "#1E293B"   # Layer 4: Âncora de inversão tonal Terrixa
   text-primary:   "#1E293B"     # Grafite profundo legível (WCAG AA/AAA)
@@ -86,17 +87,20 @@ colors:
   accent-secondary: "#7DD3FC"   # Acento suave complementar
   accent-emerald: "#059669"     # Indicador semântico de estabilidade
 lighting:
+  shadow-card:    "8px 8px 20px rgba(166, 180, 200, 0.42), -8px -8px 20px rgba(255, 255, 255, 0.95)"
+  shadow-ambient: "0 12px 28px rgba(15, 23, 42, 0.06), 0 4px 10px rgba(15, 23, 42, 0.04)"
+  shadow-inset:   "inset 4px 4px 10px rgba(166, 180, 200, 0.45), inset -4px -4px 10px rgba(255, 255, 255, 0.85)"
   soft-shadow:    "8px 8px 20px rgba(166, 180, 200, 0.42)"
   soft-highlight: "-8px -8px 20px rgba(255, 255, 255, 0.95)"
   inset-shadow:   "inset 4px 4px 10px rgba(166, 180, 200, 0.45), inset -4px -4px 10px rgba(255, 255, 255, 0.85)"
 presets:
-  slate:    { canvas: "#F1F4F8", raised: "#F1F4F8", inset: "#E5E9F0", accent: "#0284C7" }
+  slate:    { canvas: "#F1F4F8", raised: "#F8FAFC", inset: "#E5E9F0", accent: "#0284C7" }
   moss:     { canvas: "#F4F3EC", raised: "#F8F7F2", inset: "#E8E5DC", accent: "#174930" }
   sapphire: { canvas: "#F5F4EE", raised: "#FAF9F5", inset: "#E6E5DD", accent: "#1E6091" }
   obsidian: { canvas: "#12151B", raised: "#181D26", inset: "#0D1016", accent: "#38BDF8" }
 skills_integrated:
-  - frontend-code-architect (v4.0.0): Design Atômico em 5 camadas + src/ modular
-  - frontend-testing-auditor (v2.5.0): Auditoria Axe-Core + FSM + Anti-Glassmorphism (AUDIT-VIS-01)
+  - frontend-code-architect (v4.1.0): Design Atômico em 5 camadas + src/ modular
+  - frontend-testing-auditor (v2.6.0): Auditoria Axe-Core + FSM + Anti-Glassmorphism (AUDIT-VIS-01)
 ---
 
 ## 1. Pilha de Elevação Tonal (4+1 Camadas) e Iluminação 135°
@@ -116,3 +120,10 @@ skills_integrated:
 - `src/styles/` — `globals.css` e `theme.css`.
 - `src/types/` — Contratos TypeScript estritos (`TonalLayer`, `ComponentFSMState`, `AuditTelemetryResult`).
 ```
+
+---
+
+## 🤖 Ativação de Subagentes e Orquestração (`Topologia 3+1`)
+- **Persona Responsável:** `FrontCraftMaster`
+- **Subagentes Vinculados:** `ui-shell-navigator`, `ui-controls-data`, `ui-motion-interaction` e `ui-deterministic-observer`.
+- **Disparo Automático:** Acione `franklin_execute_dag(plan_path_or_json="ui", target_dir="<project_root_path>")` ou `invoke_subagent` após sintetizar o `DESIGN.md`.

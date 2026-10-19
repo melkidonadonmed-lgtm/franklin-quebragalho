@@ -1,55 +1,54 @@
-# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REFATORAÇÃO DE SKILLS (`v1.3.0`)
+# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REFATORAÇÃO DE SKILLS (`v2.2.0`)
 
-Para assegurar validações rigorosas e erradicar auditorias fictícias ou simulações vazias, toda checagem do subagente auditor deve classificar cada critério sob um dos três estados determinísticos:
+Para assegurar validações rigorosas e erradicar auditorias fictícias, toda checagem do subagente auditor deve classificar cada critério sob um dos três estados determinísticos:
 - `[PASS]`: Requisito plenamente satisfeito com evidência empírica e factual no arquivo inspecionado.
 - `[FAIL]`: Requisito violado com causa-raiz técnica, arquivo e linha comprovados.
 - `[UNVERIFIED]`: Não verificável por falta de insumos suficientes ou indisponibilidade de arquivo no escopo.
 
 ---
 
-### Regra 1: Validação de Frontmatter e Schema YAML (Tier 1)
-- **Critério**: O arquivo `SKILL.md` contém frontmatter YAML válido delimitado por cercas `---` com bloco `metadata` canônico?
-- **Campos Obrigatórios**: `name` (igual à pasta), `description` ($30 \le \text{chars} \le 1024$), `license`, `version` (SemVer `x.y.z`), `updated_at` (`YYYY-MM-DD`).
+### Regra 1: Eixo 1 — Validação de Frontmatter, Schema YAML e Fronteira de Gatilhos (Tier 1)
+- **Critério**: O arquivo `SKILL.md` contém frontmatter YAML válido (`name` em `kebab-case <= 64` igual à pasta, `description` em 3ª pessoa com $30 \le \text{chars} \le 1024$ declarando quando usar e quando NÃO usar, `license: MIT`, `version` SemVer, `updated_at`) e `evals/evals.json` com consultas `should_trigger` e `should_not_trigger` (*near-misses*)?
 - **Classificação**:
-  - Se todos os campos e formatos estiverem presentes -> `[PASS]`
-  - Se faltar qualquer campo obrigatório ou o YAML for inválido -> `[FAIL: Campo obrigatório ausente ou formato YAML corrompido]`
+  - Todos os campos presentes, fronteira limpa sem colisão com skills vizinhas e `evals.json` válido -> `[PASS]`
+  - Campo obrigatório ausente, descrição vaga ou colisão de gatilho não tratada -> `[FAIL: Metadados YAML ou fronteira de gatilho deficiente]`
 
 ---
 
-### Regra 2: Qualidade da Descrição e Matriz de Gatilhos (*Trigger Optimization*)
-- **Critério**: O campo `description` orienta o modelo em 3ª pessoa com gatilhos positivos e limites negativos (*near-misses*), acompanhado de casos `should-trigger` e `should-not-trigger` em `evals/evals.json`?
+### Regra 2: Eixo 2 — Orçamento de Contexto em 3 Tiers, *Gotchas* e Zero Redundância (Tier 2 & 3)
+- **Critério**: O corpo do `SKILL.md` possui $< 500$ linhas, prioriza instruções enxutas baseadas no *"Porquê"* (*Lean Instructions*), inclui seção de Armadilhas (*Gotchas*) e Orçamento Operacional, e elimina cópias redundantes referenciando `references/` e `scripts/`?
 - **Classificação**:
-  - Descrição em 3ª pessoa $\le 1024$ chars com fronteira negativa clara e `evals.json` válido -> `[PASS]`
-  - Descrição vaga, acima de 1024 chars ou sem proteção contra *near-misses* -> `[FAIL: Descrição deficiente para progressive discovery]`
+  - Orçamento de 3 Tiers respeitado ($< 500$ linhas), *Gotchas* presentes e zero duplicação textual entre skills -> `[PASS]`
+  - Corpo inchado $\ge 500$ linhas, ausência de *Gotchas* ou blocos copiados/colados de outras skills -> `[FAIL: Violação de Orçamento Tier 2 ou redundância entre skills detectada]`
 
 ---
 
-### Regra 3: Orçamento de Contexto em 3 Tiers e *Lean Instructions*
-- **Critério**: O corpo do `SKILL.md` (Tier 2) possui $< 500$ linhas, prioriza instruções enxutas baseadas no "Porquê" (evitando *over-constraining*), e move tabelas extensas para `references/` e lógica repetitiva para `scripts/` (Tier 3)?
+### Regra 3: Eixo 3 & 4 — Contrato Determinístico (`Pydantic`), Isolamento Zero-Trust e Portão HITL
+- **Critério**: Cálculos e transformações estão desacoplados em `scripts/` (`<= 300` linhas, tipados com Pydantic `extra="forbid"`, sem `input()` interativo, `stdout` vs `stderr` separados), sem credenciais hardcoded, com isolamento `<untrusted_user_input>` e portão HITL para ações destrutivas?
 - **Classificação**:
-  - Orçamento de 3 Tiers respeitado ($< 500$ linhas) e alta densidade atencional -> `[PASS]`
-  - Corpo inchado $\ge 500$ linhas, excesso de regras redundantes ou scripts pesados inline -> `[FAIL: Violação de Orçamento Tier 2 ou baixa densidade Softmax]`
+  - Contratos determinísticos, isolamento XML e portões HITL ativos -> `[PASS]`
+  - Lógica determinística delegada ao LLM, segredo hardcoded ou ausência de HITL -> `[FAIL: Quebra de determinismo ou segurança Zero-Trust]`
 
 ---
 
 ### Regra 4: Detecção de Acoplamento Monolítico e `authorized_sub_skills`
-- **Critério**: A skill mantém responsabilidade coesa ou desacopla sub-funções divergentes via cláusula `authorized_sub_skills` / *Envelope Pattern*?
+- **Critério**: A skill mantém responsabilidade única (SSOT) ou desacopla sub-funções divergentes via cláusula `authorized_sub_skills` / *Envelope Pattern*?
 - **Classificação**:
-  - Se a responsabilidade for coesa ou tiver encadeamento explícito -> `[PASS]`
-  - Se acumular múltiplos domínios conflitantes sem modularização -> `[FAIL: Monólito de alto risco de alucinação detectado]`
+  - Responsabilidade coesa ou encadeamento explícito via `authorized_sub_skills` -> `[PASS]`
+  - Acúmulo de múltiplos domínios conflitantes sem modularização -> `[FAIL: Monólito de alto risco de alucinação detectado]`
 
 ---
 
-### Regra 5: Conformidade com os 4 Módulos Táteis Melki (`DESIGN.md v4.5-soft`)
-- **Critério**: Em skills que geram UI, HTML ou relatórios visuais, há conformidade com os 4 Presets Soft UI + 22 temas minerais, banimento de cobalto/glassmorphism/bordas 1px, iluminação 135° (`.ui-card-soft`, `surface-inset`), `L_card > L_canvas`, 4 presets tipográficos e 5 geometrias?
+### Regra 5: Conformidade com o Módulo Específico de Domínio (`M1`..`M7`)
+- **Critério**: A skill cumpre integralmente os guardrails do seu módulo em `_template/references/guardrails_por_modulo.md` (`M1` Código/ReAct, `M2` Densidade $\le 35$ palavras, `M3` Frontend `DESIGN.md v4.5-soft` 135°/zero cobalto/WCAG/FSM, `M4` Grounding RAG, `M5` Imagem 8 Pilares em inglês, `M6` Vídeo temporal em inglês, `M7` Clínica 4 passos + 6 pilares + PII/PHI)?
 - **Classificação**:
-  - Aderência integral aos 4 módulos -> `[PASS]`
-  - Violação de paleta, ausência de relevo 135° ou omissão de opções -> `[FAIL: Discrepância com o Design System Tátil DESIGN.md v4.5-soft]`
+  - Aderência integral ao módulo de domínio aplicável -> `[PASS]`
+  - Violação de qualquer guardrail obrigatório do módulo -> `[FAIL: Discrepância com o Módulo de Domínio M1..M7]`
 
 ---
 
-### Regra 6: Governança de Mutação, Espelhamento 1:1 e Validação no Terminal
-- **Critério**: As alterações estão sincronizadas entre `.agents/skills/` e `skills/`, registradas com SemVer e diff no `MY_SKILLS.md` e aprovadas com exit code `0` em `scripts/validate_skills.py`?
+### Regra 6: Governança de Mutação, Sincronização Física e Validação no Terminal
+- **Critério**: As alterações foram aprovadas com exit code `0` em `scripts/validate_skills.py`, sincronizadas fisicamente por `scripts/sync_gemini_ecosystem.py` e registradas com SemVer e changelog no `MY_SKILLS.md`?
 - **Classificação**:
-  - Espelhamento idêntico, changelog atualizado e `validate_skills.py` `0` -> `[PASS]`
-  - Sobrescrita sem changelog, divergência em `skills/` ou erro no validador -> `[FAIL: Violação de governança de mutação de catálogo]`
+  - Sincronização concluída, changelog atualizado e `validate_skills.py` `0` -> `[PASS]`
+  - Sobrescrita sem changelog, divergência física ou erro no validador -> `[FAIL: Violação de governança de mutação de catálogo]`

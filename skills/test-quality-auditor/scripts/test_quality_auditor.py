@@ -169,7 +169,8 @@ def collect_target_files(target: Path) -> List[Path]:
     return files
 
 
-def main() -> int:
+def _build_cli_parser() -> argparse.ArgumentParser:
+    """Constrói o parser de argumentos de linha de comando do auditor."""
     parser = argparse.ArgumentParser(
         description="Auditor Determinístico de Qualidade de Testes e Evals (Python, TS/JS, Go, MCP, Harness)."
     )
@@ -190,8 +191,12 @@ def main() -> int:
     parser.add_argument("--pretty", action="store_true", help="Formata saída JSON indentada (padrão).")
     parser.add_argument("--run-evals", action="store_true", help="Executa evals/evals.json e evals/modules/*_evals.json.")
     parser.add_argument("--self-test", action="store_true", help="Executa auto-teste rápido da suíte de evals.")
-    args = parser.parse_args()
+    return parser
 
+
+def main() -> int:
+    parser = _build_cli_parser()
+    args = parser.parse_args()
     skill_root = SCRIPT_DIR.parent
 
     if args.run_evals or args.self_test:

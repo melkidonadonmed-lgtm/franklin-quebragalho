@@ -23,8 +23,8 @@ if str(ROOT_DIR) not in sys.path:
 
 from shared.tools.frontmatter_parser import parse_frontmatter
 
-AGENTS_SKILLS_DIR = ROOT_DIR / ".agents" / "skills"
-MIRROR_SKILLS_DIR = ROOT_DIR / "skills"
+CANONICAL_SKILLS_DIR = ROOT_DIR / "skills"
+LEGACY_AGENTS_SKILLS_DIR = ROOT_DIR / ".agents" / "skills"
 GLOBAL_PLUGIN_DIR = Path.home() / ".gemini" / "config" / "plugins" / "franklin-skills" / "skills"
 
 
@@ -51,12 +51,15 @@ def sync_directory_tree(src_root: Path, dst_root: Path) -> int:
 
 def main() -> int:
     print("=== SINCRONIZANDO E VALIDANDO METADADOS DO CATÁLOGO DE SKILLS ===")
-    if not AGENTS_SKILLS_DIR.exists():
-        print(f"[FAIL] Diretório canônico não encontrado: {AGENTS_SKILLS_DIR}")
+    if not CANONICAL_SKILLS_DIR.exists():
+        print(f"[FAIL] Diretório canônico não encontrado: {CANONICAL_SKILLS_DIR}")
         return 1
 
+    if LEGACY_AGENTS_SKILLS_DIR.exists():
+        shutil.rmtree(LEGACY_AGENTS_SKILLS_DIR)
+
     checked = 0
-    for skill_dir in sorted(AGENTS_SKILLS_DIR.iterdir()):
+    for skill_dir in sorted(CANONICAL_SKILLS_DIR.iterdir()):
         if not skill_dir.is_dir():
             continue
         skill_md = skill_dir / "SKILL.md"
@@ -67,13 +70,11 @@ def main() -> int:
         checked += 1
         print(f"[OK] {skill_dir.name:<45} (v{version})")
 
-    mirror_count = sync_directory_tree(AGENTS_SKILLS_DIR, MIRROR_SKILLS_DIR)
-    plugin_count = sync_directory_tree(AGENTS_SKILLS_DIR, GLOBAL_PLUGIN_DIR)
+    plugin_count = sync_directory_tree(CANONICAL_SKILLS_DIR, GLOBAL_PLUGIN_DIR)
 
     print("-" * 65)
     print(
-        f"Sucesso: {checked} skills verificadas | "
-        f"skills/ sincronizadas ({mirror_count}) | "
+        f"Sucesso: {checked} skills verificadas em skills/ | "
         f"plugin global sincronizado ({plugin_count})."
     )
     return 0

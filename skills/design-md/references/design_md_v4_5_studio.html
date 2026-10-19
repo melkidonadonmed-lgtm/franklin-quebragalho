@@ -532,9 +532,17 @@
     .dot-pulse {
       animation: softPulse 2.4s infinite ease-in-out;
     }
+
+    .tabular-nums { font-variant-numeric: tabular-nums; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
-<body class="min-h-screen antialiased architectural-grid-bg selection:bg-sky-600 selection:text-white">
+<body data-state="idle" aria-busy="false" class="min-h-screen antialiased architectural-grid-bg selection:bg-sky-600 selection:text-white">
 
   <!-- ==========================================================================
        APP SHELL: TACTILE ICON-TRACKING SIDEBAR + MAIN WORKSPACE
@@ -558,7 +566,7 @@
             </div>
             <div class="sidebar-text-el transition-all duration-200">
               <div class="font-bold text-sm tracking-tight leading-none">DESIGN.md</div>
-              <div class="text-[11px] font-mono-custom mt-1" style="color: var(--text-secondary);">Soft Tactile Studio</div>
+              <div class="text-xs font-mono-custom mt-1" style="color: var(--text-secondary);">Soft Tactile Studio</div>
             </div>
           </div>
 
@@ -577,7 +585,7 @@
         </div>
 
         <!-- Active Section Telemetry Pill -->
-        <div class="surface-inset px-3 py-2 rounded-xl flex items-center justify-between text-[11px] font-mono-custom">
+        <div class="surface-inset px-3 py-2 rounded-xl flex items-center justify-between text-xs font-mono-custom">
           <span class="sidebar-text-el truncate" style="color: var(--text-secondary);">SEÇÃO ATIVA:</span>
           <span id="sidebar-telemetry-code" class="font-bold" style="color: var(--accent-point);">02 • NEXUS</span>
         </div>
@@ -603,7 +611,7 @@
                 </span>
                 <div class="sidebar-text-el min-w-0 flex-1">
                   <div class="sidebar-label text-xs font-semibold truncate">01. Fundamentos</div>
-                  <div class="text-[10px] truncate" style="color: var(--text-muted);">Camadas Tonais &amp; 135°</div>
+                  <div class="text-xs truncate" style="color: var(--text-muted);">Camadas Tonais &amp; 135°</div>
                 </div>
               </button>
             </li>
@@ -626,7 +634,7 @@
                     <span class="sidebar-label text-xs font-semibold truncate">02. Nexus Bento Ops</span>
                     <span class="w-2 h-2 rounded-full dot-pulse" style="background-color: var(--accent-emerald);"></span>
                   </div>
-                  <div class="text-[10px] truncate" style="color: var(--text-muted);">Operações Agênticas v4.5</div>
+                  <div class="text-xs truncate" style="color: var(--text-muted);">Operações Agênticas v4.5</div>
                 </div>
               </button>
             </li>
@@ -646,7 +654,7 @@
                 </span>
                 <div class="sidebar-text-el min-w-0 flex-1">
                   <div class="sidebar-label text-xs font-semibold truncate">03. Soft UI Lab (8 Kits)</div>
-                  <div class="text-[10px] truncate" style="color: var(--text-muted);">Moss • Calm • Sapphire</div>
+                  <div class="text-xs truncate" style="color: var(--text-muted);">Moss • Calm • Sapphire</div>
                 </div>
               </button>
             </li>
@@ -666,7 +674,7 @@
                 </span>
                 <div class="sidebar-text-el min-w-0 flex-1">
                   <div class="sidebar-label text-xs font-semibold truncate">04. Code Architect</div>
-                  <div class="text-[10px] truncate" style="color: var(--text-muted);">Skill v4.0 • Design Atômico</div>
+                  <div class="text-xs truncate" style="color: var(--text-muted);">Skill v4.0 • Design Atômico</div>
                 </div>
               </button>
             </li>
@@ -686,7 +694,7 @@
                 </span>
                 <div class="sidebar-text-el min-w-0 flex-1">
                   <div class="sidebar-label text-xs font-semibold truncate">05. Testing Auditor</div>
-                  <div class="text-[10px] truncate" style="color: var(--text-muted);">Skill v2.5 • FSM &amp; Axe-Core</div>
+                  <div class="text-xs truncate" style="color: var(--text-muted);">Skill v2.5 • FSM &amp; Axe-Core</div>
                 </div>
               </button>
             </li>
@@ -706,7 +714,7 @@
                 </span>
                 <div class="sidebar-text-el min-w-0 flex-1">
                   <div class="sidebar-label text-xs font-semibold truncate">06. Terrixa &amp; Export</div>
-                  <div class="text-[10px] truncate" style="color: var(--text-muted);">Inversão Tonal &amp; DESIGN.md</div>
+                  <div class="text-xs truncate" style="color: var(--text-muted);">Inversão Tonal &amp; DESIGN.md</div>
                 </div>
               </button>
             </li>
@@ -717,7 +725,7 @@
       <!-- Bottom Sidebar Tactile Quick Controls -->
       <div class="space-y-3 pt-4 border-t" style="border-color: var(--hairline-color);">
         <div class="sidebar-text-el space-y-2">
-          <div class="flex items-center justify-between text-[11px] font-mono-custom" style="color: var(--text-secondary);">
+          <div class="flex items-center justify-between text-xs font-mono-custom" style="color: var(--text-secondary);">
             <span>RELEVO 135°</span>
             <span id="sidebar-shadow-label">100%</span>
           </div>
@@ -764,16 +772,16 @@
             <!-- 4 Theme Presets (Zero Cobalt — Cerulean & Ocean Sapphire) -->
             <div class="surface-inset-pill p-1 flex items-center gap-1 text-xs font-medium">
               <button onclick="setSystemTheme('slate')" id="theme-btn-slate" class="px-3 py-1.5 rounded-full transition-all btn-tactile-primary" title="Nexus Operations v4.5 Slate Prestige (Cerulean #0284C7)">
-                📐 Nexus Slate
+                Nexus Slate
               </button>
               <button onclick="setSystemTheme('moss')" id="theme-btn-moss" class="px-3 py-1.5 rounded-full transition-all" style="color: var(--text-secondary);" title="MOSS / SYSTEM & CALM / SYSTEM">
-                🌿 Moss
+                Moss
               </button>
               <button onclick="setSystemTheme('sapphire')" id="theme-btn-sapphire" class="px-3 py-1.5 rounded-full transition-all" style="color: var(--text-secondary);" title="SOFT / SYSTEM Ocean Sapphire (#1E6091 — Anti-Cobalto)">
-                💎 Sapphire
+                Sapphire
               </button>
               <button onclick="setSystemTheme('obsidian')" id="theme-btn-obsidian" class="px-3 py-1.5 rounded-full transition-all" style="color: var(--text-secondary);" title="Obsidian Dark Soft Minimal">
-                🌑 Obsidian
+                Obsidian
               </button>
             </div>
 
@@ -802,7 +810,7 @@
             <div class="space-y-4">
               <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full surface-inset text-xs font-semibold tracking-wider uppercase" style="color: var(--accent-point);">
                 <span>01 • Regra Mestra v4.5 &amp; Arquitetura Tátil (Anti-Cobalto)</span>
-                <span class="blueprint-badge ml-2 px-1.5 py-0.5 bg-sky-600 text-white rounded text-[10px] font-mono-custom">gap: 8px</span>
+                <span class="blueprint-badge ml-2 px-1.5 py-0.5 bg-sky-600 text-white rounded text-xs font-mono-custom">gap: 8px</span>
               </div>
 
               <h1 class="font-display-custom text-3xl sm:text-5xl font-bold tracking-tight leading-[1.12]">
@@ -825,27 +833,27 @@
 
               <div class="grid sm:grid-cols-4 gap-3">
                 <button onclick="inspectLayer(0)" id="layer-btn-0" class="p-3.5 rounded-2xl text-left transition-all surface-inset">
-                  <div class="text-[11px] font-mono-custom uppercase opacity-70">Layer 0</div>
+                  <div class="text-xs font-mono-custom uppercase opacity-70">Layer 0</div>
                   <div class="font-semibold text-sm mt-0.5">Canvas Base</div>
-                  <div class="text-[11px] mt-1 opacity-75">60% #F1F4F8</div>
+                  <div class="text-xs mt-1 opacity-75">60% #F1F4F8</div>
                 </button>
 
                 <button onclick="inspectLayer(1)" id="layer-btn-1" class="p-3.5 rounded-2xl text-left transition-all surface-inset">
-                  <div class="text-[11px] font-mono-custom uppercase opacity-70">Layer 1</div>
+                  <div class="text-xs font-mono-custom uppercase opacity-70">Layer 1</div>
                   <div class="font-semibold text-sm mt-0.5">Surface Inset</div>
-                  <div class="text-[11px] mt-1 opacity-75">Inputs &amp; Trilhos</div>
+                  <div class="text-xs mt-1 opacity-75">Inputs &amp; Trilhos</div>
                 </button>
 
                 <button onclick="inspectLayer(2)" id="layer-btn-2" class="p-3.5 rounded-2xl text-left transition-all surface-flat">
-                  <div class="text-[11px] font-mono-custom uppercase opacity-70">Layer 2</div>
+                  <div class="text-xs font-mono-custom uppercase opacity-70">Layer 2</div>
                   <div class="font-semibold text-sm mt-0.5">Surface Flat</div>
-                  <div class="text-[11px] mt-1 opacity-75">Placas Sem Borda</div>
+                  <div class="text-xs mt-1 opacity-75">Placas Sem Borda</div>
                 </button>
 
                 <button onclick="inspectLayer(3)" id="layer-btn-3" class="p-3.5 rounded-2xl text-left transition-all btn-tactile-primary">
-                  <div class="text-[11px] font-mono-custom uppercase opacity-80">Layer 3</div>
+                  <div class="text-xs font-mono-custom uppercase opacity-80">Layer 3</div>
                   <div class="font-semibold text-sm mt-0.5">Surface Raised</div>
-                  <div class="text-[11px] mt-1 opacity-90">Soft UI 135°</div>
+                  <div class="text-xs mt-1 opacity-90">Soft UI 135°</div>
                 </button>
               </div>
 
@@ -854,7 +862,7 @@
                   <span class="font-semibold" style="color: var(--accent-point);" id="layer-out-title">[Layer 3: Surface Raised]</span>
                   <span class="block sm:inline sm:ml-2" style="color: var(--text-secondary);" id="layer-out-desc">Elementos esculpidos com iluminação direcional dupla a 135°.</span>
                 </div>
-                <code id="layer-out-code" class="px-3 py-1 rounded-lg surface-raised-sm text-[11px] whitespace-nowrap">
+                <code id="layer-out-code" class="px-3 py-1 rounded-lg surface-raised-sm text-xs whitespace-nowrap">
                   box-shadow: 8px 8px 20px / -8px -8px 20px
                 </code>
               </div>
@@ -870,10 +878,10 @@
               </div>
               <div class="surface-inset-pill p-1 flex items-center text-xs font-semibold">
                 <button onclick="setComparisonMode('soft')" id="comp-btn-soft" class="px-3 py-1.5 rounded-full btn-tactile-primary transition-all">
-                  ✅ v4.5 Soft UI
+                  v4.5 Soft UI
                 </button>
                 <button onclick="setComparisonMode('noisy')" id="comp-btn-noisy" class="px-3 py-1.5 rounded-full transition-all" style="color: var(--text-secondary);">
-                  ❌ Neon/Glass
+                  Neon/Glass
                 </button>
               </div>
             </div>
@@ -904,7 +912,7 @@
                   <span class="font-mono text-xs text-cyan-300">AUDIT-VIS-01 FAIL</span>
                 </div>
                 <div>
-                  <div class="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-300 to-cyan-300">
+                  <div class="text-2xl font-extrabold text-transparent bg-clip-text  from-pink-400 via-purple-300 to-cyan-300">
                     Poluição e Fadiga Visual
                   </div>
                   <p class="text-xs mt-1 leading-relaxed text-pink-100/90">
@@ -918,15 +926,15 @@
             <div class="grid grid-cols-3 gap-2.5 text-center">
               <div class="surface-inset p-3 rounded-xl">
                 <div class="font-mono-custom text-xs font-bold" style="color: var(--accent-point);">60-30-10</div>
-                <div class="text-[11px] mt-0.5" style="color: var(--text-secondary);">Economia Tonal</div>
+                <div class="text-xs mt-0.5" style="color: var(--text-secondary);">Economia Tonal</div>
               </div>
               <div class="surface-inset p-3 rounded-xl">
                 <div class="font-mono-custom text-xs font-bold" style="color: var(--accent-point);">8pt / 24px</div>
-                <div class="text-[11px] mt-0.5" style="color: var(--text-secondary);">Respiro Amplo</div>
+                <div class="text-xs mt-0.5" style="color: var(--text-secondary);">Respiro Amplo</div>
               </div>
               <div class="surface-inset p-3 rounded-xl">
                 <div class="font-mono-custom text-xs font-bold" style="color: var(--accent-point);">WCAG AA</div>
-                <div class="text-[11px] mt-0.5" style="color: var(--text-secondary);">Contraste ≥ 4.5:1</div>
+                <div class="text-xs mt-0.5" style="color: var(--text-secondary);">Contraste ≥ 4.5:1</div>
               </div>
             </div>
           </div>
@@ -945,7 +953,7 @@
           </div>
           <div class="flex items-center gap-2">
             <button onclick="runNexusBenchmark()" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold btn-tactile flex items-center gap-1.5">
-              <span>⚡ Simular Carga no Cluster</span>
+              <span>Simular Carga no Cluster</span>
             </button>
           </div>
         </div>
@@ -1017,7 +1025,7 @@
                 />
               </svg>
               <!-- Subtle Telemetry Footer inside Chart -->
-              <div class="flex justify-between text-[11px] font-mono-custom mt-2" style="color: var(--text-muted);">
+              <div class="flex justify-between text-xs font-mono-custom mt-2" style="color: var(--text-muted);">
                 <span>NODE-01: 3.570 TPS</span>
                 <span>NODE-02: 3.610 TPS</span>
                 <span>NODE-03: 3.540 TPS</span>
@@ -1167,7 +1175,7 @@
                 <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full swatch-disc" style="background-color: var(--accent-point);"></div>
                 <div>
                   <div id="swatch-name-0" class="text-xs sm:text-sm font-semibold">Cerulean</div>
-                  <div id="swatch-hex-0" class="text-[11px] font-mono-custom" style="color: var(--text-muted);">#0284C7</div>
+                  <div id="swatch-hex-0" class="text-xs font-mono-custom" style="color: var(--text-muted);">#0284C7</div>
                 </div>
               </div>
 
@@ -1175,7 +1183,7 @@
                 <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full swatch-disc" style="background-color: var(--accent-secondary);"></div>
                 <div>
                   <div id="swatch-name-1" class="text-xs sm:text-sm font-semibold">Sky Mist</div>
-                  <div id="swatch-hex-1" class="text-[11px] font-mono-custom" style="color: var(--text-muted);">#7DD3FC</div>
+                  <div id="swatch-hex-1" class="text-xs font-mono-custom" style="color: var(--text-muted);">#7DD3FC</div>
                 </div>
               </div>
 
@@ -1183,7 +1191,7 @@
                 <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full swatch-disc" style="background-color: var(--surface-raised);"></div>
                 <div>
                   <div id="swatch-name-2" class="text-xs sm:text-sm font-semibold">Surface</div>
-                  <div id="swatch-hex-2" class="text-[11px] font-mono-custom" style="color: var(--text-muted);">#F1F4F8</div>
+                  <div id="swatch-hex-2" class="text-xs font-mono-custom" style="color: var(--text-muted);">#F1F4F8</div>
                 </div>
               </div>
 
@@ -1191,7 +1199,7 @@
                 <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full swatch-disc" style="background-color: var(--surface-contrast);"></div>
                 <div>
                   <div id="swatch-name-3" class="text-xs sm:text-sm font-semibold">Graphite</div>
-                  <div id="swatch-hex-3" class="text-[11px] font-mono-custom" style="color: var(--text-muted);">#1E293B</div>
+                  <div id="swatch-hex-3" class="text-xs font-mono-custom" style="color: var(--text-muted);">#1E293B</div>
                 </div>
               </div>
             </div>
@@ -1203,7 +1211,7 @@
               <span class="text-xs font-mono-custom uppercase tracking-widest font-semibold" style="color: var(--text-secondary);">
                 02 &nbsp; TYPOGRAPHY &amp; AIRY SCALE
               </span>
-              <div class="surface-inset-pill p-1 flex text-[11px] font-mono-custom">
+              <div class="surface-inset-pill p-1 flex text-xs font-mono-custom">
                 <button onclick="setTypoSpecimen('calm')" id="spec-btn-calm" class="px-2.5 py-0.5 rounded-full btn-tactile-primary">Calm</button>
                 <button onclick="setTypoSpecimen('moss')" id="spec-btn-moss" class="px-2.5 py-0.5 rounded-full">Moss</button>
                 <button onclick="setTypoSpecimen('soft')" id="spec-btn-soft" class="px-2.5 py-0.5 rounded-full">Soft</button>
@@ -1231,7 +1239,7 @@
               <span class="text-xs font-mono-custom uppercase tracking-widest font-semibold" style="color: var(--text-secondary);">
                 03 &nbsp; CONTROLS &amp; TACTILE BUTTONS
               </span>
-              <span class="text-[11px] font-mono-custom" style="color: var(--text-muted);">:active -> inset</span>
+              <span class="text-xs font-mono-custom" style="color: var(--text-muted);">:active -> inset</span>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
@@ -1261,7 +1269,7 @@
               <span class="text-xs font-mono-custom uppercase tracking-widest font-semibold" style="color: var(--text-secondary);">
                 04 &nbsp; SEARCH FIELD (SURFACE-INSET)
               </span>
-              <span class="text-[11px] font-mono-custom" style="color: var(--text-muted);">Layer 1</span>
+              <span class="text-xs font-mono-custom" style="color: var(--text-muted);">Layer 1</span>
             </div>
 
             <div class="surface-inset-pill px-5 py-3 flex items-center gap-3.5">
@@ -1377,7 +1385,7 @@
                 <div class="w-full h-3.5 rounded-full surface-inset-pill overflow-hidden p-0.5">
                   <div id="progress-bar-fill" class="h-full rounded-full transition-all duration-500" style="width: 75%; background-color: var(--accent-point);"></div>
                 </div>
-                <div class="flex justify-between text-[10px] font-mono-custom" style="color: var(--text-muted);">
+                <div class="flex justify-between text-xs font-mono-custom" style="color: var(--text-muted);">
                   <span>ALMOST THERE</span>
                   <span id="progress-step-label">4 OF 6</span>
                 </div>
@@ -1431,33 +1439,32 @@
                 </div>
                 <div class="min-w-0">
                   <div class="text-xs font-bold truncate">Alex Rivera</div>
-                  <div class="text-[11px] truncate" style="color: var(--text-secondary);">Principal UI Architect</div>
+                  <div class="text-xs truncate" style="color: var(--text-secondary);">Principal UI Architect</div>
                 </div>
               </div>
 
               <div class="surface-raised-sm p-3.5 rounded-2xl flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style="background-color: var(--accent-soft-bg); color: var(--accent-point);">
-                  ✓
-                </div>
+                  </div>
                 <div class="min-w-0">
                   <div id="live-toast-title" class="text-xs font-bold truncate">All set.</div>
-                  <div id="live-toast-desc" class="text-[11px] truncate" style="color: var(--text-secondary);">You're ready to go.</div>
+                  <div id="live-toast-desc" class="text-xs truncate" style="color: var(--text-secondary);">You're ready to go.</div>
                 </div>
               </div>
             </div>
 
             <div class="surface-inset-pill p-1.5 grid grid-cols-4 gap-1">
               <button onclick="selectBottomNav(0)" id="bnav-0" class="py-1.5 rounded-full flex flex-col items-center justify-center btn-tactile-secondary">
-                <span class="text-[11px] font-semibold">Home</span>
+                <span class="text-xs font-semibold">Home</span>
               </button>
               <button onclick="selectBottomNav(1)" id="bnav-1" class="py-1.5 rounded-full flex flex-col items-center justify-center" style="color: var(--text-secondary);">
-                <span class="text-[11px] font-medium">Explore</span>
+                <span class="text-xs font-medium">Explore</span>
               </button>
               <button onclick="selectBottomNav(2)" id="bnav-2" class="py-1.5 rounded-full flex flex-col items-center justify-center" style="color: var(--text-secondary);">
-                <span class="text-[11px] font-medium">Saved</span>
+                <span class="text-xs font-medium">Saved</span>
               </button>
               <button onclick="selectBottomNav(3)" id="bnav-3" class="py-1.5 rounded-full flex flex-col items-center justify-center" style="color: var(--text-secondary);">
-                <span class="text-[11px] font-medium">Profile</span>
+                <span class="text-xs font-medium">Profile</span>
               </button>
             </div>
           </div>
@@ -1522,7 +1529,7 @@
             <div class="lg:col-span-5 surface-inset p-5 rounded-2xl flex flex-col justify-between space-y-4">
               <div>
                 <div class="text-xs font-mono-custom uppercase font-bold mb-3" style="color: var(--text-secondary);">
-                  📁 Estrutura Modular (Clique nos arquivos):
+                  Estrutura Modular (Clique nos arquivos):
                 </div>
 
                 <div class="space-y-1.5 font-mono-custom text-xs">
@@ -1530,40 +1537,40 @@
 
                   <button onclick="openArchitectFile('softcard')" id="arch-file-softcard" class="w-full text-left px-3 py-2.5 rounded-xl flex items-center justify-between btn-tactile-primary">
                     <span>├── components/ui/SoftCard.tsx</span>
-                    <span class="text-[10px] opacity-80">TSX</span>
+                    <span class="text-xs opacity-80">TSX</span>
                   </button>
 
                   <button onclick="openArchitectFile('globals')" id="arch-file-globals" class="w-full text-left px-3 py-2.5 rounded-xl flex items-center justify-between hover:opacity-80">
                     <span>├── styles/globals.css</span>
-                    <span class="text-[10px] opacity-60">CSS</span>
+                    <span class="text-xs opacity-60">CSS</span>
                   </button>
 
                   <button onclick="openArchitectFile('tokens')" id="arch-file-tokens" class="w-full text-left px-3 py-2.5 rounded-xl flex items-center justify-between hover:opacity-80">
                     <span>├── config/tokens.ts</span>
-                    <span class="text-[10px] opacity-60">TS</span>
+                    <span class="text-xs opacity-60">TS</span>
                   </button>
 
                   <button onclick="openArchitectFile('designmd')" id="arch-file-designmd" class="w-full text-left px-3 py-2.5 rounded-xl flex items-center justify-between hover:opacity-80">
                     <span>├── config/DESIGN.md</span>
-                    <span class="text-[10px] opacity-60">YAML</span>
+                    <span class="text-xs opacity-60">YAML</span>
                   </button>
 
                   <button onclick="openArchitectFile('types')" id="arch-file-types" class="w-full text-left px-3 py-2.5 rounded-xl flex items-center justify-between hover:opacity-80">
                     <span>└── types/index.ts</span>
-                    <span class="text-[10px] opacity-60">TS</span>
+                    <span class="text-xs opacity-60">TS</span>
                   </button>
                 </div>
               </div>
 
               <!-- Self-Refine Checklist from Skill Section 5 -->
               <div class="pt-4 border-t space-y-2" style="border-color: var(--hairline-color);">
-                <div class="text-[11px] font-mono-custom uppercase font-bold" style="color: var(--accent-emerald);">
-                  ✓ Checklist Self-Refine (Skill v4.0)
+                <div class="text-xs font-mono-custom uppercase font-bold" style="color: var(--accent-emerald);">
+                  Checklist Self-Refine (Skill v4.0)
                 </div>
                 <div class="text-xs space-y-1" style="color: var(--text-secondary);">
-                  <div>☑ Zero glassmorphism, cobalto, neon ou bordas duras 1px</div>
-                  <div>☑ Paleta 60-30-10 gerada por elevação tonal (Cerulean/Sapphire)</div>
-                  <div>☑ Modularizado em Design Atômico + TS Estrito</div>
+                  <div>Zero glassmorphism, cobalto, neon ou bordas duras 1px</div>
+                  <div>Paleta 60-30-10 gerada por elevação tonal (Cerulean/Sapphire)</div>
+                  <div>Modularizado em Design Atômico + TS Estrito</div>
                 </div>
               </div>
             </div>
@@ -1670,7 +1677,7 @@
               </article>
 
               <!-- Live DOM & ComputedStyle Telemetry Bar -->
-              <div class="surface-raised-sm p-3.5 rounded-xl font-mono-custom text-[11px] space-y-1">
+              <div class="surface-raised-sm p-3.5 rounded-xl font-mono-custom text-xs space-y-1">
                 <div class="flex justify-between">
                   <span style="color: var(--text-secondary);">computedStyle.backdropFilter:</span>
                   <span id="telemetry-backdrop" class="font-bold" style="color: var(--accent-emerald);">none (APROVADO)</span>
@@ -1699,7 +1706,7 @@
                 </div>
                 <div class="surface-raised-sm px-4 py-2 rounded-2xl text-right">
                   <div id="audit-total-score" class="text-3xl font-bold font-mono-custom" style="color: var(--accent-emerald);">100.0</div>
-                  <div class="text-[10px] font-mono-custom uppercase" style="color: var(--text-muted);">Production Ready</div>
+                  <div class="text-xs font-mono-custom uppercase" style="color: var(--text-muted);">Production Ready</div>
                 </div>
               </div>
 
@@ -1708,7 +1715,7 @@
                 <div class="surface-raised-sm p-3 rounded-xl flex items-center justify-between gap-4">
                   <div>
                     <span class="font-bold font-mono-custom" style="color: var(--accent-point);">AUDIT-A11Y-01/02 (35%)</span>
-                    <div class="text-[11px]" style="color: var(--text-secondary);">Axe-Core 0 violações + Foco teclado sem neon</div>
+                    <div class="text-xs" style="color: var(--text-secondary);">Axe-Core 0 violações + Foco teclado sem neon</div>
                   </div>
                   <span id="badge-audit-1" class="badge-soft font-mono-custom">PASS • 100%</span>
                 </div>
@@ -1716,7 +1723,7 @@
                 <div class="surface-raised-sm p-3 rounded-xl flex items-center justify-between gap-4">
                   <div>
                     <span class="font-bold font-mono-custom" style="color: var(--accent-point);">AUDIT-STATE-01/02 (30%)</span>
-                    <div class="text-[11px]" style="color: var(--text-secondary);">Transição determinística Loading → Success / Alert</div>
+                    <div class="text-xs" style="color: var(--text-secondary);">Transição determinística Loading → Success / Alert</div>
                   </div>
                   <span id="badge-audit-2" class="badge-soft font-mono-custom">PASS • 100%</span>
                 </div>
@@ -1724,7 +1731,7 @@
                 <div class="surface-raised-sm p-3 rounded-xl flex items-center justify-between gap-4">
                   <div>
                     <span class="font-bold font-mono-custom" style="color: var(--accent-point);">AUDIT-VIS-01 (20%)</span>
-                    <div class="text-[11px]" style="color: var(--text-secondary);">Elevação <code>.ui-card-soft</code>, zero <code>blur()</code> e zero cobalto</div>
+                    <div class="text-xs" style="color: var(--text-secondary);">Elevação <code>.ui-card-soft</code>, zero <code>blur()</code> e zero cobalto</div>
                   </div>
                   <span id="badge-audit-3" class="badge-soft font-mono-custom">PASS • 100%</span>
                 </div>
@@ -1732,7 +1739,7 @@
                 <div class="surface-raised-sm p-3 rounded-xl flex items-center justify-between gap-4">
                   <div>
                     <span class="font-bold font-mono-custom" style="color: var(--accent-point);">AUDIT-SEC-01 (15%)</span>
-                    <div class="text-[11px]" style="color: var(--text-secondary);">Bloqueio de payload XSS <code>&lt;img src=x onerror&gt;</code></div>
+                    <div class="text-xs" style="color: var(--text-secondary);">Bloqueio de payload XSS <code>&lt;img src=x onerror&gt;</code></div>
                   </div>
                   <span id="badge-audit-4" class="badge-soft font-mono-custom">PASS • 100%</span>
                 </div>
@@ -1836,22 +1843,22 @@ skills_integrated:
     class="lg:hidden fixed bottom-3 left-3 right-3 z-40 surface-raised p-2 rounded-2xl grid grid-cols-6 gap-1"
   >
     <button onclick="navigateToSection('sec-foundation', 0)" class="mobile-nav-btn py-2 rounded-xl flex flex-col items-center justify-center surface-inset" style="color: var(--accent-point);">
-      <span class="text-[10px] font-bold">01.Base</span>
+      <span class="text-xs font-bold">01.Base</span>
     </button>
     <button onclick="navigateToSection('sec-nexus-bento', 1)" class="mobile-nav-btn py-2 rounded-xl flex flex-col items-center justify-center" style="color: var(--text-secondary);">
-      <span class="text-[10px] font-semibold">02.Nexus</span>
+      <span class="text-xs font-semibold">02.Nexus</span>
     </button>
     <button onclick="navigateToSection('sec-components', 2)" class="mobile-nav-btn py-2 rounded-xl flex flex-col items-center justify-center" style="color: var(--text-secondary);">
-      <span class="text-[10px] font-semibold">03.SoftUI</span>
+      <span class="text-xs font-semibold">03.SoftUI</span>
     </button>
     <button onclick="navigateToSection('sec-architect-skill', 3)" class="mobile-nav-btn py-2 rounded-xl flex flex-col items-center justify-center" style="color: var(--text-secondary);">
-      <span class="text-[10px] font-semibold">04.Arch</span>
+      <span class="text-xs font-semibold">04.Arch</span>
     </button>
     <button onclick="navigateToSection('sec-auditor-skill', 4)" class="mobile-nav-btn py-2 rounded-xl flex flex-col items-center justify-center" style="color: var(--text-secondary);">
-      <span class="text-[10px] font-semibold">05.Audit</span>
+      <span class="text-xs font-semibold">05.Audit</span>
     </button>
     <button onclick="navigateToSection('sec-bento-terrixa', 5)" class="mobile-nav-btn py-2 rounded-xl flex flex-col items-center justify-center" style="color: var(--text-secondary);">
-      <span class="text-[10px] font-semibold">06.Spec</span>
+      <span class="text-xs font-semibold">06.Spec</span>
     </button>
   </nav>
 
@@ -1863,8 +1870,7 @@ skills_integrated:
     class="fixed bottom-6 right-6 z-50 surface-raised px-5 py-3.5 rounded-2xl flex items-center gap-3.5 transform translate-y-28 opacity-0 pointer-events-none transition-all duration-300"
   >
     <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style="background-color: var(--accent-point); color: #fff;">
-      ✓
-    </div>
+      </div>
     <div>
       <div class="text-xs font-mono-custom uppercase font-semibold" style="color: var(--accent-point);">Feedback Tátil</div>
       <div id="toast-msg-body" class="text-sm font-medium">Ação executada com sucesso.</div>
@@ -2216,7 +2222,7 @@ skills_integrated:
         tag: 'CAMADA ATÔMICA 04 • TEMPLATES',
         title: 'Templates: Matriz Bento de 12 Colunas (span-8 + span-4)',
         desc: 'Grade assimétrica responsiva com gap mínimo de 24px (1.75rem) garantindo respirabilidade visual.',
-        html: `<div class="grid grid-cols-12 gap-2 w-48 text-[10px] font-mono-custom text-center">
+        html: `<div class="grid grid-cols-12 gap-2 w-48 text-xs font-mono-custom text-center">
                  <div class="col-span-8 surface-raised-sm py-2 rounded">span-8</div>
                  <div class="col-span-4 surface-inset py-2 rounded">span-4</div>
                </div>`
@@ -2447,7 +2453,7 @@ export interface AuditTelemetryResult {
         card.setAttribute('aria-busy', 'false');
         fsmBadge.textContent = 'FSM: ERROR (403)';
         badge.textContent = 'Falha';
-        body.innerHTML = `<div role="alert" aria-live="assertive" class="surface-inset p-4 rounded-xl text-xs font-semibold" style="color: var(--semantic-error);">⚠️ Falha na conexão com a API — Recuperação segura ativada (role="alert")</div>`;
+        body.innerHTML = `<div role="alert" aria-live="assertive" class="surface-inset p-4 rounded-xl text-xs font-semibold" style="color: var(--semantic-error);">️ Falha na conexão com a API — Recuperação segura ativada (role="alert")</div>`;
         ariaOut.textContent = 'role="alert" aria-live="assertive"';
       } else if (stateKey === 'pressed') {
         card.setAttribute('aria-busy', 'false');
@@ -2705,7 +2711,7 @@ describe('Auditoria Técnica Soft UI — <SoftCard />', () => {
       const mdText = document.getElementById('design-md-source').innerText;
       copyTextToClipboard(mdText);
       const label = document.getElementById('copy-md-label');
-      label.textContent = '✓ DESIGN.md v4.5 Copiado!';
+      label.textContent = 'DESIGN.md v4.5 Copiado!';
       triggerSoftToast('Especificação DESIGN.md v4.5 copiada!');
       setTimeout(() => {
         label.textContent = 'Copiar DESIGN.md v4.5 Completo';

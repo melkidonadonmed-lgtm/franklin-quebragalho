@@ -1,6 +1,7 @@
 [
   {
     "eval_id": "TC-01-DETECCAO-MONOLITO",
+    "category": "should-trigger",
     "description": "Valida se o subagente detecta acoplamento monolítico em skill que mistura planejamento e diagramação Mermaid",
     "input": {
       "skill_content": "---\nname: skill-plano-e-diagrama\ndescription: Faz planos e gera codigos Mermaid de grafos complexos.\n---\nPlaneje todas as etapas e ao mesmo tempo desenhe o diagrama Mermaid completo com nós de estilo.",
@@ -15,6 +16,7 @@
   },
   {
     "eval_id": "TC-02-VALIDACAO-FRONTMATTER",
+    "category": "should-trigger",
     "description": "Valida a rejeição determinística de frontmatter sem updated_at ou com descrição vaga",
     "input": {
       "skill_content": "---\nname: skill-sem-data\ndescription: Ajuda o usuario com arquivos.\n---\nInstrucoes simples.",
@@ -28,6 +30,7 @@
   },
   {
     "eval_id": "TC-03-AUTORIZACAO-SUB-SKILL",
+    "category": "should-trigger",
     "description": "Valida se a skill desacoplada inclui a permissão de invocação cruzada",
     "input": {
       "target_skill": "skill-planejador-estrategico",
@@ -41,17 +44,16 @@
     }
   },
   {
-    "eval_id": "TC-04-MUTACAO-COM-CHANGELOG",
-    "description": "Valida se o subagente emite o changelog detalhado e atualiza a skill de encadeamento e a si própria",
+    "eval_id": "TC-04-NEAR-MISS-CRIACAO-SKILL-DO-ZERO",
+    "category": "should-not-trigger",
+    "description": "Near-miss: pedido para criar uma nova skill do zero a partir de uma ideia bruta",
     "input": {
-      "audit_mode": "apply_refactoring",
-      "skills_modificadas": 2
+      "user_intent": "Quero criar uma skill nova do zero para organizar planilhas médicas.",
+      "audit_mode": "create_new"
     },
     "expected_behavior": {
-      "emitiu_diff_changelog": true,
-      "atualizou_auto_definicao": true,
-      "atualizou_skill_encadeamento": true,
-      "status_regra_5": "[PASS]"
+      "aciona_auditor_refatorador": false,
+      "delega_para": "evoluir-skills"
     }
   }
 ]

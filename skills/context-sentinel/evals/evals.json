@@ -1,7 +1,20 @@
 [
   {
-    "eval_id": "eval-001-checkpoint-extracao",
-    "prompt": "Gere um checkpoint de estado após 5 turnos de desenvolvimento.",
-    "expected_behavior": "Retorna o payload JSON StateCheckpointSchema contendo fatos comprovados, pendências e status context_health."
+    "eval_id": "TC-SENTINEL-01-CHECKPOINT-EXTRACAO",
+    "category": "should-trigger",
+    "prompt": "Gere um checkpoint estruturado de estado após 5 turnos de desenvolvimento intenso em pipeline multiagente.",
+    "expected_behavior": "Retorna o payload JSON StateCheckpointSchema validado com Pydantic v2 contendo fatos classificados ([FATO], [PENDENCIA], [LACUNA]) e status context_health."
+  },
+  {
+    "eval_id": "TC-SENTINEL-02-CONTEXT-ROT-PRUNING",
+    "category": "should-trigger",
+    "prompt": "Audite a janela de contexto desta sessão que já consumiu 75% do token budget com logs repetidos.",
+    "expected_behavior": "Identifica blocos redundantes em noise_detected, sinaliza pruning_recommended: true sem descartar dados silenciosamente e recomenda checkpoint em .context/."
+  },
+  {
+    "eval_id": "TC-SENTINEL-03-NEAR-MISS-SINGLE-TURN",
+    "category": "should-not-trigger",
+    "prompt": "Qual é a sintaxe do comando Get-ChildItem no PowerShell 7?",
+    "expected_behavior": "Não aciona o Context Sentinel para uma dúvida trivial de turno único; responde diretamente."
   }
 ]

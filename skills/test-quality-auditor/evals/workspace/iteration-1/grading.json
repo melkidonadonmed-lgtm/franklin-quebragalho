@@ -182,8 +182,8 @@
     "python": {
       "evals_file": "evals/modules/python_evals.json",
       "target_script": "scripts/python_ast_auditor.py",
-      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\python_grading.json",
-      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\python_benchmark.json",
+      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\python_grading.json",
+      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\python_benchmark.json",
       "passed": 4,
       "total": 4,
       "pass_rate": 1.0
@@ -191,8 +191,8 @@
     "ts_js": {
       "evals_file": "evals/modules/ts_js_evals.json",
       "target_script": "scripts/ts_js_auditor.py",
-      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\ts_js_grading.json",
-      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\ts_js_benchmark.json",
+      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\ts_js_grading.json",
+      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\ts_js_benchmark.json",
       "passed": 3,
       "total": 3,
       "pass_rate": 1.0
@@ -200,8 +200,8 @@
     "go": {
       "evals_file": "evals/modules/go_evals.json",
       "target_script": "scripts/go_test_auditor.py",
-      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\go_grading.json",
-      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\go_benchmark.json",
+      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\go_grading.json",
+      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\go_benchmark.json",
       "passed": 3,
       "total": 3,
       "pass_rate": 1.0
@@ -209,8 +209,8 @@
     "mcp": {
       "evals_file": "evals/modules/mcp_evals.json",
       "target_script": "scripts/mcp_test_auditor.py",
-      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\mcp_grading.json",
-      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\mcp_benchmark.json",
+      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\mcp_grading.json",
+      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\mcp_benchmark.json",
       "passed": 3,
       "total": 3,
       "pass_rate": 1.0
@@ -218,8 +218,8 @@
     "harness": {
       "evals_file": "evals/modules/harness_evals.json",
       "target_script": "scripts/harness_test_auditor.py",
-      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\harness_grading.json",
-      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.agents\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\harness_benchmark.json",
+      "grading_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\harness_grading.json",
+      "benchmark_path": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\skills\\test-quality-auditor\\evals\\workspace\\iteration-1\\modules\\harness_benchmark.json",
       "passed": 4,
       "total": 4,
       "pass_rate": 1.0

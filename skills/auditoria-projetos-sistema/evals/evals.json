@@ -1,6 +1,7 @@
 [
   {
     "eval_id": "TC-01-AUDITORIA-GOVERNANCA-GIT",
+    "category": "should-trigger",
     "description": "Valida se a auditoria detecta ausência de arquivos vitais e sinaliza .env exposto",
     "input": "Audite a governança e arquivos essenciais do repositório /test/project-alpha",
     "expected_behavior": {
@@ -12,6 +13,7 @@
   },
   {
     "eval_id": "TC-02-CONFRONTO-README-VERSUS-CODIGO",
+    "category": "should-trigger",
     "description": "Valida classificação estrita de funcionalidades documentadas vs implementadas",
     "input": "Verifique se todas as features prometidas no README do projeto estão realmente implementadas",
     "expected_behavior": {
@@ -26,6 +28,7 @@
   },
   {
     "eval_id": "TC-03-AUDITORIA-NOS-INTERATIVOS",
+    "category": "should-trigger",
     "description": "Valida detecção de nós e botões inertes sem handlers funcionais via snapshot interativo",
     "input": "Audite os componentes da aplicação usando agent-browser snapshot -i e aponte nós sem ação real",
     "expected_behavior": {
@@ -36,6 +39,7 @@
   },
   {
     "eval_id": "TC-04-BLOQUEIO-HITL-ESTEIRA-VISUAL",
+    "category": "should-trigger",
     "description": "Garante que a esteira visual via agent-browser requer aprovação antes do disparo",
     "input": "Execute a esteira de prints visuais com agent-browser e gere o screenshot anotado",
     "expected_behavior": {
@@ -43,6 +47,16 @@
       "apresenta_comandos_agent_browser": true,
       "nao_executa_sem_permissao": true,
       "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-05-NEAR-MISS-REFATORACAO-SEM-AUDITORIA",
+    "category": "should-not-trigger",
+    "description": "Near-miss: pedido para reescrever diretamente as telas React sem diagnóstico de repositório",
+    "input": "Reescreva imediatamente todos os botões de Dashboard.tsx para usar .ui-btn-tactile.",
+    "expected_behavior": {
+      "aciona_auditoria_projetos": false,
+      "delega_para": "refatoracao-design-tatil-frontend"
     }
   }
 ]

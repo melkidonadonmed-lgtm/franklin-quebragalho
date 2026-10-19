@@ -112,8 +112,8 @@ def _parse_scalar(val: str) -> Any:
     if v.startswith("[") or v.startswith("{"):
         try:
             return json.loads(v)
-        except Exception:
-            pass
+        except (json.JSONDecodeError, ValueError) as exc:
+            _ignored_err = str(exc)
     try:
         if "." in v:
             return float(v)
@@ -122,24 +122,53 @@ def _parse_scalar(val: str) -> Any:
         return v
 
 
+def _parse_yaml_list(sub_lines: List[str]) -> List[Any]:
+    """Converte uma lista de linhas YAML começando com '- ' em lista Python."""
+    items: List[Any] = []
+    j = 0
+    while j < len(sub_lines):
+        sline = sub_lines[j]
+        sstrip = sline.strip()
+        sindent = len(sline) - len(sline.lstrip(" "))
+        if sstrip.startswith("- "):
+            after_dash = sstrip[2:].strip()
+            if ":" in after_dash and not (after_dash.startswith('"') or after_dash.startswith("'")):
+                item_dict: Dict[str, Any] = {}
+                ik, iv = after_dash.split(":", 1)
+                item_dict[ik.strip()] = _parse_scalar(iv)
+                j += 1
+                while j < len(sub_lines):
+                    next_line = sub_lines[j]
+                    next_strip = next_line.strip()
+                    next_indent = len(next_line) - len(next_line.lstrip(" "))
+                    if next_strip.startswith("- ") and next_indent <= sindent:
+                        break
+                    if ":" in next_strip:
+                        nk, nv = next_strip.split(":", 1)
+                        item_dict[nk.strip()] = _parse_scalar(nv)
+                    j += 1
+                items.append(item_dict)
+            else:
+                items.append(_parse_scalar(after_dash))
+                j += 1
+        else:
+            j += 1
+    return items
+
+
 def _parse_yaml_mapping(lines: List[str]) -> Dict[str, Any]:
     """Analisa um bloco de mapeamento YAML sem depender de PyYAML."""
     result: Dict[str, Any] = {}
-    i = 0
-    n = len(lines)
+    i, n = 0, len(lines)
     while i < n:
         line = lines[i]
         stripped = line.strip()
-        if not stripped or stripped.startswith("#"):
+        if not stripped or stripped.startswith("#") or ":" not in stripped:
             i += 1
             continue
         indent = len(line) - len(line.lstrip(" "))
-        if ":" not in stripped:
-            i += 1
-            continue
         key_part, val_part = stripped.split(":", 1)
-        key = key_part.strip()
-        val_str = val_part.strip()
+        key, val_str = key_part.strip(), val_part.strip()
         i += 1
 
         if val_str in (">-", ">", "|", "|-"):
@@ -147,8 +176,7 @@ def _parse_yaml_mapping(lines: List[str]) -> Dict[str, Any]:
             while i < n:
                 sub = lines[i]
                 sub_strip = sub.strip()
-                sub_indent = len(sub) - len(sub.lstrip(" "))
-                if sub_strip and sub_indent <= indent:
+                if sub_strip and (len(sub) - len(sub.lstrip(" "))) <= indent:
                     break
                 if sub_strip:
                     block_lines.append(sub_strip)
@@ -162,8 +190,7 @@ def _parse_yaml_mapping(lines: List[str]) -> Dict[str, Any]:
             while i < n:
                 sub = lines[i]
                 sub_strip = sub.strip()
-                sub_indent = len(sub) - len(sub.lstrip(" "))
-                if sub_strip and sub_indent <= indent:
+                if sub_strip and (len(sub) - len(sub.lstrip(" "))) <= indent:
                     break
                 if sub_strip:
                     sub_lines.append(sub)
@@ -171,38 +198,7 @@ def _parse_yaml_mapping(lines: List[str]) -> Dict[str, Any]:
             if not sub_lines:
                 result[key] = None
             elif sub_lines[0].strip().startswith("- "):
-                items: List[Any] = []
-                j = 0
-                while j < len(sub_lines):
-                    sline = sub_lines[j]
-                    sstrip = sline.strip()
-                    sindent = len(sline) - len(sline.lstrip(" "))
-                    if sstrip.startswith("- "):
-                        after_dash = sstrip[2:].strip()
-                        if ":" in after_dash and not (
-                            after_dash.startswith('"') or after_dash.startswith("'")
-                        ):
-                            item_dict: Dict[str, Any] = {}
-                            ik, iv = after_dash.split(":", 1)
-                            item_dict[ik.strip()] = _parse_scalar(iv)
-                            j += 1
-                            while j < len(sub_lines):
-                                next_line = sub_lines[j]
-                                next_strip = next_line.strip()
-                                next_indent = len(next_line) - len(next_line.lstrip(" "))
-                                if next_strip.startswith("- ") and next_indent <= sindent:
-                                    break
-                                if ":" in next_strip:
-                                    nk, nv = next_strip.split(":", 1)
-                                    item_dict[nk.strip()] = _parse_scalar(nv)
-                                j += 1
-                            items.append(item_dict)
-                        else:
-                            items.append(_parse_scalar(after_dash))
-                            j += 1
-                    else:
-                        j += 1
-                result[key] = items
+                result[key] = _parse_yaml_list(sub_lines)
             else:
                 result[key] = _parse_yaml_mapping(sub_lines)
         else:

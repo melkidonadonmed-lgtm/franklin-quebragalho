@@ -1,6 +1,7 @@
 [
   {
     "eval_id": "TC-01-MODO-A-EXECUCAO-DIRETA",
+    "category": "should-trigger",
     "description": "Valida se o agente entra no Modo A sem fazer perguntas quando a demanda for imperativa e direta",
     "input": "Crie uma funcao Python tipada para calcular a taxa de compressao de dados em lote.",
     "expected_behavior": {
@@ -13,6 +14,7 @@
   },
   {
     "eval_id": "TC-02-MODO-B-REFINAMENTO-ESTRUTURADO",
+    "category": "should-trigger",
     "description": "Valida se o agente limita a no maximo 2 perguntas quando o pedido for vago",
     "input": "Quero automatizar as coisas no meu computador, me ajude a pensar por onde comecar.",
     "expected_behavior": {
@@ -24,6 +26,7 @@
   },
   {
     "eval_id": "TC-03-MODO-C-FASE-ZERO",
+    "category": "should-trigger",
     "description": "Valida se pedidos de plano e roadmap incluem obrigatoriamente a Fase 0 de alinhamento",
     "input": "Monte um roadmap estruturado para migrar meu sistema de notas para o Obsidian em 4 semanas.",
     "expected_behavior": {
@@ -35,6 +38,7 @@
   },
   {
     "eval_id": "TC-04-ANTI-ALUCINACAO-STATUS-DETERMINISTICO",
+    "category": "should-trigger",
     "description": "Valida se o agente rejeita auditorias sinteticas e aplica [PASS]/[FAIL]/[UNVERIFIED]",
     "input": "Faca uma auditoria completa com nota percentual de 0 a 100% da seguranca do meu script.",
     "expected_behavior": {
@@ -42,6 +46,16 @@
       "usou_status_deterministico": true,
       "declarou_natureza_textual": true,
       "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-05-NEAR-MISS-AUDITORIA-CATALOGO-SKILLS",
+    "category": "should-not-trigger",
+    "description": "Near-miss: pedido para desacoplar um SKILL.md monolítico do catálogo",
+    "input": "Audite e desacople o arquivo SKILL.md desta skill que passou de 600 linhas.",
+    "expected_behavior": {
+      "aciona_arquiteto_conteudo": false,
+      "delega_para": "skill-auditor-refatorador-skills"
     }
   }
 ]

@@ -146,24 +146,12 @@ class FrontierCodeMaintainabilityVisitor(ast.NodeVisitor):
         self.generic_visit(node)
         self.current_class = prev_cls
 
-    def visit_FunctionDef(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
-        prev_function = self.current_function
-        self.current_function = node.name
-
-        line_count = (node.end_lineno or node.lineno) - node.lineno
-        is_private_or_dunder = node.name.startswith("_")
-        is_visitor_or_test = node.name.startswith(("visit_", "test_"))
-        is_short_helper = line_count <= 6
-
-        self.function_meta[node.name] = {
-            "line": node.lineno,
-            "col": node.col_offset,
-            "is_method": self.current_class is not None,
-            "has_decorators": len(node.decorator_list) > 0,
-        }
-
-        # 1. Checagem de Docstring (Apenas para funções públicas não-triviais -> Advisory suave)
-        if not ast.get_docstring(node) and not is_private_or_dunder and not is_visitor_or_test and not is_short_helper:
+    def _check_function_typing_and_docs(
+        self, node: ast.FunctionDef | ast.AsyncFunctionDef, line_count: int
+    ) -> None:
+        is_priv = node.name.startswith("_")
+        is_special = node.name.startswith(("visit_", "test_"))
+        if not ast.get_docstring(node) and not is_priv and not is_special and line_count > 6:
             self.add_issue(
                 "MISSING_DOCSTRING",
                 "Função Pública Sem Docstring Explicativa",
@@ -175,9 +163,7 @@ class FrontierCodeMaintainabilityVisitor(ast.NodeVisitor):
                 "Adicione uma docstring concisa descrevendo o propósito e contrato da função.",
                 tier="advisory",
             )
-
-        # 2. Checagem de Type Hints nos Parâmetros (Advisory)
-        if not is_visitor_or_test:
+        if not is_special:
             for arg in node.args.args:
                 if arg.arg not in ("self", "cls") and arg.annotation is None:
                     self.add_issue(
@@ -191,9 +177,7 @@ class FrontierCodeMaintainabilityVisitor(ast.NodeVisitor):
                         f"Especifique o tipo esperado (ex: '{arg.arg}: Any' ou tipo concreto).",
                         tier="advisory",
                     )
-
-        # 3. Checagem de Type Hint no Retorno (Advisory)
-        if node.returns is None and not is_private_or_dunder and not is_visitor_or_test:
+        if node.returns is None and not is_priv and not is_special:
             self.add_issue(
                 "MISSING_RETURN_TYPE_HINT",
                 "Retorno Sem Anotação de Tipo",
@@ -205,8 +189,6 @@ class FrontierCodeMaintainabilityVisitor(ast.NodeVisitor):
                 "Adicione anotação de retorno explícita (ex: '-> None' ou '-> Dict[str, Any]').",
                 tier="advisory",
             )
-
-        # 4. Checagem de Comprimento da Função (Tolerância confortável)
         if line_count > self.max_function_lines:
             self.add_issue(
                 "EXCESSIVE_FUNCTION_LENGTH",
@@ -220,7 +202,7 @@ class FrontierCodeMaintainabilityVisitor(ast.NodeVisitor):
                 tier="advisory",
             )
 
-        # 5. Duplicatas Sintáticas Reais (ignorando funções triviais <= 2 statements)
+    def _check_duplicate_function(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
         body_no_doc = list(node.body)
         if (
             body_no_doc
@@ -251,6 +233,23 @@ class FrontierCodeMaintainabilityVisitor(ast.NodeVisitor):
                 )
             else:
                 self.defined_functions[node.name] = normalized_body
+
+    def visit_FunctionDef(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+        prev_function = self.current_function
+        self.current_function = node.name
+
+        line_count = (node.end_lineno or node.lineno) - node.lineno
+        is_visitor_or_test = node.name.startswith(("visit_", "test_"))
+
+        self.function_meta[node.name] = {
+            "line": node.lineno,
+            "col": node.col_offset,
+            "is_method": self.current_class is not None,
+            "has_decorators": len(node.decorator_list) > 0,
+        }
+
+        self._check_function_typing_and_docs(node, line_count)
+        self._check_duplicate_function(node)
 
         is_render_loop_fn = (
             any(kw in node.name.lower() for kw in ("update", "render", "step", "animate", "loop", "tick"))
@@ -392,6 +391,57 @@ class FrontierCodeMaintainabilityVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
 
+def _flag_unreferenced_functions(auditor: FrontierCodeMaintainabilityVisitor) -> None:
+    """Detecta funções de topo não utilizadas (ignorando métodos de classe públicos e entrypoints)."""
+    exempt_names = {"main", "run", "audit_code_snippet", "analyze_code"}
+    for fn_name, meta in auditor.function_meta.items():
+        if (
+            fn_name not in auditor.called_functions
+            and not meta["is_method"]
+            and not meta["has_decorators"]
+            and not fn_name.startswith(("__", "test_", "visit_"))
+            and fn_name not in exempt_names
+        ):
+            auditor.add_issue(
+                "DEAD_CODE_FUNCTION",
+                "Função de Topo Não Referenciada Internamente",
+                "Sanitização",
+                "Baixa",
+                meta["line"],
+                meta["col"],
+                f"A função '{fn_name}' (linha {meta['line']}) não é chamada dentro deste módulo.",
+                "Verifique se ela é consumida externamente ou se pode ser removida.",
+                tier="advisory",
+            )
+
+
+def _build_syntax_error_result(e: SyntaxError, resolved_profile: str, filename: str) -> Dict[str, Any]:
+    """Constrói o resultado de erro de sintaxe padronizado."""
+    return {
+        "aprovado": False,
+        "profile_detected": resolved_profile,
+        "linear_quality_score": 0.0,
+        "filename": filename,
+        "total_inconformidades": 1,
+        "hard_issues_count": 1,
+        "advisories_count": 0,
+        "problemas": [
+            {
+                "id": "SYNTAX_ERROR",
+                "title": "Erro de Sintaxe no Código",
+                "category": "Sintaxe",
+                "severity": "Crítica",
+                "tier": "hard",
+                "file": filename,
+                "line": e.lineno or 1,
+                "col": e.offset or 0,
+                "description": f"Erro de sintaxe Python: {e.msg}",
+                "recommendation": "Corrija a sintaxe antes de executar.",
+            }
+        ],
+    }
+
+
 def audit_code_snippet(
     code: str,
     filename: str = "agent_code.py",
@@ -406,47 +456,23 @@ def audit_code_snippet(
 
     try:
         tree = ast.parse(code, filename=filename)
-        source_lines = code.splitlines()
         auditor = FrontierCodeMaintainabilityVisitor(
             filename=filename,
             max_function_lines=max_function_lines,
             profile=resolved_profile,
-            source_lines=source_lines,
+            source_lines=code.splitlines(),
         )
         auditor.visit(tree)
-
-        # Detectar funções de topo não utilizadas (ignorando métodos de classe públicos e entrypoints)
-        exempt_names = {"main", "run", "audit_code_snippet", "analyze_code"}
-        for fn_name, meta in auditor.function_meta.items():
-            if (
-                fn_name not in auditor.called_functions
-                and not meta["is_method"]
-                and not meta["has_decorators"]
-                and not fn_name.startswith(("__", "test_", "visit_"))
-                and fn_name not in exempt_names
-            ):
-                auditor.add_issue(
-                    "DEAD_CODE_FUNCTION",
-                    "Função de Topo Não Referenciada Internamente",
-                    "Sanitização",
-                    "Baixa",
-                    meta["line"],
-                    meta["col"],
-                    f"A função '{fn_name}' (linha {meta['line']}) não é chamada dentro deste módulo.",
-                    "Verifique se ela é consumida externamente ou se pode ser removida.",
-                    tier="advisory",
-                )
+        _flag_unreferenced_functions(auditor)
 
         hard_issues = [i for i in auditor.issues if i.get("tier") == "hard"]
         advisories = [i for i in auditor.issues if i.get("tier") == "advisory"]
 
-        # Cálculo de Nota de Qualidade Linear (Penalidades fortes para hard, suaves para advisories)
         penalty = 0.0
         for iss in hard_issues:
             sev = iss["severity"]
             penalty += 30.0 if sev == "Crítica" else (20.0 if sev == "Alta" else 10.0)
-        for adv in advisories:
-            penalty += 2.5  # Avisos de estilo/tipagem descontam suavemente sem reprovar código funcional
+        penalty += 2.5 * len(advisories)
 
         linear_quality_score = round(max(0.0, 100.0 - penalty), 2)
         aprovado = len(hard_issues) == 0 and linear_quality_score >= 70.0
@@ -462,29 +488,7 @@ def audit_code_snippet(
             "problemas": auditor.issues,
         }
     except SyntaxError as e:
-        return {
-            "aprovado": False,
-            "profile_detected": resolved_profile,
-            "linear_quality_score": 0.0,
-            "filename": filename,
-            "total_inconformidades": 1,
-            "hard_issues_count": 1,
-            "advisories_count": 0,
-            "problemas": [
-                {
-                    "id": "SYNTAX_ERROR",
-                    "title": "Erro de Sintaxe no Código",
-                    "category": "Sintaxe",
-                    "severity": "Crítica",
-                    "tier": "hard",
-                    "file": filename,
-                    "line": e.lineno or 1,
-                    "col": e.offset or 0,
-                    "description": f"Erro de sintaxe Python: {e.msg}",
-                    "recommendation": "Corrija a sintaxe antes de executar.",
-                }
-            ],
-        }
+        return _build_syntax_error_result(e, resolved_profile, filename)
 
 
 def main() -> None:

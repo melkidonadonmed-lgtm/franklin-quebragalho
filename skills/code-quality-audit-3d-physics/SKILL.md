@@ -54,7 +54,7 @@ Ative esta skill quando o usuário solicitar:
 
 ## 5. PROCESSAMENTO INTERNO E FLUXO DE EXECUÇÃO (3 ONDAS)
 
-A execução opera sob o **Padrão Envelope em 3 Ondas**, coordenando os **5 Módulos de Subskills** documentados em [references/subskill_modules_spec.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/code-quality-audit-3d-physics/references/subskill_modules_spec.md) e [references/dossie_auditoria_qualidade_codigo_3d.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/code-quality-audit-3d-physics/references/dossie_auditoria_qualidade_codigo_3d.md):
+A execução opera sob o **Padrão Envelope em 3 Ondas**, coordenando os **5 Módulos de Subskills** documentados em [references/subskill_modules_spec.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-quality-audit-3d-physics/references/subskill_modules_spec.md) e [references/dossie_auditoria_qualidade_codigo_3d.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-quality-audit-3d-physics/references/dossie_auditoria_qualidade_codigo_3d.md) (ou via `franklin_execute_dag(plan_path_or_json="physics", target_dir="<caminho_arquivo>")`):
 
 ```text
 ┌───────────────────────────────────────────────────────────────────────────┐
@@ -84,13 +84,13 @@ A execução opera sob o **Padrão Envelope em 3 Ondas**, coordenando os **5 Mó
 ```
 
 ### Passo 1: Onda 1 — Varredura Estática de AST (Módulos 1, 2 e 3)
-- Para arquivos Python (`.py`), execute [scripts/static_ast_parser.py](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py):
+- Para arquivos Python (`.py`), execute [scripts/static_ast_parser.py](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py):
   ```powershell
-  uv run python .agents/skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py <caminho_arquivo.py>
+  uv run python skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py <caminho_arquivo.py>
   ```
-- Para arquivos JavaScript/TypeScript (`.js`, `.ts`), execute [scripts/js_ts_ast_parser.js](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js):
+- Para arquivos JavaScript/TypeScript (`.js`, `.ts`), execute [scripts/js_ts_ast_parser.js](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js):
   ```powershell
-  node .agents/skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js <caminho_arquivo.ts>
+  node skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js <caminho_arquivo.ts>
   ```
 - **Regras Verificadas na Onda 1**:
   - **Módulo 1 (`static-sanitization-auditor`, $w_1 = 20\%$):** `ALLOC_IN_LOOP` ($-30$), `DUPLICATE_FUNCTION` ($-20$), `DEAD_CODE_FUNCTION` ($-10$), `UNUSED_VARIABLE` ($-5$).
@@ -98,9 +98,9 @@ A execução opera sob o **Padrão Envelope em 3 Ondas**, coordenando os **5 Mó
   - **Módulo 3 (`physics-3d-math-auditor`, $w_3 = 25\%$ e Sub-dimensões $S_1..S_5$):** `MISSING_DELTA_TIME` ($-40$ em $s_3$ / $-100$ em $S_1$), `UNCHECKED_NORMALIZE` ($-25$ em $s_3$ / $-40$ em $S_2$), `EULER_GIMBAL_LOCK` ($-20$ em $s_3$ / $-50$ em $S_2$), `STRICT_FLOAT_COMPARE` ($-15$ em $s_3$ / $-40$ em $S_5$), `MISSING_DAMPING` ($-15$ em $s_3$ / $-30$ em $S_3$).
 
 ### Passo 2: Onda 2 — Suíte de Testes Determinísticos em Tempo de Execução (Módulo 4)
-- Execute [scripts/physics_test_runner.py](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/code-quality-audit-3d-physics/scripts/physics_test_runner.py):
+- Execute [scripts/physics_test_runner.py](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-quality-audit-3d-physics/scripts/physics_test_runner.py):
   ```powershell
-  uv run python .agents/skills/code-quality-audit-3d-physics/scripts/physics_test_runner.py --target <caminho_arquivo.py> --json
+  uv run python skills/code-quality-audit-3d-physics/scripts/physics_test_runner.py --target <caminho_arquivo.py> --json
   ```
 - Avalia as 5 baterias dinâmicas ($s_4 = \frac{\text{Testes Aprovados}}{5} \times 100$):
   1. `TEST_FPS_INDEPENDENCE` (60Hz vs 120Hz, divergência $< 0.1\text{m}$).
@@ -110,9 +110,9 @@ A execução opera sob o **Padrão Envelope em 3 Ondas**, coordenando os **5 Mó
   5. `TEST_DETERMINISM_PASS_AT_K` ($Pass@10$ com $100\%$ de convergência de hash de estado).
 
 ### Passo 3: Onda 3 — Validação Cruzada e Consolidação pelo Observador (Módulo 5)
-- Para executar as 3 ondas integradas com o filtro anti-alucinação e gerar o relatório consolidado, dispare diretamente [scripts/state_checker_observer.py](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/code-quality-audit-3d-physics/scripts/state_checker_observer.py):
+- Para executar as 3 ondas integradas com o filtro anti-alucinação e gerar o relatório consolidado, dispare diretamente [scripts/state_checker_observer.py](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-quality-audit-3d-physics/scripts/state_checker_observer.py) ou acione o DAG no Epic-Volta via `franklin_execute_dag(plan_path_or_json="physics", target_dir="<caminho_arquivo>")`:
   ```powershell
-  uv run python .agents/skills/code-quality-audit-3d-physics/scripts/state_checker_observer.py <caminho_arquivo>
+  uv run python skills/code-quality-audit-3d-physics/scripts/state_checker_observer.py <caminho_arquivo>
   ```
 - O Observador recalcula $S_{\text{norm}}$ pela equação canônica:
   $$S_{\text{norm}} = 0.20 \cdot s_1 + 0.15 \cdot s_2 + 0.25 \cdot s_3 + 0.20 \cdot s_4 + 0.20 \cdot s_5$$
