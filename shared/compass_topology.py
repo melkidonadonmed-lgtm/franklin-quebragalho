@@ -151,17 +151,17 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
         "Fluxo em 4 etapas: (1) Ideação/MVP ('organizador-projetos-ideias' Modo 1) -> (2) Diagnóstico Read-Only ('antigravity-project-auditor') -> (3) Saneamento & Paridade README/Contratos ('organizador-projetos-ideias' Modo 2) -> (4) Homologação 0-100 ('auditoria-projetos-sistema').",
     ),
     (
-        ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra", "test", "auditor"),
-        "🤖 Arquitetura de Agentes, Declarative YAML Spec, Qualidade AST & Skills (29 Canônicas)",
-        ["evoluir-skills", "aprimoramento-expansibilidade-agentes-skills", "code-acceptability-auditor", "test-quality-auditor", "high-level-context-planner", "gap-analyzer-auditor"],
+        ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra", "test", "auditor", "rca", "converge", "gap"),
+        "🤖 Esteira de 3 Portões (AST • Testes/Evals • RCA/Convergência), Agentes & Skills (29 Canônicas)",
+        ["code-acceptability-auditor", "test-quality-auditor", "gap-analyzer-auditor", "high-level-context-planner", "evoluir-skills", "aprimoramento-expansibilidade-agentes-skills"],
         [
+            ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão 1 AST + Pydantic v2 (12 regras: Segurança, Tipagem, McCabe <= 10, Score >= 75)"),
+            ("test-quality-auditor", "test_quality_auditor.py", "Portão 2 de qualidade de suítes de testes em 5 módulos (Py/TS/Go/MCP/Harness + PerfKit)"),
             ("aprimoramento-expansibilidade-agentes-skills", "agent_spec_loader.py", "Carregador Declarative YAML Agent Spec com Zero-Config Defaults"),
-            ("code-acceptability-auditor", "code_acceptability_auditor.py", "Auditor estático AST + Pydantic v2 (Segurança, Tipagem, Quality Score >= 75)"),
-            ("test-quality-auditor", "test_quality_auditor.py", "Auditor de qualidade de suítes de testes em 5 módulos (Py/TS/Go/MCP/Harness)"),
             ("workspace", "validate_skills.py", "Validador determinístico das 29 skills canônicas"),
         ],
         "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json | plans/distributed_agent_mediation_dag.json",
-        "Divulgação progressiva em 3 Tiers (<500 linhas no SKILL.md), Zero-Config Defaults no YAML e validação cruzada.",
+        "Esteira em 3 Portões: (1) Código AST ('code-acceptability-auditor' >=75) -> (2) Testes AAA/Evals ('test-quality-auditor' Nível 4) -> (3) RCA & Convergência Spec-to-Code ('gap-analyzer-auditor' -> 'high-level-context-planner').",
     ),
 ]
 

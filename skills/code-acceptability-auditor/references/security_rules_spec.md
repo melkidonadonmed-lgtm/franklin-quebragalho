@@ -1,6 +1,6 @@
-# 🔐 Especificação Técnica das Regras AST e Regex (`security_rules_spec.md`)
+# 🔐 Especificação Técnica das Regras AST e Regex (`security_rules_spec.md` — `v1.1.0`)
 
-Especificação de engenharia para detecção determinística das regras `SEC001`, `SEC002`, `SEC003`, `ERR001`..`ERR003`, `TYP001`..`TYP002` e `ARCH001`.
+Especificação de engenharia para detecção determinística das 12 regras (`SEC001`..`SEC003`, `SYN001`, `ERR001`..`ERR003`, `TYP001`..`TYP002` e `ARCH001`..`ARCH003`).
 
 ---
 
@@ -36,8 +36,10 @@ Especificação de engenharia para detecção determinística das regras `SEC001
 
 ---
 
-## 3. Inspeção de Tipagem e Modularidade (`TYP001`, `TYP002`, `ARCH001`)
+## 3. Inspeção de Tipagem, Modularidade e Complexidade (`TYP001`, `TYP002`, `ARCH001`..`ARCH003`)
 
 - **`TYP001`**: Verifica `args.posonlyargs`, `args.args`, `args.kwonlyargs`, `args.vararg` e `args.kwarg`. Ignora `self` e `cls`.
 - **`TYP002`**: Verifica `node.returns is None` em `FunctionDef` e `AsyncFunctionDef`. Ignora `__init__` caso os argumentos já estejam tipados ou exige `-> None` quando configurado em modo estrito.
 - **`ARCH001`**: Calcula `span = (node.end_lineno or node.lineno) - node.lineno + 1`. Dispara quando `span > 60`.
+- **`ARCH002` (Complexidade Cognitiva)**: Percorre recursivamente o corpo da função contabilizando níveis de aninhamento para `ast.If`, `ast.For`, `ast.AsyncFor`, `ast.While`, `ast.With`, `ast.AsyncWith` e `ast.Try` (tratando cadeias `elif` no mesmo nível do `if` pai). Dispara quando `max_depth > 3`.
+- **`ARCH003` (Complexidade Ciclomática McCabe)**: Calcula $M = 1 + \text{pontos de decisão}$ (`If`, `For`, `AsyncFor`, `While`, `ExceptHandler`, `IfExp`, `comprehension.ifs` e operadores booleanos `BoolOp`). Dispara quando $M > 10$.

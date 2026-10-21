@@ -8,7 +8,7 @@ metadata:
   author: "Gemini Notebook AI Engineering & Melki"
   version: "1.1.0"
   category: "Auditoria e Qualidade de Código"
-  updated_at: "2026-10-19"
+  updated_at: "2026-10-21"
   tags:
     - "ast"
     - "python-audit"
@@ -18,7 +18,7 @@ metadata:
     - "quality-gate"
     - "cyclomatic-complexity"
 version: 1.1.0
-updated_at: 2026-10-19
+updated_at: 2026-10-21
 author: Gemini Notebook AI Engineering & Melki
 category: Auditoria e Qualidade de Código
 ---
@@ -38,10 +38,13 @@ Esta Skill fornece um procedimento automatizado e determinístico para auditoria
 - Após a criação ou refatoração de novos scripts Python, garantindo zero regressões de tipagem, segurança e modularidade.
 - Para verificar a presença de chaves secretas, tokens de API hardcodeados, chamadas `eval()`/`exec()` ou `subprocess` com `shell=True`.
 
-### ❌ Quando NÃO Usar (Limites e Exclusões)
+### ❌ Quando NÃO Usar e Fronteira da Esteira de 3 Portões (`2026-10-21`)
+- **Fronteira na Esteira de Qualidade e Convergência (3 Portões)**:
+  1. **Portão 1 — Código de Produção (`code-acceptability-auditor` `v1.1.0` — Esta Skill)**: Audita estaticamente módulos e scripts Python via AST/Pydantic (`12` regras: `SEC001..003`, `SYN001`, `ERR001..003`, `TYP001..002`, `ARCH001..003`, `Score >= 75.0`).
+  2. **Portão 2 — Suítes de Testes & Evals (`test-quality-auditor` `v1.2.0`)**: Para auditar qualidade, falsificabilidade AAA e determinismo de suítes de testes (`pytest`, `vitest`, `*_test.go`, `MCP JSON-RPC` e `Harness`), delegue para `test-quality-auditor`.
+  3. **Portão 3 — RCA & Convergência Spec-to-Code (`gap-analyzer-auditor` `v2.1.0`)**: Para análise de causa-raiz em falhas de runtime, violações reportadas pelos Portões 1/2 ou convergência `SPEC.md`/`tasks.md` (`/speckit-converge`), delegue para `gap-analyzer-auditor`.
 - **Não usar** para explicar conceitos teóricos de Python (ex: como funciona `try/except` ou diferenças entre Python e TypeScript).
 - **Não usar** para criar scripts do zero ou refatorar algoritmos sem pedido de auditoria de aceite.
-- **Não usar** para auditar qualidade de suítes de testes unitários (`pytest`, `vitest`, `*_test.go`) — delegue para `test-quality-auditor`.
 - **Não usar** para auditoria matemática de motores de Física 3D/WebGL — delegue para `code-quality-audit-3d-physics`.
 
 ---
@@ -86,22 +89,25 @@ $$\text{Quality Score} = \max\left(0.0, 100.0 - \sum \text{Penalidades}\right)$$
 
 Caso qualquer condição falhe, o arquivo recebe status **`REJECTED`** e o pré-commit/PR é bloqueado.
 
-### 4.3. Modos de Execução
-```bash
+### 4.3. Modos de Execução (`pwsh`)
+```powershell
 # 1. Auditar um arquivo específico via CLI
-uv run python scripts/code_acceptability_auditor.py --file caminho/do/arquivo.py
+uv run python skills/code-acceptability-auditor/scripts/code_acceptability_auditor.py --file caminho/do/arquivo.py
 
 # 2. Auditar um diretório inteiro em formato JSON
-uv run python scripts/code_acceptability_auditor.py --dir . --json
+uv run python skills/code-acceptability-auditor/scripts/code_acceptability_auditor.py --dir shared --json
 
-# 3. Executar suíte de Trigger Evals (20 queries: treino + validação)
-uv run python scripts/trigger_eval_runner.py
+# 3. Executar auto-teste determinístico (Self-Test)
+uv run python skills/code-acceptability-auditor/scripts/code_acceptability_auditor.py --self-test
 
-# 4. Executar auditoria de modos de falha e benchmark A vs B
-uv run python scripts/skill_failure_auditor.py
+# 4. Executar suíte de Trigger Evals (20 queries: treino + validação, F1 = 1.0)
+uv run python skills/code-acceptability-auditor/scripts/trigger_eval_runner.py
 
-# 5. Instalar Git Hook local (.git/hooks/pre-commit)
-uv run python scripts/install_pre_commit_hook.py --repo-root .
+# 5. Executar auditoria de modos de falha e benchmark A vs B
+uv run python skills/code-acceptability-auditor/scripts/skill_failure_auditor.py
+
+# 6. Instalar Git Hook local (.git/hooks/pre-commit)
+uv run python skills/code-acceptability-auditor/scripts/install_pre_commit_hook.py --repo-root .
 ```
 
 ---

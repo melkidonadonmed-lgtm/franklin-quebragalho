@@ -41,29 +41,42 @@ def is_mcp_test_content(code_str: str, filename: str = "") -> bool:
     return any(marker in code_str for marker in MCP_MARKERS)
 
 
-def _extract_test_blocks_generic(code_str: str, language: str) -> List[Tuple[str, int, str]]:
-    """Extrai (test_name, start_line, block_text) independente da linguagem (Python, Go ou TS/JS)."""
-    lines = code_str.splitlines()
-    if language == "go":
-        return [(name, s_ln, "\n".join(b_lines)) for name, s_ln, _e_ln, b_lines in _extract_go_test_blocks(lines)]
+def _extract_python_test_blocks(code_str: str, lines: List[str]) -> List[Tuple[str, int, str]]:
+    """Extrai funções de teste Python (`test_*` / `_test_*`) via AST."""
+    import ast
 
-    if language == "python":
-        import ast
-        blocks: List[Tuple[str, int, str]] = []
-        try:
-            tree = ast.parse(code_str)
-            for node in ast.walk(tree):
-                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and (
-                    node.name.startswith("test_") or node.name.startswith("_test_")
-                ):
-                    end_ln = getattr(node, "end_lineno", node.lineno)
-                    fn_text = "\n".join(lines[node.lineno - 1 : end_ln])
-                    blocks.append((node.name, node.lineno, fn_text))
-        except SyntaxError:
-            return []
-        return blocks
+    blocks: List[Tuple[str, int, str]] = []
+    try:
+        tree = ast.parse(code_str)
+    except SyntaxError:
+        return []
+    for node in ast.walk(tree):
+        is_fn = isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        if is_fn and (node.name.startswith("test_") or node.name.startswith("_test_")):
+            end_ln = getattr(node, "end_lineno", node.lineno)
+            fn_text = "\n".join(lines[node.lineno - 1 : end_ln])
+            blocks.append((node.name, node.lineno, fn_text))
+    return blocks
 
-    # TypeScript / JavaScript
+
+def _find_ts_block_end(lines: List[str], start_idx: int) -> int:
+    """Encontra o índice da linha final de um bloco `{ ... }` em TypeScript/JavaScript."""
+    depth = 0
+    started = False
+    for j in range(start_idx, len(lines)):
+        clean = re.sub(r"//.*$", "", lines[j])
+        opens = clean.count("{")
+        closes = clean.count("}")
+        if opens > 0:
+            started = True
+        depth += opens - closes
+        if started and depth <= 0:
+            return j
+    return len(lines) - 1
+
+
+def _extract_ts_test_blocks(lines: List[str]) -> List[Tuple[str, int, str]]:
+    """Extrai blocos `test(...)` e `it(...)` de arquivos TypeScript/JavaScript."""
     blocks_ts: List[Tuple[str, int, str]] = []
     test_pat = re.compile(r"^\s*(?:test|it)\s*\(\s*(['\"`])(.*?)\1\s*,")
     i = 0
@@ -72,25 +85,20 @@ def _extract_test_blocks_generic(code_str: str, language: str) -> List[Tuple[str
         if not m:
             i += 1
             continue
-        title = m.group(2)
-        s_line = i + 1
-        depth = 0
-        started = False
-        end_i = len(lines) - 1
-        for j in range(i, len(lines)):
-            clean = re.sub(r"//.*$", "", lines[j])
-            for ch in clean:
-                if ch == "{":
-                    depth += 1
-                    started = True
-                elif ch == "}":
-                    depth -= 1
-            if started and depth <= 0:
-                end_i = j
-                break
-        blocks_ts.append((title, s_line, "\n".join(lines[i : end_i + 1])))
+        end_i = _find_ts_block_end(lines, i)
+        blocks_ts.append((m.group(2), i + 1, "\n".join(lines[i : end_i + 1])))
         i = end_i + 1
     return blocks_ts
+
+
+def _extract_test_blocks_generic(code_str: str, language: str) -> List[Tuple[str, int, str]]:
+    """Extrai (test_name, start_line, block_text) independente da linguagem (Python, Go ou TS/JS)."""
+    lines = code_str.splitlines()
+    if language == "go":
+        return [(name, s_ln, "\n".join(b_lines)) for name, s_ln, _e_ln, b_lines in _extract_go_test_blocks(lines)]
+    if language == "python":
+        return _extract_python_test_blocks(code_str, lines)
+    return _extract_ts_test_blocks(lines)
 
 
 def _make_mcp_issue(

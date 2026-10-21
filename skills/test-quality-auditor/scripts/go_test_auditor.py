@@ -19,6 +19,22 @@ def _strip_go_comments_and_strings(line: str) -> str:
     return re.sub(r"'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"|`[^`]*`", '""', no_comment)
 
 
+def _find_go_block_end(lines: List[str], start_idx: int) -> int:
+    """Encontra o índice da linha que fecha o bloco de chaves `{ ... }` iniciado em `start_idx`."""
+    brace_depth = 0
+    started = False
+    for j in range(start_idx, len(lines)):
+        clean = _strip_go_comments_and_strings(lines[j])
+        opens = clean.count("{")
+        closes = clean.count("}")
+        if opens > 0:
+            started = True
+        brace_depth += opens - closes
+        if started and brace_depth <= 0:
+            return j
+    return len(lines) - 1
+
+
 def _extract_go_test_blocks(lines: List[str]) -> List[Tuple[str, int, int, List[str]]]:
     """Extrai funções func Test*(t *testing.T) com linha inicial, final e corpo."""
     func_pattern = re.compile(r"^\s*func\s+(Test\w+)\s*\(\s*(\w+)\s+\*testing\.T\s*\)")
@@ -34,22 +50,7 @@ def _extract_go_test_blocks(lines: List[str]) -> List[Tuple[str, int, int, List[
 
         test_name = match.group(1)
         start_line = i + 1
-        brace_depth = 0
-        started = False
-        end_idx = n - 1
-
-        for j in range(i, n):
-            clean = _strip_go_comments_and_strings(lines[j])
-            for ch in clean:
-                if ch == "{":
-                    brace_depth += 1
-                    started = True
-                elif ch == "}":
-                    brace_depth -= 1
-            if started and brace_depth <= 0:
-                end_idx = j
-                break
-
+        end_idx = _find_go_block_end(lines, i)
         blocks.append((test_name, start_line, end_idx + 1, lines[i : end_idx + 1]))
         i = end_idx + 1
 

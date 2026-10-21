@@ -7,7 +7,7 @@ metadata:
   version: "1.2.0"
   author: "SkillCraft, Franklin-Main & Melki"
   category: "Auditoria de Qualidade de Testes e Engenharia de Evals"
-  updated_at: "2026-10-15"
+  updated_at: "2026-10-21"
   tags:
     - "test-quality"
     - "ast-auditor"
@@ -21,7 +21,7 @@ metadata:
     - "grading-json"
     - "benchmark-json"
 version: 1.2.0
-updated_at: 2026-10-15
+updated_at: 2026-10-21
 author: SkillCraft, Franklin-Main & Melki
 category: Auditoria de Qualidade de Testes e Engenharia de Evals
 ---
@@ -51,8 +51,12 @@ Ative esta skill quando o usuário solicitar:
 
 ---
 
-## 🚫 Limites, Exceções e Quando NÃO Usar
+## 🚫 Limites, Exceções e Fronteira da Esteira de 3 Portões (`2026-10-21`)
 
+- **Fronteira na Esteira de Qualidade e Convergência (3 Portões)**:
+  1. **Portão 1 — Código de Produção (`code-acceptability-auditor` `v1.1.0`)**: Audita arquivos Python de aplicação/domínio via AST e Pydantic (`12` regras: `SEC001..003`, `SYN001`, `ERR001..003`, `TYP001..002`, `ARCH001..003`, `Score >= 75.0`).
+  2. **Portão 2 — Suítes de Testes & Evals (`test-quality-auditor` `v1.2.0` — Esta Skill)**: Audita a eficácia, padrão AAA, falsificabilidade e determinismo de testes (`Python`, `TS/JS`, `Go`, `MCP JSON-RPC` e `Harness`) + telemetria estatística PerfKit (`perfkit_stats.py`: $P_{50}..P_{99.9}$, `stddev` `ddof=1`, `geomean`), exigindo Nível 4 (`81–100 pts`).
+  3. **Portão 3 — RCA & Convergência Spec-to-Code (`gap-analyzer-auditor` `v2.1.0`)**: Quando os Portões 1 ou 2 reprovam um artefato ou ocorrem falhas de runtime/divergências em `SPEC.md`/`tasks.md`, consome as evidências factuais para RCA epistêmico (`[FATO]`, `[INFERÊNCIA]`, `[LACUNA]`) e convergência *append-only* (`/speckit-converge`).
 - **Não usar** para auditoria matemática exclusiva de motores de Física 3D/WebGL sem relação com suítes de testes ou Evals (use `code-quality-audit-3d-physics`).
 - **Não usar** para compilar binários Go ou fazer deploy de containers no Cloud Run sem auditoria de testes.
 - **Não usar** para auditoria estrutural de pastas do Google Drive ou limpeza de disco Windows (use `gdrive-auditoria-limpeza` ou `manutencao-disco-windows`).
@@ -70,7 +74,7 @@ Ative esta skill quando o usuário solicitar:
 
 ## 🔄 Processamento Interno e Fluxo de Execução (7 Módulos)
 
-Toda auditoria conduzida por esta skill executa o pipeline determinístico em **7 Módulos Sequenciais** (detalhados em [dossie_qualidade_testes_e_evals.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/test-quality-auditor/references/dossie_qualidade_testes_e_evals.md), [modulo_qualidade_testes_go.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/test-quality-auditor/references/modulo_qualidade_testes_go.md), [modulo_qualidade_testes_mcp.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/test-quality-auditor/references/modulo_qualidade_testes_mcp.md) e [modulo_qualidade_testes_harness.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.agents/skills/test-quality-auditor/references/modulo_qualidade_testes_harness.md)):
+Toda auditoria conduzida por esta skill executa o pipeline determinístico em **7 Módulos Sequenciais** (detalhados em [`references/dossie_qualidade_testes_e_evals.md`](references/dossie_qualidade_testes_e_evals.md), [`references/modulo_qualidade_testes_go.md`](references/modulo_qualidade_testes_go.md), [`references/modulo_qualidade_testes_mcp.md`](references/modulo_qualidade_testes_mcp.md) e [`references/modulo_qualidade_testes_harness.md`](references/modulo_qualidade_testes_harness.md)):
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
@@ -81,7 +85,8 @@ Toda auditoria conduzida por esta skill executa o pipeline determinístico em **
 │   ├── ts_js_auditor.py        <-> evals/modules/ts_js_evals.json                    │
 │   ├── go_test_auditor.py      <-> evals/modules/go_evals.json                       │
 │   ├── mcp_test_auditor.py     <-> evals/modules/mcp_evals.json                      │
-│   └── harness_test_auditor.py <-> evals/modules/harness_evals.json                  │
+│   ├── harness_test_auditor.py <-> evals/modules/harness_evals.json                  │
+│   └── perfkit_stats.py        --> Percentis P50..P99.9, stddev (ddof=1) & geomean   │
 ├─────────────────────────────────────────────────────────────────────────────────────┤
 │ Passo 2: Diagnóstico da Problemática (Problema ➔ Abordagem ➔ Meta)                 │
 │ Passo 3: Dissecação da Montagem AAA (Arrange ➔ Act ➔ Assert)                       │
@@ -95,18 +100,18 @@ Toda auditoria conduzida por esta skill executa o pipeline determinístico em **
 ### Passo 1: Execução do Motor Modular (`test_quality_auditor.py`)
 Dispare o script utilitário sobre qualquer arquivo ou diretório (Python, TS/JS, Go, MCP ou Harness):
 ```powershell
-uv run python .agents/skills/test-quality-auditor/scripts/test_quality_auditor.py <caminho_alvo> --markdown
+uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py <caminho_alvo> --markdown
 ```
 Para forçar um domínio específico (`go`, `mcp` ou `harness`):
 ```powershell
-uv run python .agents/skills/test-quality-auditor/scripts/test_quality_auditor.py <caminho_alvo> --domain go --markdown
-uv run python .agents/skills/test-quality-auditor/scripts/test_quality_auditor.py <caminho_alvo> --domain mcp --markdown
-uv run python .agents/skills/test-quality-auditor/scripts/test_quality_auditor.py <caminho_alvo> --domain harness --markdown
+uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py <caminho_alvo> --domain go --markdown
+uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py <caminho_alvo> --domain mcp --markdown
+uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py <caminho_alvo> --domain harness --markdown
 ```
 Para validar todos os 5 módulos espelhados (`evals/modules/*_evals.json`) + a suíte consolidada (20 casos) ou um módulo isolado:
 ```powershell
-uv run python .agents/skills/test-quality-auditor/scripts/test_quality_auditor.py --run-evals
-uv run python .agents/skills/test-quality-auditor/scripts/test_quality_auditor.py --run-evals --eval-module harness
+uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py --run-evals
+uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py --run-evals --eval-module harness
 ```
 
 ### Passo 2: Análise Estrutural dos 7 Módulos Obrigatórios
@@ -127,24 +132,26 @@ uv run python .agents/skills/test-quality-auditor/scripts/test_quality_auditor.p
 
 ---
 
-## 🎨 Diretrizes Canônicas de Design e Preferências Melki (`DESIGN.md v4.5-soft`)
+## 🎨 Diretrizes de Estilo por Propósito e Arquitetura Visual (`preferencias_estilo_e_temas.md` & `minimal-impact-ui`)
 
-Sempre que esta skill gerar relatórios visuais, dashboards HTML de cobertura/qualidade ou artefatos de interface, aplique obrigatoriamente os 4 módulos canônicos:
+Sempre que esta skill gerar relatórios visuais, dashboards HTML de cobertura/qualidade ou artefatos de interface, aplique obrigatoriamente os 4 módulos orientados ao **propósito do projeto** ([`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md) e [`../minimal-impact-ui/SKILL.md`](../minimal-impact-ui/SKILL.md)):
 
-### Módulo 1: Economia Tonal 60-30-10, Iluminação 135° e Superfícies Minerais (`DESIGN.md v4.5-soft`)
-- **Pilha de Elevação Tonal (4+1 Camadas):** Indicadores, botões e cards destacam-se por **iluminação direcional dupla a 135°** (`.ui-card-soft`: `8px 8px 20px rgba(166,180,200,0.42), -8px -8px 20px rgba(255,255,255,0.95)`), **cavidades escavadas** (`surface-inset` `#E5E9F0`) e **inversão tonal Terrixa** (`#1E293B`), nunca por cores neon ou blur.
-- **Autonomia de Superfícies Minerais & Azuis Serenos:** Canvas neutro (`#F1F4F8` Light / `#12151B` Dark), mantendo $L_{\text{card}} > L_{\text{canvas}}$ no dark mode, com acentos minerais (`Cerulean Sapphire #0284C7`, `Ocean Sapphire #1E6091`, `Mineral Ice #38BDF8`, `Forest Moss #174930`).
-- ❌ **Banimento Anti-Cobalto & Anti-Glassmorphism (`AUDIT-VIS-01`):** Proibido azul cobalto puro (`#0044FF`, `#0057FF`, `#233DFF`, `#1D4ED8`), `backdrop-filter: blur()` e bordas duras de `1px`.
+### Módulo 1: Seleção de Tema pelo Propósito e Isolamento 98/2 (`DESIGN.md v5.0`)
+- **4 Famílias Atmosféricas Adaptativas**:
+  1. **Cinza sobre Cinza Monolítico (Padrão Anti-TDAH para Dashboards de QA)**: Canvas `#57545d`, Cards `#49464f` e Menus/Pílulas `#8e8999` com **tinta escura `#16151A`** ($\ge 5.6:1$ AAA).
+  2. **Preto Terminal IBM (`Ex Umbris` — Telemetria CLI/AST)**: Canvas `#070709`, Cards `#101014` ($L_{\text{card}} > L_{\text{canvas}}$) e tipografia obrigatória **`IBM Plex Sans` + `IBM Plex Mono`**.
+  3. **Ad Lucem (Editorial / Relatórios de Homologação)**: Canvas `#F3F3F5` / `#F4F3EF`, Cards `#FFFFFF` e bloco de resumo executivo `#18181C`.
+  4. **AETHER 2027**: Tokens `oklch()`, Bento Grid 12 colunas e *Spring Physics*.
+- ❌ **Banimento Anti-Cobalto & Anti-Ruído (`AUDIT-VIS-01`):** Proibido azul cobalto puro (`#0044FF`, `#0057FF`, `#1D4ED8`, `#2563EB`), texto vermelho corrido em fundos cinzas/escuros (usar `.highlight-surgical`) e emojis decorativos em controles.
 
-### Módulo 2: Minimalist Impact, Regra 1+2 e Composição Visual (`Soft UI 135°`)
-- **Orçamento de Densidade (Regra 1+2):** No máximo **1 ação primária** e **2 secundárias** visíveis por card.
-- **Zero "Caixa dentro de Caixa" & Zero Bordas Duras:** Separe metadados de auditoria com tipografia, espaço livre ($\ge 30\%$) e camadas tonais (`surface-flat` / `surface-inset`), sem bordas duras de `1px`.
-- **Anti-Squish e Ergonomia TDAH:** Hierarquia escaneável em 3 segundos, badges com `flex-shrink: 0; white-space: nowrap;` ($\ge 44\text{px}$) e zero `alert()` bloqueante.
+### Módulo 2: Camadas Esculpidas, Regra 1+2 e Tipografia Tabular (`tabular-nums`)
+- **Superfícies Esculpidas**: Sombra física em 3 camadas (`--shadow-sculpted`) + `1px` Rim Light superior (`inset 0 1px 0 0 var(--rim-light)`).
+- **Orçamento de Densidade (Regra 1+2 e $\ge 25\%$ de Respiro)**: No máximo **1 ação primária** e **2 secundárias** visíveis por card, com `font-variant-numeric: tabular-nums` obrigatório em todas as colunas de notas (`0–100`), percentis ($P_{50}, P_{95}, P_{99}$) e contagens de asserções.
+- **Anti-Squish e Ergonomia TDAH**: Hierarquia escaneável em 3 segundos, badges com `flex-shrink: 0; white-space: nowrap;`, alvos interativos $\ge 44\times44\text{px}$ e zero `alert()` bloqueante.
 
-### Módulo 3: Mapeamento de Opções e Preferências Pessoais do Desenvolvedor
+### Módulo 3: Mapeamento de Opções e Arquitetura Modular (`<300` linhas/módulo)
 - **Consulta Estruturada via `ask_question`:** Apenas em decisões destrutivas ou ambiguidades críticas (máx. 1–2 perguntas).
-- **Presets Soft UI & Temas Minerais (`localStorage`):** *Nexus Slate Cerulean* (`#0284C7`), *Moss & Calm* (`#174930`), *Soft Sapphire* (`#1E6091`), *Obsidian Dark* (`#38BDF8`), *Tactile Matte*, *Phantom Obsidian 4K*, *Quiet Luxury Titanium*, *Steadfast Stainless* e *Warm Editorial Paper*.
-- **Arquitetura de Código:** Separação limpa em módulos de responsabilidade única (`<300` linhas cada): Domínio (`models.py`), Analisadores (`python_ast_auditor.py`, `ts_js_auditor.py`, `go_test_auditor.py`, `mcp_test_auditor.py`, `harness_test_auditor.py`), Evals (`eval_harness.py`) e CLI (`test_quality_auditor.py`), com espelhamento 1:1 em `evals/modules/*_evals.json`.
+- **Arquitetura de Código:** Separação limpa em módulos de responsabilidade única (`<300` linhas cada, `100.0/100.0` no `code-acceptability-auditor`): Domínio ([`scripts/models.py`](scripts/models.py)), Analisadores ([`scripts/python_ast_auditor.py`](scripts/python_ast_auditor.py), [`scripts/ts_js_auditor.py`](scripts/ts_js_auditor.py), [`scripts/go_test_auditor.py`](scripts/go_test_auditor.py), [`scripts/mcp_test_auditor.py`](scripts/mcp_test_auditor.py), [`scripts/harness_test_auditor.py`](scripts/harness_test_auditor.py)), Estatística PerfKit ([`scripts/perfkit_stats.py`](scripts/perfkit_stats.py)), Evals ([`scripts/eval_harness.py`](scripts/eval_harness.py)) e CLI ([`scripts/test_quality_auditor.py`](scripts/test_quality_auditor.py)), com espelhamento 1:1 em `evals/modules/*_evals.json`.
 
 ### Módulo 4: Matriz de Detecção de Discrepâncias com as Preferências
 - Checklist determinístico validado em toda entrega:

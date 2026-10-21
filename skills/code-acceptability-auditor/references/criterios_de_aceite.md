@@ -1,10 +1,10 @@
-# 📋 Critérios Institucionais de Aceite de Código Python (`code-acceptability-auditor`)
+# 📋 Critérios Institucionais de Aceite de Código Python (`code-acceptability-auditor` v1.1.0)
 
 Este documento detalha os critérios técnicos obrigatórios para aprovação de scripts e módulos Python antes de qualquer `git commit`, *Pull Request* ou publicação em produção.
 
 ---
 
-## 1. Tabela de Regras e Penalidades Determinísticas
+## 1. Tabela de Regras e Penalidades Determinísticas (12 Regras)
 
 | Regra ID | Categoria | Severidade | Penalidade | Condição de Disparo | Remediação Exigida |
 | :--- | :--- | :--- | :---: | :--- | :--- |
@@ -18,6 +18,8 @@ Este documento detalha os critérios técnicos obrigatórios para aprovação de
 | **`TYP001`** | Tipagem | `MÉDIO` | `-5.0` | Parâmetro de função sem *Type Hint* (exceto `self`/`cls`). | Anotar todos os parâmetros da assinatura. |
 | **`TYP002`** | Tipagem | `MÉDIO` | `-5.0` | Função ou método (exceto `__init__`) sem retorno `-> Type`. | Declarar explicitamente o tipo de retorno. |
 | **`ARCH001`** | Arquitetura | `BAIXO` | `-2.0` | Função/método com mais de `60` linhas (`end_lineno - lineno + 1 > 60`). | Extrair funções auxiliares coesas (SRP). |
+| **`ARCH002`** | Complexidade Cognitiva | `MÉDIO` | `-5.0` | Aninhamento de controle (`if/for/while`) `> 3` níveis (tratando `elif` no mesmo nível). | Aplicar *Early Return* (*Guard Clauses*) ou extrair subfunções. |
+| **`ARCH003`** | Complexidade Ciclomática | `MÉDIO` | `-5.0` | Complexidade ciclomática McCabe $M = E - N + 2P > 10$. | Reduzir ramificações ($M \le 10$) via despacho por dicionário ou subfunções. |
 
 ---
 

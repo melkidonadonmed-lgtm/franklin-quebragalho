@@ -1,4 +1,4 @@
-# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REJEIÇÃO (`code-acceptability-auditor` v1.0.0)
+# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REJEIÇÃO (`code-acceptability-auditor` v1.1.0)
 
 Toda auditoria executada por esta skill deve emitir marcadores determinísticos baseados em evidências reais extraídas da Árvore Sintática Abstrata (AST) do Python e de padrões léxicos de segurança:
 - `[PASS]`: Requisito sintático, de segurança, tratamento de erros, tipagem e modularidade comprovado sem violações bloqueantes.

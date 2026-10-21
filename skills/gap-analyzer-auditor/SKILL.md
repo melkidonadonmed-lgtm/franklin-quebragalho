@@ -7,7 +7,7 @@ metadata:
   version: "2.1.0"
   author: "LoopPlanner & Melki"
   category: "Auditoria de Processos, RCA e Hand-off Multiagente"
-  updated_at: "2026-10-19"
+  updated_at: "2026-10-21"
   tags:
     - "rca"
     - "closed-loop"
@@ -15,7 +15,7 @@ metadata:
     - "auditoria"
     - "converge"
 version: 2.1.0
-updated_at: 2026-10-19
+updated_at: 2026-10-21
 author: LoopPlanner & Melki
 category: Auditoria de Processos, RCA e Hand-off Multiagente
 ---
@@ -33,18 +33,19 @@ category: Auditoria de Processos, RCA e Hand-off Multiagente
 
 ## 2. Propósito e Missão (Quando Usar)
 
-### Quando Usar
-Esta skill **DEVE** ser acionada nas seguintes circunstâncias:
-- Quando comandos, scripts, pipelines ou automações falharem ou emitirem traces e logs de erro inesperados.
+### Quando Usar (Portão 3 da Esteira de Qualidade e Convergência)
+Esta skill atua como o **Portão 3 (`gap-analyzer-auditor` `v2.1.0`)** da esteira canônica de qualidade, recebendo evidências factuais de:
+- **Portão 1 (`code-acceptability-auditor` `v1.1.0`)**: Rejeições AST/Pydantic de código Python (`SEC001..003`, `SYN001`, `ERR001..003`, `TYP001..002`, `ARCH001..003`, `Score < 75.0`).
+- **Portão 2 (`test-quality-auditor` `v1.2.0`)**: Reprovações de suítes de testes e `evals/` nos 5 domínios (`python`, `ts_js`, `go`, `mcp`, `harness`, nota $< 81$ ou `pass_rate < 1.0`).
+- **Traces de Runtime & Logs Operacionais**: Comandos, scripts, pipelines ou automações que falharem ou emitirem stack traces inesperados.
 - **Modo Convergência Spec-to-Code (`/speckit-converge`)**: Para comparar a especificação/plano (`spec.md`, `plan.md`, `tasks.md`) contra o estado atual do código no disco, detectando requisitos não atendidos (`FR-###`, `SC-###`, `T###`) e gerando novas tasks rastreáveis *append-only* (`[ ] T0XX [P] [CONV] caminho/exato.ext`) sem reescrever o histórico.
-- Para isolar fatos documentados de inferências diagnósticas em falhas operacionais complexas.
-- Para formular alternativas estruturadas (Opção 1 Cirúrgica vs Opção 2 Arquitetural) e gerar o contrato de hand-off em YAML para retroalimentar o `high-level-context-planner`.
-- Em malhas fechadas de agentes (*closed-loop reflection*), onde um plano deve ser submetido a escrutínio crítico independente antes da aprovação final.
+- Para isolar fatos documentados (`[FATO]`) de inferências diagnósticas (`[INFERÊNCIA]`) e lacunas (`[LACUNA]`), formulando alternativas estruturadas (Opção 1 Cirúrgica vs Opção 2 Arquitetural) e gerando o contrato de hand-off em YAML para retroalimentar o `high-level-context-planner`.
 
-### Quando NÃO Usar
+### Quando NÃO Usar e Fronteira com os Portões 1 e 2
+- **Para auditar estaticamente código Python de produção via AST** antes de saber se há falhas: acione primeiro o **Portão 1 (`code-acceptability-auditor`)**.
+- **Para medir qualidade AAA, falsos positivos e Níveis 1 a 4 de suítes de testes**: acione primeiro o **Portão 2 (`test-quality-auditor`)**.
 - Para assumir o papel de planejador final ou redesenhar planos inteiros com cronogramas e novos diagramas Mermaid (esta responsabilidade cabe ao `high-level-context-planner` ou `skill-orquestrador-planos-encadeados`).
 - Para executar ações corretivas diretamente no sistema de arquivos ou banco de dados sem validação humana (HITL).
-- Para refatoração em massa de código-fonte de aplicação (utilize as skills específicas de desenvolvimento).
 - Diante de logs completamente ausentes onde nenhuma evidência textual foi fornecida (emitir solicitação de dados antes de processar).
 
 ---

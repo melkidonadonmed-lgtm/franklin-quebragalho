@@ -130,7 +130,8 @@ def test_detects_cognitive_nesting_arch002_and_cyclomatic_arch003() -> None:
 
 def test_trigger_eval_suite_achieves_100_percent_f1() -> None:
     queries = load_canonical_queries()
-    assert len(queries) == 20
+    expected_trig_ids = [q.id for q in queries if q.id.startswith("TRIG-")]
+    assert len(queries) == len(expected_trig_ids) and len(queries) >= 20
     runner = TriggerEvalRunner(
         skill_name="code-acceptability-auditor",
         skill_description="Audita estaticamente arquivos Python via AST.",

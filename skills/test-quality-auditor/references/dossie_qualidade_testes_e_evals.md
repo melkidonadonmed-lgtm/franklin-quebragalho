@@ -1,4 +1,4 @@
-# Dossiê Canônico de Auditoria de Qualidade de Testes e Engenharia de Evals (`test-quality-auditor` v1.0.0)
+# Dossiê Canônico de Auditoria de Qualidade de Testes e Engenharia de Evals (`test-quality-auditor` v1.2.0)
 
 Este documento consolida a fundamentação técnica, matrizes diagnósticas e arquitetura de *Eval-Driven Harness* utilizadas pela skill `test-quality-auditor`.
 
@@ -67,7 +67,7 @@ Um teste automatizado de alta qualidade exige o cumprimento estrito do padrão *
 ## 4. Por que o Problema Ainda Persiste? (Outros Fatores & Espectro Geral)
 
 O problema dos testes ineficazes persiste devido a **5 fatores ocultos de contaminação**:
-1. **Acoplamento de Implementação e Constantes Voláteis:** Testes que validam detalhes internos ou contagens estáticas quebradiças (ex.: `assert len(skills) == 24` que falha assim que a 25ª skill é criada, sem testar a paridade real com o diretório `.agents/skills/`).
+1. **Acoplamento de Implementação e Constantes Voláteis:** Testes que validam detalhes internos ou contagens estáticas quebradiças (ex.: `assert len(skills) == 24` que falha assim que uma nova skill é criada, sem testar a paridade real com o diretório canônico `skills/`).
 2. **Não-Determinismo Temporal (*Flaky Tests*):** Testes que dependem de `time.sleep()`, `datetime.now()` ou medição de tempo real (`const duration = Date.now() - start; assert.ok(duration >= 140 && duration < 800)`), falhando intermitentemente sob carga de CPU no CI/CD.
 3. **Mocks Tautológicos:** Substituir serviços ou bancos por mocks que sempre retornam o valor literal esperado na asserção, ignorando constraints reais de tipo e schema.
 4. **Falta de Limpeza de Estado (*State Leakage*):** Testes que sobrescrevem `(globalThis as any).window = mockWindow` ou gravam checkpoints em disco sem bloco `try/finally` para restaurar o estado inicial caso uma asserção intermediária falhe.
