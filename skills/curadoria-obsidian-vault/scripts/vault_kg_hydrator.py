@@ -25,6 +25,11 @@ if hasattr(sys.stderr, "reconfigure"):
 
 DEFAULT_VAULT_DIR = Path(r"C:\Users\melki\dev\notes")
 DEFAULT_KG_DB = Path(r"C:\Users\melki\.mempalace\knowledge_graph.sqlite3")
+SECONDARY_KG_DBS = (
+    Path(r"C:\Users\melki\.config\mempalace\knowledge_graph.sqlite3"),
+    Path(r"C:\Users\melki\.config\mempalace\palace\knowledge_graph.sqlite3"),
+    Path(r"C:\Users\melki\.mempalace\palace\knowledge_graph.sqlite3"),
+)
 DEFAULT_REPO_DIR = Path(r"C:\Users\melki\dev\repos\franklin-quebragalho")
 
 WIKILINK_RE = re.compile(r"\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|[^\]]+)?\]\]")
@@ -142,7 +147,7 @@ def _collect_ecosystem_entities_and_triples(
         hub_id,
         "franklin-quebragalho",
         "canonical_repository",
-        json.dumps({"path": str(repo_dir), "skills": 27, "subagents": 5}, ensure_ascii=False),
+        json.dumps({"path": str(repo_dir), "skills": 29, "subagents": 9}, ensure_ascii=False),
     )]
     triples: List[Tuple[str, str, str, str, str]] = []
 
@@ -195,6 +200,16 @@ def hydrate_knowledge_graph(
         total_triples = int(cur.execute("SELECT COUNT(*) FROM triples").fetchone()[0])
     finally:
         conn.close()
+
+    if kg_db_path == DEFAULT_KG_DB:
+        import shutil
+
+        for mirror_db in SECONDARY_KG_DBS:
+            try:
+                mirror_db.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(kg_db_path, mirror_db)
+            except OSError as exc:
+                _ = exc
 
     return {
         "status": "HYDRATED",
