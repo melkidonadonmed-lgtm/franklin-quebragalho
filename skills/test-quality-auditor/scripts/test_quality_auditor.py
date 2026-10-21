@@ -188,7 +188,7 @@ def _build_cli_parser() -> argparse.ArgumentParser:
         help="Módulo espelhado de evals a executar com --run-evals (padrão: all).",
     )
     parser.add_argument("--markdown", action="store_true", help="Emite relatório formatado em Markdown.")
-    parser.add_argument("--pretty", action="store_true", help="Formata saída JSON indentada (padrão).")
+    parser.add_argument("--pretty", "--json", action="store_true", help="Formata saída JSON indentada (padrão).")
     parser.add_argument("--run-evals", action="store_true", help="Executa evals/evals.json e evals/modules/*_evals.json.")
     parser.add_argument("--self-test", action="store_true", help="Executa auto-teste rápido da suíte de evals.")
     return parser
@@ -225,11 +225,15 @@ def main() -> int:
         print(json.dumps(reports[0].to_dict(), indent=2, ensure_ascii=False))
     else:
         all_passed = all(r.aprovado for r in reports)
+        avg_score = round(sum(r.score_medio for r in reports) / len(reports), 1) if reports else 0.0
         print(
             json.dumps(
                 {
                     "aprovado_global": all_passed,
+                    "score_medio_global": avg_score,
+                    "nivel_espectro_global": classify_quality_level(avg_score),
                     "total_arquivos": len(reports),
+                    "total_tests": sum(r.total_tests for r in reports),
                     "total_inconformidades": sum(r.total_inconformidades for r in reports),
                     "arquivos": [r.to_dict() for r in reports],
                 },
