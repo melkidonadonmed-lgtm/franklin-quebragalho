@@ -126,11 +126,59 @@ def _collect_markdown_files(vault: Path) -> List[Path]:
     return files
 
 
+def _validate_wikilinks(
+    prose_only: str,
+    source_rel: str,
+    known_stems: Set[str],
+    known_rel_paths: Set[str],
+    report: VaultHygieneReport,
+) -> None:
+    """Valida [[Wikilinks]] por stem e, quando há barra '/', pelo caminho relativo completo."""
+    for match in WIKILINK_RX.findall(prose_only):
+        clean_target = match.strip().replace("\\", "/")
+        if not clean_target or clean_target.lower().endswith((".png", ".jpg", ".pdf", ".webp")):
+            continue
+        stem = clean_target.split("/")[-1].lower()
+        if stem in {"wikilinks", "nota", "projeto"}:
+            continue
+        if "/" in clean_target:
+            if clean_target.lower().removesuffix(".md") not in known_rel_paths:
+                report.broken_wikilinks.append({"source": source_rel, "target": match.strip()})
+        elif stem not in known_stems:
+            report.broken_wikilinks.append({"source": source_rel, "target": match.strip()})
+
+
+def _inspect_canvas_files(
+    vault: Path,
+    known_stems: Set[str],
+    known_rel_paths: Set[str],
+    report: VaultHygieneReport,
+) -> None:
+    """Inspeciona arquivos .canvas do Obsidian para detectar [[Wikilinks]] quebrados nos nós."""
+    if not vault.is_dir():
+        return
+    for cf in sorted(vault.rglob("*.canvas")):
+        rel_parts = cf.relative_to(vault).parts
+        if any(part in SKIP_DIRS or part.startswith(".") for part in rel_parts):
+            continue
+        rel = str(cf.relative_to(vault)).replace("\\", "/")
+        try:
+            data = json.loads(cf.read_text(encoding="utf-8", errors="replace"))
+        except (OSError, json.JSONDecodeError) as exc:
+            report.broken_wikilinks.append({"source": rel, "target": f"CANVAS_READ_ERROR:{type(exc).__name__}"})
+            continue
+        for node in data.get("nodes", []):
+            text = str(node.get("text", ""))
+            prose_only = re.sub(r"```[\s\S]*?```|`[^`\n]+`", "", text)
+            _validate_wikilinks(prose_only, rel, known_stems, known_rel_paths, report)
+
+
 def _inspect_note(
     p: Path,
     vault: Path,
     now_s: float,
     known_stems: Set[str],
+    known_rel_paths: Set[str],
     never_expose: Set[str],
     report: VaultHygieneReport,
 ) -> None:
@@ -162,17 +210,8 @@ def _inspect_note(
         if loops > 0 and len(report.open_loops) < OPEN_LOOP_CAP:
             report.open_loops.append({"path": rel, "ageDays": age_days, "openItems": loops})
 
-    # Ignora blocos de código cercados e código inline antes de extrair [[Wikilinks]]
     prose_only = re.sub(r"```[\s\S]*?```|`[^`\n]+`", "", raw)
-    for match in WIKILINK_RX.findall(prose_only):
-        target = match.strip().split("/")[-1].lower()
-        if (
-            target
-            and not target.endswith((".png", ".jpg", ".pdf", ".webp"))
-            and target not in known_stems
-            and target not in {"wikilinks", "nota", "projeto"}
-        ):
-            report.broken_wikilinks.append({"source": rel, "target": match.strip()})
+    _validate_wikilinks(prose_only, rel, known_stems, known_rel_paths, report)
 
 
 def scan_vault_hygiene(
@@ -183,12 +222,15 @@ def scan_vault_hygiene(
     vault = Path(vault_path)
     never = never_expose or {"SOUL.md", "SECRETS.md"}
     md_files = _collect_markdown_files(vault)
-    known_stems = {p.stem.lower() for p in md_files}
+    all_md = list(vault.rglob("*.md")) if vault.is_dir() else []
+    known_stems = {p.stem.lower() for p in all_md}
+    known_rel_paths = {p.relative_to(vault).with_suffix("").as_posix().lower() for p in all_md}
     now_s = time.time()
 
     report = VaultHygieneReport(vault_path=str(vault), total_notes=len(md_files))
     for p in md_files:
-        _inspect_note(p, vault, now_s, known_stems, never, report)
+        _inspect_note(p, vault, now_s, known_stems, known_rel_paths, never, report)
+    _inspect_canvas_files(vault, known_stems, known_rel_paths, report)
 
     inbox_dir = vault / "Inbox"
     if inbox_dir.is_dir():
