@@ -190,6 +190,7 @@ def _check_mcp_discovery_error_and_security(
     known_tools = (
         "go_fast_dispatch", "analyze_issue_triage", "list_workspace",
         "fetch_url", "search_files", "franklin_skills_list",
+        "drive_list_files", "node_runtime_inspector", "design_mcp_with_agent_skills",
     )
     if ('"tools/list"' in block_text or "probe_mcp_server(" in block_text) and not any(
         tool_tok in block_text for tool_tok in known_tools
