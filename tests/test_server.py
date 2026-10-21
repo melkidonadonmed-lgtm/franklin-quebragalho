@@ -542,5 +542,31 @@ def test_gemini_ecosystem_directories() -> None:
             shutil.rmtree(dup_probe)
 
 
+def test_docs_and_catalog_truth_parity() -> None:
+    """Valida a paridade de verdade (Zero Doc Drift) entre README.md, SPEC.md, CONTEXT.md, MY_SKILLS.md e o disco."""
+    expected_skills = sorted(
+        d.name for d in server.SKILLS_ROOT.iterdir() if d.is_dir() and (d / "SKILL.md").exists()
+    )
+    count = len(expected_skills)
+    readme_text = (server.ROOT_DIR / "README.md").read_text(encoding="utf-8")
+    spec_text = (server.ROOT_DIR / "SPEC.md").read_text(encoding="utf-8")
+    context_text = (server.ROOT_DIR / "CONTEXT.md").read_text(encoding="utf-8")
+    my_skills_text = (server.ROOT_DIR / "MY_SKILLS.md").read_text(encoding="utf-8")
+    agents_text = (server.ROOT_DIR / "AGENTS.md").read_text(encoding="utf-8")
+
+    assert f"{count} Skills Canônicas" in readme_text
+    assert f"{count} Agent Skills" in spec_text
+    assert f"{count} Skills" in context_text
+    assert f"{count} Skills Canônicas" in my_skills_text
+    assert f"`{count}/{count}` skills" in agents_text
+    assert (server.ROOT_DIR / ".env.example").exists()
+
+    for skill_slug in expected_skills:
+        assert skill_slug in my_skills_text, f"Skill '{skill_slug}' ausente em MY_SKILLS.md"
+        if skill_slug != "_template":
+            assert skill_slug in readme_text, f"Skill '{skill_slug}' ausente em README.md"
+
+
+
 
 

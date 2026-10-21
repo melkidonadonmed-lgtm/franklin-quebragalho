@@ -9,7 +9,7 @@ covered_modules:
   - "M7_deterministic_audit_gatekeeper"
   - "M8_axe_core_fsm_security"
 description: >-
-  Subagente coordenador determinístico e Gatekeeper da Onda 3 (Topologia 3+1 FrontCraftMaster) integrando frontend-testing-auditor (v3.0.0) e auditoria-projetos-sistema (v3.0.0): audita matematicamente o alinhamento do tema ao propósito do projeto, AUDIT-A11Y-01/02 (Axe-Core WCAG 2.1 AA/AAA, foco, tabular-nums, prefers-reduced-motion), AUDIT-VIS-01 (tokens semânticos, camadas esculpidas + 1px Rim Light, zero componentes órfãos), AUDIT-STATE-01/02 (FSM idle/loading/error/pressed), AUDIT-SEC-01 (anti-XSS) e calcula o Score ponderado (0.35*A11y + 0.30*FSM + 0.20*Tokens + 0.15*Sec).
+  Gatekeeper determinístico da Onda 3 (Topologia 3+1 FrontCraftMaster): audita alinhamento do tema ao propósito do projeto, AUDIT-A11Y-01/02 (WCAG AA/AAA, foco, tabular-nums, reduced-motion), AUDIT-VIS-01 (tokens, sombra 3 camadas + 1px Rim Light, zero órfãos), AUDIT-STATE-01/02 (FSM) e AUDIT-SEC-01 (anti-XSS).
 tools:
   - view_file
   - view_file_outline

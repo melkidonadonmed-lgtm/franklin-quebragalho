@@ -30,10 +30,12 @@ O **Franklin Quebra-Galho** (`franklin-quebragalho`) é o assistente principal d
 
 ---
 
-## 📦 Catálogo Rápido de Skills (26 Skills Canônicas)
+## 📦 Catálogo Rápido de Skills (28 Skills Canônicas)
 
 | Skill | Versão | Status | Propósito Principal | Link |
 | :--- | :---: | :---: | :--- | :--- |
+| **`antigravity-project-auditor`** | `v2.0.0` | 🚀 Produção | Auditor arquitetural, diagnóstico de MVP (causa-efeito) e planejamento em 3 fases (`autonomous_scan` \| `targeted_focus`). | [skills/antigravity-project-auditor/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/antigravity-project-auditor/SKILL.md) |
+| **`minimal-impact-ui`** | `v1.0.0` | 🚀 Produção | Design System Anti-TDAH (`atlas_ex_umbris_winui.html`): 3 temas (`#57545d` + `#8e8999`, `#09090B`, `#F3F3F5`), 6 Arquétipos e 28 efeitos WinUI 3. | [skills/minimal-impact-ui/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/minimal-impact-ui/SKILL.md) |
 | **`code-acceptability-auditor`** | `v1.0.0` | 🚀 Produção | Auditoria estática AST/Pydantic de código Python, Quality Gate (`>=75/100`) e Trigger Matrix. | [skills/code-acceptability-auditor/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-acceptability-auditor/SKILL.md) |
 | **`design-md`** | `v5.0.0` | 🚀 Produção | Gerador de contratos `DESIGN.md` (`v5.0`) orientado ao propósito do projeto (`preferencias_estilo_e_temas.md`). | [skills/design-md/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/design-md/SKILL.md) |
 | **`frontend-code-architect`** | `v5.0.0` | 🚀 Produção | Arquiteto de código Frontend em Atomic Design (5 camadas), `<SurfaceCard />` esculpido e tokens por objetivo. | [skills/frontend-code-architect/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/frontend-code-architect/SKILL.md) |
@@ -67,26 +69,42 @@ O **Franklin Quebra-Galho** (`franklin-quebragalho`) é o assistente principal d
 
 ```text
 franklin-quebragalho/
-├── agents/                                      # 4 Subagentes Especialistas de UI (Topologia 3+1 v3.0.0)
-├── plans/                                       # Planos DAG (ui_composition_dag.json, physics_code_audit_dag.json)
-├── shared/                                      # Pacote interno autônomo (parser YAML e Harness Zero-Trust)
-│   ├── harness.py                               # SemanticGuard, evaluate_action_risk e CheckpointStore
+├── agents/                                      # 7 Subagentes Declarativos (Topologia 3+1 de UI + Memória + Mediação HITL/RAW)
+├── plans/                                       # 3 Planos DAG (ui_composition_dag.json, physics_code_audit_dag.json, distributed_agent_mediation_dag.json)
+├── shared/                                      # Pacote interno autônomo de domínio (A2A, Catálogo, Bússola, Orquestrador e Harness)
+│   ├── a2a_bridge.py                            # Motor Agent2Agent v1.0 (AgentCard Protobuf, assinatura JCS/JWS e TaskManager)
+│   ├── catalog_service.py                       # Descoberta, busca ranqueada, leitura progressiva e validação de skills
+│   ├── compass_topology.py                      # Smart Compass, Topologia Multi-Repo (5 camadas) e Subagentes
+│   ├── execution_orchestrator.py                # Executor isolado de scripts, motor DAG Kahn e despacho A2A/Harness²
+│   ├── harness.py                               # SemanticGuard, evaluate_action_risk e CheckpointStore HITL
+│   ├── harness2_engine.py                       # Motor recursivo Harness² e avaliação de mutações
+│   ├── harness2_tree.py                         # Árvore editável c1..c8 e validador Answer-Free
+│   ├── mcp_2026_advisor.py                      # Consultor arquitetural MCP Spec 2026-07-28 e manifesto .mcpb v0.4
 │   └── tools/
 │       └── frontmatter_parser.py                # Parser de YAML Frontmatter com fallback determinístico
-├── server.py                                    # Servidor FastMCP Global (Franklin Skills MCP)
-├── pyproject.toml                               # Configuração de dependências uv/hatchling
+├── google-drive-index-app/                      # Aplicação local de indexação e testes do Google Drive
+├── server.py                                    # Servidor FastMCP Global (Franklin Skills MCP — 13 Ferramentas)
+├── pyproject.toml                               # Configuração de dependências uv/hatchling e pytest
+├── .env.example                                 # Exemplo de variáveis de ambiente (assinatura HMAC A2A v1.0)
 ├── .venv/                                       # Ambiente virtual Python isolado
-├── skills/                                      # Catálogo canônico de 26 skills em 3 Tiers
+├── skills/                                      # Catálogo canônico de 28 skills em 3 Tiers
 ├── scripts/                                     # Scripts utilitários de suporte (PowerShell / Python)
 │   ├── validate_skills.py                       # Validador determinístico de conformidade (--targets)
 │   ├── sync_gemini_ecosystem.py                 # Sincronizador 1:1 (skills, agents, plans, lib, doc e plugin global)
+│   ├── standardize_skills_metadata.py           # Utilitário de padronização de frontmatter YAML
 │   └── md-to-pdf.ps1                            # Conversor de Markdown para PDF via Chrome/Edge headless
-├── tests/                                       # Suíte de testes automatizados (pytest)
-│   └── test_server.py                           # Testes determinísticos do servidor MCP e Harness
+├── tests/                                       # Suíte de testes automatizados Nível 4 (pytest — 52 testes em 5 arquivos)
+│   ├── test_server.py                           # Testes determinísticos do servidor MCP, DAG, Bússola e Paridade Documental
+│   ├── test_a2a_protocol.py                     # Testes de assinatura JCS/JWS, Protobuf AgentCard e Zero-Trust A2A v1.0
+│   ├── test_harness_quality.py                  # Testes de SemanticGuard, RiskMatrix, CheckpointStore e Harness²
+│   ├── test_perfkit_stats.py                    # Testes estatísticos de Pass@k, Welch t-test e Cohen's d
+│   └── test_quality_auditor_go_mcp.py           # Testes de regressão dos auditores AST Go (*_test.go) e MCP JSON-RPC 2.0
 ├── GEMINI.md                                    # Regras de comportamento e integridade do workspace
 ├── AGENTS.md                                    # Arquitetura e contratos de orquestração de subagentes
 ├── MY_AGENTS.md                                 # Catálogo detalhado das personas e papéis dos agentes
-├── MY_SKILLS.md                                 # Manifesto, ciclo de vida e changelog oficial das skills
+├── MY_SKILLS.md                                 # Manifesto, ciclo de vida e changelog oficial das 28 skills
+├── CONTEXT.md                                   # Resumo executivo de contexto operacional do repositório
+├── SPEC.md                                      # Especificação técnica de módulos e ferramentas MCP
 └── README.md                                    # Este documento
 ```
 
@@ -100,13 +118,13 @@ O ecossistema conta com um servidor MCP dedicado baseado em **FastMCP** integrad
 - **`franklin_skills_list`**: Lista o catálogo de skills com filtros por status (`validada`, `producao`), persona (`FrontCraftMaster`, `DriveMaster`, etc.) e busca textual.
 - **`franklin_skills_get`**: Recupera a skill de forma granular (`contract`, `rules`, `references`, `evals`, `scripts`, `all`) preservando o *Token Budget*.
 - **`franklin_skills_search`**: Busca inteligente por intenção operacional, pontuação de relevância e recomendação do subagente especialista.
-- **`franklin_skills_validate`**: Executa a auditoria determinística estrutural de todas as 26 skills com relatório `[PASS]`/`[FAIL]`.
+- **`franklin_skills_validate`**: Executa a auditoria determinística estrutural de todas as 28 skills com relatório `[PASS]`/`[FAIL]`.
 - **`franklin_get_agents`**: Retorna a matriz operacional dos subagentes especialistas (incluindo a Topologia 3+1 de UI).
 - **`franklin_smart_compass`**: Roteador cognitivo que recomenda a skill ideal para uma intenção livre.
 - **`franklin_run_skill_script`**: Executa scripts utilitários com trava contra Path Traversal, SemanticGuard e isolamento de processo.
 - **`franklin_execute_dag`**: Executa planos de orquestração em grafo acíclico dirigido (DAG) via motor do Epic-Volta (`C:\Users\melki\dev\repos\epic-volta`).
 - **`franklin_harness_guard`**: Valida comandos e caminhos antes da execução com base no protocolo Zero-Trust.
-- **`franklin_harness_checkpoint`**: Registra ou consulta checkpoints transacionais de sessão em SQLite WAL.
+- **`franklin_harness_checkpoint`**: Gerencia checkpoints transacionais HITL (`.sessions/harness_checkpoints.json`) e sub-ações recursivas Harness² (`validate_tree`, `evolve`, `record_experience`).
 - **`franklin_a2a_agent_card`**: Gera e verifica criptograficamente o `AgentCard` A2A v1.0 do Franklin.
 - **`franklin_a2a_dispatch_task`**: Despacha tarefas A2A v1.0 com proteção Zero-Trust e HITL.
 - **`franklin_mcp_build_advisor`**: Consultor arquitetural MCP Spec `2026-07-28`.
@@ -116,9 +134,9 @@ O ecossistema conta com um servidor MCP dedicado baseado em **FastMCP** integrad
 ## ⚡ Comandos e Referências Rápidas
 
 - **Executar Servidor MCP Localmente**: `uv run python server.py`
-- **Executar Testes do Servidor**: `uv run pytest tests/test_server.py -v`
+- **Executar Suíte Completa de Testes (`52/52`)**: `uv run pytest -q`
 - **Auditar Todas as Skills**: `uv run python scripts/validate_skills.py`
-- **Sincronizar Catálogo e Plugin Global**: `uv run python scripts/standardize_skills_metadata.py`
+- **Sincronizar Catálogo e Plugin Global**: `uv run python scripts/sync_gemini_ecosystem.py`
 - **Visualizar Agentes Próprios**: Consulte [MY_AGENTS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_AGENTS.md)
 - **Consultar Catálogo de Skills e Versões**: Consulte [MY_SKILLS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md)
 - **Regras Operacionais e Anti-Alucinação**: Consulte [GEMINI.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/GEMINI.md)

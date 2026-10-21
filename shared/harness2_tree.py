@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from typing import Any, Dict, FrozenSet, List, Mapping, Optional, Tuple
+from typing import Any, Dict, FrozenSet, List, Mapping, Optional, Set, Tuple
 
 Tree = Dict[str, str]
 _NAME_RX = r"[a-z0-9][a-z0-9_\-]*"
@@ -116,6 +116,37 @@ def assert_tree_has_no_grader_verdicts(tree: Mapping[str, str]) -> None:
             raise ValueError(f"Grader verdict or answer-key leak detected in {rel!r}")
 
 
+def _validate_skills_in_tree(
+    surface: SurfaceSpec, norm_tree: Tree, skills: List[str], body: str, errs: List[str]
+) -> None:
+    """Valida frontmatter e gatilho always-on de cada skill na árvore."""
+    for sname in skills:
+        s_path = f"{surface.skill_dir}/{sname}/SKILL.md"
+        fm = norm_tree.get(s_path, "")[:600]
+        if not re.search(r"^description:\s*\S", fm, re.M):
+            errs.append(f"{s_path} missing `description:` in frontmatter")
+        m_name = re.search(r"^name:\s*(\S+)\s*$", fm, re.M)
+        if surface.skill_name_rule == "must_match" and not (m_name and m_name.group(1) == sname):
+            errs.append(f"{s_path} needs frontmatter `name: {sname}`")
+        if sname not in body:
+            errs.append(f"Skill '{sname}' is untriggered in always-on text")
+
+
+def _validate_scripts_in_tree(
+    surface: SurfaceSpec, norm_tree: Tree, rxs: Dict[str, re.Pattern[str]], have_scripts: Set[str], errs: List[str]
+) -> None:
+    """Valida compilação sintática e referências de scripts Python na árvore."""
+    for rel, src in norm_tree.items():
+        if rel.endswith(".py") and rel in have_scripts:
+            try:
+                compile(src, rel, "exec")
+            except SyntaxError as exc:
+                errs.append(f"{rel} does not compile: {exc.msg} (line {exc.lineno})")
+        if rxs["skill"].fullmatch(rel) or rel in surface.always_on:
+            missing_refs = [ref for ref in rxs["script_ref"].findall(src) if ref not in have_scripts]
+            errs.extend(f"{rel} invokes `{ref}` which is missing from harness tree" for ref in missing_refs)
+
+
 def validate_harness_tree(surface: SurfaceSpec, tree: Tree) -> Dict[str, Any]:
     """Valida invariantes da árvore c1..c8 (cap, frontmatter, triggers, compilação AST e scripts)."""
     errs: List[str] = []
@@ -134,30 +165,12 @@ def validate_harness_tree(surface: SurfaceSpec, tree: Tree) -> Dict[str, Any]:
         errs.append(f"{surface.always_on[0]} cannot be empty")
 
     skills = skill_names(surface, norm_tree)
-    for sname in skills:
-        s_path = f"{surface.skill_dir}/{sname}/SKILL.md"
-        fm = norm_tree.get(s_path, "")[:600]
-        if not re.search(r"^description:\s*\S", fm, re.M):
-            errs.append(f"{s_path} missing `description:` in frontmatter")
-        m_name = re.search(r"^name:\s*(\S+)\s*$", fm, re.M)
-        if surface.skill_name_rule == "must_match" and not (m_name and m_name.group(1) == sname):
-            errs.append(f"{s_path} needs frontmatter `name: {sname}`")
-        if sname not in body:
-            errs.append(f"Skill '{sname}' is untriggered in always-on text")
+    _validate_skills_in_tree(surface, norm_tree, skills, body, errs)
 
     have_scripts = {
         rel for rel in norm_tree if rxs["script"].fullmatch(rel) or rxs["skill_script"].fullmatch(rel)
     }
-    for rel, src in norm_tree.items():
-        if rel.endswith(".py") and (rxs["script"].fullmatch(rel) or rxs["skill_script"].fullmatch(rel)):
-            try:
-                compile(src, rel, "exec")
-            except SyntaxError as exc:
-                errs.append(f"{rel} does not compile: {exc.msg} (line {exc.lineno})")
-        if rxs["skill"].fullmatch(rel) or rel in surface.always_on:
-            for ref in rxs["script_ref"].findall(src):
-                if ref not in have_scripts:
-                    errs.append(f"{rel} invokes `{ref}` which is missing from harness tree")
+    _validate_scripts_in_tree(surface, norm_tree, rxs, have_scripts, errs)
 
     assert_tree_has_no_grader_verdicts(norm_tree)
     if errs:

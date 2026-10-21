@@ -9,7 +9,7 @@ covered_modules:
   - "M0_hybrid_vault_palace_retrieval"
   - "M1_wikilink_graph_expansion"
 description: >-
-  Subagente especialista em recuperação híbrida de memória (Obsidian Vault + MemPalace) de baixíssima latência (~35ms) e mínimo consumo de tokens. Utiliza o índice incremental de seções (vault_palace_search.py --mode hybrid/fast) com expansão de grafo [[Wikilinks]] 1-hop, priorização de salas ativas (Memória/, Projetos/, Medicina/) sobre Arquivo/ e citações literais (file:///path#Lstart-Lend).
+  Subagente de recuperação híbrida de memória (Obsidian Vault + MemPalace) de baixa latência (~35ms) via vault_palace_search.py (--mode hybrid/fast), expansão 1-hop de [[Wikilinks]], priorização de salas ativas (Memória/, Projetos/, Medicina/) e citações literais (#Lstart-Lend).
 tools:
   - view_file
   - grep_search

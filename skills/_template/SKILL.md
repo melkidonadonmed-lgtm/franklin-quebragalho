@@ -1,7 +1,7 @@
 ---
 name: template-skill
 description: >-
-  Modelo padrão oficial (SSOT) para concepção e scaffolding de novas skills no Antigravity e no workspace Franklin Quebra-Galho. Estruturado sob as 9 perguntas ontológicas, divulgação progressiva em 3 Tiers, Checklist Transversal de 5 Eixos e seleção sob demanda dos 7 Módulos de Guardrails por Domínio. Use como referência base ao criar ou padronizar pacotes SKILL.md; não use para executar tarefas finais de usuário.
+  Modelo oficial (SSOT) para concepção e scaffolding de skills no Antigravity e Franklin Quebra-Galho (9 perguntas ontológicas, 3 Tiers, Checklist de 5 Eixos e 7 Módulos de Domínio). Use como referência base ao criar ou padronizar SKILL.md; não use para tarefas finais de usuário.
 license: MIT
 metadata:
   version: "2.0.0"

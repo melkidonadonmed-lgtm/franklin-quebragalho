@@ -1,7 +1,7 @@
 ---
 name: code-quality-audit-3d-physics
 description: >-
-  Audita e sanitiza código de sistemas com Física 3D, Computação Gráfica (WebGL, Three.js, Babylon.js) e Engenharia Numérica (Python, JS/TS). Orquestra 5 módulos de subskills em 3 ondas (static-sanitization-auditor, architecture-hardcoded-auditor, physics-3d-math-auditor, deterministic-tests-auditor e state-checker-observer), calcula as 5 sub-dimensões de física (S1..S5), executa testes determinísticos Pass@k (k=10) e emite o Escore Normalizado Global Snorm (0 a 100) com filtro anti-alucinação.
+  Audita e sanitiza código de Física 3D, Computação Gráfica (WebGL, Three.js, Babylon.js) e Simulação Numérica (Python, JS/TS) em 3 ondas (AST, 5 sub-dimensões S1..S5, testes Pass@10 e observador Pydantic Snorm 0-100). Use para revisar motores 3D, shaders, colisões ou hot-loops numéricos.
 license: MIT
 metadata:
   version: "1.0.0"

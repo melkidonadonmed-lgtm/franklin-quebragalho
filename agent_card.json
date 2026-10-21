@@ -1,6 +1,6 @@
 {
   "name": "Franklin Quebra-Galho (A2A + MCP Orchestrator)",
-  "description": "Orquestrador multiagente e catálogo de 27 Skills canônicas (Python, TS/JS, Go, MCP, Harness e Arquitetura Visual por Propósito) com suporte nativo a Agent2Agent (A2A v1.0) e Model Context Protocol (MCP).",
+  "description": "Orquestrador multiagente e catálogo de 28 Skills canônicas (Python, TS/JS, Go, MCP, Harness e Arquitetura Visual por Propósito) com suporte nativo a Agent2Agent (A2A v1.0) e Model Context Protocol (MCP).",
   "supportedInterfaces": [
     {
       "url": "http://localhost:10999",
@@ -37,7 +37,7 @@
     {
       "id": "template-skill",
       "name": "template-skill",
-      "description": "Modelo padrão oficial (SSOT) para concepção e scaffolding de novas skills no Antigravity e no workspace Franklin Quebra-Galho. Estruturado sob as 9 perguntas ontológicas, divulgação progressiva em 3 Tiers, Checklist Transversal de 5 Eixos e seleção sob demanda dos 7 Módulos de Guardrails por Domínio. Use como referência base ao criar ou padronizar pacotes SKILL.md; não use para executar tarefas finais de usuário.",
+      "description": "Modelo oficial (SSOT) para concepção e scaffolding de skills no Antigravity e Franklin Quebra-Galho (9 perguntas ontológicas, 3 Tiers, Checklist de 5 Eixos e 7 Módulos de Domínio). Use como referência base ao criar ou padronizar SKILL.md; não use para tarefas finais de usuário.",
       "tags": [
         "template",
         "padrao-2026",
@@ -46,6 +46,21 @@
       ],
       "examples": [
         "Executar a skill template-skill no contexto atual"
+      ]
+    },
+    {
+      "id": "antigravity-project-auditor",
+      "name": "antigravity-project-auditor",
+      "description": "Skill de auditoria arquitetural, diagnóstico de MVP e planejamento de projeto para Antigravity. Use quando ativada isoladamente (sem conversa) para varrer arquivos base (CONTEXT.md, AGENTS.md, SPEC.md, README.md) e memória do projeto, ou junto a uma pergunta específica para análise focalizada e plano de ação.",
+      "tags": [
+        "auditoria",
+        "mvp",
+        "planejamento",
+        "antigravity",
+        "context-discovery"
+      ],
+      "examples": [
+        "Executar a skill antigravity-project-auditor no contexto atual"
       ]
     },
     {
@@ -67,7 +82,7 @@
     {
       "id": "arquiteto-conteudo-solucoes",
       "name": "arquiteto-conteudo-solucoes",
-      "description": "Arquiteto autônomo de soluções técnicas, biblioteca de prompts enterprise, códigos tipados e roadmaps estruturados. Opera sob 4 modos (Execução Direta, Refinamento Colaborativo, Planejamento Estruturado com Fase 0 e Auto-Reflexão) aplicando os 7 Módulos de Guardrails por Domínio ([PASS]/[FAIL]/[UNVERIFIED]). Use para gerar soluções técnicas, prompts enterprise, código ou planos; não use para scaffolding físico de skills (use evoluir-skills) nem para auditoria epistêmica isolada (use refine-prompt).",
+      "description": "Arquiteto autônomo de soluções técnicas, biblioteca de prompts enterprise, código tipado e roadmaps em 4 modos (Execução Direta, Refinamento, Planejamento Fase 0 e Auto-Reflexão) com 7 Módulos de Guardrails. Use para desenhar soluções, prompts ou código; não use para criar pastas SKILL.md (use evoluir-skills).",
       "tags": [
         "prompt-engineering",
         "arquitetura",
@@ -96,7 +111,7 @@
     {
       "id": "auditoria-projetos-sistema",
       "name": "auditoria-projetos-sistema",
-      "description": "Audita a integridade estrutural, arquivos essenciais (AGENTS.md, README, CONTEXT, DESIGN, SPEC), higiene de repositório (.env, .gitignore, Git), orfandade de código, desacoplamento/tipagem/chunking, discrepâncias entre escopo documentado e executado, aderência do tema/estilo ao propósito do projeto (espaçamento, contraste, tipografia, camadas, hierarquia) e esteira visual via agent-browser (snapshots @eX) com nota ponderada (0 a 100). Não use para refatorar código sem aprovação prévia.",
+      "description": "Audita integridade estrutural de repositórios (AGENTS.md, README, DESIGN, SPEC, Git/.env), código órfão, tipagem/chunking, alinhamento do tema visual ao propósito do projeto e esteira dinâmica via agent-browser (@eX) com nota de 0 a 100. Use para auditar projetos; não use para refatorar código sem aprovação.",
       "tags": [
         "auditoria",
         "agent-browser",
@@ -127,7 +142,7 @@
     {
       "id": "code-quality-audit-3d-physics",
       "name": "code-quality-audit-3d-physics",
-      "description": "Audita e sanitiza código de sistemas com Física 3D, Computação Gráfica (WebGL, Three.js, Babylon.js) e Engenharia Numérica (Python, JS/TS). Orquestra 5 módulos de subskills em 3 ondas (static-sanitization-auditor, architecture-hardcoded-auditor, physics-3d-math-auditor, deterministic-tests-auditor e state-checker-observer), calcula as 5 sub-dimensões de física (S1..S5), executa testes determinísticos Pass@k (k=10) e emite o Escore Normalizado Global Snorm (0 a 100) com filtro anti-alucinação.",
+      "description": "Audita e sanitiza código de Física 3D, Computação Gráfica (WebGL, Three.js, Babylon.js) e Simulação Numérica (Python, JS/TS) em 3 ondas (AST, 5 sub-dimensões S1..S5, testes Pass@10 e observador Pydantic Snorm 0-100). Use para revisar motores 3D, shaders, colisões ou hot-loops numéricos.",
       "tags": [
         "fisica-3d",
         "auditoria-codigo",
@@ -202,7 +217,7 @@
     {
       "id": "design-md",
       "name": "design-md",
-      "description": "Gera ou atualiza o arquivo de contrato DESIGN.md na raiz do projeto ou via Google Stitch, selecionando o tema, atmosfera, tipografia, espaçamento, contraste e camadas de acordo com o propósito do projeto (Conversão/SaaS, Editorial, FinTech, IA Nativa/AETHER, MedTech ou Terminal IBM Ex Umbris), sem impor paletas de cores fixas. Não use para auditar repositório completo (use auditoria-projetos-sistema).",
+      "description": "Gera ou atualiza o contrato DESIGN.md na raiz do projeto ou via Google Stitch, alinhando tema, atmosfera, tipografia, espaçamento, contraste e camadas ao propósito do sistema (SaaS, Editorial, FinTech, AETHER, MedTech ou Terminal IBM). Não use para auditar repositório (use auditoria-projetos-sistema).",
       "tags": [
         "design-md",
         "estilo-por-proposito",
@@ -217,7 +232,7 @@
     {
       "id": "evoluir-skills",
       "name": "evoluir-skills",
-      "description": "Orquestrador de construção e evolução funcional de skills (Forward Builder & TDD). Use quando o usuário pedir para criar uma nova skill a partir de uma ideia bruta, adicionar funcionalidades/scripts a uma skill existente ou configurar sua suíte evals/evals.json. Não use para auditoria ou desacoplamento de monólitos (use skill-auditor-refatorador-skills) nem para arquitetura de código ADK/MCP (use aprimoramento-expansibilidade-agentes-skills).",
+      "description": "Orquestrador de construção e evolução funcional de skills (Forward Builder & TDD). Use para criar uma nova skill do zero, adicionar scripts/referências ou configurar evals/evals.json. Não use para desacoplar monólitos (use skill-auditor-refatorador-skills) nem para código ADK/MCP.",
       "tags": [
         "skills",
         "tdd-skills",
@@ -232,7 +247,7 @@
     {
       "id": "frontend-code-architect",
       "name": "frontend-code-architect",
-      "description": "Arquitetura, scaffolding e implementação de código frontend (src/ em 5 camadas de Design Atômico, globals.css, tokens e componentes) adaptando tema, estilo, espaçamento, contraste, tipografia e camadas ao propósito do projeto (Conversão/SaaS, Editorial, FinTech, IA Nativa/AETHER, MedTech ou Terminal IBM Ex Umbris), sem impor paletas fixas. Não use para auditoria somente-leitura (use frontend-testing-auditor ou auditoria-projetos-sistema).",
+      "description": "Arquitetura, scaffolding e implementação frontend (src/ em 5 camadas de Design Atômico, globals.css, tokens e componentes) adaptando tema, espaçamento, contraste, tipografia e camadas ao propósito do projeto. Não use para auditoria somente-leitura (use frontend-testing-auditor).",
       "tags": [
         "frontend-architect",
         "atomic-design",
@@ -335,7 +350,7 @@
     {
       "id": "minimal-impact-ui",
       "name": "minimal-impact-ui",
-      "description": "Sistema de design e arquitetura front-end HTML, CSS, Tailwind e JavaScript baseado no padrão Ex Umbris Ad Lucem (Minimalismo de Impacto) e WinUI 3 Gallery. Use para criar ou estilizar páginas HTML, apps web, calculadoras médicas, formulários SUS, dashboards, prontuários ou ferramentas Anti-TDAH com os 3 temas (Cinza #57545d + menus #8e8999, Claro Editorial #F3F3F5 e Preto Terminal IBM #070709), 6 arquétipos de página, 28 efeitos WinUI, tipografia nítida sem letras vermelhas embaçadas sobre cinza e regra 98% neutro / 2% acento (#e13535, #35acd8, #10B981, #D97706). Não use para auditoria de repositório sem UI (use auditoria-projetos-sistema).",
+      "description": "Design system e arquitetura front-end HTML/CSS/Tailwind/JS padrão Ex Umbris Ad Lucem e WinUI 3 Gallery. Use para criar ou estilizar interfaces Anti-TDAH, apps clínicos, dashboards ou páginas nos 3 temas (Cinza #57545d + menus #8e8999, Claro #F3F3F5, Terminal IBM #070709), 6 arquétipos, 28 efeitos WinUI e regra 98/2.",
       "tags": [
         "minimal-impact-ui",
         "ex-umbris-ad-lucem",
@@ -378,11 +393,13 @@
     {
       "id": "refine-prompt",
       "name": "refine-prompt",
-      "description": "Agente cognitivo de auditoria de factibilidade, classificação epistêmica ([FATO], [INFERÊNCIA], [LACUNA]) e refinamento Zero-Trust de prompts e ideias (REFINE-PROMPT v3.1). Opera sob ancoragem temporal 2026, isolamento XML (<untrusted_user_input>), OWASP LLM 2025/2026 e 3 módulos de saída (Resposta Direta, Artefato Plug-and-Play e Entrevista Socrática). Use para auditar factibilidade e refinar prompts; não use para criar pastas de skills (use evoluir-skills).",
+      "description": "Audita factibilidade ([FATO], [INFERÊNCIA], [LACUNA]), modula entropia (fluidez cognitiva vs. contratos de baixa entropia) e refina prompts sob Zero-Trust XML (<untrusted_user_input>) e OWASP LLM 2026 em 3 modos (Resposta Direta, Plug-and-Play, Socrático). Não use para criar skills (use evoluir-skills).",
       "tags": [
         "refine-prompt",
         "zero-trust",
         "epistemica",
+        "baixa-entropia",
+        "fluidez-cognitiva",
         "owasp-llm"
       ],
       "examples": [
@@ -407,7 +424,7 @@
     {
       "id": "skill-orquestrador-planos-encadeados",
       "name": "skill-orquestrador-planos-encadeados",
-      "description": "Orquestrador executivo de planos encadeados e modulares. Recebe planos decompostos em fases numeradas, mapeia as dependências entre skills especialistas, gerencia o estado compartilhado sem poluição de contexto, governa a aderência do estilo visual ao propósito do projeto (espaçamento, contraste, tipografia e camadas sem paleta fixa) e dispara a execução sequencial com validação de discrepâncias a cada transição.",
+      "description": "Orquestrador executivo de planos encadeados e modulares (DAG). Recebe planos em fases numeradas, mapeia dependências entre skills especialistas, isola o estado compartilhado, valida o estilo visual pelo propósito do projeto e executa ondas sequenciais com checagem de discrepâncias.",
       "tags": [
         "orquestrador",
         "planos-encadeados",
@@ -444,7 +461,7 @@
         "jku": "http://localhost:10999/public_keys.json",
         "typ": "JOSE+JSON"
       },
-      "signature": "947ebfd2ba95d7d3da00ba473ca30572eeeeb7e1dcd227695563902b4d3cb997"
+      "signature": "1ec2b7eee32654189352f53e955643008b439dd23ee0c0e427ac9701080db3ce"
     }
   ]
 }

@@ -1,7 +1,7 @@
 ---
 name: skill-orquestrador-planos-encadeados
 description: >-
-  Orquestrador executivo de planos encadeados e modulares. Recebe planos decompostos em fases numeradas, mapeia as dependências entre skills especialistas, gerencia o estado compartilhado sem poluição de contexto, governa a aderência do estilo visual ao propósito do projeto (espaçamento, contraste, tipografia e camadas sem paleta fixa) e dispara a execução sequencial com validação de discrepâncias a cada transição.
+  Orquestrador executivo de planos encadeados e modulares (DAG). Recebe planos em fases numeradas, mapeia dependências entre skills especialistas, isola o estado compartilhado, valida o estilo visual pelo propósito do projeto e executa ondas sequenciais com checagem de discrepâncias.
 license: MIT
 metadata:
   version: "2.0.0"

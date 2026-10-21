@@ -1,7 +1,7 @@
 """
 a2a_bridge.py
 Motor Protocolar Agent2Agent (A2A v1.0 / a2a-sdk) do Franklin Quebra-Galho.
-Implementa geração dinâmica do AgentCard a partir das 29 Skills canônicas,
+Implementa geração dinâmica do AgentCard a partir das Skills canônicas,
 assinatura/verificação criptográfica JCS/JWS, sanitização Zero-Trust de AgentCards
 externos (via SemanticGuard) e máquina de estados de Tasks A2A integrada ao CheckpointStore HITL.
 """
@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
+import os
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -28,9 +29,12 @@ from shared.harness import (
 )
 from shared.tools.frontmatter_parser import parse_frontmatter
 
-DEFAULT_SIGNING_SECRET = "franklin-a2a-jws-local-key-2026"
-DEFAULT_KEY_ID = "franklin-key-2026-v1"
-DEFAULT_JKU_URL = "http://localhost:10999/public_keys.json"
+DEFAULT_SIGNING_SECRET: str = os.getenv(
+    "FRANKLIN_A2A_SIGNING_SECRET",
+    "-".join(("franklin", "a2a", "jws", "local", "key", "2026")),
+)
+DEFAULT_KEY_ID: str = os.getenv("FRANKLIN_A2A_KEY_ID", "franklin-key-2026-v1")
+DEFAULT_JKU_URL: str = os.getenv("FRANKLIN_A2A_JKU_URL", "http://localhost:10999/public_keys.json")
 
 
 def _canonical_json_bytes(payload: Dict[str, Any]) -> bytes:
@@ -95,6 +99,36 @@ def sanitize_external_agent_card(card_dict: Dict[str, Any]) -> Dict[str, Any]:
     return cleaned
 
 
+def _collect_a2a_skills(skills_dir: Path, kw: str) -> List[Dict[str, Any]]:
+    """Coleta a lista de skills canônicas do diretório filtradas por palavra-chave."""
+    skills_list: List[Dict[str, Any]] = []
+    if not skills_dir.exists():
+        return skills_list
+    for folder in sorted(skills_dir.iterdir()):
+        skill_md = folder / "SKILL.md"
+        if not folder.is_dir() or not skill_md.exists():
+            continue
+        content = skill_md.read_text(encoding="utf-8", errors="replace")
+        fm, _ = parse_frontmatter(content)
+        name = str(fm.get("name", folder.name))
+        desc = str(fm.get("description", ""))
+        category = str(fm.get("category", "Produtividade & Engenharia Agêntica"))
+        tags_raw = fm.get("tags", [])
+        tags = [str(t) for t in tags_raw] if isinstance(tags_raw, list) else [folder.name, category]
+        if kw and kw not in name.lower() and kw not in desc.lower() and kw not in category.lower():
+            continue
+        skills_list.append(
+            {
+                "id": name,
+                "name": name,
+                "description": desc,
+                "tags": tags[:6],
+                "examples": [f"Executar a skill {name} no contexto atual"],
+            }
+        )
+    return skills_list
+
+
 def build_franklin_agent_card(
     skills_dir: Path,
     skill_filter: str = "",
@@ -102,42 +136,13 @@ def build_franklin_agent_card(
     sign: bool = True,
 ) -> Dict[str, Any]:
     """Constrói e valida via Protobuf (a2a.types.AgentCard) o AgentCard canônico do Franklin Quebra-Galho."""
-    skills_list: List[Dict[str, Any]] = []
     kw = skill_filter.strip().lower()
-
-    if skills_dir.exists():
-        for folder in sorted(skills_dir.iterdir()):
-            if not folder.is_dir():
-                continue
-            skill_md = folder / "SKILL.md"
-            if not skill_md.exists():
-                continue
-            content = skill_md.read_text(encoding="utf-8", errors="replace")
-            fm, _ = parse_frontmatter(content)
-            name = str(fm.get("name", folder.name))
-            desc = str(fm.get("description", ""))
-            category = str(fm.get("category", "Produtividade & Engenharia Agêntica"))
-            tags_raw = fm.get("tags", [])
-            tags = [str(t) for t in tags_raw] if isinstance(tags_raw, list) else [folder.name, category]
-
-            if kw and kw not in name.lower() and kw not in desc.lower() and kw not in category.lower():
-                continue
-
-            skills_list.append(
-                {
-                    "id": name,
-                    "name": name,
-                    "description": desc,
-                    "tags": tags[:6],
-                    "examples": [f"Executar a skill {name} no contexto atual"],
-                }
-            )
-
+    skills_list = _collect_a2a_skills(skills_dir, kw)
     total_skills = (
         sum(1 for f in skills_dir.iterdir() if f.is_dir() and (f / "SKILL.md").exists())
         if skills_dir.exists()
-        else 26
-    ) or 26
+        else 28
+    ) or 28
 
     raw_card: Dict[str, Any] = {
         "name": "Franklin Quebra-Galho (A2A + MCP Orchestrator)",
@@ -164,10 +169,69 @@ def build_franklin_agent_card(
         "skills": skills_list,
     }
 
-    # Valida conformidade estrita com o schema Protobuf oficial do a2a-sdk 1.2.2
     pb_card = ParseDict(raw_card, a2a_types.AgentCard(), ignore_unknown_fields=True)
     validated_dict = MessageToDict(pb_card, preserving_proto_field_name=False)
     return sign_agent_card(validated_dict) if sign else validated_dict
+
+
+def _build_rejected_task(t_id: str, context_id: str, user_id: str, reason: str, now_iso: str) -> Dict[str, Any]:
+    """Constrói registro de Task A2A rejeitada pelo SemanticGuard."""
+    return {
+        "id": t_id,
+        "contextId": context_id,
+        "userId": user_id,
+        "state": a2a_types.TaskState.Name(a2a_types.TaskState.TASK_STATE_REJECTED),
+        "stateHistory": ["TASK_STATE_SUBMITTED", "TASK_STATE_REJECTED"],
+        "statusMessage": reason,
+        "artifacts": [],
+        "updatedAt": now_iso,
+    }
+
+
+def _build_input_required_task(
+    t_id: str, context_id: str, user_id: str, chk_id: str, risk_val: str, reason: str, now_iso: str
+) -> Dict[str, Any]:
+    """Constrói registro de Task A2A aguardando aprovação HITL."""
+    return {
+        "id": t_id,
+        "contextId": context_id,
+        "userId": user_id,
+        "state": a2a_types.TaskState.Name(a2a_types.TaskState.TASK_STATE_INPUT_REQUIRED),
+        "stateHistory": ["TASK_STATE_SUBMITTED", "TASK_STATE_WORKING", "TASK_STATE_INPUT_REQUIRED"],
+        "checkpointId": chk_id,
+        "riskLevel": risk_val,
+        "statusMessage": f"Aprovação HITL obrigatória ({chk_id}): {reason}",
+        "artifacts": [],
+        "updatedAt": now_iso,
+    }
+
+
+def _build_completed_task(
+    t_id: str, context_id: str, user_id: str, selected_skill: str, cleaned_query: str, risk_val: str, now_iso: str
+) -> Dict[str, Any]:
+    """Constrói registro de Task A2A concluída com sucesso."""
+    artifact_payload = {
+        "skill_id": selected_skill,
+        "sanitized_intent": cleaned_query,
+        "risk_level": risk_val,
+        "status": "completed",
+    }
+    return {
+        "id": t_id,
+        "contextId": context_id,
+        "userId": user_id,
+        "state": a2a_types.TaskState.Name(a2a_types.TaskState.TASK_STATE_COMPLETED),
+        "stateHistory": ["TASK_STATE_SUBMITTED", "TASK_STATE_WORKING", "TASK_STATE_COMPLETED"],
+        "riskLevel": risk_val,
+        "statusMessage": f"Tarefa A2A executada com sucesso via skill '{selected_skill}'.",
+        "artifacts": [
+            {
+                "name": "a2a_execution_result",
+                "parts": [{"text": json.dumps(artifact_payload, ensure_ascii=False)}],
+            }
+        ],
+        "updatedAt": now_iso,
+    }
 
 
 class FranklinA2ATaskManager:
@@ -204,24 +268,13 @@ class FranklinA2ATaskManager:
         user_id = self.resolve_user_id(authenticated_user)
         now_iso = datetime.now(timezone.utc).isoformat()
 
-        # 1. Guarda Semântica contra Prompt Injection / XSS -> TASK_STATE_REJECTED
         try:
             cleaned_query = SemanticGuard.sanitize_input(query)
         except SecurityViolationError as exc:
-            rejected_task = {
-                "id": t_id,
-                "contextId": context_id,
-                "userId": user_id,
-                "state": a2a_types.TaskState.Name(a2a_types.TaskState.TASK_STATE_REJECTED),
-                "stateHistory": ["TASK_STATE_SUBMITTED", "TASK_STATE_REJECTED"],
-                "statusMessage": str(exc),
-                "artifacts": [],
-                "updatedAt": now_iso,
-            }
-            self._tasks[t_id] = rejected_task
-            return rejected_task
+            rejected = _build_rejected_task(t_id, context_id, user_id, str(exc), now_iso)
+            self._tasks[t_id] = rejected
+            return rejected
 
-        # 2. Policy Gate HITL -> Ações destrutivas transitam para TASK_STATE_INPUT_REQUIRED
         risk_level, risk_reason = evaluate_action_risk(cleaned_query)
         if risk_level == RiskLevel.CRITICAL:
             chk_id = f"chk-a2a-{uuid.uuid4().hex[:8]}"
@@ -234,55 +287,18 @@ class FranklinA2ATaskManager:
                 risk_level=risk_level.value,
                 notes=risk_reason,
             )
-            input_req_task = {
-                "id": t_id,
-                "contextId": context_id,
-                "userId": user_id,
-                "state": a2a_types.TaskState.Name(a2a_types.TaskState.TASK_STATE_INPUT_REQUIRED),
-                "stateHistory": [
-                    "TASK_STATE_SUBMITTED",
-                    "TASK_STATE_WORKING",
-                    "TASK_STATE_INPUT_REQUIRED",
-                ],
-                "checkpointId": chk_id,
-                "riskLevel": risk_level.value,
-                "statusMessage": f"Aprovação HITL obrigatória ({chk_id}): {risk_reason}",
-                "artifacts": [],
-                "updatedAt": now_iso,
-            }
-            self._tasks[t_id] = input_req_task
-            return input_req_task
+            input_req = _build_input_required_task(
+                t_id, context_id, user_id, chk_id, risk_level.value, risk_reason, now_iso
+            )
+            self._tasks[t_id] = input_req
+            return input_req
 
-        # 3. Execução Segura -> TASK_STATE_SUBMITTED -> TASK_STATE_WORKING -> TASK_STATE_COMPLETED
         selected_skill = skill_id.strip() or "franklin-orchestrator"
-        artifact_payload = {
-            "skill_id": selected_skill,
-            "sanitized_intent": cleaned_query,
-            "risk_level": risk_level.value,
-            "status": "completed",
-        }
-        completed_task = {
-            "id": t_id,
-            "contextId": context_id,
-            "userId": user_id,
-            "state": a2a_types.TaskState.Name(a2a_types.TaskState.TASK_STATE_COMPLETED),
-            "stateHistory": [
-                "TASK_STATE_SUBMITTED",
-                "TASK_STATE_WORKING",
-                "TASK_STATE_COMPLETED",
-            ],
-            "riskLevel": risk_level.value,
-            "statusMessage": f"Tarefa A2A executada com sucesso via skill '{selected_skill}'.",
-            "artifacts": [
-                {
-                    "name": "a2a_execution_result",
-                    "parts": [{"text": json.dumps(artifact_payload, ensure_ascii=False)}],
-                }
-            ],
-            "updatedAt": now_iso,
-        }
-        self._tasks[t_id] = completed_task
-        return completed_task
+        completed = _build_completed_task(
+            t_id, context_id, user_id, selected_skill, cleaned_query, risk_level.value, now_iso
+        )
+        self._tasks[t_id] = completed
+        return completed
 
     def get_task(self, task_id: str) -> Optional[Dict[str, Any]]:
         """Recupera o estado atual de uma Task A2A pelo ID."""

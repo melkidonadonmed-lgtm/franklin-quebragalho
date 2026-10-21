@@ -1,7 +1,7 @@
 ---
 name: frontend-code-architect
 description: >-
-  Arquitetura, scaffolding e implementação de código frontend (src/ em 5 camadas de Design Atômico, globals.css, tokens e componentes) adaptando tema, estilo, espaçamento, contraste, tipografia e camadas ao propósito do projeto (Conversão/SaaS, Editorial, FinTech, IA Nativa/AETHER, MedTech ou Terminal IBM Ex Umbris), sem impor paletas fixas. Não use para auditoria somente-leitura (use frontend-testing-auditor ou auditoria-projetos-sistema).
+  Arquitetura, scaffolding e implementação frontend (src/ em 5 camadas de Design Atômico, globals.css, tokens e componentes) adaptando tema, espaçamento, contraste, tipografia e camadas ao propósito do projeto. Não use para auditoria somente-leitura (use frontend-testing-auditor).
 version: "5.0.0"
 license: MIT
 compatibility: "React 18+, TypeScript 5+, Tailwind CSS v3/v4, CSS Variables, Next.js 14+"

@@ -9,7 +9,7 @@ covered_modules:
   - "M3_sculpted_controls_contrast"
   - "M4_data_tabular_fsm"
 description: >-
-  Subagente especialista da Onda 2A (Topologia 3+1 FrontCraftMaster) para componentes de superfície esculpidos (<SurfaceCard />, sombra em 3 camadas + 1px Rim Light, blocos de contraste alternados), isolamento de acento (98/2 ou 60-30-10 com 1 único CTA primário sólido vs .btn-ghost), tipografia fluida clamp() + tabular-nums, estados finitos FSM (idle, loading, error, pressed), alvos mínimos 44x44px anti-squish e alertas aria-live.
+  Subagente da Onda 2A (Topologia 3+1 FrontCraftMaster) para superfícies esculpidas (<SurfaceCard />, sombra 3 camadas + 1px Rim Light), isolamento de acento 98/2 (1 CTA primário sólido vs .btn-ghost), tipografia clamp() + tabular-nums, máquina de estados FSM e alvos >= 44x44px.
 tools:
   - view_file
   - view_file_outline

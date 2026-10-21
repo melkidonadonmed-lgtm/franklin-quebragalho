@@ -1,7 +1,7 @@
 ---
 name: minimal-impact-ui
 description: >-
-  Sistema de design e arquitetura front-end HTML, CSS, Tailwind e JavaScript baseado no padrão Ex Umbris Ad Lucem (Minimalismo de Impacto) e WinUI 3 Gallery. Use para criar ou estilizar páginas HTML, apps web, calculadoras médicas, formulários SUS, dashboards, prontuários ou ferramentas Anti-TDAH com os 3 temas (Cinza #57545d + menus #8e8999, Claro Editorial #F3F3F5 e Preto Terminal IBM #070709), 6 arquétipos de página, 28 efeitos WinUI, tipografia nítida sem letras vermelhas embaçadas sobre cinza e regra 98% neutro / 2% acento (#e13535, #35acd8, #10B981, #D97706). Não use para auditoria de repositório sem UI (use auditoria-projetos-sistema).
+  Design system e arquitetura front-end HTML/CSS/Tailwind/JS padrão Ex Umbris Ad Lucem e WinUI 3 Gallery. Use para criar ou estilizar interfaces Anti-TDAH, apps clínicos, dashboards ou páginas nos 3 temas (Cinza #57545d + menus #8e8999, Claro #F3F3F5, Terminal IBM #070709), 6 arquétipos, 28 efeitos WinUI e regra 98/2.
 version: "1.0.0"
 license: MIT
 metadata:

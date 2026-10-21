@@ -1,7 +1,7 @@
 ---
 name: design-md
 description: >-
-  Gera ou atualiza o arquivo de contrato DESIGN.md na raiz do projeto ou via Google Stitch, selecionando o tema, atmosfera, tipografia, espaçamento, contraste e camadas de acordo com o propósito do projeto (Conversão/SaaS, Editorial, FinTech, IA Nativa/AETHER, MedTech ou Terminal IBM Ex Umbris), sem impor paletas de cores fixas. Não use para auditar repositório completo (use auditoria-projetos-sistema).
+  Gera ou atualiza o contrato DESIGN.md na raiz do projeto ou via Google Stitch, alinhando tema, atmosfera, tipografia, espaçamento, contraste e camadas ao propósito do sistema (SaaS, Editorial, FinTech, AETHER, MedTech ou Terminal IBM). Não use para auditar repositório (use auditoria-projetos-sistema).
 version: "5.0.0"
 license: MIT
 metadata:

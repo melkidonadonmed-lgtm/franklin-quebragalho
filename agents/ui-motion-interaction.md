@@ -9,7 +9,7 @@ covered_modules:
   - "M5_spring_physics_transitions"
   - "M6_multi_input_reduced_motion"
 description: >-
-  Subagente especialista da Onda 2B (Topologia 3+1 FrontCraftMaster) para física elástica Spring (--ease-spring: cubic-bezier(0.22, 1, 0.36, 1)), micro-interações de elevação e pressão de superfície, transições suaves de tema/aba, proteção vestibular obrigatória (prefers-reduced-motion) e interações multi-input (Touch, Pen, Mouse, Keyboard).
+  Subagente da Onda 2B (Topologia 3+1 FrontCraftMaster) para física elástica Spring (--ease-spring: cubic-bezier(0.22, 1, 0.36, 1)), micro-interações de elevação e pressão de superfície, transições suaves de tema/aba, proteção prefers-reduced-motion e ergonomia multi-input.
 tools:
   - view_file
   - view_file_outline

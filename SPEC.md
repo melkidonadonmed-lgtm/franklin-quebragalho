@@ -1,7 +1,7 @@
 # ESPECIFICAÇÃO TÉCNICA (`SPEC.md`) — `franklin-quebragalho`
 
 ## 1. Visão Geral do Sistema
-O `franklin-quebragalho` provê o servidor MCP (`franklin-skills`), o barramento **Agent2Agent (`A2A v1.0`)** assinado via JWS e o repositório mestre das **26 Agent Skills** em arquitetura de 3 camadas (*Progressive Disclosure*).
+O `franklin-quebragalho` provê o servidor MCP (`franklin-skills`), o barramento **Agent2Agent (`A2A v1.0`)** assinado via JWS, a malha de **7 Subagentes Declarativos** (Topologia `3+1` de UI + Memória Híbrida + Intermediários HITL/Read-After-Write) e o repositório mestre das **28 Agent Skills** em arquitetura de 3 camadas (*Progressive Disclosure*).
 
 ---
 
@@ -9,17 +9,22 @@ O `franklin-quebragalho` provê o servidor MCP (`franklin-skills`), o barramento
 
 | Módulo / Arquivo | Responsabilidade e Contrato |
 | :--- | :--- |
-| **`server.py`** | Servidor FastMCP (`stdio`) com **13 ferramentas** e recursos `skills://catalog/summary`, `skills://a2a/agent-card` e `skills://mcp-2026/spec`. Neutraliza conflito de import hook do `beartype` no Python 3.15. |
-| **`shared/harness.py`** | `SemanticGuard.sanitize_input` (bloqueia Prompt Injection / Path Traversal), `evaluate_action_risk` (`READ_ONLY`, `REVERSIBLE_WRITE`, `CRITICAL_MUTATION`) e `CheckpointStore` HITL (`.sessions/harness_checkpoints.json`). |
-| **`shared/a2a_bridge.py`** | Valida `AgentCard` via Protobuf (`a2a.types.AgentCard`), assina com JCS (RFC 8785) + JWS (`HMAC-SHA256`) e gerencia ciclo de vida de tarefas (`FranklinA2ATaskManager`: `COMPLETED`, `INPUT_REQUIRED`, `REJECTED`, `CANCELED`). |
+| **`server.py`** | Servidor FastMCP (`stdio`) com **13 ferramentas**, 8 recursos (`skills://catalog`, `skills://a2a/agent-card`, `skills://mcp-2026/spec`, `skills://harness/checkpoints`, etc.) e 2 prompts (`activate_skill`, `tactile_frontend_audit`). |
+| **`shared/catalog_service.py`** | Descoberta, indexação de metadados, busca ranqueada, leitura progressiva em 3 Tiers e validação determinística das 28 skills. |
+| **`shared/compass_topology.py`** | Bússola semântica (`franklin_smart_compass`), Topologia Multi-Repo em 5 camadas e catálogo de personas/subagentes (`franklin_get_agents`). |
+| **`shared/execution_orchestrator.py`** | Execução isolada de scripts (`.py`, `.js`, `.ps1`, `.cmd`), resolução/execução de planos DAG no `epic-volta` e orquestração HITL/A2A. |
+| **`shared/harness.py` & `harness2_*.py`** | `SemanticGuard.sanitize_input`, `evaluate_action_risk` (`LOW`, `MEDIUM`, `CRITICAL`), `CheckpointStore` HITL (`.sessions/harness_checkpoints.json`) e motor recursivo Harness² (`harness2_engine.py` + `harness2_tree.py`). |
+| **`shared/a2a_bridge.py`** | Valida `AgentCard` via Protobuf (`a2a.types.AgentCard`), assina com JCS (RFC 8785) + JWS (`HMAC-SHA256` via `FRANKLIN_A2A_SIGNING_SECRET`) e gerencia ciclo de vida de tarefas (`FranklinA2ATaskManager`). |
 | **`shared/mcp_2026_advisor.py`** | Implementa `franklin_mcp_build_advisor` (Pattern A `<15` tools vs Pattern B *Search + Execute* `>=15` tools, `ui://` MCP Apps e manifesto `.mcpb` v0.4). |
-| **`agents/*.md`** | Contratos declarativos da **Topologia `3+1` de UI**: `ui-shell-navigator.md` (Onda 1), `ui-controls-data.md` (Onda 2A), `ui-motion-interaction.md` (Onda 2B) e `ui-deterministic-observer.md` (Onda 3 Gatekeeper). |
-| **`skills/test-quality-auditor/`** | Auditor determinístico AST/Regex v1.2.0 com 5 módulos (`python`, `ts_js`, `go`, `mcp`, `harness`) e evals espelhados 1:1 (`20/20 PASS`). |
+| **`shared/tools/frontmatter_parser.py`** | Parser determinístico de frontmatter YAML com suporte a `metadata` aninhado e fallback resiliente sem dependências externas. |
+| **`agents/*.md`** | Contratos declarativos dos **7 Subagentes**: Topologia `3+1` de UI (`ui-shell-navigator.md`, `ui-controls-data.md`, `ui-motion-interaction.md`, `ui-deterministic-observer.md`), Memória (`vault-memory-retriever.md`) e Intermediários Distribuídos (`intent-hitl-mediator.md`, `read-after-write-verifier.md`). |
+| **`plans/*.json`** | Planos DAG executáveis no motor Kahn (`epic-volta`): `ui_composition_dag.json`, `physics_code_audit_dag.json` e `distributed_agent_mediation_dag.json`. |
+| **`tests/test_*.py`** | 5 suítes de testes Nível 4 (`52/52 PASS`): `test_server.py`, `test_a2a_protocol.py`, `test_harness_quality.py`, `test_perfkit_stats.py` e `test_quality_auditor_go_mcp.py`. |
 
 ---
 
 ## 3. Catálogo das 13 Ferramentas MCP (`franklin-skills`)
-1. `franklin_skills_list` — Lista as 26 skills (Tier 1: `name` + `description`).
+1. `franklin_skills_list` — Lista as 28 skills (Tier 1: `name` + `description`).
 2. `franklin_skills_get` — Carrega o contrato completo `SKILL.md` (Tier 2) e inventário de `scripts/` e `references/` (Tier 3).
 3. `franklin_skills_search` — Busca textual e por tags no catálogo de skills.
 4. `franklin_skills_validate` — Valida frontmatter YAML e limite `<500` linhas em todas as skills.

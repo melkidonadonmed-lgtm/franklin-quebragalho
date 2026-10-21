@@ -134,6 +134,12 @@ def _resolve_dag_plan_file(plan_str: str, target_dir: str = "") -> Tuple[Optiona
         "physics_code_audit": ROOT_DIR / "plans" / "physics_code_audit_dag.json",
         "physics_code_audit_dag": ROOT_DIR / "plans" / "physics_code_audit_dag.json",
         "physics_code_audit_dag.json": ROOT_DIR / "plans" / "physics_code_audit_dag.json",
+        "mediation": ROOT_DIR / "plans" / "distributed_agent_mediation_dag.json",
+        "distributed": ROOT_DIR / "plans" / "distributed_agent_mediation_dag.json",
+        "intermediaries": ROOT_DIR / "plans" / "distributed_agent_mediation_dag.json",
+        "distributed_agent_mediation": ROOT_DIR / "plans" / "distributed_agent_mediation_dag.json",
+        "distributed_agent_mediation_dag": ROOT_DIR / "plans" / "distributed_agent_mediation_dag.json",
+        "distributed_agent_mediation_dag.json": ROOT_DIR / "plans" / "distributed_agent_mediation_dag.json",
         "sample": EPIC_VOLTA_DIR / "examples" / "sample_dag_plan.json",
         "sample_dag_plan.json": EPIC_VOLTA_DIR / "examples" / "sample_dag_plan.json",
     }

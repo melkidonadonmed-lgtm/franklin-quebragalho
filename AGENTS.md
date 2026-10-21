@@ -3,8 +3,8 @@
 Este documento estabelece o modelo operacional, comandos executáveis, papéis e contratos de orquestração para o workspace `franklin-quebragalho`.
 
 ## ⚡ Comandos Executáveis (Command-First)
-- **Testes Unitários & Contratos MCP (`51/51`)**: `uv run pytest -q`
-- **Validador Determinístico do Catálogo (`27/27` skills)**: `uv run python scripts/validate_skills.py`
+- **Testes Unitários & Contratos MCP (`52/52`)**: `uv run pytest -q`
+- **Validador Determinístico do Catálogo (`28/28` skills)**: `uv run python scripts/validate_skills.py`
 - **Auditoria AST de Qualidade (`Quality Score >= 75`)**: `uv run python skills/code-acceptability-auditor/scripts/code_acceptability_auditor.py server.py`
 - **Sincronização do Ecossistema (`~/.gemini` & Plugins)**: `uv run python scripts/sync_gemini_ecosystem.py`
 
@@ -32,7 +32,7 @@ Este documento estabelece o modelo operacional, comandos executáveis, papéis e
 | **`DocMaker`** | Criação e Conversão de Documentos | `redator-tecnico-markdown`, `conversor-html-pdf`, `organizador-fluxo-arvore-arquivos`, Edge/Chrome headless | Criação de notas técnicas, relatórios executivos, fluxos Mermaid e geração de PDFs profissionais. |
 | **`SkillCraft`** | Engenharia, Auditoria e Evolução de Skills & Código | `evoluir-skills`, `skill-auditor-refatorador-skills`, `aprimoramento-expansibilidade-agentes-skills`, `code-acceptability-auditor`, `test-quality-auditor`, `_template`, [MY_SKILLS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md) | Desenvolvimento e refatoração de skills, auditoria estática AST/Pydantic (`Quality Score >= 75`), Pass@k e qualidade de suítes de testes. |
 | **`LoopPlanner`** | Orquestração Closed-Loop | `high-level-context-planner`, `gap-analyzer-auditor`, `skill-orquestrador-planos-encadeados` | Planejamento em malha fechada, decomposição em fases com Fase 0, RCA determinístico e replanejamento v2.0. |
-| **`Franklin-Main`** | Orquestrador Geral, Arquitetura & Física 3D | `arquiteto-conteudo-solucoes`, `arquitetura-design-implementacao-sistema`, `auditoria-projetos-sistema`, `code-quality-audit-3d-physics`, `context-sentinel`, `refine-prompt` | Execução direta de baixo atrito, auditoria estrutural de repositórios, física 3D/WebGL (`Snorm`), sentinela de contexto e refinamento de prompts. |
+| **`Franklin-Main`** | Orquestrador Geral, Arquitetura & Física 3D | `arquiteto-conteudo-solucoes`, `arquitetura-design-implementacao-sistema`, `auditoria-projetos-sistema`, `antigravity-project-auditor`, `code-quality-audit-3d-physics`, `context-sentinel`, `refine-prompt` | Execução direta de baixo atrito, auditoria estrutural e diagnóstico de MVP de repositórios, física 3D/WebGL (`Snorm`), sentinela de contexto e refinamento de prompts. |
 
 ---
 

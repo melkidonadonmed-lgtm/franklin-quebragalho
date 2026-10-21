@@ -1,7 +1,7 @@
 ---
 name: auditoria-projetos-sistema
 description: >-
-  Audita a integridade estrutural, arquivos essenciais (AGENTS.md, README, CONTEXT, DESIGN, SPEC), higiene de repositório (.env, .gitignore, Git), orfandade de código, desacoplamento/tipagem/chunking, discrepâncias entre escopo documentado e executado, aderência do tema/estilo ao propósito do projeto (espaçamento, contraste, tipografia, camadas, hierarquia) e esteira visual via agent-browser (snapshots @eX) com nota ponderada (0 a 100). Não use para refatorar código sem aprovação prévia.
+  Audita integridade estrutural de repositórios (AGENTS.md, README, DESIGN, SPEC, Git/.env), código órfão, tipagem/chunking, alinhamento do tema visual ao propósito do projeto e esteira dinâmica via agent-browser (@eX) com nota de 0 a 100. Use para auditar projetos; não use para refatorar código sem aprovação.
 license: MIT
 metadata:
   version: "3.0.0"

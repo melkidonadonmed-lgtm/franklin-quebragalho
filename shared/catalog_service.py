@@ -58,6 +58,7 @@ CANONICAL_PERSONA_MAPPING: Dict[str, str] = {
     "arquiteto-conteudo-solucoes": "Franklin-Main",
     "arquitetura-design-implementacao-sistema": "Franklin-Main",
     "auditoria-projetos-sistema": "Franklin-Main",
+    "antigravity-project-auditor": "Franklin-Main",
     "code-quality-audit-3d-physics": "Franklin-Main",
     "context-sentinel": "Franklin-Main",
     "refine-prompt": "Franklin-Main",
@@ -110,6 +111,50 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "analise-frontend": "auditoria-projetos-sistema",
     "refatorar-ui": "frontend-code-architect",
     "refatoracao-frontend": "frontend-code-architect",
+    "prompt": "refine-prompt",
+    "refinar": "refine-prompt",
+    "refinar-prompt": "refine-prompt",
+    "prompt-refine": "refine-prompt",
+    "baixa-entropia": "refine-prompt",
+    "entropia": "refine-prompt",
+    "desengessar": "refine-prompt",
+    "fluidez": "refine-prompt",
+    "memoria": "curadoria-obsidian-vault",
+    "palacio": "curadoria-obsidian-vault",
+    "mempalace": "curadoria-obsidian-vault",
+    "notas": "curadoria-obsidian-vault",
+    "auditar": "auditoria-projetos-sistema",
+    "auditoria": "auditoria-projetos-sistema",
+    "projeto": "auditoria-projetos-sistema",
+    "repo": "auditoria-projetos-sistema",
+    "mvp-auditor": "antigravity-project-auditor",
+    "project-auditor": "antigravity-project-auditor",
+    "diagnostico-mvp": "antigravity-project-auditor",
+    "solucao": "arquiteto-conteudo-solucoes",
+    "solucoes": "arquiteto-conteudo-solucoes",
+    "arquiteto": "arquiteto-conteudo-solucoes",
+    "fluxo": "organizador-fluxo-arvore-arquivos",
+    "arvore": "organizador-fluxo-arvore-arquivos",
+    "mermaid": "organizador-fluxo-arvore-arquivos",
+    "markdown": "redator-tecnico-markdown",
+    "relatorio": "redator-tecnico-markdown",
+    "doc": "redator-tecnico-markdown",
+    "plano": "high-level-context-planner",
+    "planejar": "high-level-context-planner",
+    "planner": "high-level-context-planner",
+    "gap": "gap-analyzer-auditor",
+    "rca": "gap-analyzer-auditor",
+    "brechas": "gap-analyzer-auditor",
+    "orquestrar": "skill-orquestrador-planos-encadeados",
+    "orquestrador": "skill-orquestrador-planos-encadeados",
+    "dag": "skill-orquestrador-planos-encadeados",
+    "criar-skill": "evoluir-skills",
+    "evoluir": "evoluir-skills",
+    "nova-skill": "evoluir-skills",
+    "auditar-skill": "skill-auditor-refatorador-skills",
+    "refatorar-skill": "skill-auditor-refatorador-skills",
+    "agentes": "aprimoramento-expansibilidade-agentes-skills",
+    "mcp": "aprimoramento-expansibilidade-agentes-skills",
 }
 
 REQUIRED_SKILL_SECTIONS: List[Tuple[str, str]] = [
@@ -433,6 +478,9 @@ def _validate_single_skill_dir(s_dir: Path) -> List[str]:
             errs.append("Frontmatter YAML ausente ou malformado")
         missing = [req for req in ("name", "description", "version") if not meta.get(req)]
         errs.extend([f"Campo obrigatório '{req}' ausente no frontmatter" for req in missing])
+        desc_text = str(meta.get("description", ""))
+        if len(desc_text) > 420:
+            errs.append(f"Descrição excede o orçamento de contexto de 420 chars ({len(desc_text)} chars)")
         is_template = s_dir.name == "_template" and meta.get("name") == "template-skill"
         if meta.get("name") and meta["name"] != s_dir.name and not is_template:
             errs.append(f"Nome no frontmatter ('{meta['name']}') difere da pasta ('{s_dir.name}')")

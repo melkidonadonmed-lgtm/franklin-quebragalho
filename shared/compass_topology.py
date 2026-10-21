@@ -33,6 +33,20 @@ UI_SUBAGENT_ALIASES: Dict[str, str] = {
     "onda3": "ui-deterministic-observer",
     "wave3": "ui-deterministic-observer",
     "ui_deterministic_observer": "ui-deterministic-observer",
+    "memory": "vault-memory-retriever",
+    "retriever": "vault-memory-retriever",
+    "vault-retriever": "vault-memory-retriever",
+    "vault_memory_retriever": "vault-memory-retriever",
+    "palace": "vault-memory-retriever",
+    "onda0": "vault-memory-retriever",
+    "wave0": "vault-memory-retriever",
+    "mediator": "intent-hitl-mediator",
+    "hitl-mediator": "intent-hitl-mediator",
+    "intent_hitl_mediator": "intent-hitl-mediator",
+    "attribution": "intent-hitl-mediator",
+    "verifier": "read-after-write-verifier",
+    "raw-verifier": "read-after-write-verifier",
+    "read_after_write_verifier": "read-after-write-verifier",
 }
 
 PERSONA_ALIASES: Dict[str, str] = {
@@ -103,6 +117,28 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
         "Preservação de parágrafos lógicos, metadados source_id + byte_range e proteção absoluta da pasta .obsidian/.",
     ),
     (
+        ("prompt", "refin", "entropia", "desengess", "fluidez", "zero-trust", "socratic", "epistem"),
+        "🎯 Engenharia de Prompts, Fluidez Cognitiva & Contratos de Baixa Entropia (`refine-prompt` v3.2)",
+        ["refine-prompt", "arquiteto-conteudo-solucoes", "context-sentinel"],
+        [
+            ("refine-prompt", "prompt_entropy_auditor.py", "Auditor determinístico AST/Pydantic de entropia, rigidez burocrática e ancoragem 2026"),
+            ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST de segurança e tipagem Python (Quality Score >= 75)"),
+        ],
+        "N/A (Execução direta via refine-prompt + prompt_entropy_auditor.py)",
+        "Determinismo na borda (schemas/contratos de ferramentas) e fluidez cognitiva no núcleo (zero engessamento conversacional).",
+    ),
+    (
+        ("rea", "revers", "binario", "binary", "decompil", "ghidra", "sqlite", "bundle", "pe", "elf", "macho"),
+        "🔬 Engenharia Reversa Baseada em Evidências (`REA` • Binários Go/PE, SQLite & Bundles JS)",
+        ["auditoria-projetos-sistema", "gap-analyzer-auditor", "aprimoramento-expansibilidade-agentes-skills"],
+        [
+            ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria estrutural e de segurança pós-inspeção de artefatos"),
+            ("curadoria-obsidian-vault", "vault_palace_search.py", "Busca híbrida (~35ms) e sincronização do Grafo de Conhecimento SQLite"),
+        ],
+        "N/A (Inspeção via MCP rea: inspect_go_binary, inspect_sqlite_database, analyze_javascript_application)",
+        "Separação estrita entre [FATO OBSERVADO] (com evidence_id ev_...), [INFERÊNCIA] e [DESCONHECIDO].",
+    ),
+    (
         ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra", "test", "auditor"),
         "🤖 Arquitetura de Agentes, Declarative YAML Spec, Qualidade AST & Skills (27 Canônicas)",
         ["evoluir-skills", "aprimoramento-expansibilidade-agentes-skills", "code-acceptability-auditor", "test-quality-auditor", "high-level-context-planner", "gap-analyzer-auditor"],
@@ -112,7 +148,7 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
             ("test-quality-auditor", "test_quality_auditor.py", "Auditor de qualidade de suítes de testes em 5 módulos (Py/TS/Go/MCP/Harness)"),
             ("workspace", "validate_skills.py", "Validador determinístico das 27 skills canônicas"),
         ],
-        "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json",
+        "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json | plans/distributed_agent_mediation_dag.json",
         "Divulgação progressiva em 3 Tiers (<500 linhas no SKILL.md), Zero-Config Defaults no YAML e validação cruzada.",
     ),
 ]
@@ -218,7 +254,7 @@ def _resolve_compass_profile(q: str) -> Tuple[str, List[str], List[Tuple[str, st
             ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Pipeline de sanitização e chunking JSONL para RAG"),
             ("aprimoramento-expansibilidade-agentes-skills", "agent_spec_loader.py", "Instanciação declarativa de agentes via YAML"),
         ],
-        "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json",
+        "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json | plans/distributed_agent_mediation_dag.json",
         "Portão gradual: bloqueia apenas falhas críticas/altas (Hard Gate) e trata estilo/docstrings como sugestões leves (Soft Advisory).",
     )
 

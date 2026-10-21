@@ -25,3 +25,8 @@ include = ["server.py", "shared"]
 dev = [
     "pytest>=9.1.1",
 ]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore:'collections.abc.ByteString' is deprecated:DeprecationWarning:beartype.*",
+]

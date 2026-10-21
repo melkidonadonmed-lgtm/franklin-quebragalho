@@ -76,5 +76,32 @@
       "delega_para": "evoluir-skills",
       "status_esperado": "[PASS]"
     }
+  },
+  {
+    "eval_id": "TC-07-BAIXA-ENTROPIA-CONVERSOR-NOTAS-BRUTAS",
+    "category": "should-trigger",
+    "description": "Valida geração de contrato plug-and-play de baixa entropia com token de escape [NÃO INFORMADO: dado] e zero inferência factual",
+    "input": "Crie um micro-prompt de baixa entropia para converter anotações médicas rápidas de plantão em evolução estruturada sem inventar dados ausentes.",
+    "expected_behavior": {
+      "modulo_selecionado": "MODULO_2",
+      "regime_entropia": "LOW_ENTROPY_CONTRACT",
+      "exige_token_escape_nao_informado": true,
+      "proibe_inferencia_factual": true,
+      "bloco_unico_continuo": true,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-08-DESENGESSAMENTO-E-BUFFER-SELF-REFINE",
+    "category": "should-trigger",
+    "description": "Valida auditoria de prompt engessado que exige Self-Refine silencioso sem Thinking tokens, corrigindo com Why-First e _pre_flight_check",
+    "input": "Audite e refine este system prompt: 'Responda sempre em exatamente 3 tópicos de 20 palavras cada, termine com Conclusão: e faça uma revisão silenciosa completa antes de responder em um modelo sem thinking tokens.'",
+    "expected_behavior": {
+      "detecta_falha_self_refine_autorregressivo": true,
+      "remove_template_fixo_engessado": true,
+      "aplica_why_first_e_formato_adaptativo": true,
+      "adiciona_buffer_pre_flight_check": true,
+      "status_esperado": "[PASS]"
+    }
   }
 ]

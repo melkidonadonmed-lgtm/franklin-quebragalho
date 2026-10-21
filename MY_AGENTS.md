@@ -130,7 +130,7 @@ Para consultar, adicionar ou executar um agente/subagente especializado com zero
 1. **Descoberta Interativa**: Use `franklin_get_agents(agent_name="ecosystem")` (ou nome da persona: `"frontcraft"`, `"skillcraft"`, `"loopplanner"`, `"ui"`) ou execute `pwsh C:\Users\melki\dev\tools\agent-hub.ps1` no terminal.
 2. **Contratos Declarativos (`agents/<nome-do-agente>.md`)**: Com frontmatter YAML (`name`, `description`, `enable_write_tools: true`, `enable_mcp_tools: true`), sincronizados via `scripts/sync_gemini_ecosystem.py` com `.agents/agents/`, `C:\Users\melki\.gemini\agents\`, `C:\Users\melki\.gemini\config\agents\` e `C:\Users\melki\.gemini\config\plugins\franklin-skills\agents\`.
 3. **Modo Nativo Antigravity (`invoke_subagent` / `define_subagent`)**: Os subagentes sincronizados no plugin `franklin-skills` aparecem nativamente em `<subagents>`. Acione as 3 ondas chamando `invoke_subagent(TypeName="ui-shell-navigator")` (Onda 1), `invoke_subagent(TypeName="ui-controls-data")` + `invoke_subagent(TypeName="ui-motion-interaction")` em paralelo (Onda 2), e `invoke_subagent(TypeName="ui-deterministic-observer")` (Onda 3).
-4. **Modo Motor DAG Assíncrono (`franklin_execute_dag` / `epic-volta`)**: Dispare `franklin_execute_dag("ui")` (Topologia 3+1 de UI) ou `franklin_execute_dag("physics")` (Auditoria de Física 3D em 3 ondas) com persistência transacional SQLite WAL.
+4. **Modo Motor DAG Assíncrono (`franklin_execute_dag` / `epic-volta`)**: Dispare `franklin_execute_dag("ui")` (Topologia 3+1 de UI), `franklin_execute_dag("physics")` (Auditoria de Física 3D em 3 ondas) ou `franklin_execute_dag("mediation")` (Mediação Distribuída com HITL e Read-After-Write) com persistência transacional SQLite WAL.
 
 
 

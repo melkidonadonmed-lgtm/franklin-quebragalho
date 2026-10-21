@@ -1,0 +1,82 @@
+{
+  "objective": "Orquestração Distribuída com Intermediários, Governança HITL, Atribuição GCP (DAK), Execução Paralela Fan-Out e Verificação Read-After-Write em 3 Ondas",
+  "acceptance_criteria": [
+    "Onda 1 (intent_hitl_mediator): Diagnosticar intenção via schema estrito Pydantic (extra='forbid'), validar/pausar mutações críticas via HITL (approval_token + idempotency_key) e aplicar atribuição de recursos GCP (--label datacloud:antigravity em bq query/load/extract/mk/update/cp e CLOUDSDK_METRICS_ENVIRONMENT em gcloud)",
+    "Onda 2A (parallel_domain_workers): Executar Fan-Out paralelo de subagentes especialistas (UX/Vision, SEO/Metadata, Copy/Conteúdo e Cálculo AST) em chaves isoladas de estado sem colisão",
+    "Onda 2B (mcp_stateless_dispatcher): Executar chamadas JSON-RPC 2.0 stateless com envelope _meta (Protocolo MCP 2026-07-28) e controle de idempotência",
+    "Onda 3 (read_after_write_verifier): Realizar leitura explícita pós-escrita (Read-After-Write) no estado real e emitir veredito assinado com post_condition_verified = true"
+  ],
+  "tasks": [
+    {
+      "id": "wave1_intent_and_attribution_gate",
+      "group_id": "intent_hitl_mediator",
+      "description": "Onda 1 (Intermediário de Entrada): Triagem de intenção Pydantic v2, intercepção de política HITL (checkpoint + idempotency_key) e imposição de rótulos DAK (enforcing-resource-attribution)",
+      "criticality": "HIGH",
+      "payload": {
+        "agent_spec": "agents/intent-hitl-mediator.md",
+        "skill": "enforcing-resource-attribution",
+        "ide_client": "antigravity",
+        "sample_bq_cmd": "bq query --use_legacy_sql=false \"SELECT 1\"",
+        "sample_gcloud_cmd": "gcloud run services list"
+      }
+    },
+    {
+      "id": "wave2a_parallel_domain_workers",
+      "group_id": "parallel_domain_workers",
+      "description": "Onda 2A (Fan-Out Paralelo): Execução concorrente de Subagente_UX_Visual, Subagente_SEO_Metadata, Subagente_Copywriting e Subagente_Codigo_Execucao em chaves de estado isoladas",
+      "dependencies": [
+        "wave1_intent_and_attribution_gate"
+      ],
+      "criticality": "HIGH",
+      "payload": {
+        "skill": "skill-orquestrador-planos-encadeados",
+        "isolated_state_keys": [
+          "fix_ux_result",
+          "fix_seo_result",
+          "fix_copy_result",
+          "ast_math_result"
+        ]
+      },
+      "upstream_mapping": {
+        "mediation_gate_contract": "wave1_intent_and_attribution_gate.mediation_gate_contract"
+      }
+    },
+    {
+      "id": "wave2b_mcp_stateless_dispatch",
+      "group_id": "mcp_stateless_dispatcher",
+      "description": "Onda 2B (Barramento MCP 2026-07-28): Despacho JSON-RPC 2.0 stateless com envelope _meta, approval_token HITL e livro-razão de idempotência",
+      "dependencies": [
+        "wave1_intent_and_attribution_gate"
+      ],
+      "criticality": "HIGH",
+      "payload": {
+        "protocol_version": "2026-07-28",
+        "account_id": "ACC-9921",
+        "novo_limite": 15000.0
+      },
+      "upstream_mapping": {
+        "mediation_gate_contract": "wave1_intent_and_attribution_gate.mediation_gate_contract"
+      }
+    },
+    {
+      "id": "wave3_read_after_write_verifier",
+      "group_id": "read_after_write_verifier",
+      "description": "Onda 3 (Intermediário Gatekeeper Final): Consolidação Fan-In, leitura explícita pós-mutação (Read-After-Write) e confirmação do estado real",
+      "dependencies": [
+        "wave1_intent_and_attribution_gate",
+        "wave2a_parallel_domain_workers",
+        "wave2b_mcp_stateless_dispatch"
+      ],
+      "criticality": "HIGH",
+      "payload": {
+        "agent_spec": "agents/read-after-write-verifier.md",
+        "skill": "gap-analyzer-auditor"
+      },
+      "upstream_mapping": {
+        "mediation_gate_contract": "wave1_intent_and_attribution_gate.mediation_gate_contract",
+        "parallel_fanout_report": "wave2a_parallel_domain_workers.parallel_fanout_report",
+        "mcp_mutation_report": "wave2b_mcp_stateless_dispatch.mcp_mutation_report"
+      }
+    }
+  ]
+}

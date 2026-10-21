@@ -11,8 +11,22 @@ from __future__ import annotations
 
 import json
 import sys
+import typing
 from pathlib import Path
 from typing import Any, Callable, List, Optional
+
+if not hasattr(typing, "no_type_check_decorator"):
+    typing.no_type_check_decorator = lambda f: f  # type: ignore[attr-defined]
+try:
+    import beartype.claw
+    beartype.claw.beartype_this_package = lambda *a, **kw: None  # type: ignore[assignment]
+except ImportError as _beartype_err:
+    _ = _beartype_err
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
 
 ROOT_DIR = Path(__file__).resolve().parent
 if str(ROOT_DIR) not in sys.path:
@@ -53,7 +67,7 @@ from shared.harness import CheckpointStore
 from shared.mcp_2026_advisor import evaluate_mcp_2026_architecture
 
 try:
-    from mcp.server.fastmcp import FastMCP
+    from fastmcp import FastMCP
 except ImportError:
     class FastMCP:  # type: ignore[no-redef]
         """Fallback de FastMCP para ambientes de inspeção sem o SDK instalado."""
@@ -324,11 +338,11 @@ def tactile_frontend_audit_prompt(component_or_url: str) -> str:
         "Coordene a Topologia 3+1 de Subagentes de UI (ui-shell-navigator, ui-controls-data, "
         "ui-motion-interaction, ui-deterministic-observer) via invoke_subagent (Modo Nativo Antigravity em 3 ondas) "
         "ou via franklin_get_agents(agent_name=\"ui\") / franklin_execute_dag(\"plans/ui_composition_dag.json\") "
-        "(Modo Motor DAG Assíncrono) e avalie contra o Design System Tátil Melki:\n"
-        "1. Menus claustrofóbicos vs descompactados (padding nobre, min 240px em sidebar, CLS < 0.1).\n"
-        "2. Botões ergonômicos (altura mínima 44px, anti-squish shrink-0 whitespace-nowrap, micro-interação tátil).\n"
-        "3. Paleta Mineral Anti-Cobalto (fundo ardósia/creme, acentos minerais, banimento de azul cobalto puro).\n"
-        "4. Profundidade de sombras e elevação (Iluminação 135°, .ui-card-soft e cavidades surface-inset — DESIGN.md v4.5-soft).\n"
+        "(Modo Motor DAG Assíncrono) e avalie contra o Design System Tátil Melki e Preferências de Estilo por Propósito (minimal-impact-ui):\n"
+        "1. Diagnóstico do propósito do projeto e seleção da atmosfera adequada (Cinza Monolítico #57545d + Menus #8e8999, Ad Lucem #F3F3F5, Ex Umbris IBM #070709 ou AETHER 2027).\n"
+        "2. Menus descompactados (padding nobre, min 240px em sidebar, CLS < 0.1) e botões ergonômicos (>= 44px, anti-squish shrink-0 whitespace-nowrap).\n"
+        "3. Isolamento de acento 98/2, tinta escura nítida em menus #8e8999 e botões Azul/Verde, zero texto vermelho embaçado no cinza/escuro (.highlight-surgical).\n"
+        "4. Camadas esculpidas (sombra tripla + 1px Rim Light em <SurfaceCard />, cavidades surface-inset e estados finitos FSM).\n"
         "Emita o Relatório Comparativo determinístico com marcadores [PASS], [FAIL] e notas explicativas.\n"
     )
 

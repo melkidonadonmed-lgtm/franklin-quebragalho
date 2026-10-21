@@ -1,0 +1,60 @@
+[
+  {
+    "eval_id": "TC-01-AUTONOMOUS-SCAN-COMPLETO",
+    "category": "should-trigger",
+    "description": "Valida ativação isolada (autonomous_scan) varrendo CONTEXT.md, AGENTS.md, SPEC.md, README.md e memória para gerar diagnóstico completo de MVP e plano em 3 fases",
+    "input": "@antigravity-project-auditor",
+    "expected_behavior": {
+      "modo_ativacao": "Autônomo (Varredura Completa)",
+      "inspeciona_arquivos_base": [
+        "CONTEXT.md",
+        "AGENTS.md",
+        "SPEC.md",
+        "README.md"
+      ],
+      "inclui_justificativa_causal_mvp": true,
+      "avalia_5_pilares_obrigatorios": true,
+      "mutacao_arquivos_codigo": false,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-02-TARGETED-FOCUS-SEGURANCA-API",
+    "category": "should-trigger",
+    "description": "Valida ativação com pergunta específica (targeted_focus) concentrando 80% da análise e do plano no recorte solicitado pelo usuário",
+    "input": "@antigravity-project-auditor analise apenas a segurança da API, proteção de .env e prevenção contra Prompt Injection nas tools",
+    "expected_behavior": {
+      "modo_ativacao": "Focado (Pergunta Específica)",
+      "exibe_foco_especifico_da_solicitacao": true,
+      "foco_80_porcento_no_tema_perguntado": true,
+      "classifica_prioridades": [
+        "[PRIORIDADE]",
+        "[MODERADO]",
+        "[EXTRA]"
+      ],
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-03-FALLBACK-ARQUIVOS-AUSENTES",
+    "category": "should-trigger",
+    "description": "Valida fallback para package.json/pyproject.toml/src quando CONTEXT.md ou SPEC.md não existem, sinalizando [ARQUIVO AUSENTE]",
+    "input": "Execute o antigravity-project-auditor neste repositório que possui apenas README.md, pyproject.toml e pasta src/",
+    "expected_behavior": {
+      "declara_arquivo_ausente": true,
+      "executa_fallback_manifestos_e_src": true,
+      "sugere_sincronizar_memoria_e_docs_nos_proximos_passos": true,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-04-NEAR-MISS-CONVERSAO-PDF",
+    "category": "should-not-trigger",
+    "description": "Near-miss: pedido exclusivo para converter uma nota Markdown já pronta em arquivo PDF para impressão A4",
+    "input": "Converta o arquivo relatorio_mensal.md para PDF A4 com margens executivas usando o Edge headless.",
+    "expected_behavior": {
+      "aciona_antigravity_project_auditor": false,
+      "delega_para": "conversor-html-pdf"
+    }
+  }
+]

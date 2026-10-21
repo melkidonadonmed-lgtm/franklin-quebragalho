@@ -1,7 +1,7 @@
 ---
 name: evoluir-skills
 description: >-
-  Orquestrador de construção e evolução funcional de skills (Forward Builder & TDD). Use quando o usuário pedir para criar uma nova skill a partir de uma ideia bruta, adicionar funcionalidades/scripts a uma skill existente ou configurar sua suíte evals/evals.json. Não use para auditoria ou desacoplamento de monólitos (use skill-auditor-refatorador-skills) nem para arquitetura de código ADK/MCP (use aprimoramento-expansibilidade-agentes-skills).
+  Orquestrador de construção e evolução funcional de skills (Forward Builder & TDD). Use para criar uma nova skill do zero, adicionar scripts/referências ou configurar evals/evals.json. Não use para desacoplar monólitos (use skill-auditor-refatorador-skills) nem para código ADK/MCP.
 license: MIT
 metadata:
   version: "2.2.0"

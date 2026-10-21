@@ -1,7 +1,7 @@
 ---
 name: arquiteto-conteudo-solucoes
 description: >-
-  Arquiteto autônomo de soluções técnicas, biblioteca de prompts enterprise, códigos tipados e roadmaps estruturados. Opera sob 4 modos (Execução Direta, Refinamento Colaborativo, Planejamento Estruturado com Fase 0 e Auto-Reflexão) aplicando os 7 Módulos de Guardrails por Domínio ([PASS]/[FAIL]/[UNVERIFIED]). Use para gerar soluções técnicas, prompts enterprise, código ou planos; não use para scaffolding físico de skills (use evoluir-skills) nem para auditoria epistêmica isolada (use refine-prompt).
+  Arquiteto autônomo de soluções técnicas, biblioteca de prompts enterprise, código tipado e roadmaps em 4 modos (Execução Direta, Refinamento, Planejamento Fase 0 e Auto-Reflexão) com 7 Módulos de Guardrails. Use para desenhar soluções, prompts ou código; não use para criar pastas SKILL.md (use evoluir-skills).
 license: MIT
 metadata:
   version: "2.3.0"

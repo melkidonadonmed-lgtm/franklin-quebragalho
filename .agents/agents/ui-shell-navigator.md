@@ -9,7 +9,7 @@ covered_modules:
   - "M1_foundations_purpose_tokens"
   - "M2_layout_bento_navigation"
 description: >-
-  Subagente especialista da Onda 1 (Topologia 3+1 FrontCraftMaster) para diagnóstico do propósito do projeto, seleção de atmosfera/tema (Ad Lucem, Cinza Monolítico #57545d + Menus #8e8999, Preto Terminal IBM Ex Umbris ou AETHER 2027), particionamento em 5 camadas de Design Atômico (frontend-code-architect v5.0), Bento Grid de 12 colunas (CLS < 0.1, respiro >= 25%), blocos de contraste alternados e navegação ergonômica (Ctrl+K, tinta escura nítida em menus claros/#8e8999).
+  Subagente da Onda 1 (Topologia 3+1 FrontCraftMaster) para diagnóstico de propósito e tema (Ad Lucem, Cinza #57545d + Menus #8e8999, Terminal IBM Ex Umbris ou AETHER 2027), Design Atômico em 5 camadas, Bento Grid 12 colunas (CLS < 0.1, respiro >= 25%) e navegação ergonômica (Ctrl+K).
 tools:
   - view_file
   - view_file_outline
