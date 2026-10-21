@@ -1,6 +1,6 @@
 {
   "name": "Franklin Quebra-Galho (A2A + MCP Orchestrator)",
-  "description": "Orquestrador multiagente e catálogo de 28 Skills canônicas (Python, TS/JS, Go, MCP, Harness e Arquitetura Visual por Propósito) com suporte nativo a Agent2Agent (A2A v1.0) e Model Context Protocol (MCP).",
+  "description": "Orquestrador multiagente e catálogo de 29 Skills canônicas (Python, TS/JS, Go, MCP, Harness e Arquitetura Visual por Propósito) com suporte nativo a Agent2Agent (A2A v1.0) e Model Context Protocol (MCP).",
   "supportedInterfaces": [
     {
       "url": "http://localhost:10999",
@@ -377,6 +377,22 @@
       ]
     },
     {
+      "id": "organizador-projetos-ideias",
+      "name": "organizador-projetos-ideias",
+      "description": "Organiza ideias do zero (perguntas guiadas, sugestão de MVP quando o usuário não sabe as funções, design e v1.0) ou reestrutura projetos existentes (README.md fiel ao disco, AGENTS.md, SPEC.md, CONTEXT.md, DESIGN.md, .env/.gitignore, contratos MCP/tools.json, FastAPI/RPC, Mermaid, limpeza da raiz e memória).",
+      "tags": [
+        "organizador-projetos",
+        "refinamento-ideias",
+        "mvp",
+        "mcp-fastapi-rpc",
+        "documentacao-viva",
+        "higiene-repositorio"
+      ],
+      "examples": [
+        "Executar a skill organizador-projetos-ideias no contexto atual"
+      ]
+    },
+    {
       "id": "redator-tecnico-markdown",
       "name": "redator-tecnico-markdown",
       "description": "Redige relatorios executivos, notas tecnicas, atas de decisao e roadmaps estruturados em Markdown (.md) de alta fidelidade visual, com frontmatter YAML, caixas de alerta GitHub, tabelas ricas, padroes Google Style Guides (HTML/CSS, JSON, Python) e compatibilidade plena com Obsidian.",
@@ -461,7 +477,7 @@
         "jku": "http://localhost:10999/public_keys.json",
         "typ": "JOSE+JSON"
       },
-      "signature": "1ec2b7eee32654189352f53e955643008b439dd23ee0c0e427ac9701080db3ce"
+      "signature": "bc42d9b31b9f7f793511575f5a5744eb42bc1ffc271546657278848c0efc04a7"
     }
   ]
 }

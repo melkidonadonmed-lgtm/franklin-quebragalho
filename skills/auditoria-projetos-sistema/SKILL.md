@@ -7,7 +7,7 @@ metadata:
   version: "3.0.0"
   author: "Franklin-Main & Melki"
   category: "Auditoria Estrutural, Estilo por Propósito e Higiene de Repositório"
-  updated_at: "2026-10-19"
+  updated_at: "2026-10-21"
   tags:
     - "auditoria"
     - "agent-browser"
@@ -15,7 +15,7 @@ metadata:
     - "higiene-repo"
     - "qualidade"
 version: 3.0.0
-updated_at: 2026-10-19
+updated_at: 2026-10-21
 author: Franklin-Main & Melki
 category: Auditoria Estrutural, Estilo por Propósito e Higiene de Repositório
 ---
@@ -31,8 +31,9 @@ Esteira de inspeção técnica e visual para repositórios de software: audita g
 - Confrontar funcionalidades prometidas no `README.md`/`CONTEXT.md` contra o código real (`[IMPLEMENTADO_FUNCIONAL]`, `[MOCK_SUPERFICIAL]`, `[INEXISTENTE_DOCUMENTADO]`, `[CÓDIGO_FANTASMA]`).
 - Avaliar se a interface respeita o **propósito do projeto** (SaaS/Conversão, Editorial, FinTech, IA Nativa, MedTech, Terminal/DevTools), encaixando o melhor tema (*Ad Lucem*, *Cinza Monolítico `#57545d` + Menus `#8e8999`*, *Preto Terminal IBM `Ex Umbris`*, *AETHER 2027*) e auditando espaçamento, contraste, tipografia, camadas e nós `@eX`.
 
-### Quando NÃO Usar (Fronteira Estrita)
-- Para refatorar código em massa antes da aprovação do relatório de auditoria.
+### Quando NÃO Usar (Fronteira Estrita e Orquestração do Trio de Projetos)
+- Para diagnóstico executivo rápido de MVP (causa-efeito `Por quê:`) e plano de ação em 3 fases (`autonomous_scan` | `targeted_focus`), use `antigravity-project-auditor`.
+- Para conceber/refinar uma ideia do zero (`ideation_to_v1` com fallback *"não sei"*) ou executar o saneamento ativo de pastas, sincronização 1:1 do `README.md`, contratos (`MCP`/`FastAPI`/`RPC`) e limpeza da raiz (`project_organizer_sync`), use `organizador-projetos-ideias`.
 - Para auditar exclusivamente um arquivo Python isolado via AST (use `code-acceptability-auditor`) ou apenas suítes de testes (use `test-quality-auditor`).
 
 ---

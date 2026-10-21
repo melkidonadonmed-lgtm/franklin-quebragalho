@@ -287,7 +287,21 @@ def test_smart_compass_and_aliases() -> None:
     assert skill_pdf is not None
     assert skill_pdf.name == "conversor-html-pdf"
 
+    skill_org = server._find_skill_dir("organizar-projeto")
+    assert skill_org is not None
+    assert skill_org.name == "organizador-projetos-ideias"
+
+    skill_mvp = server._find_skill_dir("mvp")
+    assert skill_mvp is not None
+    assert skill_mvp.name == "antigravity-project-auditor"
+
     # Teste de descoberta por intenção livre no Smart Compass
+    compass_proj = server.franklin_smart_compass("preciso organizar um projeto, revisar o README e diagnosticar o MVP")
+    assert "Trio Canônico 2026" in compass_proj
+    assert "organizador-projetos-ideias" in compass_proj
+    assert "antigravity-project-auditor" in compass_proj
+    assert "auditoria-projetos-sistema" in compass_proj
+
     compass_3d = server.franklin_smart_compass("tenho um jogo three.js com bug de colisão e física")
     assert "Física 3D" in compass_3d
     assert "code-quality-audit-3d-physics" in compass_3d

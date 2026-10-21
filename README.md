@@ -30,10 +30,11 @@ O **Franklin Quebra-Galho** (`franklin-quebragalho`) é o assistente principal d
 
 ---
 
-## 📦 Catálogo Rápido de Skills (28 Skills Canônicas)
+## 📦 Catálogo Rápido de Skills (29 Skills Canônicas)
 
 | Skill | Versão | Status | Propósito Principal | Link |
 | :--- | :---: | :---: | :--- | :--- |
+| **`organizador-projetos-ideias`** | `v1.0.0` | 🚀 Produção | Organizador de ideias do zero (`ideation_to_v1` + fallback *"não sei"* -> `v1.0`) e sincronizador completo de projetos (`project_organizer_sync`: `README.md` fiel ao disco, `AGENTS.md`, `SPEC.md`, `CONTEXT.md`, `DESIGN.md`, contratos `MCP`/`FastAPI`/`RPC`, Mermaid e limpeza da raiz). | [skills/organizador-projetos-ideias/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/organizador-projetos-ideias/SKILL.md) |
 | **`antigravity-project-auditor`** | `v2.0.0` | 🚀 Produção | Auditor arquitetural, diagnóstico de MVP (causa-efeito) e planejamento em 3 fases (`autonomous_scan` \| `targeted_focus`). | [skills/antigravity-project-auditor/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/antigravity-project-auditor/SKILL.md) |
 | **`minimal-impact-ui`** | `v1.0.0` | 🚀 Produção | Design System Anti-TDAH (`atlas_ex_umbris_winui.html`): 3 temas (`#57545d` + `#8e8999`, `#09090B`, `#F3F3F5`), 6 Arquétipos e 28 efeitos WinUI 3. | [skills/minimal-impact-ui/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/minimal-impact-ui/SKILL.md) |
 | **`code-acceptability-auditor`** | `v1.0.0` | 🚀 Produção | Auditoria estática AST/Pydantic de código Python, Quality Gate (`>=75/100`) e Trigger Matrix. | [skills/code-acceptability-auditor/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-acceptability-auditor/SKILL.md) |
@@ -87,7 +88,7 @@ franklin-quebragalho/
 ├── pyproject.toml                               # Configuração de dependências uv/hatchling e pytest
 ├── .env.example                                 # Exemplo de variáveis de ambiente (assinatura HMAC A2A v1.0)
 ├── .venv/                                       # Ambiente virtual Python isolado
-├── skills/                                      # Catálogo canônico de 28 skills em 3 Tiers
+├── skills/                                      # Catálogo canônico de 29 skills em 3 Tiers
 ├── scripts/                                     # Scripts utilitários de suporte (PowerShell / Python)
 │   ├── validate_skills.py                       # Validador determinístico de conformidade (--targets)
 │   ├── sync_gemini_ecosystem.py                 # Sincronizador 1:1 (skills, agents, plans, lib, doc e plugin global)
@@ -102,7 +103,7 @@ franklin-quebragalho/
 ├── GEMINI.md                                    # Regras de comportamento e integridade do workspace
 ├── AGENTS.md                                    # Arquitetura e contratos de orquestração de subagentes
 ├── MY_AGENTS.md                                 # Catálogo detalhado das personas e papéis dos agentes
-├── MY_SKILLS.md                                 # Manifesto, ciclo de vida e changelog oficial das 28 skills
+├── MY_SKILLS.md                                 # Manifesto, ciclo de vida e changelog oficial das 29 skills
 ├── CONTEXT.md                                   # Resumo executivo de contexto operacional do repositório
 ├── SPEC.md                                      # Especificação técnica de módulos e ferramentas MCP
 └── README.md                                    # Este documento
@@ -118,7 +119,7 @@ O ecossistema conta com um servidor MCP dedicado baseado em **FastMCP** integrad
 - **`franklin_skills_list`**: Lista o catálogo de skills com filtros por status (`validada`, `producao`), persona (`FrontCraftMaster`, `DriveMaster`, etc.) e busca textual.
 - **`franklin_skills_get`**: Recupera a skill de forma granular (`contract`, `rules`, `references`, `evals`, `scripts`, `all`) preservando o *Token Budget*.
 - **`franklin_skills_search`**: Busca inteligente por intenção operacional, pontuação de relevância e recomendação do subagente especialista.
-- **`franklin_skills_validate`**: Executa a auditoria determinística estrutural de todas as 28 skills com relatório `[PASS]`/`[FAIL]`.
+- **`franklin_skills_validate`**: Executa a auditoria determinística estrutural de todas as 29 skills com relatório `[PASS]`/`[FAIL]`.
 - **`franklin_get_agents`**: Retorna a matriz operacional dos subagentes especialistas (incluindo a Topologia 3+1 de UI).
 - **`franklin_smart_compass`**: Roteador cognitivo que recomenda a skill ideal para uma intenção livre.
 - **`franklin_run_skill_script`**: Executa scripts utilitários com trava contra Path Traversal, SemanticGuard e isolamento de processo.

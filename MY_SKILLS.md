@@ -17,10 +17,11 @@ Este repositório é a incubadora central de skills do **Franklin Quebra-Galho**
 
 ---
 
-### 📦 Catálogo de Skills do Workspace (28 Skills Canônicas)
+### 📦 Catálogo de Skills do Workspace (29 Skills Canônicas)
 
 | Skill | Versão | Status | Descrição Curta | Localização |
 | :--- | :---: | :---: | :--- | :--- |
+| **`organizador-projetos-ideias`** | `v1.0.0` | 🚀 Produção | Organizador de ideias do zero (`ideation_to_v1`: perguntas guiadas, sugestão de MVP quando o usuário responde *"não sei"*, design e criação da `v1.0` com data) e sincronizador completo de projetos (`project_organizer_sync`: `README.md` fiel ao disco, `AGENTS.md`, `SPEC.md`, `CONTEXT.md`, `DESIGN.md`, `.env`/`.gitignore`, contratos `MCP`/`tools.json`, `FastAPI`/`RPC`, Mermaid, limpeza da raiz e memória). | [skills/organizador-projetos-ideias/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/organizador-projetos-ideias/SKILL.md) |
 | **`antigravity-project-auditor`** | `v2.0.0` | 🚀 Produção | Auditor arquitetural, diagnóstico de MVP (justificativa causal `Por quê:`) e planejamento em 3 fases (`autonomous_scan` vs. `targeted_focus` 80/20) sob 5 pilares técnicos (*Design/UI*, *Segurança*, *Atualização 2026*, *Code Quality*, *Árvore & Componentes*) e níveis `[PRIORIDADE \| MODERADO \| EXTRA]`. | [skills/antigravity-project-auditor/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/antigravity-project-auditor/SKILL.md) |
 | **`minimal-impact-ui`** | `v1.0.0` | 🚀 Produção | Sistema e Atlas Interativo de Design de Impacto Mínimo Anti-TDAH (`atlas_ex_umbris_winui.html`): 3 temas (Cinza `#57545d` + Menus `#8e8999` padrão, Escuro `#09090B`, Claro `#F3F3F5`), 4 acentos 2% (tinta escura `#091318`/`#062016` em Azul/Verde), zero texto vermelho ou serifa fina no cinza/escuro (`.highlight-surgical`), 6 Arquétipos de Página e 28 efeitos WinUI 3 + Ex Umbris. | [skills/minimal-impact-ui/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/minimal-impact-ui/SKILL.md) |
 | **`code-acceptability-auditor`** | `v1.0.0` | 🚀 Produção | Auditoria estática AST e Pydantic v2 de código Python (`SEC001..003`, `SYN001`, `ERR001..003`, `TYP001..002`, `ARCH001`), Quality Gate ($\ge 75/100$), Trigger Matrix (`TRIG-01..20`, $F_1 = 1.0$) e `SkillFailureAuditor`. | [skills/code-acceptability-auditor/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-acceptability-auditor/SKILL.md) |
@@ -53,6 +54,12 @@ Este repositório é a incubadora central de skills do **Franklin Quebra-Galho**
 ---
 
 ## 📜 Histórico de Versões e Contexto (Changelog)
+
+### [2026-10-21] - Fase 23: Implantação da Skill `organizador-projetos-ideias` (`v1.0.0`) — Concepção de Ideias (`ideation_to_v1` + Fallback *"Não sei"*) e Sincronização Integral de Projetos (`project_organizer_sync`) (`29/29 PASS`)
+- **Nova Skill Canônica ([`skills/organizador-projetos-ideias/SKILL.md`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/organizador-projetos-ideias/SKILL.md))**:
+  - **Modo 1 (`ideation_to_v1`)**: Refinamento de ideias iniciais com perguntas sobre intenção/objetivo, protocolo inteligente quando o usuário responde *"não sei"* às funções (propondo automaticamente o MVP mínimo), alinhamento de design, estrutura de pastas e repositório online, e geração da **Versão `1.0.0`** com metadados datados.
+  - **Modo 2 (`project_organizer_sync`)**: Leitura completa de projetos existentes, diagrama de funcionamento em Mermaid, sincronização dos documentos-chave (`AGENTS.md`, `SPEC.md`, `CONTEXT.md`, `DESIGN.md`, `GEMINI.md`/`CLAUDE.md` e `README.md` batendo 100% com os arquivos reais do disco), checagem de `.env`/`.gitignore`, padronização de componentes e contratos (`tools.json` MCP, FastAPI, RPC com métodos), limpeza segura da raiz e atualização da memória/contexto.
+  - Homologação determinística via [`rules/criterios_auditoria.md`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/organizador-projetos-ideias/rules/criterios_auditoria.md), [`evals/evals.json`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/organizador-projetos-ideias/evals/evals.json) e [`references/guia_contratos_mcp_fastapi_rpc_e_documentos.md`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/organizador-projetos-ideias/references/guia_contratos_mcp_fastapi_rpc_e_documentos.md).
 
 ### [2026-10-21] - Fase 22: Implantação da Skill `antigravity-project-auditor` (`v2.0.0`) — Diagnóstico de MVP, Roteamento Dinâmico (`autonomous_scan` | `targeted_focus`) e Planejamento em 3 Fases (`28/28 PASS`)
 - **Nova Skill Canônica ([`skills/antigravity-project-auditor/SKILL.md`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/antigravity-project-auditor/SKILL.md))**:

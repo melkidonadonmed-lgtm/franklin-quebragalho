@@ -1,8 +1,8 @@
 {
   "name": "franklin-skills",
-  "displayName": "Franklin Quebra-Galho (28 Skills, 7 Subagentes & Topologia Distribuída)",
-  "version": "3.3.0",
-  "description": "Ecossistema de 28 Skills canônicas, 7 Subagentes Especialistas (Topologia 3+1 de UI: ui-shell-navigator, ui-controls-data, ui-motion-interaction, ui-deterministic-observer + Memória Híbrida: vault-memory-retriever + Intermediários: intent-hitl-mediator, read-after-write-verifier), Preferências de Estilo por Propósito, Refinamento de Baixa Entropia (refine-prompt v3.2), Auditor de Projeto/MVP (antigravity-project-auditor v2.0) e Planos DAG.",
+  "displayName": "Franklin Quebra-Galho (29 Skills, 7 Subagentes & Topologia Distribuída)",
+  "version": "3.4.0",
+  "description": "Ecossistema de 29 Skills canônicas, 7 Subagentes Especialistas (Topologia 3+1 de UI: ui-shell-navigator, ui-controls-data, ui-motion-interaction, ui-deterministic-observer + Memória Híbrida: vault-memory-retriever + Intermediários: intent-hitl-mediator, read-after-write-verifier), Preferências de Estilo por Propósito, Refinamento de Baixa Entropia (refine-prompt v3.2), Auditor de Projeto/MVP (antigravity-project-auditor v2.0), Organizador de Projetos e Ideias (organizador-projetos-ideias v1.0) e Planos DAG.",
   "directories": {
     "skills": "skills",
     "agents": "agents",
@@ -13,6 +13,7 @@
   "suggestedPrompts": [
     "Orquestrar composição de UI nas 3 ondas do FrontCraftMaster (ui-shell-navigator, ui-controls-data, ui-motion-interaction e ui-deterministic-observer) via invoke_subagent ou franklin_execute_dag('ui')",
     "Refinar prompt ou auditar entropia de system prompt (fluidez cognitiva vs. contratos de baixa entropia) via refine-prompt e prompt_entropy_auditor.py",
-    "Recuperar contexto cirúrgico do Obsidian Vault + MemPalace (~35ms) via vault-memory-retriever ou validar as 27 skills canônicas"
+    "Recuperar contexto cirúrgico do Obsidian Vault + MemPalace (~35ms) via vault-memory-retriever ou validar as 29 skills canônicas",
+    "Auditar MVP, organizar estrutura de pastas/contratos (MCP/FastAPI/RPC) e sincronizar README.md via organizador-projetos-ideias, antigravity-project-auditor e auditoria-projetos-sistema"
   ]
 }

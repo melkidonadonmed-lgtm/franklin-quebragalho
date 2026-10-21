@@ -128,7 +128,7 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
         "Determinismo na borda (schemas/contratos de ferramentas) e fluidez cognitiva no núcleo (zero engessamento conversacional).",
     ),
     (
-        ("rea", "revers", "binario", "binary", "decompil", "ghidra", "sqlite", "bundle", "pe", "elf", "macho"),
+        ("revers", "binario", "binary", "decompil", "ghidra", "sqlite", "bundle", "macho", "objdump", "frida", "rizin"),
         "🔬 Engenharia Reversa Baseada em Evidências (`REA` • Binários Go/PE, SQLite & Bundles JS)",
         ["auditoria-projetos-sistema", "gap-analyzer-auditor", "aprimoramento-expansibilidade-agentes-skills"],
         [
@@ -139,14 +139,26 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
         "Separação estrita entre [FATO OBSERVADO] (com evidence_id ev_...), [INFERÊNCIA] e [DESCONHECIDO].",
     ),
     (
+        ("projeto", "repo", "organizar", "ideia", "mvp", "sincronizar", "readme", "estrutura", "auditar"),
+        "📦 Organização de Projetos, Refinamento de Ideias, Diagnóstico de MVP & Auditoria (Trio Canônico 2026)",
+        ["organizador-projetos-ideias", "antigravity-project-auditor", "auditoria-projetos-sistema", "arquitetura-design-implementacao-sistema"],
+        [
+            ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (SRP, Tipagem Pydantic, Segurança)"),
+            ("arquitetura-design-implementacao-sistema", "deterministic_scorer.py", "Scanner determinístico SGA (Ilhas Funcionais, INE, ICI, IRM, IPC, ICTE)"),
+            ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST pré-commit de segurança e tipagem Python (Score >= 75)"),
+        ],
+        "plans/distributed_agent_mediation_dag.json | plans/ui_composition_dag.json",
+        "Fluxo em 4 etapas: (1) Ideação/MVP ('organizador-projetos-ideias' Modo 1) -> (2) Diagnóstico Read-Only ('antigravity-project-auditor') -> (3) Saneamento & Paridade README/Contratos ('organizador-projetos-ideias' Modo 2) -> (4) Homologação 0-100 ('auditoria-projetos-sistema').",
+    ),
+    (
         ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra", "test", "auditor"),
-        "🤖 Arquitetura de Agentes, Declarative YAML Spec, Qualidade AST & Skills (27 Canônicas)",
+        "🤖 Arquitetura de Agentes, Declarative YAML Spec, Qualidade AST & Skills (29 Canônicas)",
         ["evoluir-skills", "aprimoramento-expansibilidade-agentes-skills", "code-acceptability-auditor", "test-quality-auditor", "high-level-context-planner", "gap-analyzer-auditor"],
         [
             ("aprimoramento-expansibilidade-agentes-skills", "agent_spec_loader.py", "Carregador Declarative YAML Agent Spec com Zero-Config Defaults"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Auditor estático AST + Pydantic v2 (Segurança, Tipagem, Quality Score >= 75)"),
             ("test-quality-auditor", "test_quality_auditor.py", "Auditor de qualidade de suítes de testes em 5 módulos (Py/TS/Go/MCP/Harness)"),
-            ("workspace", "validate_skills.py", "Validador determinístico das 27 skills canônicas"),
+            ("workspace", "validate_skills.py", "Validador determinístico das 29 skills canônicas"),
         ],
         "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json | plans/distributed_agent_mediation_dag.json",
         "Divulgação progressiva em 3 Tiers (<500 linhas no SKILL.md), Zero-Config Defaults no YAML e validação cruzada.",
@@ -169,7 +181,7 @@ def _resolve_agents_dir() -> Path:
 
 
 def _render_ecosystem_topology() -> str:
-    """Renderiza a topologia interativa de agentes em 5 camadas e 27 skills."""
+    """Renderiza a topologia interativa de agentes em 5 camadas e 29 skills."""
     skills = _get_all_skills_data()
     by_persona: Dict[str, List[str]] = {}
     for s in skills:
@@ -245,8 +257,8 @@ def _resolve_compass_profile(q: str) -> Tuple[str, List[str], List[Tuple[str, st
         if any(k in q for k in keywords):
             return title, rec_skills, scripts, dag_plan, guardrail
     return (
-        "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 27 Skills)",
-        ["arquiteto-conteudo-solucoes", "auditoria-projetos-sistema", "code-acceptability-auditor", "code-quality-audit-3d-physics", "design-md", "evoluir-skills"],
+        "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 29 Skills)",
+        ["organizador-projetos-ideias", "antigravity-project-auditor", "auditoria-projetos-sistema", "arquiteto-conteudo-solucoes", "code-acceptability-auditor", "design-md", "evoluir-skills"],
         [
             ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (detecta sozinho se é código Geral ou 3D)"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST pré-commit de segurança e tipagem Python (Score >= 75)"),

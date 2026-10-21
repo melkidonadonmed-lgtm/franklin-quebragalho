@@ -68,11 +68,11 @@ Catálogo detalhado das personas e agentes especializados disponíveis para o **
 ## 5. SkillCraft (Engenheiro e Curador de Skills & Qualidade de Código)
 
 - **Identificador**: `subagent-skill-craft`
-- **Ambiente de Trabalho**: Pasta `.agents/skills/`, scripts AST e manifesto `MY_SKILLS.md`.
+- **Ambiente de Trabalho**: Pasta canônica `skills/` (sincronizada com `~/.gemini/config/plugins/franklin-skills/skills/`), scripts AST e manifesto `MY_SKILLS.md`.
 - **Missão**:
   - Elaborar novas skills seguindo as especificações do Google Antigravity (`evoluir-skills`, `aprimoramento-expansibilidade-agentes-skills`, `skill-auditor-refatorador-skills`).
   - Auditar estaticamente arquivos Python via AST + Pydantic v2 (`code-acceptability-auditor`, portão `Quality Score >= 75.0`) e suítes de testes em 5 módulos (`test-quality-auditor`).
-  - Redigir `SKILL.md` com descrições otimizadas (`<= 260` caracteres) para ativação por decisão de modelo (*progressive disclosure*).
+  - Redigir `SKILL.md` com descrições otimizadas (`<= 380` caracteres, teto rígido `<= 420`) para ativação sem exclusão por orçamento de contexto (*progressive disclosure*).
   - Testar skills em cenários estruturados (`evals/evals.json` + Eval Harness Go `dispatch_skill_deterministic_tests`) e registrar lições aprendidas.
   - Controlar versões semânticas (SemVer) e atualizar o changelog no `MY_SKILLS.md`.
 - **Prompt Base / Diretriz**:

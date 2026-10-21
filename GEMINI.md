@@ -52,7 +52,7 @@
 ---
 
 ## 5. Diretrizes para Skills Próprias
-- **Localização e Descoberta**: As skills residem em `.agents/skills/<skill-name>/SKILL.md` (para descoberta nativa pelo Antigravity) e são obrigatoriamente espelhadas de forma idêntica em `skills/<skill-name>/SKILL.md`.
+- **Localização e Descoberta**: As 29 skills canônicas residem em `skills/<skill-name>/SKILL.md` e são sincronizadas fisicamente via `scripts/sync_gemini_ecosystem.py` para o plugin global `C:\Users\melki\.gemini\config\plugins\franklin-skills\skills\<skill-name>\SKILL.md`.
 - **Frontmatter Obrigatório**: Cada skill deve possuir cabeçalho YAML com `name`, `description` (em 3ª pessoa) e `version`.
 - **Divulgação Progressiva e Taxonomia de Pastas**:
   - `SKILL.md`: Contrato nuclear enxuto contendo fluxo decisório, gatilhos, exclusões e saídas esperadas.

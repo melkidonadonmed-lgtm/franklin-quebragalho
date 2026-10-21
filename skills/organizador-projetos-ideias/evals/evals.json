@@ -1,0 +1,62 @@
+[
+  {
+    "eval_id": "TC-01-IDEACAO-NAO-SEI-FUNCOES-V1",
+    "category": "should-trigger",
+    "description": "Valida o Modo 1 (ideation_to_v1) quando o usuário quer refinar uma ideia mas responde 'não sei' sobre quais funções deseja no projeto",
+    "input": "@organizador-projetos-ideias quero criar um sistema para organizar meus estudos e revisões, mas não sei quais funções colocar nele.",
+    "expected_behavior": {
+      "modo_operacao": "Modo 1: Ideação -> v1.0",
+      "pergunta_intencao_e_objetivo": true,
+      "aciona_fallback_nao_sei_propondo_mvp_minimo": true,
+      "pergunta_se_quer_alterar_ou_acrescentar_funcoes": true,
+      "pergunta_design_e_repositorio_online": true,
+      "oferece_criacao_versao_1_0_com_data": true,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-02-ORGANIZAR-PROJETO-COMPLETO-CONTRATOS-E-RAIZ",
+    "category": "should-trigger",
+    "description": "Valida o Modo 2 (project_organizer_sync) lendo um projeto existente, checando contratos MCP/FastAPI/RPC, sincronizando README.md com o disco real, criando AGENTS.md/SPEC.md/CONTEXT.md/DESIGN.md e limpando a raiz",
+    "input": "@organizador-projetos-ideias organize meu projeto por completo, verifique arquivos faltantes, contratos MCP/FastAPI/RPC, limpe a raiz e atualize o README e a memória.",
+    "expected_behavior": {
+      "modo_operacao": "Modo 2: Organização e Sincronização Completa",
+      "sincroniza_documentos_chave": [
+        "AGENTS.md",
+        "SPEC.md",
+        "CONTEXT.md",
+        "DESIGN.md",
+        "GEMINI.md",
+        "README.md"
+      ],
+      "valida_env_e_gitignore": true,
+      "organiza_contratos_mcp_fastapi_rpc_com_metodos": true,
+      "gera_diagrama_mermaid_de_funcionamento": true,
+      "limpa_raiz_com_dry_run_seguro": true,
+      "atualiza_memoria_e_contexto": true,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-03-PROJETO-INTUITO-AMBIGUO-PERGUNTAS",
+    "category": "should-trigger",
+    "description": "Valida que quando o intuito de um projeto existente não fica claro na leitura inicial, a skill faz perguntas objetivas antes de reestruturar por completo",
+    "input": "@organizador-projetos-ideias organize esta pasta com scripts soltos test1.py, run_old.py e rascunho.txt.",
+    "expected_behavior": {
+      "detecta_intuito_ambiguo": true,
+      "faz_perguntas_clarificadoras_ao_usuario": true,
+      "apresenta_dry_run_antes_de_mover_arquivos_da_raiz": true,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-04-NEAR-MISS-CONVERSAO-PDF-ISOLADA",
+    "category": "should-not-trigger",
+    "description": "Near-miss: solicitação exclusiva para converter um documento HTML/Markdown pronto em PDF para impressão",
+    "input": "Converta o arquivo ata_reuniao.md em um PDF formatado A4 usando o Edge headless.",
+    "expected_behavior": {
+      "aciona_organizador_projetos_ideias": false,
+      "delega_para": "conversor-html-pdf"
+    }
+  }
+]

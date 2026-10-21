@@ -72,11 +72,11 @@ Analise o projeto sob 5 pilares técnicos obrigatórios e classifique cada oport
 - **[MODERADO]** *(Médio Impacto)*: Refatorações importantes de organização, manutenibilidade e experiência que não travam o uso imediato.
 - **[EXTRA]** *(Baixo Impacto / Polimento / Backlog)*: Recursos futuros ou otimizações cosméticas pós-MVP.
 
-**Pilares Obrigatórios de Avaliação:**
-1. **Design e UI/UX:** Consistência visual, tokens de cores, responsividade (desktop/mobile), semântica HTML e acessibilidade.
+**Pilares Obrigatórios de Avaliação (Consulte [`references/matriz_5_pilares_e_hand_off_2026.md`](references/matriz_5_pilares_e_hand_off_2026.md)):**
+1. **Design e UI/UX:** Consistência visual orientada ao propósito, tokens de cores, responsividade (desktop/mobile), semântica HTML e acessibilidade.
 2. **Segurança (AppSec & IA):** Proteção de variáveis/chaves (`.env`), sanitização de entradas, prevenção contra Prompt Injection e controle de permissões de agentes/tools.
-3. **Atualização Temporal (Ancoragem 2026):** Verificação de versões de pacotes, SDKs (ex.: uso atualizado do `google-genai`), modelos de IA vigentes e depreciações.
-4. **Qualidade de Código (Code Quality):** Tipagem forte (TypeScript/Pydantic), modularidade, tratamento defensivo de erros e remoção de código morto ou redundante.
+3. **Atualização Temporal (Ancoragem 2026):** Verificação de versões de pacotes, SDKs (ex.: uso atualizado do `google-genai`, `FastMCP`, MCP Spec `2026-07-28`), modelos de IA vigentes e depreciações.
+4. **Qualidade de Código (Code Quality):** Tipagem forte (TypeScript/Pydantic), modularidade ($\le 60$ linhas/função), tratamento defensivo de erros e remoção de código morto ou redundante.
 5. **Componentização e Árvore de Arquivos:** Criação/organização de pasta de componentes (`/components`), separação clara entre domínio, infraestrutura e interface, e limpeza da raiz do repositório.
 
 ### Passo 4: Construção do Plano de Execução
@@ -98,6 +98,7 @@ Com base no resumo e nas melhorias priorizadas, estruture um plano sequencial en
 - **NÃO gere textos prolixos ou saudações vazias:** Comece diretamente pelos Metadados da Auditoria.
 - **NÃO dispare loops de testes ou criação automática de sub-skills** sem solicitação expressa.
 - **NÃO assuma que o `README.md` reflete a verdade absoluta:** Sempre desconfie de defasagem entre documentação e código real.
+- **Fronteira no Trio de Projetos:** Para *executar* a organização física de pastas, contratos (`MCP`/`FastAPI`/`RPC`), limpeza da raiz ou refinar ideias do zero (`ideation_to_v1`), encadeie `organizador-projetos-ideias`; para auditoria profunda com nota 0–100 e `agent-browser` (`@eX`), encadeie `auditoria-projetos-sistema`.
 
 ---
 
