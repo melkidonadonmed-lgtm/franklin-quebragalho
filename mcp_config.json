@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "franklin-skills": {
+      "command": "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\.venv\\Scripts\\python.exe",
+      "args": [
+        "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8"
+      }
+    },
+    "gemini-api-docs": {
+      "url": "https://gemini-api-docs-mcp.dev",
+      "serverUrl": "https://gemini-api-docs-mcp.dev",
+      "tools": {
+        "gemini_search_docs": {
+          "eager": true
+        },
+        "gemini_get_doc": {
+          "eager": true
+        }
+      }
+    }
+  }
+}

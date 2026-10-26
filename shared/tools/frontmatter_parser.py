@@ -21,9 +21,9 @@ def _try_yaml_safe_load(raw_yaml: str) -> Optional[Dict[str, Any]]:
         parsed = yaml.safe_load(raw_yaml)
     except (yaml.YAMLError, ValueError, TypeError, KeyError) as exc:
         _ = exc
-        return None
+        return {}
     if not isinstance(parsed, dict):
-        return None
+        return {}
     nested = parsed.get("metadata")
     if isinstance(nested, dict):
         for k, v in nested.items():
@@ -52,8 +52,11 @@ def _parse_fallback_lines(raw_yaml: str) -> Dict[str, Any]:
     current_key: Optional[str] = None
     multiline_val: List[str] = []
     in_metadata = False
+    last_was_scalar_root = False
 
     for line in raw_yaml.splitlines():
+        if not line.strip():
+            continue
         if re.match(r"^\s+", line) and current_key:
             multiline_val.append(line.strip())
             continue
@@ -62,6 +65,7 @@ def _parse_fallback_lines(raw_yaml: str) -> Dict[str, Any]:
 
         if re.match(r"^metadata:\s*$", line):
             in_metadata = True
+            last_was_scalar_root = False
             continue
 
         nested_match = re.match(r"^\s+([a-zA-Z0-9_\-]+):\s*(.*)$", line) if in_metadata else None
@@ -73,14 +77,19 @@ def _parse_fallback_lines(raw_yaml: str) -> Dict[str, Any]:
                 metadata_dict[k] = v
             continue
 
+        if last_was_scalar_root and re.match(r"^\s+[a-zA-Z0-9_\-]+:\s*", line):
+            return {}
+
         kv_match = re.match(r"^([a-zA-Z0-9_\-]+):\s*(.*)$", line)
         if kv_match:
             in_metadata = False
             key, val = kv_match.group(1), kv_match.group(2).strip()
             if val in (">-", ">", "|", "|-"):
                 current_key = key
+                last_was_scalar_root = False
             else:
                 meta[key] = val.strip("'\"")
+                last_was_scalar_root = bool(val)
 
     _flush_multiline(current_key, multiline_val, in_metadata, meta, metadata_dict)
     if metadata_dict:

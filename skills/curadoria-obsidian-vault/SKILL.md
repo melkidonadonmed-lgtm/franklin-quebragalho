@@ -1,8 +1,7 @@
 ---
 name: curadoria-obsidian-vault
 description: >-
-  Audita e higieniza estruturalmente o cofre do Obsidian (C:\Users\melki\dev\notes\), validando frontmatter YAML, links bidirecionais [[Wikilinks]], paridade de projetos ativos com dev\repos, deteccao de anexos orfaos e sincronizacao com MemPalace (wing: notes) sem perda de dados.
-license: MIT
+  Audita e higieniza estruturalmente o cofre do Obsidian (C:/Users/melki/dev/notes/), validando frontmatter YAML, [[Wikilinks]], paridade com dev/repos, anexos órfãos e sincronia com MemPalace. Use para curadoria de notas e memória; não use para limpeza de pastas do Google Drive.
 metadata:
   version: "1.2.0"
   author: "VaultMaster & Melki"

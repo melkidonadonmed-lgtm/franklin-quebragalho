@@ -1,0 +1,49 @@
+[
+  {
+    "eval_id": "nav-x-func-01-mvp-cut-and-islands",
+    "category": "should-trigger",
+    "prompt": "Preciso arquitetar um sistema web de triagem clínica rápida para médicos plantonistas com TDAH. Eles querem dashboard de atendimento, prescrição rápida, chat interno, gamificação com ranking, exportação PDF e integração com 5 ERPs na Semana 1. Faça o planejamento de MVP (CLAREZA/CREATE), a arquitetura em ilhas funcionais, corte o excesso e calcule o score determinístico SGA.",
+    "expected_behavior": [
+      "Aciona o Modo 1 (Planejamento CLAREZA/CREATE + Crítica Severa de MVP IRM) classificando gamificação, chat interno e 5 ERPs como [CORTE OBRIGATÓRIO - FASE 2].",
+      "Aglomera as funções essenciais em Ilhas Funcionais separando data tools de render tools, com anti-squish (flex-shrink: 0; white-space: nowrap).",
+      "Define tipografia linear com clamp(), limite de 65ch e tabular-nums sem poluição de paletas cosméticas.",
+      "Apresenta grafo Mermaid com atalho Ctrl+K, diagnóstico comentado nó a nó, cobertura dos 4 estados (Empty, Loading, Success, Error) e memória de cálculo exata do SGA (INE, ICI, IPC, IRM, ICTE)."
+    ]
+  },
+  {
+    "eval_id": "nav-x-func-02-real-navigation-and-tif-sufficiency",
+    "category": "should-trigger",
+    "prompt": "Audite este app que promete ser um 'Editor Profissional de Imagens', mas na tela só tem upload de foto, uma caixa de texto para marca d'água, 4 gráficos de velocímetro decorativos que não mudam nada e um botão 'Exportar RAW' que só faz console.log('TODO') sem botão de voltar.",
+    "expected_behavior": [
+      "Aciona o Modo 2 (Auditoria de Navegação Real e Suficiência Funcional) testando 'Clicar em X ativa Y?' e reprovando o botão 'Exportar RAW' inerte e a falta de caminho de retorno (Dead End).",
+      "Aplica a Purga da Pseudo-Complexidade (Lei de Hick-Hyman) prescrevendo a remoção dos 4 velocímetros ornamentais.",
+      "Preenche a Tabela de Integridade Funcional (TIF) confrontando a promessa ('Editor Profissional de Imagens') com os meios reais implementados e emitindo veredito [FAIL: ALUCINACAO_FUNCIONAL_DO_PROJETO] por déficit > 50%."
+    ]
+  },
+  {
+    "eval_id": "nav-x-func-03-resolution-mode-v1-v2-html",
+    "category": "should-trigger",
+    "prompt": "Refatore a arquitetura V1 deste painel financeiro que tem 5 níveis de cliques, chamadas fetch() misturadas dentro dos botões React, alertas window.alert() bloqueantes e números desalinhados. Gere o diagnóstico de resolução V1 vs V2 com score determinístico e o relatório HTML com metadados e diagrama de diff.",
+    "expected_behavior": [
+      "Ativa o Modo de Resolução V1 -> V2 e executa o cálculo determinístico comparando V1 Baseline vs V2 Refatorada.",
+      "Gera o artefato HTML5 autocontido contendo <meta> tags auditáveis (score-v1-baseline, score-v2-resolved, score-delta, audit-timestamp).",
+      "Constrói o diagrama Mermaid usando cores exclusivamente como semântica de diff (Vermelho = removido da V1, Amarelo = refatorado, Verde = nova ilha/fluxo na V2)."
+    ]
+  },
+  {
+    "eval_id": "nav-x-func-04-near-miss-cosmetic-palette-only",
+    "category": "should-not-trigger",
+    "prompt": "Quero apenas gerar o contrato DESIGN.md definindo tema e tipografia para meu blog pessoal.",
+    "expected_behavior": [
+      "Reconhece que o pedido é exclusivamente de contrato de estilo/tokens sem arquitetura de sistema ou auditoria de navegação/funções, delegando para design-md."
+    ]
+  },
+  {
+    "eval_id": "nav-x-func-05-near-miss-git-hygiene-only",
+    "category": "should-not-trigger",
+    "prompt": "Verifique apenas se o meu arquivo .gitignore está ignorando a pasta .venv e se existem commits órfãos no repositório.",
+    "expected_behavior": [
+      "Não aciona a arquitetura completa de sistemas; delega para auditoria-projetos-sistema."
+    ]
+  }
+]

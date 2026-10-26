@@ -12,6 +12,7 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -124,6 +125,8 @@ def _collect_a2a_skills(skills_dir: Path, kw: str) -> List[Dict[str, Any]]:
                 "description": desc,
                 "tags": tags[:6],
                 "examples": [f"Executar a skill {name} no contexto atual"],
+                "inputModes": ["text/plain", "application/json"],
+                "outputModes": ["text/plain", "application/json"],
             }
         )
     return skills_list
@@ -141,8 +144,8 @@ def build_franklin_agent_card(
     total_skills = (
         sum(1 for f in skills_dir.iterdir() if f.is_dir() and (f / "SKILL.md").exists())
         if skills_dir.exists()
-        else 28
-    ) or 28
+        else 25
+    ) or 25
 
     raw_card: Dict[str, Any] = {
         "name": "Franklin Quebra-Galho (A2A + MCP Orchestrator)",
@@ -151,8 +154,8 @@ def build_franklin_agent_card(
             "com suporte nativo a Agent2Agent (A2A v1.0) e Model Context Protocol (MCP)."
         ),
         "version": "1.2.0",
-        "defaultInputModes": ["text", "text/plain", "application/json"],
-        "defaultOutputModes": ["text", "text/plain", "application/json"],
+        "defaultInputModes": ["text/plain", "application/json"],
+        "defaultOutputModes": ["text/plain", "application/json"],
         "supportedInterfaces": [
             {"url": host_url, "protocolBinding": "JSONRPC", "protocolVersion": "1.0"},
             {"url": host_url, "protocolBinding": "JSONRPC", "protocolVersion": "0.3"},
@@ -312,4 +315,23 @@ class FranklinA2ATaskManager:
         task["state"] = a2a_types.TaskState.Name(a2a_types.TaskState.TASK_STATE_CANCELED)
         task["stateHistory"].append("TASK_STATE_CANCELED")
         task["statusMessage"] = "Tarefa cancelada pelo cliente A2A."
+        return task
+
+    def resume_task(self, task_id: str, approval_token: str) -> Optional[Dict[str, Any]]:
+        """Retoma uma Task suspensa em TASK_STATE_INPUT_REQUIRED mediante apresentação de approval_token HITL válido."""
+        task = self._tasks.get(task_id)
+        if not task:
+            return None
+        if task.get("state") != "TASK_STATE_INPUT_REQUIRED":
+            return task
+        token = approval_token.strip()
+        if not re.match(r"^HITL-AUTH-[A-Za-z0-9_-]{8,64}$", token):
+            raise PermissionError("Token HITL inválido. Formato exigido: ^HITL-AUTH-[A-Za-z0-9_-]{8,64}$")
+        chk_id = str(task.get("checkpointId", ""))
+        if chk_id:
+            self.checkpoint_store.update_status(chk_id, status="APPROVED", notes=f"Aprovado via token {token}")
+        task["state"] = a2a_types.TaskState.Name(a2a_types.TaskState.TASK_STATE_COMPLETED)
+        task["stateHistory"].extend(["TASK_STATE_WORKING", "TASK_STATE_COMPLETED"])
+        task["statusMessage"] = f"Tarefa retomada e concluída após autorização HITL ({token})."
+        task["updatedAt"] = datetime.now(timezone.utc).isoformat()
         return task

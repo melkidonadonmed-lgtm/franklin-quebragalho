@@ -1,16 +1,16 @@
 {
-  "objective": "Orquestração Determinística de Arquitetura Visual Orientada ao Propósito, Camadas Esculpidas & QA em 3 Ondas (Topologia 3+1: ui-shell-navigator -> ui-controls-data + ui-motion-interaction -> ui-deterministic-observer)",
+  "objective": "Orquestração Determinística de Composição Frontend, Hierarquia Visual, Acessibilidade & QA em 3 Ondas (Topologia 3+1: ui-shell-navigator -> ui-controls-data + ui-motion-interaction -> ui-deterministic-observer)",
   "acceptance_criteria": [
-    "Onda 1 (ui-shell-navigator): Diagnosticar o propósito do projeto, selecionar a família atmosférica adequada (Ad Lucem, Cinza Monolítico #57545d + Menus #8e8999, Preto Terminal IBM Ex Umbris + IBM Plex, ou AETHER 2027 oklch), estruturar src/ em 5 camadas de Design Atômico e Bento Grid 12 colunas (respiro >= 25%, CLS < 0.1)",
-    "Onda 2A (ui-controls-data): Implementar <SurfaceCard /> com sombra esculpida em 3 camadas + 1px Rim Light, blocos de contraste alternados, 1 único CTA primário sólido vs .btn-ghost, alvos >= 44x44px anti-squish, tabular-nums e máquina de estados FSM (idle, loading, error, pressed)",
-    "Onda 2B (ui-motion-interaction): Calibrar física elástica Spring (--ease-spring: cubic-bezier(0.22, 1, 0.36, 1)), transições de superfície/tema, proteção vestibular obrigatória (prefers-reduced-motion) e ergonomia multi-input (Touch, Pen, Mouse, Keyboard)",
-    "Onda 3 (ui-deterministic-observer): Auditar matematicamente a conformidade ao propósito, contraste WCAG 2.1 AA/AAA, camadas esculpidas, zero componentes órfãos, FSM sem comment-gaming e anti-XSS via scripts/audit_tactile_ui.py (Readiness Score >= 90/100)"
+    "Onda 1 (ui-shell-navigator): Diagnosticar o propósito do projeto, definir tokens semânticos de superfície/tinta sem cores travadas e estruturar primitivas de composição espacial (Bento Grid 12 colunas, Stack, Cluster, Split-View, CLS < 0.1)",
+    "Onda 2A (ui-controls-data): Implementar componentes com hierarquia visual em 3 níveis (Squint Test), equilíbrio de acento 90/8/2 (1 CTA primário sólido vs .btn-ghost), alvos >= 44x44px, tabular-nums e estados finitos FSM (idle, loading, success, empty, error)",
+    "Onda 2B (ui-motion-interaction): Calibrar transições suaves (--ease-spring: cubic-bezier(0.22, 1, 0.36, 1)), indicadores :focus-visible, proteção prefers-reduced-motion e ergonomia multi-input (Touch, Pen, Mouse, Keyboard)",
+    "Onda 3 (ui-deterministic-observer): Auditar matematicamente composição espacial, contraste WCAG 2.1 AA/AAA, zero emojis, zero bloat Base64, zero componentes órfãos, FSM executável e anti-XSS via scripts/audit_tactile_ui.py (Readiness Score >= 90/100)"
   ],
   "tasks": [
     {
       "id": "wave1_shell_navigator",
       "group_id": "ui_shell_navigator",
-      "description": "Onda 1: Diagnóstico do propósito do projeto, escolha de atmosfera (preferencias_estilo_e_temas.md), estrutura src/ em 5 camadas de Design Atômico, Bento Grid 12 colunas e navegação ergonômica (Ctrl+K, tinta escura em menus claros/#8e8999)",
+      "description": "Onda 1: Diagnóstico do propósito do projeto, tokens semânticos CSS (DESIGN.md), composição espacial (Bento Grid 12 colunas, Stack, Cluster, Split-View) e navegação ergonômica (Ctrl+K)",
       "criticality": "HIGH",
       "payload": {
         "agent_spec": "agents/ui-shell-navigator.md",
@@ -23,7 +23,7 @@
     {
       "id": "wave2_controls_data",
       "group_id": "ui_controls_data",
-      "description": "Onda 2A: Camadas esculpidas (<SurfaceCard /> com sombra em 3 níveis + 1px Rim Light), isolamento de acento 98/2 (1 CTA sólido vs .btn-ghost), alvos >= 44x44px anti-squish, tabular-nums e estados FSM (idle, loading, error, pressed)",
+      "description": "Onda 2A: Componentes e superfícies, hierarquia visual em 3 níveis, equilíbrio de acento 90/8/2 (1 CTA sólido vs .btn-ghost), alvos >= 44x44px, tabular-nums e estados FSM (idle, loading, success, empty, error)",
       "dependencies": [
         "wave1_shell_navigator"
       ],
@@ -42,7 +42,7 @@
     {
       "id": "wave2_motion_interaction",
       "group_id": "ui_motion_interaction",
-      "description": "Onda 2B: Física elástica Spring (--ease-spring: cubic-bezier(0.22, 1, 0.36, 1)), micro-interações de elevação e pressão, proteção vestibular prefers-reduced-motion e gestos multi-input (Touch, Pen, Mouse, Keyboard)",
+      "description": "Onda 2B: Transições suaves (--ease-spring: cubic-bezier(0.22, 1, 0.36, 1)), estados :focus-visible, proteção prefers-reduced-motion e ergonomia multi-input (Touch, Pen, Mouse, Keyboard)",
       "dependencies": [
         "wave1_shell_navigator"
       ],
@@ -60,7 +60,7 @@
     {
       "id": "wave3_deterministic_observer",
       "group_id": "ui_deterministic_observer",
-      "description": "Onda 3 (Gatekeeper): Auditoria determinística integrada (frontend-testing-auditor v3.0 + auditoria-projetos-sistema v3.0) validando alinhamento ao propósito, contraste, tipografia, camadas esculpidas, FSM e anti-XSS via scripts/audit_tactile_ui.py",
+      "description": "Onda 3 (Gatekeeper): Auditoria determinística integrada (frontend-testing-auditor v4.0 + auditoria-projetos-sistema v3.0) validando tokens semânticos, composição, contraste, tipografia, zero emojis, FSM e anti-XSS via scripts/audit_tactile_ui.py",
       "dependencies": [
         "wave1_shell_navigator",
         "wave2_controls_data",

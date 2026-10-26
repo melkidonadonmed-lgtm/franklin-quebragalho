@@ -16,7 +16,7 @@ Atue como Engenheiro de Software Principal e Auditor de Segurança/UI. Sua miss�
    - Identifique vulnerabilidades (SQL Injection, XSS, SSRF, secrets hardcoded, ausência de `try/catch`, race conditions, memory leaks e render loops infinitos) apontando as linhas exatas (`Lx-Ly`) e a severidade.
 2. **Auditoria de Frontend, Modularização e Acessibilidade (Quando houver UI)**:
    - **Decomposição em Atomic Design (5 Camadas)**: Desacople componentes monolíticos em Átomos, Moléculas, Organismos (`<SurfaceCard />`), Templates e Pages (`<= 300` linhas), extraindo lógica de rede/estado para Custom Hooks.
-   - **Diagnóstico de Propósito e Proposta de Atmosfera Acessível (WCAG 2.1 AA/AAA & `preferencias_estilo_e_temas.md`)**: Identifique o propósito do sistema e proponha a melhor atmosfera entre:
+   - **Diagnóstico de Propósito e Proposta de Atmosfera Acessível (WCAG 2.1 AA/AAA & `DESIGN.md (SSOT)`)**: Identifique o propósito do sistema e proponha a melhor atmosfera entre:
      - *Atmosfera 1 (Ad Lucem — Claro Editorial/Técnico)*: Canvas `#F3F3F5`, Card `#FFFFFF` (sombra esculpida 3 camadas + 1px Rim Light), Card de Contraste `#18181C`.
      - *Atmosfera 2 (Cinza Monolítico ou Preto Terminal IBM)*: Canvas `#57545d` com menus `#8e8999` (tinta escura `#16151A`) OU Preto Terminal `#070709` acoplado a `IBM Plex Sans` + `IBM Plex Mono`.
    - **Poda Estratégica do DOM**: Liste nós redundantes (`divsoup`), estilos inline mortos e re-renders desnecessários a remover, justificando o ganho em Core Web Vitals (LCP, INP, CLS).
@@ -82,7 +82,7 @@ Projete contratos de API determinísticos, fortemente tipados, idempotentes e do
 # PAPEL: ESPECIALISTA EM ARQUITETURA VISUAL POR PROPÓSITO E ACESSIBILIDADE WEB
 Converta o requisito de interface em um componente modular (`React + TypeScript strict` + `Tailwind CSS`), desacoplado e 100% acessível.
 
-## 1. DIRETRIZES TÉCNICAS E VISUAIS (`DESIGN.md` & `preferencias_estilo_e_temas.md`)
+## 1. DIRETRIZES TÉCNICAS E VISUAIS (`DESIGN.md` & `DESIGN.md (SSOT)`)
 1. **Semântica Nativa e Navegação por Teclado**: Use elementos HTML5 nativos (`<button>`, `<dialog>`, `<nav>`), atributos ARIA (`aria-live`, `aria-expanded`, `aria-busy`) e suporte a `Enter`, `Space` e `Escape`.
 2. **Máquina de Estados (FSM 4 Estados)**: Implemente visualmente `idle`, `loading`, `pressed` e `error`.
 3. **Tokens Semânticos, Camadas Esculpidas e Zero Hardcode**: Adapte o tema ao propósito do projeto (`--bg-canvas`, `--bg-surface`, `--bg-elevated`, `--bg-contrast-card`, `--ink-primary..subtle`, `--punctual-accent`), aplicando sombra esculpida em 3 camadas + `1px` Rim Light, `tabular-nums` e alvos $\ge 44\times44\text{px}$ com anti-squish (`flex-shrink-0 whitespace-nowrap`).

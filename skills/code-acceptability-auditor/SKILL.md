@@ -1,8 +1,7 @@
 ---
 name: code-acceptability-auditor
 description: >-
-  Audita estaticamente arquivos Python via AST contra falhas de segurança (segredos hardcoded, eval/exec, shell=True), ausência de type hints, except silencioso e funções longas (>60 linhas). Use antes de commits/PRs para calcular o Quality Score (0-100) e validar critérios de aceite.
-license: MIT
+  Audita estaticamente arquivos Python via AST contra falhas de segurança (segredos hardcoded, eval/exec, shell=True), ausência de type hints, except silencioso e funções longas (>60 linhas). Use antes de commits/PRs para calcular o Quality Score (0-100); não use para dúvidas teóricas de Python.
 compatibility: Python 3.11+, Pydantic 2.x, Git
 metadata:
   author: "Gemini Notebook AI Engineering & Melki"
@@ -108,6 +107,9 @@ uv run python skills/code-acceptability-auditor/scripts/skill_failure_auditor.py
 
 # 6. Instalar Git Hook local (.git/hooks/pre-commit)
 uv run python skills/code-acceptability-auditor/scripts/install_pre_commit_hook.py --repo-root .
+
+# 7. Executar Portão Unificado Pré-Commit (Governança .geminiignore + Portão 1 AST + Portão 2 TestQuality Nível 4)
+uv run python scripts/pre_commit_quality_gate.py
 ```
 
 ---

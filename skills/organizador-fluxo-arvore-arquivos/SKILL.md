@@ -1,8 +1,7 @@
 ---
 name: organizador-fluxo-arvore-arquivos
 description: >-
-  Transforma ideias brutas e requisitos de projetos/apps em fluxos visuais limpos (Mermaid), árvores de diretórios comentadas e planos de execução diretos, preservando o pedido original, mantendo histórico de versões e oferecendo exportação direta em arquivo único Markdown (.md) ou PDF formatado para evitar quebras.
-license: MIT
+  Transforma ideias brutas e requisitos de apps em fluxos visuais (Mermaid), árvores de diretórios comentadas e planos de execução diretos com histórico de versões em Markdown (.md) ou PDF. Use para mapear fluxos e estrutura de pastas; não use para auditar segurança AST de código.
 metadata:
   version: "1.1.0"
   author: "DocMaker & Melki"

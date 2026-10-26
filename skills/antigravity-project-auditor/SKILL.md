@@ -1,8 +1,7 @@
 ---
 name: antigravity-project-auditor
 description: >-
-  Skill de auditoria arquitetural, diagnóstico de MVP e planejamento de projeto para Antigravity. Use quando ativada isoladamente (sem conversa) para varrer arquivos base (CONTEXT.md, AGENTS.md, SPEC.md, README.md) e memória do projeto, ou junto a uma pergunta específica para análise focalizada e plano de ação.
-version: "2.0.0"
+  Audita arquitetura, diagnostica MVP e planeja projetos para Antigravity. Use isoladamente para varrer arquivos base (CONTEXT.md, AGENTS.md, SPEC.md, README.md) e memória, ou junto a uma pergunta para plano de ação. Não use para refatorar código sem aprovação.
 license: Apache-2.0
 compatibility: "Antigravity IDE, Gemini Agent Engine, Google ADK, Claude Code / Cursor"
 allowed-tools: "Read Glob Grep MemorySearch"
@@ -19,6 +18,7 @@ metadata:
     - "planejamento"
     - "antigravity"
     - "context-discovery"
+version: "2.0.0"
 updated_at: "2026-10-21"
 author: "Arquiteto de Conteudo e Solucoes"
 category: "Project Auditing, Context Discovery & MVP Planning"

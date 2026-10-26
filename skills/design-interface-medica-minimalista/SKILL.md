@@ -1,8 +1,7 @@
 ---
 name: design-interface-medica-minimalista
 description: >-
-  Preset e arquitetura exclusivamente clínica/hospitalar (PEP, receituários A4, triagem e calculadoras médicas com tabular-nums, alto contraste e zero emojis) guiada pelo propósito assistencial. Não use para apps gerais fora da área da saúde (use design-md, frontend-code-architect ou auditoria-projetos-sistema).
-license: MIT
+  Arquitetura especializada para interfaces clínicas, prontuários eletrônicos (PEP), receituários/laudos A4 (.sus-grid) e calculadoras médicas com tabular-nums, proteção de dose e zero emojis. Use para sistemas de saúde e prescrição; não use para landing pages promocionais ou jogos.
 metadata:
   author: "FrontCraftMaster & Melki"
   version: "3.0.0"
@@ -44,7 +43,7 @@ Diretrizes visuais, ergonômicas e de segurança assistencial para sistemas méd
 
 ## ⚙️ Fluxo de Execução — Arquitetura Visual Guiada pelo Propósito Clínico
 
-Consulte os tokens e templates detalhados em [`references/guia_tokens_clinicos_a4.md`](references/guia_tokens_clinicos_a4.md), o padrão [`../minimal-impact-ui/SKILL.md`](../minimal-impact-ui/SKILL.md) ([`atlas_ex_umbris_winui.html`](../minimal-impact-ui/references/atlas_ex_umbris_winui.html)) e [`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md):
+Consulte os tokens e templates detalhados em [`references/guia_tokens_clinicos_a4.md`](references/guia_tokens_clinicos_a4.md), o padrão [`../design-md/SKILL.md`](../design-md/SKILL.md) ([`atlas_ex_umbris_winui.html`](../design-md/references/atlas_ex_umbris_winui.html)) e [`../_template/references/DESIGN.md (SSOT)`](../_template/references/DESIGN.md (SSOT)):
 
 ### 1. Atmosferas Clínicas por Turno e Ambiente (3 Temas + Preset Esmeralda `#10B981`)
 - **Enfermaria, Prontuário & Uso Prolongado (*Cinza sobre Cinza `#57545d` + Menus `#8e8999`*)**:
@@ -62,7 +61,7 @@ Consulte os tokens e templates detalhados em [`references/guia_tokens_clinicos_a
 - **Dados Numéricos & Doses (`tabular-nums` + `Compact Sizing`)**: Sinais vitais, escores (`SOFA`, `CHA2DS2-VASc`, `CKD-EPI`), tabelas SIGTAP/CID-10 e posologias usam `JetBrains Mono` / `IBM Plex Mono` com `font-variant-numeric: tabular-nums` e modo `Compact Sizing` (`py-1.5 px-2.5`).
 - **Blindagem Anti-Squish de Unidades**: Unidades críticas (`mg/dL`, `mL/min/1.73m²`, `mcg/kg/min`, `mEq/L`) exigem `white-space: nowrap; flex-shrink: 0` e alvos interativos $\ge 44 \times 44\text{px}$.
 
-### 3. Arquétipos Clínicos (`minimal-impact-ui`) e Folha A4 Proporcional (`Viewbox` & `@media print`)
+### 3. Arquétipos Clínicos (`design-md`) e Folha A4 Proporcional (`Viewbox` & `@media print`)
 - **Arquétipos Recomendados**: **01. Split-Screen Live Workbench** (`SplitView`: pílulas de exame físico/sinais vitais à esquerda + folha A4 APAC/LME/Evolução ao vivo à direita), **02. Linha do Tempo Cronológica** (`D1, D2, D3` de internação/antibiótico), **04. Árvore de Decisão Clínica** e **25. RichEditBox com Templates Clínicos** + `Popover Contextual` de doses.
 - **Folha A4 Fiel (`Viewbox` 210x297mm)**: Renderizada em `#FFFFFF` com `--shadow-sculpted` sobre o palco `#57545d`, e regras `@media print` que ocultam `.no-print`/`header.nav-shell` e forçam fundo branco e tinta `#111115`.
 

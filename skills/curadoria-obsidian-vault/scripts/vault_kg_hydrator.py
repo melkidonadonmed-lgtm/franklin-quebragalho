@@ -33,6 +33,8 @@ SECONDARY_KG_DBS = (
 DEFAULT_REPO_DIR = Path(r"C:\Users\melki\dev\repos\franklin-quebragalho")
 
 WIKILINK_RE = re.compile(r"\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|[^\]]+)?\]\]")
+CODE_SPAN_RE = re.compile(r"```[\s\S]*?```|`[^`\n]+`")
+IGNORED_WIKILINK_TARGETS = {"wikilinks", "wikilink", "nome da nota", "projeto", "nota"}
 
 ENTITIES_DDL = """CREATE TABLE IF NOT EXISTS entities (
     id TEXT PRIMARY KEY,
@@ -103,10 +105,17 @@ def _extract_note_links(
         _ = exc
         return
 
+    clean_content = CODE_SPAN_RE.sub("", content)
     seen_targets: Set[str] = set()
-    for match in WIKILINK_RE.finditer(content):
+    for match in WIKILINK_RE.finditer(clean_content):
         target_name = match.group(1).strip().split("/")[-1]
-        if not target_name or target_name == note_name or target_name in seen_targets:
+        if (
+            not target_name
+            or target_name.lower() in IGNORED_WIKILINK_TARGETS
+            or target_name.startswith("<")
+            or target_name == note_name
+            or target_name in seen_targets
+        ):
             continue
         seen_targets.add(target_name)
         target_id = _slug_id("note", target_name)
@@ -187,6 +196,8 @@ def hydrate_knowledge_graph(
         cur = conn.cursor()
         cur.execute(ENTITIES_DDL)
         cur.execute(TRIPLES_DDL)
+        cur.execute("DELETE FROM triples")
+        cur.execute("DELETE FROM entities")
         cur.executemany(
             "INSERT OR REPLACE INTO entities (id, name, type, properties, created_at) VALUES (?, ?, ?, ?, ?)",
             [(eid, name, etype, props, now_iso) for eid, name, etype, props in all_entities.values()],

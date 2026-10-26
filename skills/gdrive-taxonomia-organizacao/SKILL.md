@@ -1,8 +1,7 @@
 ---
 name: gdrive-taxonomia-organizacao
 description: >-
-  Estrutura e categoriza arquivos e pastas no Google Drive (G:\Meu Drive), aplicando a taxonomia canonica numerada real da maquina, padronizacao de nomes com datas ISO (YYYY-MM-DD), higienizacao de caracteres especiais e organizacao tematica sem perdas.
-license: MIT
+  Estrutura e categoriza arquivos e pastas no Google Drive (G:/Meu Drive), aplicando taxonomia canônica numerada, padronização de nomes com datas ISO (YYYY-MM-DD) e higienização de caracteres sem perdas. Use para organizar taxonomia no Drive; não use para exclusão de duplicatas sem triagem.
 metadata:
   version: "1.1.0"
   author: "DriveMaster & Melki"

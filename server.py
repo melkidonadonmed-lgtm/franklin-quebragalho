@@ -43,11 +43,13 @@ from shared.catalog_service import (
     _find_skill_dir,
     _get_all_skills_data,
     _load_agents_map,
+    get_progressive_registry,
     skills_get_impl,
     skills_list_impl,
     skills_search_impl,
     skills_validate_impl,
 )
+from shared.modular_orchestrator import AgentOrchestrator, ProgressiveSkillRegistry
 from shared.compass_topology import (
     COMPASS_PROFILE_RULES,
     PERSONA_ALIASES,
@@ -93,12 +95,15 @@ SESSIONS_DIR = ROOT_DIR / ".sessions"
 SESSIONS_DIR.mkdir(parents=True, exist_ok=True)
 harness_store = CheckpointStore(SESSIONS_DIR / "harness_checkpoints.json")
 a2a_task_manager = FranklinA2ATaskManager(skills_dir=SKILLS_ROOT, checkpoint_store=harness_store)
+MCP_2026_META = {"io.modelcontextprotocol/protocolVersion": "2026-07-28"}
+RO_ANNOTATIONS = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}
+MUT_ANNOTATIONS = {"readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": False}
 
 
 # -----------------------------------------------------------------------------
 # Ferramentas MCP (@mcp.tool) — Catálogo, Subagentes, Execução, Harness² e A2A
 # -----------------------------------------------------------------------------
-@mcp.tool()
+@mcp.tool(annotations=RO_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_skills_list(
     status: str = "all", persona: str = "all", search: str = "", format: str = "markdown"
 ) -> str:
@@ -106,31 +111,31 @@ def franklin_skills_list(
     return skills_list_impl(status=status, persona=persona, search=search, format=format)
 
 
-@mcp.tool()
+@mcp.tool(annotations=RO_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_skills_get(skill_name: str, section: str = "contract") -> str:
     """Obtém o contrato completo (SKILL.md) ou seções específicas de uma skill."""
     return skills_get_impl(skill_name=skill_name, section=section)
 
 
-@mcp.tool()
+@mcp.tool(annotations=RO_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_skills_search(query: str, limit: int = 5) -> str:
     """Busca semântica e por palavras-chave qual skill e persona ativar para uma tarefa."""
     return skills_search_impl(query=query, limit=limit)
 
 
-@mcp.tool()
+@mcp.tool(annotations=RO_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_skills_validate(target_skill: str = "") -> str:
     """Valida a integridade estrutural e de segurança das skills contra o padrão de 2026."""
     return skills_validate_impl(target_skill=target_skill)
 
 
-@mcp.tool()
+@mcp.tool(annotations=RO_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_get_agents(agent_name: str = "") -> str:
     """Obtém as definições dos agentes mestres (AGENTS.md), subagentes do Epic-Volta ou Topologia 3+1 de UI."""
     return get_agents_impl(agent_name=agent_name)
 
 
-@mcp.tool()
+@mcp.tool(annotations=RO_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_smart_compass(
     intent_or_path: str = "", auto_dispatch_dag: bool = False, target_dir: str = ""
 ) -> str:
@@ -143,17 +148,27 @@ def franklin_smart_compass(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=MUT_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_run_skill_script(
-    skill_name: str, script_name: str, args: Optional[List[str]] = None, timeout_seconds: int = 60
+    skill_name: str,
+    script_name: str,
+    args: Optional[List[str]] = None,
+    timeout_seconds: int = 60,
+    target_dir: str = "",
+    idempotency_key: str = "",
 ) -> str:
-    """Executa um script determinístico localizado na pasta scripts/ de uma skill."""
+    """Executa um script determinístico localizado na pasta scripts/ de uma skill (suporta target_dir cross-project)."""
+    _ = idempotency_key
     return run_skill_script_impl(
-        skill_name=skill_name, script_name=script_name, args=args, timeout_seconds=timeout_seconds
+        skill_name=skill_name,
+        script_name=script_name,
+        args=args,
+        timeout_seconds=timeout_seconds,
+        target_dir=target_dir,
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=MUT_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_execute_dag(
     plan_path_or_json: str,
     run_id: str = "",
@@ -161,8 +176,10 @@ def franklin_execute_dag(
     timeout_seconds: float = 0,
     db_path: str = "",
     target_dir: str = "",
+    idempotency_key: str = "",
 ) -> str:
     """Executa um plano de orquestração em Grafo Acíclico Dirigido (DAG) no motor Epic-Volta."""
+    _ = idempotency_key
     return execute_dag_impl(
         plan_path_or_json=plan_path_or_json,
         run_id=run_id,
@@ -173,7 +190,7 @@ def franklin_execute_dag(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=MUT_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_harness_guard(
     task_intent: str, proposed_tool_or_action: str = "", session_id: str = "default"
 ) -> str:
@@ -186,33 +203,36 @@ def franklin_harness_guard(
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=MUT_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_harness_checkpoint(
     action: str = "list",
     session_id: str = "default",
     checkpoint_id: str = "",
     approved: bool = False,
     notes: str = "",
+    approval_token: str = "",
+    idempotency_key: str = "",
 ) -> str:
     """Gerencia checkpoints de governança HITL e sub-ações recursivas Harness²."""
-    _ = approved
+    _ = (approval_token, idempotency_key)
     return harness_checkpoint_impl(
         harness_store=harness_store,
         sessions_dir=SESSIONS_DIR,
         action=action,
         session_id=session_id,
         checkpoint_id=checkpoint_id,
+        approved=approved,
         notes=notes,
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=RO_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_a2a_agent_card(skill_filter: str = "", verify_signature: bool = True) -> str:
     """Gera e assina criptograficamente (JCS + JWS HMAC-SHA256) o AgentCard oficial A2A v1.0."""
     return a2a_agent_card_impl(skill_filter=skill_filter, verify_signature=verify_signature)
 
 
-@mcp.tool()
+@mcp.tool(annotations=MUT_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_a2a_dispatch_task(
     query: str = "",
     skill_id: str = "",
@@ -221,8 +241,10 @@ def franklin_a2a_dispatch_task(
     action: str = "send",
     execute_dag: bool = False,
     target_dir: str = "",
+    approval_token: str = "",
+    idempotency_key: str = "",
 ) -> str:
-    """Despacha, consulta ou cancela uma Task no protocolo Agent2Agent (A2A v1.0) acoplado ao Harness HITL."""
+    """Despacha, consulta, retoma ou cancela uma Task no protocolo Agent2Agent (A2A v1.0) acoplado ao Harness HITL."""
     return a2a_dispatch_task_impl(
         a2a_task_manager=a2a_task_manager,
         query=query,
@@ -232,10 +254,12 @@ def franklin_a2a_dispatch_task(
         action=action,
         execute_dag=execute_dag,
         target_dir=target_dir,
+        approval_token=approval_token,
+        idempotency_key=idempotency_key,
     )
 
 
-@mcp.tool()
+@mcp.tool(annotations=RO_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_mcp_build_advisor(
     connects_to: str = "cloud_api",
     audience: str = "personal_or_team",
@@ -285,6 +309,12 @@ def get_catalog_resource() -> str:
     return json.dumps(_get_all_skills_data(), indent=2, ensure_ascii=False)
 
 
+@mcp.resource("skills://catalog/xml")
+def get_catalog_xml_resource() -> str:
+    """Recurso passivo expondo o catálogo Nível 1 (<available_skills>) em XML enxuto."""
+    return get_progressive_registry().render_catalog_prompt()
+
+
 @mcp.resource("skills://manifest")
 def get_manifest_resource() -> str:
     """Recurso passivo expondo o manifesto completo e ciclo de vida de MY_SKILLS.md."""
@@ -315,6 +345,12 @@ def get_rules_resource(skill_name: str) -> str:
     return franklin_skills_get(skill_name=skill_name, section="rules")
 
 
+@mcp.resource("skills://references/{skill_name}")
+def get_references_resource(skill_name: str) -> str:
+    """Recurso passivo para leitura direta dos módulos de referência e exemplos técnicos de uma skill."""
+    return franklin_skills_get(skill_name=skill_name, section="references")
+
+
 @mcp.prompt("activate_skill")
 def activate_skill_prompt(skill_name: str, user_intent: str) -> str:
     """Gera o prompt estruturado de ativação de uma skill sob os padrões de 2026."""
@@ -332,17 +368,20 @@ def activate_skill_prompt(skill_name: str, user_intent: str) -> str:
 
 @mcp.prompt("tactile_frontend_audit")
 def tactile_frontend_audit_prompt(component_or_url: str) -> str:
-    """Gera prompt para auditoria tátil de frontend sob os padrões do FrontCraftMaster e Topologia 3+1."""
+    """Gera prompt para auditoria de composição frontend, sombras em camadas e efeito tátil sob o UI-Architect."""
     return (
-        f"Atue como FrontCraftMaster e audite a seguinte interface/código: {component_or_url}.\n"
+        f"Atue como UI-Architect e audite a seguinte interface/código: {component_or_url}.\n"
         "Coordene a Topologia 3+1 de Subagentes de UI (ui-shell-navigator, ui-controls-data, "
         "ui-motion-interaction, ui-deterministic-observer) via invoke_subagent (Modo Nativo Antigravity em 3 ondas) "
         "ou via franklin_get_agents(agent_name=\"ui\") / franklin_execute_dag(\"plans/ui_composition_dag.json\") "
-        "(Modo Motor DAG Assíncrono) e avalie contra o Design System Tátil Melki e Preferências de Estilo por Propósito (minimal-impact-ui):\n"
-        "1. Diagnóstico do propósito do projeto e seleção da atmosfera adequada (Cinza Monolítico #57545d + Menus #8e8999, Ad Lucem #F3F3F5, Ex Umbris IBM #070709 ou AETHER 2027).\n"
-        "2. Menus descompactados (padding nobre, min 240px em sidebar, CLS < 0.1) e botões ergonômicos (>= 44px, anti-squish shrink-0 whitespace-nowrap).\n"
-        "3. Isolamento de acento 98/2, tinta escura nítida em menus #8e8999 e botões Azul/Verde, zero texto vermelho embaçado no cinza/escuro (.highlight-surgical).\n"
-        "4. Camadas esculpidas (sombra tripla + 1px Rim Light em <SurfaceCard />, cavidades surface-inset e estados finitos FSM).\n"
+        "contra o contrato DESIGN.md do projeto e a SSOT (Preferências de Trabalho com Agentes.md).\n"
+        "Quando envolver qualidade de sombras ou efeito tátil, consulte franklin_skills_get(skill_name=\"frontend-ui-ux-auditor\", section=\"references\") "
+        "(tactile_elevation_and_shadows.md: elevation-tactile-system.css + tailwind.config.js) e avalie:\n"
+        "1. Diagnóstico do propósito do projeto e uso de tokens semânticos (--bg-canvas, --bg-surface, --ink-primary, --accent-primary) sem engessar cores fixas.\n"
+        "2. Elevação Óptica em Camadas (Oclusão de Contato 1-2px + Key Light direcional via --elevation-low/medium/high), Chanfro Especular Superior (--specular-rim: inset 0 1px 0 0) e resposta mecânica no :active (translateY(1px) scale(0.99) + --elevation-pressed).\n"
+        "3. Composição espacial intrínseca (Grid, Stack, Cluster, Split-View, escala Base-4/Base-8, CLS < 0.1) e botões ergonômicos (>= 44x44px).\n"
+        "4. Hierarquia visual em 3 níveis (Squint Test), equilíbrio de acento 90/8/2 (1 CTA primário sólido por vista), escala modular clamp() e tabular-nums.\n"
+        "5. Estados finitos executáveis (idle, loading, success, empty, error), zero emojis na UI, zero bloat Base64 e proteção contra XSS.\n"
         "Emita o Relatório Comparativo determinístico com marcadores [PASS], [FAIL] e notas explicativas.\n"
     )
 

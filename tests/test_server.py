@@ -37,15 +37,15 @@ def test_skills_list_all() -> None:
     expected_dirs = [d for d in server.SKILLS_ROOT.iterdir() if d.is_dir() and (d / "SKILL.md").exists()]
     assert isinstance(data, list)
     assert len(data) == len(expected_dirs)
-    assert len(data) >= 25
+    assert len(data) >= 24
 
 
 def test_skills_list_filters() -> None:
     """Valida os filtros por persona e status."""
-    frontcraft_res = server.franklin_skills_list(persona="FrontCraftMaster")
-    assert "design-md" in frontcraft_res
-    assert "frontend-code-architect" in frontcraft_res
-    assert "gdrive-auditoria-limpeza" not in frontcraft_res
+    ui_res = server.franklin_skills_list(persona="UI-Architect")
+    assert "design-md" in ui_res
+    assert "frontend-code-architect" in ui_res
+    assert "gdrive-auditoria-limpeza" not in ui_res
 
     drive_res = server.franklin_skills_list(persona="DriveMaster")
     assert "gdrive-auditoria-limpeza" in drive_res
@@ -91,7 +91,7 @@ def test_skills_validate_deterministic() -> None:
 def test_get_agents() -> None:
     """Valida a extração do catálogo de subagentes, Topologia Multi-Repo (5 Camadas) e Topologia 3+1 de UI."""
     res = server.franklin_get_agents()
-    assert "FrontCraftMaster" in res
+    assert "UI-Architect" in res
     assert "DriveMaster" in res
     assert "DocMaker" in res
     assert "LoopPlanner" in res
@@ -217,8 +217,8 @@ def test_prompts() -> None:
     assert "redator-tecnico-markdown" in p_act
 
     p_front = server.tactile_frontend_audit_prompt("https://meuapp.com")
-    assert "FrontCraftMaster" in p_front
-    assert "Design System Tátil Melki" in p_front
+    assert "UI-Architect" in p_front
+    assert "DESIGN.md" in p_front
 
 
 def test_franklin_execute_dag_file() -> None:
@@ -361,18 +361,21 @@ def test_franklin_mcp_build_advisor_2026_spec() -> None:
 
 
 def test_arquitetura_deterministic_scorer_v2() -> None:
-    """Valida o motor determinístico SGA (V1 vs V2) e o scanner AST/Regex da skill arquitetura-design-implementacao-sistema v2.0.0."""
+    """Valida o motor determinístico SGA + TIF (V1 vs V2) e o scanner AST/Regex da skill nav-x-func v4.0.0."""
     skill_dir = server._find_skill_dir("arquitetura")
-    assert skill_dir is not None and skill_dir.name == "arquitetura-design-implementacao-sistema"
+    assert skill_dir is not None and skill_dir.name == "nav-x-func"
+    assert server._find_skill_dir("nav-x-func") == skill_dir
+    assert server._find_skill_dir("arquitetura-design-implementacao-sistema") == skill_dir
 
-    res = server.franklin_run_skill_script("arquitetura", "deterministic_scorer.py", ["--self-test"])
+    res = server.franklin_run_skill_script("nav-x-func", "deterministic_scorer.py", ["--self-test"])
     assert "[Exit Code: 0]" in res
     assert '"sga_global_score": 100.0' in res
+    assert '"tif_verdict": "[PASS: SUFICIENCIA_COMPROVADA]"' in res
     assert '"delta": 85.33' in res
     assert '"status": "PASS"' in res
 
     scan_res = server.franklin_run_skill_script(
-        "arquitetura",
+        "nav-x-func",
         "deterministic_scorer.py",
         ["--scan", str(skill_dir / "templates")],
     )
@@ -414,12 +417,7 @@ def test_frontend_skills_and_ui_subagents_integration() -> None:
     import importlib.util
     import pytest
 
-    loader_path = (
-        server.SKILLS_ROOT
-        / "aprimoramento-expansibilidade-agentes-skills"
-        / "scripts"
-        / "agent_spec_loader.py"
-    )
+    loader_path = server.ROOT_DIR / "shared" / "agent_spec_loader.py"
     spec = importlib.util.spec_from_file_location("agent_spec_loader", loader_path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -548,7 +546,7 @@ def test_gemini_ecosystem_directories() -> None:
         summary = sync_ecosystem()
         assert summary["deduplicated_config_skills"] >= 1
         assert not dup_probe.exists()
-        assert (CONFIG_SKILLS_ROOT / "agent-browser" / "SKILL.md").exists()
+        assert (Path(r"C:\Users\melki\.agents\skills\agent-browser\SKILL.md")).exists()
     finally:
         if dup_probe.exists():
             import shutil
@@ -577,8 +575,130 @@ def test_docs_and_catalog_truth_parity() -> None:
 
     for skill_slug in expected_skills:
         assert skill_slug in my_skills_text, f"Skill '{skill_slug}' ausente em MY_SKILLS.md"
-        if skill_slug != "_template":
-            assert skill_slug in readme_text, f"Skill '{skill_slug}' ausente em README.md"
+        assert skill_slug in readme_text, f"Skill '{skill_slug}' ausente em README.md"
+
+
+def test_progressive_disclosure_three_tiers() -> None:
+    """Valida os 3 níveis de Divulgação Progressiva (<available_skills>, <skill_content> e <resource_content>)."""
+    # Nível 1: Catálogo enxuto XML
+    xml_catalog = server.franklin_skills_list(format="xml")
+    assert "<available_skills>" in xml_catalog
+    assert '<skill name="redator-tecnico-markdown"' in xml_catalog
+    assert "</available_skills>" in xml_catalog
+    assert server.get_catalog_xml_resource() == xml_catalog
+
+    # Nível 2: Ativação sem frontmatter YAML e com enumeração de recursos
+    activated = server.franklin_skills_get("redator-tecnico-markdown", section="activate")
+    assert '<skill_content name="redator-tecnico-markdown"' in activated
+    assert "<available_resources>" in activated
+    assert "<resource_file>rules/criterios_auditoria.md</resource_file>" in activated
+    assert not activated.splitlines()[1].startswith("---")
+
+    # Nível 3: Leitura de recurso sob demanda e bloqueio contra Path Traversal
+    resource_ok = server.franklin_skills_get(
+        "redator-tecnico-markdown",
+        section="resource:rules/criterios_auditoria.md",
+    )
+    assert '<resource_content skill="redator-tecnico-markdown" file="rules/criterios_auditoria.md">' in resource_ok
+    assert "[PASS]" in resource_ok
+
+    traversal_blocked = server.franklin_skills_get(
+        "redator-tecnico-markdown",
+        section="resource:../../server.py",
+    )
+    assert "Erro de segurança: Acesso negado" in traversal_blocked
+    assert "erro de segurança" in traversal_blocked.lower() or "BLOCKED" in traversal_blocked
+
+
+def test_modular_six_role_orchestrator_and_cross_project_execution(tmp_path: Path) -> None:
+    """Valida a Topologia em 6 Papéis (Intent, Planner, Worker, HITL Gate, Critic Loop, Reporter) e target_dir."""
+    from shared.harness import CheckpointStore
+    from shared.modular_orchestrator import AgentOrchestrator
+
+    chk_store = CheckpointStore(tmp_path / "orchestrator_hitl.json")
+    attempts_counter = {"count": 0}
+
+    def _flaky_dispatcher(params: dict[str, object]) -> dict[str, object]:
+        attempts_counter["count"] += 1
+        if attempts_counter["count"] == 1:
+            return {}
+        return {
+            "records_analyzed": 10,
+            "target_dir": params.get("target_dir", ""),
+            "output": "[PASS] Auditoria concluída no projeto externo.",
+        }
+
+    orchestrator = AgentOrchestrator(checkpoint_store=chk_store, tool_dispatcher=_flaky_dispatcher, max_retries=3)
+
+    # 1. Fluxo RESEARCH com auto-recuperação no Critic Loop (falha na 1ª tentativa, aprova na 2ª)
+    res_research = json.loads(
+        orchestrator.execute_turn_sync(
+            "Analisar e auditar arquitetura do repositório",
+            skill_name="auditoria-projetos-sistema",
+            persona="Franklin-Main",
+            target_dir=str(tmp_path),
+        )
+    )
+    assert res_research["status"] == "APPROVED"
+    assert res_research["intentCategory"] == "RESEARCH"
+    assert res_research["qualityScore"] >= 0.9
+    assert attempts_counter["count"] == 2
+
+    # 2. Fluxo MUTATION interceptado pelo Gate HITL (#4)
+    res_mutation = json.loads(
+        orchestrator.execute_turn_sync(
+            "Deletar e excluir pastas temporárias do banco",
+            skill_name="manutencao-disco-windows",
+            session_id="sess-hitl-6roles",
+        )
+    )
+    assert res_mutation["status"] == "APPROVAL_REQUIRED"
+    assert res_mutation["intentCategory"] == "MUTATION"
+    assert len(chk_store.list(session_id="sess-hitl-6roles")) == 1
+
+    # 3. Execução cross-project de script com target_dir explícito
+    script_out = server.franklin_run_skill_script(
+        skill_name="code-auditor",
+        script_name="code_acceptability_auditor.py",
+        args=["--self-test"],
+        target_dir=str(tmp_path),
+    )
+    assert "[Exit Code: 0]" in script_out
+    assert "[PASS]" in script_out
+
+    invalid_dir_out = server.franklin_run_skill_script(
+        skill_name="code-auditor",
+        script_name="code_acceptability_auditor.py",
+        args=["--self-test"],
+        target_dir=str(tmp_path / "pasta_inexistente_xyz"),
+    )
+    assert "Diretório de destino (target_dir)" in invalid_dir_out
+
+
+def test_cognitive_planner_and_dag_chain_validator_scripts() -> None:
+    """Valida a integração do motor intent-cognitive-planner e do compilador Kahn de ondas DAG."""
+    contract = server.franklin_skills_get("intent-cognitive-planner", section="contract")
+    assert "high-level-context-planner" in contract
+    assert "Parede de Complexidade" in contract
+
+    cog_out = server.franklin_run_skill_script(
+        skill_name="high-level-context-planner",
+        script_name="cognitive_plan_builder.py",
+        args=["--self-test"],
+    )
+    assert "[Exit Code: 0]" in cog_out
+    assert '"max_rules_per_node_enforced": 5' in cog_out
+
+    dag_out = server.franklin_run_skill_script(
+        skill_name="skill-orquestrador-planos-encadeados",
+        script_name="dag_chain_validator.py",
+        args=["--self-test"],
+    )
+    assert "[Exit Code: 0]" in dag_out
+    assert '"kahn_waves_verified": true' in dag_out
+    assert '"collision_detection_verified": true' in dag_out
+
+
 
 
 

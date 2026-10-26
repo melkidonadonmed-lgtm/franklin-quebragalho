@@ -1,123 +1,139 @@
 ---
 name: skill-orquestrador-planos-encadeados
 description: >-
-  Orquestrador executivo de planos encadeados e modulares (DAG). Recebe planos em fases numeradas, mapeia dependências entre skills especialistas, isola o estado compartilhado, valida o estilo visual pelo propósito do projeto e executa ondas sequenciais com checagem de discrepâncias.
-license: MIT
+  Orquestrador executivo de planos encadeados e compilador de grafos DAG (Kahn). Use para compilar planos em ondas sequenciais e paralelas, validar colisões de arquivos [P], isolar estado compartilhado em Context Fork (L2/L3 sem context rot), rotear fallbacks não-lineares e aplicar portões HITL; não use para perguntas simples de turno único.
 metadata:
-  version: "2.0.0"
+  version: "3.0.0"
   author: "LoopPlanner & Melki"
-  category: "Orquestração, Workflows e Execução Multiagente"
-  updated_at: "2026-10-19"
+  category: "Orquestração DAG, Compilação de Ondas, Context Fork & Transição de Estado"
+  updated_at: "2026-10-26"
   tags:
     - "orquestrador"
     - "planos-encadeados"
-    - "workflow"
-    - "estilo-por-proposito"
+    - "dag"
+    - "kahn"
+    - "context-fork"
     - "multiagente"
-version: 2.0.0
-updated_at: 2026-10-19
+version: 3.0.0
+updated_at: 2026-10-26
 author: LoopPlanner & Melki
-category: Orquestração, Workflows e Execução Multiagente
+category: Orquestração DAG, Compilação de Ondas, Context Fork & Transição de Estado
 ---
 
-# SKILL: Orquestração e Execução de Planos Encadeados (`skill-orquestrador-planos-encadeados` v2.0.0)
+# SKILL: Compilador e Orquestrador Executivo de Planos Encadeados e Grafos DAG (`skill-orquestrador-planos-encadeados` v3.0.0)
 
-## 1. Nome da Skill
-`skill-orquestrador-planos-encadeados` (Orquestrador e Coordenador Executivo de Planos Modulares Encadeados com Portão de Estilo por Propósito).
+## 1. Objetivo, Papel na Arquitetura e Quando Usar (Gatilhos)
 
----
+Enquanto o `high-level-context-planner` (`intent-cognitive-planner`) diagnostica a intenção e projeta o grafo cognitivo não-linear, esta skill atua como o **Motor Executivo de Compilação Topológica (Kahn), Isolamento de Contexto (*Context Fork*) e Roteamento de Estado** entre skills e subagentes.
 
-## 2. Descrição
-Esta skill atua como o motor de orquestração e roteamento executivo para planos de trabalho decompostos em etapas, módulos e cadeias de dependência. Sua responsabilidade central é receber planos estruturados, verificar os pré-requisitos de cada fase, manter a memória de trabalho enxuta (isolando payloads intermediários para mitigar *context rot*) e acionar cada skill especialista no momento exato em que seus insumos estiverem validados. Adicionalmente, quando o plano envolve entregas visuais/frontend, aplica a governança de **Preferências de Estilo e Arquitetura Visual por Propósito** ([`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md)), garantindo que o tema se encaixe no objetivo do projeto sem impor paletas fixas repetitivas.
-
----
-
-## 3. Gatilhos de Ativação
+Sua função real e determinística é:
+1. **Compilar Planos em Ondas Paralelas (`Wave 1..Wave N` via Algoritmo de Kahn):** Detectar ciclos de dependência e agrupar etapas independentes que podem rodar simultaneamente via `invoke_subagent` ou `franklin_execute_dag`.
+2. **Prevenir Colisões de Escrita em Paralelo (`[P]` Anti-Collision Gate):** Impedir que dois subagentes ou tasks na mesma onda editem o mesmo arquivo (`target_files`) simultaneamente.
+3. **Blindar a Memória de Trabalho (*Context Fork* & Teto $\le 5$ Regras):** Montar envelopes enxutos (`ContextTransitionPayload`) injetando apenas os dados necessários para o nó ativo e até 5 regras operacionais (Camadas L2/L3), eliminando o *context rot* do histórico bruto.
+4. **Executar Transições Não-Lineares (`ramo_fallback`), Verificação *Read-After-Write* e Portões HITL.**
 
 ### Quando Usar
-- Quando o usuário ou uma skill de nível superior fornecer um plano de ação estruturado em etapas (ex.: Fase 0, Fase 1, Fase 2...).
-- Em solicitações de execução que envolvem mais de duas ferramentas ou skills trabalhando em conjunto de forma sequencial ou ramificada.
-- Quando for necessário coordenar a transição entre planejamento, arquitetura, código e auditoria mantendo o estado isolado e validado.
+- Para compilar e executar um plano emitido pelo `high-level-context-planner` (`grafo_execucao` ou `phases`) ou um arquivo `plans/*.json` (`DAGExecutionPlan`).
+- Quando uma demanda aciona 2 ou mais skills/subagentes encadeados (ex.: Auditoria AST $\rightarrow$ Testes $\rightarrow$ RCA $\rightarrow$ Convergência, ou Topologia `3+1` de UI) exigindo isolamento de chaves de estado (`isolated_state_keys`).
+- Para validar deterministicamente via `scripts/dag_chain_validator.py` se um plano possui ciclos, colisões de escrita ou excesso de contexto antes do disparo.
 
-### Quando NÃO Usar
-- Para tarefas simples de comando único ou script isolado que não demandam transição de fases.
-- Para auditar ou refatorar o catálogo de habilidades (utilize `skill-auditor-refatorador-skills`).
-- Para executar ações de alto risco destrutivo sem aprovação do usuário (Human-in-the-Loop).
-
----
-
-## 4. Entradas Esperadas
-- `structured_plan` (obrigatório): O plano de trabalho estruturado contendo título, objetivo final e fases numeradas com: Objetivo específico, Skill/Agente responsável, Insumos necessários (`inputs`), Entregáveis esperados (`outputs`) e Regras de aceite.
-- `context_state` (opcional): Variáveis de contexto iniciais e restrições de negócio fornecidas pelo usuário.
-- `execution_policy` (opcional): `autonomous` (padrão) ou `step_by_step`.
-- `design_preferences_gate` (opcional): Habilitação do portão de validação visual por propósito para fases geradoras de UI/relatórios (`true` por padrão).
+### Quando NÃO Usar (Limites e Exclusões)
+- Para tarefas simples de turno único ou script isolado que não exigem encadeamento entre skills.
+- Para conceber o planejamento inicial ou selecionar frameworks cognitivos a partir de uma ideia crua (utilize primeiro `high-level-context-planner`).
+- Para executar mutações destrutivas sem passar pelo portão de aprovação humana (`BLOCKED_HITL` / `franklin_harness_checkpoint`).
 
 ---
 
-## 5. Governança de Estilo por Propósito e Arquitetura Visual nos Planos Encadeados
+## 2. Entradas e Parâmetros Esperados
 
-Em todas as fases que gerem interfaces, dashboards ou relatórios HTML/PDF, o orquestrador verifica os 4 módulos de qualidade visual (consulte [`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md)):
-
-### 5.1. Módulo de Tema e Atmosfera pelo Propósito do Projeto (Sem Paleta Fixa)
-- **Propagação Semântica Contextual:** O orquestrador propaga no payload de transição (`references/schema_transicao_contexto.json`) o propósito do projeto (*Conversão/SaaS*, *Editorial*, *FinTech*, *IA Nativa/AETHER*, *MedTech* ou *DevTools/Terminal IBM*) e a atmosfera selecionada:
-  * *Ad Lucem* (Claro Editorial/Técnico: `--bg-canvas: #F3F3F5` / `#F6F6F4`, `--bg-surface: #FFFFFF`, `--bg-contrast-card: #18181C`).
-  * *Cinza Monolítico* (`--bg-canvas: #57545d`, `--bg-surface: #49464f`, menus `#8e8999` com tinta escura `--nav-ink: #16151A`).
-  * *Preto Terminal IBM (`Ex Umbris`)* (`--bg-canvas: #070709`, `--bg-surface: #101014`, acoplado à tipografia `IBM Plex Sans` + `IBM Plex Mono`).
-  * *AETHER 2027* (Espaço perceptual `oklch()` e contraste APCA).
-- **Isolamento de Acento (98/2 ou 60-30-10):** A cor de acento (`--punctual-accent`) é escolhida conforme o propósito do projeto e restrita a 1 único CTA primário sólido por dobra (contra ações secundárias `.btn-ghost`).
-
-### 5.2. Módulo de Contraste, Espaçamento, Tipografia e Camadas Esculpidas
-- **Qualidade Visual dos Entregáveis da Cadeia:**
-  * Respeitar separação de luminância no dark mode ($L_{\text{card}} > L_{\text{canvas}}$) e tinta escura nítida em menus claros/`#8e8999`.
-  * Conter sombra esculpida em 3 camadas (`--shadow-sculpted`: Umbra + Penumbra + Difusão) + `1px` Rim Light (`inset 0 1px 0 0 var(--rim-light)`).
-  * Preservar $\ge 25\%$ de respiro no canvas, raios concêntricos, escala fluida `clamp()`, `tabular-nums` em métricas e proteção anti-squish (`flex-shrink: 0; white-space: nowrap;`, alvos $\ge 44\times44\text{px}$).
-
-### 5.3. Módulo de Decisão Arquitetural
-- Em bifurcações visuais ou arquiteturais ambíguas, o orquestrador pode acionar `ask_question` apresentando a recomendação alinhada ao propósito do projeto.
-- Prioriza componentes modulares em **5 camadas de Design Atômico** (`frontend-code-architect` v5.0).
-
-### 5.4. Módulo de Portão de Qualidade e Matriz de Discrepâncias
-- Na conclusão de cada fase visual/arquitetural, valida:
-  * `[DISC-PROPOSITO]` `[PASS / FAIL]`: Tema e acento coerentes com o objetivo do projeto e isolamento de 1 CTA primário.
-  * `[DISC-CAMADAS]` `[PASS / FAIL]`: Sombra esculpida 3 estágios + `1px` Rim Light, contraste WCAG AA/AAA e espaçamento concêntrico.
-  * `[DISC-RESILIENCIA]` `[PASS / FAIL]`: Tipografia `tabular-nums`, botões com anti-squish e estados FSM (`idle | loading | error | pressed`).
-  * `[DISC-SUPPLY]` `[PASS / FAIL]`: Stack modular alinhada com as preferências do projeto.
+- **`structured_plan` / `grafo_execucao`** (obrigatório): Plano em formato `CognitiveAdaptivePlan` (`grafo_execucao`), `DAGExecutionPlan` (`tasks`) ou fases numeradas (`phases`).
+- **`execution_mode`** (opcional): `native_subagents` (`invoke_subagent` em ondas), `epic_volta_dag` (`franklin_execute_dag`) ou `step_by_step`.
+- **`max_retries`** (opcional): Limite de tentativas de auto-correção por nó antes de desviar para `ramo_fallback` ou acionar `gap-analyzer-auditor` (padrão: `1`).
 
 ---
 
-## 6. Processamento Passo a Passo
+## 3. Processamento e Arquitetura de Execução em 5 Estágios
 
-### Passo 1: Fase 0 — Validação Estrutural do Plano e Catálogo
-1. Analisar o plano recebido e verificar se há ambiguidade crítica, referência a skills inexistentes ou loops circulares de dependência (DAG).
-2. Consultar os critérios em [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md).
+```mermaid
+flowchart TD
+    A["Entrada: Grafo de Execução (JSON) ou Plano Multifásico"] --> B["Estágio 1: Compilação Topológica de Kahn<br>(scripts/dag_chain_validator.py)"]
+    B -->|Ciclo ou Colisão de Arquivo| B1["[FAIL] Bloqueio Imediato na Fase 0"]
+    B -->|Grafo Válido| C["Estágio 2: Agrupamento em Ondas Paralelas<br>(Wave 0 -> Wave 1 [Fan-Out] -> Wave 2 [Fan-In])"]
+    C --> D["Estágio 3: Montagem do Envelope Context Fork<br>(<= 5 regras ativas, zero histórico bruto, isolated_state_key)"]
+    D --> E{"Estágio 4: Despacho e Avaliação do Nó"}
+    E -->|Go (Critério Aprovado)| F["Estágio 5: Verificação Read-After-Write<br>& Avanço para a Próxima Onda"]
+    E -->|No-Go Recuperável| G["Acionar ramo_fallback Não-Linear<br>ou 1 Ciclo Self-Refine"]
+    E -->|Risco Destrutivo| H["[BLOCKED_HITL] Suspender no Harness<br>(franklin_harness_checkpoint)"]
+```
 
-### Passo 2: Isolamento de Contexto e Montagem do Payload de Transição
-1. Extrair exclusivamente os dados necessários para a etapa ativa (evitando *context rot*).
-2. Envelopar os dados sob o formato de `references/schema_transicao_contexto.json`:
-   ```json
-   {
-     "phase_id": "fase_1",
-     "target_skill": "skill-nome",
-     "input_payload": {},
-     "context_constraints": ["purpose_driven_theme", "sculpted_layers_rim_light", "wcag_contrast_tabular_nums"]
-   }
-   ```
+### Estágio 1: Validação Topológica (Kahn) e Detecção de Colisão de Escrita
+1. Antes de iniciar qualquer execução, valide o grafo usando `scripts/dag_chain_validator.py`:
+   - **Detecção de Ciclos (DAG):** Calcula o grau de entrada (`in_degree`) de cada nó. Se `visited_nodes < total_nodes`, aborta com `[FAIL: CYCLE_DETECTED]`.
+   - **Guarda Anti-Colisão de Arquivos (`target_files`):** Verifica se dois nós alocados na mesma onda paralela (`Wave K`) declaram interseção em `target_files`. Se houver colisão, serializa os nós em ondas distintas ou bloqueia com `[FAIL: PARALLEL_FILE_COLLISION]`.
+   - **Validação de Catálogo:** Confirma que todas as `responsible_skill` / `target_skill` existem no catálogo do workspace.
 
-### Passo 3: Execução Condicional, Despacho DAG e Invocação de Sub-Skills
-1. Se o plano estiver no formato `DAGExecutionPlan`, acione `franklin_execute_dag(plan_path_or_json)` para execução paralela em ondas via Kahn.
-2. Despache sub-tarefas para skills autorizadas (`authorized_sub_skills`) e valide o retorno antes de avançar.
+### Estágio 2: Isolamento de Contexto (*Context Fork*) e Envelope de Transição
+Para evitar degradação de atenção (*context rot*) e respeitar a Parede de Complexidade ($\le 5$ regras por nó), o orquestrador **nunca repassa o histórico bruto da conversa** para os subagentes. Ele instancia o contrato `references/schema_transicao_contexto.json`:
+```json
+{
+  "phase_id": "step_01_exploracao_react",
+  "wave_index": 1,
+  "sequence_index": 1,
+  "target_skill": "auditoria-projetos-sistema",
+  "cognitive_pattern": "ReAct",
+  "isolated_state_key": "wave1_audit_result",
+  "input_payload": {
+    "target_dir": "c:/Users/melki/dev/repos/franklin-quebragalho"
+  },
+  "active_rules": [
+    "Intercalar Thought -> Tool Call -> Observation",
+    "Isolar estado sem histórico bruto",
+    "Capturar evidências verificáveis ([FATO] vs [LACUNA])"
+  ],
+  "expected_outputs": ["relatorio_evidencias_json"],
+  "acceptance_criteria": ["[PASS] Evidências coletadas sem overflow"],
+  "fallback_branch": "step_01_alternative_source",
+  "status": "IN_PROGRESS"
+}
+```
 
-### Passo 4: Verificação de Critérios de Aceite (Quality Gate)
-- `FASE_CONCLUIDA`: Avança para a próxima fase numerada.
-- `FALHA_RECUPERAVEL`: Dispara 1 ciclo de auto-correção enviando o feedback de discrepância.
-- `BLOQUEIO_CRITICO`: Suspende a execução e solicita alinhamento (HITL).
+### Estágio 3: Despacho Paralelo (*Fan-Out*) e Consolidação (*Fan-In*)
+- **Modo Subagentes Nativos (`invoke_subagent`)**: Dispara todos os nós da mesma onda (`Wave K`) em paralelo, gravando o retorno de cada subagente em sua respectiva chave isolada (`isolated_state_key`) para impedir sobrescrita concorrente.
+- **Modo Motor DAG (`franklin_execute_dag`)**: Despacha o plano JSON para o motor assíncrono do `epic-volta` com controle de `run_id`, `--resume` e `idempotency_key`.
 
-### Passo 5: Consolidação do Produto Final Integrado
-Reunir os entregáveis gerados em cada fase em um documento executivo acompanhado do painel de rastreabilidade.
+### Estágio 4: Roteamento Não-Linear (`fallback_branch`), Retry e Portão HITL
+- **`COMPLETED` (Condição Go atendida)**: O entregável passa na verificação *Read-After-Write* e libera os nós dependentes na onda seguinte.
+- **`RETRYING` / `FALLBACK_ROUTED` (Falha Recuperável)**: Se o entregável violar o critério de aceite, o orquestrador executa até `max_retries = 1` enviando a discrepância exata ou desvia o fluxo para o nó declarado em `fallback_branch` (`ramo_fallback`).
+- **`BLOCKED_HITL` (Mutação Crítica)**: Se o nó for do tipo `hitl_gate` ou envolver ação destrutiva, aciona `franklin_harness_guard` / `franklin_harness_checkpoint` e aguarda aprovação humana explícita.
+- **`FAILED` (Falha Irrecuperável)**: Emite os logs de execução para o `gap-analyzer-auditor` realizar RCA e convergência *Append-Only*.
 
 ---
 
-## 7. Saídas Estruturadas
-1. **Painel de Rastreabilidade do Fluxo:** Fase | Skill Acionada | Insumos | Status de Execução.
-2. **Matriz Consolidada de Conformidade:** Status `[PASS]`, `[FAIL]`, `[UNVERIFIED]`.
-3. **Entregável Integrado e Registro de Transições.**
+## 4. Automação Determinística (`scripts/dag_chain_validator.py`)
+
+Utilize o script determinístico da skill para validar grafos, compilar ondas paralelas de Kahn, checar colisões de escrita e gerar os envelopes de transição:
+
+```powershell
+# Auto-teste determinístico (Kahn, detecção de ciclo, colisão de arquivos [P] e teto <= 5 regras)
+uv run python skills/skill-orquestrador-planos-encadeados/scripts/dag_chain_validator.py --self-test
+
+# Compilar um plano JSON (do high-level-context-planner ou plans/*.json) em Ondas Paralelas
+uv run python skills/skill-orquestrador-planos-encadeados/scripts/dag_chain_validator.py --plan plans/distributed_agent_mediation_dag.json
+```
+
+---
+
+## 5. Saídas e Entregáveis Estruturados
+
+Toda execução ou compilação emitida por esta skill entrega:
+1. **Mapa de Ondas Topológicas (Kahn Waves)**: Lista ordenada de ondas (`Wave 0`, `Wave 1`...) mostrando quais nós rodam em paralelo e quais chaves `isolated_state_key` recebem cada saída.
+2. **Painel de Rastreabilidade e Transição de Estado**: `Onda | Nó / Fase | Skill / Subagente | Padrão Cognitivo | Regras Ativas (<=5) | Status ([PASS]/[FAIL]/BLOCKED_HITL)`.
+3. **Veredito *Read-After-Write* Consolidado (`post_condition_verified: true/false`)**.
+
+---
+
+## 6. Exceções, Limites e Restrições Negativas (Guardrails)
+
+- ❌ **Proibição de Injetar Histórico Bruto (*Context Rot*)**: Nenhum envelope `ContextTransitionPayload` pode repassar a transcrição inteira da sessão; envie apenas `input_payload` + `active_rules` ($\le 5$).
+- ❌ **Proibição de Executar Grafo com Ciclo ou Colisão de Arquivo**: Se `dag_chain_validator.py` acusar ciclo (`CYCLE_DETECTED`) ou disputa de escrita no mesmo arquivo na mesma onda (`PARALLEL_FILE_COLLISION`), o disparo é bloqueado na Fase 0.
+- ❌ **Proibição de Bypassar o Portão HITL**: Nós com `hitl_gate` ou risco crítico nunca podem avançar automaticamente sem `approval_token` válido.

@@ -154,6 +154,44 @@ def _execute_recursion_step(
     return chosen_tree
 
 
+def _build_default_proposer(
+    surface: SurfaceSpec, trees: Dict[str, Tree]
+) -> Callable[[str, str, Tree], Tuple[Tree, str]]:
+    """Constrói o propositor determinístico padrão (INV, DOM, AGG/COMPOSE) sobre a superfície."""
+
+    def _propose(label: str, dim: str, current: Tree) -> Tuple[Tree, str]:
+        cand = dict(current)
+        a_file = surface.always_on[0]
+        base_text = cand.get(a_file, "").rstrip()
+        skills = skill_names(surface, cand)
+        scripts = sorted(rel for rel in cand if rel.startswith("scripts/") or "/scripts/" in rel)
+        if dim == "INV":
+            inv_line = f"- [INV:{label}] Enforce AUDIT-VIS-01 (zero emojis, tabular-nums) and AST <= 60 lines."
+            if inv_line not in base_text:
+                base_text = f"{base_text}\n{inv_line}"
+            note_msg = f"Synthesized deterministic invariant guard ({label})"
+        elif dim == "DOM":
+            dom_summary = f"skills={','.join(skills) or 'core'} scripts={len(scripts)}"
+            dom_line = f"- [DOM:{label}] Domain surface verified ({dom_summary})."
+            if dom_line not in base_text:
+                base_text = f"{base_text}\n{dom_line}"
+            note_msg = f"Synthesized domain surface verification ({dom_summary}) in {label}"
+        else:
+            idx_suffix = re.sub(r"^[a-z]+", "", label) or "1"
+            dom_tree = trees.get(f"dom{idx_suffix}", {})
+            for dom_ln in dom_tree.get(a_file, "").splitlines():
+                if dom_ln.startswith("- [DOM:") and dom_ln not in base_text:
+                    base_text = f"{base_text}\n{dom_ln}"
+            comp_line = f"- [{dim}:{label}] Contrastive composition of INV+DOM invariants verified."
+            if comp_line not in base_text:
+                base_text = f"{base_text}\n{comp_line}"
+            note_msg = f"Composed contrastive INV+DOM invariants in {label}"
+        cand[a_file] = base_text + "\n"
+        return cand, note_msg
+
+    return _propose
+
+
 def simulate_propose_probe_compose(
     task_id: str,
     base_tree: Tree,
@@ -171,14 +209,8 @@ def simulate_propose_probe_compose(
     for i in range(1, k + 1):
         ledger.rollout(f"base{i}")
 
-    def _default_proposer(label: str, dim: str, current: Tree) -> Tuple[Tree, str]:
-        cand = dict(current)
-        a_file = surface.always_on[0]
-        cand[a_file] = cand.get(a_file, "").rstrip() + f"\n<!-- [{dim}:{label}] verified invariant -->\n"
-        return cand, f"Applied {dim} refinement in {label}"
-
-    prop = proposer_fn or _default_proposer
     trees: Dict[str, Tree] = {}
+    prop = proposer_fn or _build_default_proposer(surface, trees)
     stages: List[Dict[str, Any]] = []
     finals: List[str] = []
 

@@ -16,6 +16,8 @@ tools:
   - find_by_name
   - list_dir
   - run_command
+  - gemini_search_docs
+  - gemini_get_doc
 ---
 
 # Agente Especialista: `vault-memory-retriever` (Recuperação Híbrida Obsidian Vault + MemPalace)

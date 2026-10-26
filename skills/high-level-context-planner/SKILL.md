@@ -1,212 +1,198 @@
 ---
 name: high-level-context-planner
 description: >-
-  Arquiteto estratégico e planejador de contexto de alto nível em malha fechada (Closed-Loop Reflection & Spec-Driven Development). Decompõe metas em fases numeradas com Fase 0, tasks paralelizáveis ([ID] [P?] [US#] path), tabela Complexity Tracking e convergência append-only (Plano v2.0).
-license: MIT
+  Planejador cognitivo não-linear e arquiteto de contexto em malha fechada (intent-cognitive-planner). Use para diagnosticar intenção (Direta, Estruturada, Ambígua, HITL), selecionar frameworks (CLAREZA, CREATE, CoT, ReAct, ToT, Self-Refine), blindar a Parede de Complexidade (<=5 regras/nó) e decompor metas em Fase 0, tasks [ID] [P?] [US#] e Complexity Tracking; não use para tarefas triviais de comando único.
 metadata:
-  version: "2.1.0"
+  version: "3.0.0"
   author: "LoopPlanner & Melki"
-  category: "Planejamento Estratégico, Orquestração Multiagente e Workflows"
-  updated_at: "2026-10-19"
-  tags:
-    - "planejamento"
-    - "fase-zero"
-    - "closed-loop"
-    - "replanning"
-    - "spec-kit"
-version: 2.1.0
-updated_at: 2026-10-19
+  category: "Análise de Intenção, Planejamento Cognitivo Não-Linear & Engenharia de Contexto"
+  updated_at: "2026-10-26"
+  aliases:
+    - "intent-cognitive-planner"
+    - "cognitive-planner"
+  frameworks: "CLAREZA, CREATE, RTF, TAG, TASS, CoT, ReAct, ToT, Self-Refine"
+  resilience: "Anti-Prompt-Complexity-Wall (<=5 rules/node), HITL Approval Gates, Spec-Kit Append-Only"
+version: 3.0.0
+updated_at: 2026-10-26
 author: LoopPlanner & Melki
-category: Planejamento Estratégico, Orquestração Multiagente e Workflows
+category: Análise de Intenção, Planejamento Cognitivo Não-Linear & Engenharia de Contexto
 ---
 
-# SKILL: Planejador Estratégico de Contexto de Alto Nível (`high-level-context-planner` v2.1.0)
+# SKILL: Motor Cognitivo de Intenção, Frameworks e Planejamento Não-Linear (`high-level-context-planner` / `intent-cognitive-planner` v3.0.0)
 
-## 1. Identificação e Metadados
-- **Nome Oficial**: `high-level-context-planner`
-- **Identificador de Ativo**: `SKILL_HIGH_LEVEL_CONTEXT_PLANNER_V2_1`
-- **Versão de Referência**: `2.1.0`
-- **Compatibilidade Normativa**: Multi-LLM (Gemini 2.5+, Claude 3.5+, GPT-4o+, Google ADK, LangGraph, MCP Spec 2026-07-28, GitHub Spec Kit SDD).
-- **Papel na Arquitetura**: Nó Planejador Estratégico em malha fechada (*Strategic Planner, Spec-Driven Coordinator & State Graph Architect*).
+## 1. Objetivo, Missão Arquitetural e Quando Usar (Gatilhos)
 
----
-
-## 2. Propósito e Missão (Quando Usar)
+Esta Skill atua como o **motor cognitivo de diagnóstico de intenção, seleção de frameworks, blindagem contra a Parede de Complexidade e planejamento adaptativo em grafo (DAG)**. Ela unifica o planejamento estratégico Spec-Driven (`Fase 0`, tasks paralelizáveis `[ID] [P?] [US#]` e Convergência *Append-Only*) com o motor **`intent-cognitive-planner`**, erradicando dois problemas críticos de agentes tradicionais:
+1. **O Planejamento Linear Rígido ($A \rightarrow B \rightarrow C \rightarrow D$):** A suposição ingênua de que tarefas complexas seguem uma linha reta sem observação empírica de ferramentas externas (`ReAct`), sem exploração de hipóteses concorrentes (`Tree of Thoughts`) e sem crítica reflexiva pré-entrega (`Self-Refine`).
+2. **A Parede de Complexidade de Prompts (*Prompt Complexity Wall*):** A degradação exponencial da acurácia do LLM quando um prompt ou nó de execução acumula mais de 5 a 10 regras simultâneas (fazendo a aderência colapsar para $< 15\%$).
 
 ### Quando Usar
-Esta skill **DEVE** ser acionada nas seguintes circunstâncias:
-- Diante de solicitações complexas, épicos de desenvolvimento, migrações de sistemas ou demandas multifásicas que exigem decomposição arquitetural.
-- Para gerar planos de trabalho executivos com fases numeradas, atribuição de agentes/skills, insumos, entregáveis e critérios de aceite Go/No-Go.
-- Quando o `gap-analyzer-auditor` emitir um relatório de anomalia acompanhado de `Hand-off Payload (YAML)`, demandando a geração de um **Plano de Ação Corretivo Revisado (Plano v2.0)**.
-- Para estruturar fluxos visuais em diagramas Mermaid claros (`flowchart TD`/`LR`), prevenindo dependências circulares e gargalos de contexto.
-- Em pipelines orquestrados por `skill-orquestrador-planos-encadeados`, servindo como o motor formal de planejamento inicial e de contingência.
+- Diante de solicitações complexas, épicos de engenharia, refatorações multifásicas ou ideias exploratórias que exigem triagem de intenção e decomposição em grafo não-linear.
+- Para selecionar e combinar frameworks estruturais (`CLAREZA`, `CREATE`, `RTF`, `TAG`, `TASS`) com padrões cognitivos não-lineares (`CoT`, `ReAct`, `ToT`, `Self-Refine`).
+- Para auditar e subdividir planos que violem o teto de **$\le 5$ regras ativas por nó** via `scripts/cognitive_plan_builder.py`.
+- Quando o `gap-analyzer-auditor` emitir um `Hand-off Payload (YAML)`, exigindo um **Plano de Convergência *Append-Only* (v2.0+)** sem reescrever o histórico.
 
-### Quando NÃO Usar
-- Para tarefas simples de comando único ou scripts utilitários descartáveis sem transição de fases.
-- Para executar ações diretas de mutação no disco, compilação ou chamadas destrutivas (a execução cabe aos executores ou subagentes operários).
-- Para realizar auditoria e RCA isolado de falhas em tempo de execução (utilize `gap-analyzer-auditor`).
-- Para tarefas que violem as políticas de menor privilégio ou exijam credenciais de infraestrutura não concedidas.
+### Quando NÃO Usar (Limites e Exclusões)
+- Para tarefas triviais de comando único (`Categoria 1: Direta`), nas quais o próprio diagnóstico determina entrega imediata sem burocracia de fases.
+- Para executar mutações destrutivas diretamente no disco ou banco de dados sem passar por worker/subagente e portão HITL.
+- Para realizar RCA forense de logs e stack traces brutos antes de diagnosticar a falha (utilize primeiro `gap-analyzer-auditor`).
 
 ---
 
-## 3. Entradas Obrigatórias e Parâmetros
+## 2. Entradas e Parâmetros Esperados
 
-1. **`strategic_goal`** (obrigatório): O objetivo final, briefing de projeto, requisitos funcionais ou demanda bruta do usuário.
-2. **`handoff_payload`** (condicional): O bloco YAML estruturado emitido pelo `gap-analyzer-auditor` contendo `incident_id`, `recommended_option`, `required_adjustments` e `contingency_trigger` (obrigatório em ciclos de replanejamento).
-3. **`available_skills_catalog`** (opcional): Catálogo de skills disponíveis no workspace para mapeamento de responsáveis.
-4. **`operational_constraints`** (opcional): Prazos, orçamento de tokens, restrições de rede ou premissas técnicas específicas.
-
----
-
-## 4. Diretrizes de Estilo por Propósito e Arquitetura Visual (`preferencias_estilo_e_temas.md`)
-
-Sempre que o planejamento envolver entregas de interfaces, arquiteturas frontend, painéis de controle ou relatórios visuais, a skill aplica as preferências de estilo guiadas pelo **propósito do projeto** (consulte [`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md)):
-
-### Módulo 1: Seleção da Atmosfera pelo Propósito (Sem Paleta Fixa)
-- **Ad Lucem (Claro Editorial/Técnico)**: Canvas (`#F3F3F5` / `#F6F6F4`), Card (`#FFFFFF`), Elevado (`#E6E6EA`) e Bloco de Contraste Alternado (`#18181C`).
-- **Cinza sobre Cinza Monolítico**: Canvas (`#57545d`), Card (`#49464f`), Elevado (`#635f6a`) e Menus em pílula `#8e8999` com tinta escura nítida (`#16151A`).
-- **Preto Terminal IBM (`Ex Umbris`)**: Canvas (`#070709`), Card (`#101014`), Elevado (`#18181E`), acoplado à tipografia **`IBM Plex Sans` + `IBM Plex Mono`**.
-- **Acento Pontual de Intenção (98/2 ou 60-30-10)**: Escolhido conforme o objetivo do sistema e isolado em **1 único CTA primário sólido** por dobra vs. `.btn-ghost`.
-
-### Módulo 2: Contraste, Espaçamento, Tipografia e Camadas Esculpidas
-- **Profundidade e Luz de Borda**: No dark mode, $L_{\text{card}} > L_{\text{canvas}}$. Elevação com sombra esculpida em 3 camadas (`--shadow-sculpted`) + `1px` Rim Light superior (`inset 0 1px 0 0 var(--rim-light)`).
-- **Espaçamento, Tipografia & Anti-Squish**: Respiro $\ge 25\%$ do canvas, escala `clamp()`, `tabular-nums` em métricas e alvos $\ge 44\times44\text{px}$ (`flex-shrink: 0; white-space: nowrap;`).
-
-### Módulo 3: Mapeamento de Opções das Preferências do Desenvolvedor
-- **Prioridade para Design Atômico em 5 Camadas**: Todo plano envolvendo UI prioriza componentes modulares (**shadcn/ui**, **Radix UI**, **Lucide Icons**) estruturados nas 5 camadas do `frontend-code-architect` (`v5.0`).
-- **Bifurcações com `ask_question`**: Quando houver alternativas concorrentes de arquitetura, incluir paradas controladas com formulários de múltipla escolha.
-
-### Módulo 4: Matriz de Detecção de Discrepâncias com as Preferências
-- Checklist determinístico que governa as fases planejadas:
-  * `[PASS / FAIL]` **Tema Alinhado ao Propósito (`AUDIT-VIS-01`)**: Sem paleta fixa repetitiva e com isolamento de 1 CTA primário.
-  * `[PASS / FAIL]` **Fase 0 Obrigatória**: Presença de alinhamento e pré-requisitos antes do código.
-  * `[PASS / FAIL]` **Critérios Go/No-Go Falsificáveis**: Regras determinísticas de transição de fase.
-  * `[PASS / FAIL]` **Prevenção de Sobre-Engenharia (KISS)**: Sem servidores mockados ou stacks web pesadas quando primitivas locais bastam.
+1. **`strategic_goal` / `user_query`** (obrigatório): O pedido do usuário, meta técnica, requisito funcional ou ideia bruta.
+2. **`handoff_payload`** (condicional): Bloco YAML emitido pelo `gap-analyzer-auditor` (`incident_id`, `recommended_option`, `required_adjustments`, `contingency_trigger`) para replanejamento *Append-Only*.
+3. **`operational_constraints`** (opcional): Restrições de ambiente, orçamento de tokens, caminhos-alvo (`target_dir`) e teto de regras por nó (`max_rules_per_node = 5`).
 
 ---
 
-## 5. Processamento Passo a Passo (Protocolo de Planejamento e Replanning)
+## 3. Arquitetura, Módulos e Fluxo de Processamento
 
 ```mermaid
 flowchart TD
-    A["Entrada: Meta Bruta OU Hand-Off Payload"] --> B{"Origem da Demanda?"}
-    
-    B -->|Novo Projeto / Demanda| C["Passo 1: Concepção do Plano v1.0<br>(Fase 0 + Fases Sequenciais)"]
-    B -->|Hand-Off do gap-analyzer-auditor| D["Passo 2: Assimilação do Payload YAML<br>(Patches & Mitigações)"]
-    
-    C --> E["Passo 3: Mapeamento de Dependências & Diagramação Mermaid"]
-    D --> E
-    
-    E --> F["Passo 4: Matriz de Decisão Go/No-Go & Estimativas de Esforço"]
-    F --> G["Emissão do Plano de Ação Estruturado (v1.0 ou v2.0)"]
+    A["Entrada do Usuário ou Hand-Off YAML"] --> B["Módulo 1: Triagem de Intenção & Risco HITL<br>(Direta | Estruturada | Ambígua | Mutação HITL)"]
+    B -->|Direta| B1["Despacho Imediato Zero-Shot / CoT Leve<br>(Zero Burocracia de Fases)"]
+    B -->|Estruturada / Ambígua / HITL| C["Módulo 2: Seleção de Frameworks<br>Estrutural (CLAREZA/CREATE/RTF/TAG/TASS)<br>+ Cognitivo (CoT/ReAct/ToT/Self-Refine)"]
+    C --> D["Módulo 3: Blindagem da Parede de Complexidade<br>• Teto <= 5 regras ativas por nó<br>• Divulgação Progressiva (L1 -> L2 -> L3)<br>• Hard Constraints em Pydantic v2 (extra='forbid')"]
+    D --> E["Módulo 4: Montagem do Grafo Não-Linear (DAG)<br>Fase 0 + Nós com Ramo Fallback + Tasks [ID] [P?] [US#]"]
+    E --> F["Módulo 5: Revisão Silenciosa Self-Refine<br>& Validação via cognitive_plan_builder.py"]
 ```
 
-### Passo 1: Concepção do Plano Inicial (v1.0) & Notação Executável `spec-kit`
-1. Analisar a meta e isolar o escopo do projeto em fatias independentemente testáveis (`P1 MVP`, `P2`, `P3`). Se houver requisito crítico ambíguo que não possa ser inferido com segurança, marcá-lo explicitamente com `[NEEDS CLARIFICATION: motivo]`.
-2. **Fase 0 Mandatória**: Toda esteira deve iniciar com a Fase 0 cobrindo validação de pré-requisitos, schemas de dados, variáveis de ambiente, diretrizes de design e verificação de caminhos canônicos.
-3. Decompor os objetivos em fases numeradas (Fase 1, Fase 2, Fase 3...), cada uma contendo:
-   - Objetivo específico da fase e Skill / Agente responsável pela execução.
-   - **Checklist de Tasks com Notação Paralela (`[ID] [P?] [US#] caminho/exato.ext`)**:
-     - `[ID]`: Identificador sequencial imutável (`T001`, `T002`...).
-     - `[P]`: Marcador explícito para tarefas que tocam **arquivos diferentes sem dependência entre si** e podem ser despachadas em subagentes paralelos (`invoke_subagent` / nós do DAG) sem conflito de escrita.
-     - `[US#]`: Fatia de história/requisito correspondente (`[US1]`, `[MVP]`, `[CONV]`).
-   - Insumos requeridos (inputs), entregáveis esperados (outputs), critérios Go/No-Go (`[PASS]` / `[FAIL]`) e esforço relativo (Baixo / Médio / Alto).
+### Módulo 1: Triagem e Diagnóstico Semântico de Intenção (4 Quadrantes)
+Ao receber a demanda, classifique a intenção antes de gerar qualquer plano:
 
-### Passo 2: Assimilação do Hand-Off Payload e Convergência *Append-Only* (v2.0)
-1. Extrair os campos estruturados do payload YAML: `incident_id`, `recommended_option`, `required_adjustments` e `contingency_trigger`.
-2. **Regra de Convergência *Append-Only* (`/speckit-converge`)**:
-   - Em ciclos de replanejamento ou convergência pós-implementação, **NUNCA apague, renumere ou reescreva tarefas já concluídas (`[x] T001`)**.
-   - Aplique os ajustes necessários (`REFATORAR`, `INSERIR_GUARDRAIL`, `REMOVER_DEPENDENCIA`, `ADICIONAR_RETRY`, `BLOQUEIO_HITL` ou `APPEND_CONVERGENCE_TASKS`) anexando uma nova seção **`## Fase N: Convergência & Mitigação`** ao final do plano com novas tasks sequenciais (`- [ ] T0XX [P] [CONV] caminho/exato.py`).
-
-### Passo 3: Mapeamento de Dependências e Diagramação Mermaid
-Elaborar fluxograma visual claro em sintaxe `mermaid` (`flowchart TD` ou `LR`), com rótulos de nós entre aspas e sem tags HTML complexas.
-
-### Passo 4: Matriz de Decisão Go/No-Go e `Complexity Tracking` (Anti-Overengineering)
-Consolidar a tabela determinística de critérios de aprovação por fase e incluir a tabela **`Complexity Tracking`**, justificando qualquer abstração extra caso o plano exceda a solução mínima viável (YAGNI).
-
----
-
-## 6. Saídas e Entregáveis (Modelo de Saída)
-
-Toda entrega gerada por esta skill segue rigorosamente a estrutura canônica:
-
-```markdown
-# PLANO DE AÇÃO ESTRUTURADO: [NOME DO PROJETO / OBJETIVO]
-
-> **Versão do Plano**: [v1.0.0 (Concepção Inicial) OU v2.0.0 (Convergência Pós-Auditoria)]  
-> **Status de Execução**: [EM PLANEJAMENTO / PRONTO PARA EXECUÇÃO / CONVERGÊNCIA APPEND-ONLY]  
-> **Orquestrador Alvo**: skill-orquestrador-planos-encadeados  
-
----
-
-## 1. Síntese Executiva e Escopo
-- **Objetivo Estratégico:** [Resumo claro do resultado esperado em 1 a 2 frases]
-- **Origem do Disparo:** [Demanda Direta do Usuário OU Hand-off do gap-analyzer-auditor (ID: [INCIDENT_ID])]
-- **Premissas e Restrições:** [Premissas adotadas, metas p95/RAM e eventuais marcadores `[NEEDS CLARIFICATION: ...]
-]
-
----
-
-## 2. Diagrama de Fluxo Visual de Fases (Mermaid)
-```mermaid
-flowchart TD
-    F0["Fase 0: Alinhamento, Pré-requisitos & Schemas"] --> F1["Fase 1: [Nome da Fase (P1 MVP)]"]
-    F1 --> F2["Fase 2: [Nome da Fase (P2)]"]
-    F2 --> F3["Fase 3: Consolidação & Auditoria Final"]
-```
-
----
-
-## 3. Decomposição Detalhada por Fases e Tasks (`[ID] [P?] [US#]`)
-
-### Fase 0: Alinhamento, Pré-requisitos e Schemas
-- **Objetivo:** Garantir integridade de insumos, atmosfera visual por propósito e ausência de dependências circulares.
-- **Skill / Agente Responsável:** `skill-orquestrador-planos-encadeados`
-- **Tasks Executáveis:**
-  - [ ] `T001` `[US0]` Validar pré-requisitos, variáveis de ambiente e schemas em `config/`
-- **Critério Go/No-Go:** `[PASS]` Todos os pré-requisitos satisfeitos; `[FAIL]` Aborta com diagnóstico.
-- **Esforço Estimado:** Baixo
-
-### Fase 1: [Nome da Fase 1 — Prioridade: P1 MVP]
-- **Objetivo:** [Meta técnica da fase, independentemente testável]
-- **Skill / Agente Responsável:** `[Nome da Skill]`
-- **Tasks Executáveis (`[P]` = Paralelizável sem conflito de arquivo):**
-  - [ ] `T002` `[P]` `[US1]` Implementar módulo X em `src/caminho/modulo_x.py`
-  - [ ] `T003` `[P]` `[US1]` Criar suíte de testes unitários em `tests/test_modulo_x.py`
-- **Critério Go/No-Go:** `[PASS]` Exit code 0 nos testes e score AST >= 75; `[FAIL]` Acionar `gap-analyzer-auditor`.
-- **Esforço Estimado:** [Baixo / Médio / Alto]
-
----
-
-## 4. Matriz de Decisão Go/No-Go e Portão de Qualidade
-| Fase | Condição de Aprovação (Go) | Condição de Bloqueio (No-Go) | Rota de Contingência |
+| Categoria da Intenção | Definição Semântica | Padrão de Despacho | Padrão Cognitivo Primário |
 | :--- | :--- | :--- | :--- |
-| **Fase 0** | Pré-requisitos e schemas OK | Insumos ausentes ou schemas inválidos | Solicitar insumos ao usuário |
-| **Fase 1** | Entregável validado no terminal | Exit code != 0 ou quebra de schema | Acionar gap-analyzer-auditor |
+| **`1. direta`** | Comando pontual, conversão, consulta ou ajuste de arquivo único sem ambiguidade. | Entrega direta sem plano multifásico desnecessário. | `Zero-Shot` / `CoT` leve |
+| **`2. estruturada`** | Demanda multifacetada com dependências entre módulos, testes ou múltiplos arquivos. | Grafo não-linear (DAG) com Fase 0, pré-condições, tasks `[ID] [P?] [US#]` e fallbacks. | `ReAct` (com tools) ou `CoT` + `ToT` |
+| **`3. ambigua`** | Pedido exploratório ("tenho uma ideia", "como arquitetar X"). | Formulação de hipóteses concorrentes, poda de ramos inviáveis e definição de MVP. | `CREATE` + `Tree of Thoughts (ToT)` |
+| **`4. mutacao_critica_hitl`** | Ações irreversíveis: deleção em massa, drop/alteração de banco, deploy externo, credenciais. | **Pausa imediata e serialização de checkpoint** (`requer_hitl: true`). | `ReAct` com `Approval Gate (HITL)` |
+
+### Módulo 2: Seleção Combinada de Frameworks (Estrutural + Cognitivo)
+Combine sempre **1 Framework Estrutural** (formato do entregável) com **1 a 3 Padrões Cognitivos Não-Lineares** (motor de raciocínio de cada nó):
+
+1. **Frameworks Estruturais**:
+   - **`CLAREZA`** (*Contexto, Limites, Ação, Referência, Exemplos, Zelo, Avaliação*): Código de produção, auditorias técnicas, contratos MCP/Pydantic e tarefas onde a taxa de alucinação deve ser zero.
+   - **`CREATE`** (*Character, Request, Examples, Adjustments, Type, Extras*): Ideação de produtos, especificações (`SPEC.md` / PRDs), arquiteturas do zero e MVPs.
+   - **`RTF`** (*Role, Task, Format*): Microtransformações, extração estruturada e tabelas rápidas.
+   - **`TAG`** (*Task, Action, Goal*): Automações operacionais enxutas e scripts diretos.
+   - **`TASS`** (*Task, Audience, Style, Structure*): Documentação executiva ou comunicação adaptada ao público-alvo.
+
+2. **Padrões Cognitivos Não-Lineares**:
+   - **`CoT` (Chain-of-Thought)**: Dedução explícita (*causa $\rightarrow$ consequência $\rightarrow$ decisão*) para validação de pré-condições e cálculos determinísticos.
+   - **`ReAct` (Reason-and-Act)**: Ciclo contínuo *Pensamento $\rightarrow$ Tool Call $\rightarrow$ Observação*, recalibrando o plano conforme a resposta real do sistema de arquivos, AST ou API.
+   - **`ToT` (Tree of Thoughts)**: Geração de ramos arquiteturais concorrentes (ex.: Opção 1 Cirúrgica vs. Opção 2 Estrutural), avaliação contra critérios Go/No-Go e poda de ramos subótimos.
+   - **`Self-Refine` (Reflexion)**: Loop interno *Gerador $\rightarrow$ Crítico Determinístico $\rightarrow$ Refinador* antes de dar a etapa por concluída.
+
+### Módulo 3: Blindagem contra a Parede de Complexidade (*Prompt Complexity Wall Shield*)
+Para manter a confiabilidade de execução $\ge 90\%$ em cada etapa do plano, aplique obrigatoriamente as 4 salvaguardas:
+1. **Teto Estrito de Regras por Nó ($\le 5$ guardrails):** Cada nó do `grafo_execucao` deve possuir `regras_ativas_count <= 5`. Se uma etapa acumular 6 ou mais restrições, subdivida-a em dois nós atômicos sequenciais ou paralelos (`step_02a`, `step_02b`).
+2. **Divulgação Progressiva (*Progressive Disclosure* `L1 -> L2 -> L3`):**
+   - **Camada L1 (Metadados Globais):** Objetivo e intenção (~100 tokens).
+   - **Camada L2 (Instrução Operacional do Nó):** Apenas o procedimento da etapa ativa.
+   - **Camada L3 (Schemas, Regras e Scripts):** Carregados sob demanda apenas pelo nó que os executa.
+3. **Hard Constraints em Código vs. Soft Constraints no Prompt:** Validações de schema, contagens, segurança AST e limites numéricos devem ser impostos por contratos **Pydantic v2 (`extra="forbid"`)** ou scripts em `scripts/`, nunca por súplicas textuais no prompt.
+4. **Isolamento via Subagentes (*Context Fork*):** Tarefas marcadas com `[P]` que tocam arquivos disjuntos rodam em contextos isolados, retornando apenas o artefato validado.
+
+### Módulo 4: Fase 0, Notação `[ID] [P?] [US#]` e Convergência *Append-Only* (`v2.0+`)
+- **Fase 0 Mandatória (`step_00_fase_zero`)**: Validação de pré-requisitos, schemas, caminhos no disco e teto de complexidade antes de mutações.
+- **Checklist Executável (`[ID] [P?] [US#] caminho/exato.ext`)**:
+  - `[ID]`: Identificador sequencial imutável (`T001`, `T002`...).
+  - `[P]`: Task paralelizável que **edita arquivo distinto** sem conflito de escrita na mesma onda.
+  - `[US#]`: Requisito ou fatia associada (`[US0]`, `[MVP]`, `[CONV]`).
+- **Convergência *Append-Only* (`/speckit-converge`)**: Ao consumir um `handoff_payload` do `gap-analyzer-auditor`, **NUNCA apague, renumere ou reescreva tasks já concluídas (`[x] T001`)**. Anexe uma nova seção `## Fase N: Convergência & Mitigação` com tasks `- [ ] T0XX [P] [CONV] caminho/exato.py`.
 
 ---
 
-## 5. Rastreamento de Complexidade (`Complexity Tracking` — Vacina YAGNI)
-> *Preencher APENAS se o plano introduzir abstrações, serviços ou dependências além do mínimo estritamente necessário.*
+## 4. Automação Determinística (`scripts/cognitive_plan_builder.py`)
 
-| Violação / Abstração Extra | Por que é Necessária | Alternativa Mais Simples Descartada Porque |
-| :--- | :--- | :--- |
-| Nenhuma violação YAGNI | — | Solução usa biblioteca padrão e módulos coesos diretos |
+Execute o motor determinístico da skill para diagnosticar intenções, validar o teto de $\le 5$ regras por nó (auto-subdividindo nós sobrecarregados) e exportar o grafo para o motor DAG do `epic-volta`:
 
----
+```powershell
+# Auto-teste determinístico das regras cognitivas, Pydantic v2 e Complexity Wall Shield
+uv run python skills/high-level-context-planner/scripts/cognitive_plan_builder.py --self-test
 
-## 6. Fase N: Convergência & Mitigação *Append-Only* (Apenas para Planos v2.0+)
-- **Incidente de Origem:** `[AUDIT-DATA-SEQ]` | **Opção Adotada:** `[Opção 1 Cirúrgica OU Opção 2 Arquitetural]`
-- **Novas Tasks de Convergência (Sem reescrever histórico anterior):**
-  - [ ] `T0XX` `[P]` `[CONV]` Aplicar correção em `src/caminho/arquivo.py` conforme `patch_instructions`
+# Gerar plano cognitivo não-linear JSON a partir de uma intenção
+uv run python skills/high-level-context-planner/scripts/cognitive_plan_builder.py --intent "Refatorar módulo de autenticação OAuth2 e criar suíte de testes unitários" --framework CLAREZA
+
+# Validar um plano JSON existente e converter para DAGExecutionPlan (Epic-Volta)
+uv run python skills/high-level-context-planner/scripts/cognitive_plan_builder.py --validate-file caminho/plano.json --export-dag caminho/dag_plan.json
 ```
 
 ---
 
-## 7. Exceções, Limites e Restrições Negativas (Guardrails)
+## 5. Saídas e Entregáveis (Contrato Híbrido: Grafo JSON + Plano Executivo Markdown)
 
-- ❌ **Proibição de Pular a Fase 0**: Todo plano deve conter a Fase 0 de alinhamento e validação de schemas.
-- ❌ **Proibição de Reescrever Histórico na Convergência**: Na revisão v2.0+, é proibido apagar ou renumerar tasks anteriores; adicione apenas a seção *Append-Only* de Convergência.
-- ❌ **Proibição de Tasks Sem Caminho ou Paralelismo Ambíguo**: Nunca marcar `[P]` em duas tasks que editam o mesmo arquivo simultaneamente.
-- ❌ **Proibição de Dependências Circulares e Execução Direta**: A skill não executa comandos destrutivos; ela planeja e delega.
+Quando acionada para planejar demandas das categorias `estruturada`, `ambigua` ou `mutacao_critica_hitl`, emita:
 
+### 5.1. Contrato JSON do Plano Adaptativo Executável (`references/schema_plano_contexto.json`)
+```json
+{
+  "plan_id": "plan-cognitive-001",
+  "version": "3.0.0",
+  "target_orchestrator": "skill-orquestrador-planos-encadeados",
+  "strategic_goal": "Descrição clara do objetivo final",
+  "intencao": {
+    "categoria": "estruturada",
+    "diagnostico": "Causa raiz e objetivo prático da demanda",
+    "requer_hitl": false
+  },
+  "frameworks_selecionados": {
+    "estrutural": "CLAREZA",
+    "cognitivo": ["CoT", "ReAct", "ToT", "Self-Refine"]
+  },
+  "blindagem_complexidade": {
+    "status": "SHIELDED",
+    "max_regras_por_no": 3,
+    "disclosure_tier": 2,
+    "estrategia": "Decomposição atômica em nós com <= 5 regras ativas e divulgação progressiva L1->L2->L3"
+  },
+  "grafo_execucao": [
+    {
+      "etapa_id": "step_00_fase_zero",
+      "nome": "Fase 0: Diagnóstico de Pré-condições e Schemas",
+      "responsible_skill": "high-level-context-planner",
+      "tipo_execucao": "model_reasoning",
+      "padrao_cognitivo": "CoT",
+      "regras_ativas_count": 2,
+      "regras_ativas": ["Validar caminhos reais no disco", "Verificar schemas Pydantic v2"],
+      "precondicoes": [],
+      "target_files": ["shared/modular_orchestrator.py"],
+      "criterio_aceite": "[PASS] Pré-requisitos e schemas validados sem ciclos",
+      "ramo_fallback": "step_00_clarify_inputs"
+    },
+    {
+      "etapa_id": "step_01_execucao_react",
+      "nome": "Fase 1: Implementação e Observação Empírica (P1 MVP)",
+      "responsible_skill": "code-acceptability-auditor",
+      "tipo_execucao": "tool_io",
+      "padrao_cognitivo": "ReAct",
+      "regras_ativas_count": 3,
+      "regras_ativas": ["Manter McCabe <= 10", "Tipagem estrita Pydantic v2", "Zero bare except"],
+      "precondicoes": ["step_00_fase_zero"],
+      "target_files": ["src/modulo.py"],
+      "criterio_aceite": "[PASS] Quality Score AST >= 75 e Exit Code 0",
+      "ramo_fallback": "step_01_tot_alternative"
+    }
+  ]
+}
+```
+
+### 5.2. Resumo Executivo Markdown com Tasks `[ID] [P?] [US#]` e `Complexity Tracking`
+Acompanhe o grafo com:
+1. **Diagrama Mermaid (`flowchart TD`)** exibindo o caminho principal e os ramos de fallback (`ramo_fallback`).
+2. **Checklist de Tasks Executáveis (`- [ ] T001 [P] [US1] caminho/arquivo.ext`)** por fase.
+3. **Matriz de Decisão Go/No-Go** falsificável (`[PASS]` / `[FAIL]` / Rota de Contingência).
+4. **Tabela `Complexity Tracking` (Vacina YAGNI)** justificando qualquer abstração extra.
+
+---
+
+## 6. Protocolo de Revisão Silenciosa (`Self-Refine`) e Guardrails (Restrições)
+
+Antes de emitir o plano final, valide silenciosamente:
+- ❌ **Proibição de Planejamento Linear Cego em Tarefas com Incerteza**: Se uma etapa depende da leitura do disco, rede ou testes, use o padrão **`ReAct`** ou **`ToT`** e declare um `ramo_fallback` explícito.
+- ❌ **Proibição de Violar a Parede de Complexidade (`> 5` regras/nó)**: Nenhum nó do `grafo_execucao` pode ter `regras_ativas_count > 5`. Subdivida nós complexos.
+- ❌ **Proibição de Pular a Fase 0 ou Reescrever Histórico na Convergência**: Toda esteira estruturada inicia na Fase 0 e todo replanejamento pós-auditoria é estritamente *append-only*.
+- ❌ **Proibição de Paralelismo Conflitante (`[P]`)**: Duas tasks paralelas na mesma onda nunca podem editar o mesmo arquivo em `target_files`.
+- ❌ **Bloqueio HITL Obrigatório**: Qualquer intenção classificada como `mutacao_critica_hitl` exige `requer_hitl: true` e nó de aprovação humana antes da mutação.

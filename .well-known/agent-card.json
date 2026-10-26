@@ -1,0 +1,633 @@
+{
+  "name": "Franklin Quebra-Galho (A2A + MCP Orchestrator)",
+  "description": "Orquestrador multiagente e catálogo de 26 Skills canônicas (Python, TS/JS, Go, MCP, Harness e Arquitetura Visual por Propósito) com suporte nativo a Agent2Agent (A2A v1.0) e Model Context Protocol (MCP).",
+  "supportedInterfaces": [
+    {
+      "url": "http://localhost:10999",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    },
+    {
+      "url": "http://localhost:10999",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "0.3"
+    }
+  ],
+  "provider": {
+    "url": "https://github.com/melkidonadonmed-lgtm/franklin-quebragalho",
+    "organization": "Melki Dev Lab (Franklin Quebra-Galho)"
+  },
+  "version": "1.2.0",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": true,
+    "extendedAgentCard": true
+  },
+  "defaultInputModes": [
+    "text/plain",
+    "application/json"
+  ],
+  "defaultOutputModes": [
+    "text/plain",
+    "application/json"
+  ],
+  "skills": [
+    {
+      "id": "agent-server-auditor",
+      "name": "agent-server-auditor",
+      "description": "Audita estaticamente sistemas agênticos, servidores MCP (Model Context Protocol 2026-07-28) e nós A2A (Agent-to-Agent v1.0) em Go, TypeScript e Python. Use para inspecionar higiene de binários, STDIO stdout, AgentCard JWS, travas max_steps em loops ReAct/StateGraph/ADK e persistir memories/audit_report.json; não use para testes dinâmicos de UI ou suítes unitárias AAA.",
+      "tags": [
+        "agent-server-auditor",
+        "mcp-2026-07-28",
+        "a2a-protocol",
+        "agent-card-jws",
+        "stdio-hygiene",
+        "max-steps"
+      ],
+      "examples": [
+        "Executar a skill agent-server-auditor no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "antigravity-project-auditor",
+      "name": "antigravity-project-auditor",
+      "description": "Audita arquitetura, diagnostica MVP e planeja projetos para Antigravity. Use isoladamente para varrer arquivos base (CONTEXT.md, AGENTS.md, SPEC.md, README.md) e memória, ou junto a uma pergunta para plano de ação. Não use para refatorar código sem aprovação.",
+      "tags": [
+        "auditoria",
+        "mvp",
+        "planejamento",
+        "antigravity",
+        "context-discovery"
+      ],
+      "examples": [
+        "Executar a skill antigravity-project-auditor no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "arquiteto-conteudo-solucoes",
+      "name": "arquiteto-conteudo-solucoes",
+      "description": "Arquiteto autônomo de soluções técnicas, biblioteca de prompts enterprise, código tipado e roadmaps em 4 modos (Execução Direta, Refinamento, Planejamento Fase 0 e Auto-Reflexão) com 7 Módulos de Guardrails. Use para desenhar soluções, prompts ou código; não use para criar pastas SKILL.md (use evoluir-skills).",
+      "tags": [
+        "prompt-engineering",
+        "arquitetura",
+        "guardrails-modulares",
+        "anti-alucinacao"
+      ],
+      "examples": [
+        "Executar a skill arquiteto-conteudo-solucoes no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "auditoria-projetos-sistema",
+      "name": "auditoria-projetos-sistema",
+      "description": "Audita integridade estrutural de repositórios (AGENTS.md, README, DESIGN, SPEC, Git/.env), código órfão, tipagem/chunking, alinhamento do tema visual ao propósito do projeto e esteira dinâmica via agent-browser (@eX) com nota de 0 a 100. Use para auditar projetos; não use para refatorar código sem aprovação.",
+      "tags": [
+        "auditoria",
+        "agent-browser",
+        "estilo-por-proposito",
+        "higiene-repo",
+        "qualidade"
+      ],
+      "examples": [
+        "Executar a skill auditoria-projetos-sistema no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "code-acceptability-auditor",
+      "name": "code-acceptability-auditor",
+      "description": "Audita estaticamente arquivos Python via AST contra falhas de segurança (segredos hardcoded, eval/exec, shell=True), ausência de type hints, except silencioso e funções longas (>60 linhas). Use antes de commits/PRs para calcular o Quality Score (0-100); não use para dúvidas teóricas de Python.",
+      "tags": [
+        "ast",
+        "python-audit",
+        "security",
+        "type-hints",
+        "pre-commit",
+        "quality-gate"
+      ],
+      "examples": [
+        "Executar a skill code-acceptability-auditor no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "code-quality-audit-3d-physics",
+      "name": "code-quality-audit-3d-physics",
+      "description": "Audita e sanitiza código de Física 3D, Computação Gráfica (WebGL, Three.js, Babylon.js) e Simulação Numérica (Python, JS/TS) em 3 ondas (AST, S1..S5, Pass@10 e Snorm 0-100). Use para revisar motores 3D, shaders, colisões ou hot-loops; não use para CRUD web tradicional.",
+      "tags": [
+        "fisica-3d",
+        "auditoria-codigo",
+        "ast-parser",
+        "threejs",
+        "webgl",
+        "testes-deterministicos"
+      ],
+      "examples": [
+        "Executar a skill code-quality-audit-3d-physics no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "context-sentinel",
+      "name": "context-sentinel",
+      "description": "Audita a integridade da janela de contexto em conversas multi-turn e pipelines multiagente. Use a cada ciclo de turnos ou sob demanda para extrair estado estruturado Pydantic/JSON ([FATO], [PENDENCIA], [LACUNA]) em SQLite/JSON; não use para edição de código de domínio.",
+      "tags": [
+        "context-rot",
+        "sqlite",
+        "snapshots",
+        "pydantic"
+      ],
+      "examples": [
+        "Executar a skill context-sentinel no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "conversor-html-pdf",
+      "name": "conversor-html-pdf",
+      "description": "Converte documentos Markdown (.md) e HTML para arquivos PDF profissionais via Microsoft Edge ou Chrome headless, aplicando CSS de impressão calibrado e quebras de página inteligentes. Use para exportar relatórios e manuais em PDF; não use para redigir conteúdo técnico do zero.",
+      "tags": [
+        "pdf",
+        "headless-browser",
+        "css-print",
+        "conversao"
+      ],
+      "examples": [
+        "Executar a skill conversor-html-pdf no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "curadoria-obsidian-vault",
+      "name": "curadoria-obsidian-vault",
+      "description": "Audita e higieniza estruturalmente o cofre do Obsidian (C:/Users/melki/dev/notes/), validando frontmatter YAML, [[Wikilinks]], paridade com dev/repos, anexos órfãos e sincronia com MemPalace. Use para curadoria de notas e memória; não use para limpeza de pastas do Google Drive.",
+      "tags": [
+        "obsidian",
+        "wikilinks",
+        "frontmatter",
+        "mempalace",
+        "hybrid-search",
+        "anexos-orfaos"
+      ],
+      "examples": [
+        "Executar a skill curadoria-obsidian-vault no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "design-interface-medica-minimalista",
+      "name": "design-interface-medica-minimalista",
+      "description": "Arquitetura especializada para interfaces clínicas, prontuários eletrônicos (PEP), receituários/laudos A4 (.sus-grid) e calculadoras médicas com tabular-nums, proteção de dose e zero emojis. Use para sistemas de saúde e prescrição; não use para landing pages promocionais ou jogos.",
+      "tags": [
+        "medtech-ui",
+        "clinical-design",
+        "prontuario-eletronico",
+        "a4-print",
+        "tabular-nums"
+      ],
+      "examples": [
+        "Executar a skill design-interface-medica-minimalista no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "design-md",
+      "name": "design-md",
+      "description": "Cria ou atualiza o contrato DESIGN.md na raiz do projeto, definindo tokens semânticos, escala tipográfica modular, hierarquia em 3 níveis, composição espacial (Grid, Stack, Cluster, Split-View) e estados FSM. Use para estabelecer o sistema de design; não use para auditoria de backend.",
+      "tags": [
+        "design-md",
+        "estilo-por-proposito",
+        "ex-umbris-ad-lucem",
+        "aether-2027",
+        "arquitetura-visual"
+      ],
+      "examples": [
+        "Executar a skill design-md no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "frontend-code-architect",
+      "name": "frontend-code-architect",
+      "description": "Implementa e refatora interfaces web (HTML/CSS/JS, React, Next.js, Tailwind) consumindo o contrato DESIGN.md, composição espacial intrínseca, tokens semânticos, estados finitos (FSM) e acessibilidade. Use para construir ou refatorar código UI; não use apenas para gerar o DESIGN.md.",
+      "tags": [
+        "frontend-architect",
+        "atomic-design",
+        "estilo-por-proposito",
+        "ex-umbris-ad-lucem",
+        "aether-2027"
+      ],
+      "examples": [
+        "Executar a skill frontend-code-architect no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "frontend-testing-auditor",
+      "name": "frontend-testing-auditor",
+      "description": "Audita deterministicamente interfaces web (HTML/CSS/React/TS) via scripts/audit_tactile_ui.py, verificando tokens, composição espacial, WAI-ARIA, foco, tabular-nums, estados FSM, zero emojis e anti-XSS. Use para validar qualidade técnica de UI; não use para implementar componentes novos.",
+      "tags": [
+        "frontend-testing",
+        "axe-core",
+        "wcag-aa",
+        "estilo-por-proposito",
+        "deterministic-audit"
+      ],
+      "examples": [
+        "Executar a skill frontend-testing-auditor no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "frontend-ui-ux-auditor",
+      "name": "frontend-ui-ux-auditor",
+      "description": "Audita com precisão matemática navegabilidade UI/UX, densidade DOM, fidelidade a Design Tokens (DESIGN.md), ícones, tipografia mobile, contraste WCAG 2.1 AA, física da luz (135°) e elevação por sombras. Use para diagnóstico visual e ergonômico de frontend; não use para testes de backend.",
+      "examples": [
+        "Executar a skill frontend-ui-ux-auditor no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "gap-analyzer-auditor",
+      "name": "gap-analyzer-auditor",
+      "description": "Auditor técnico, analista de brechas (RCA) e motor de convergência Spec-to-Code em malha fechada. Use para inspecionar logs, traces, código e specs, separar fatos de inferências e emitir Hand-off YAML ou tasks de convergência; não use para planejamento inicial sem falhas ou specs prévias.",
+      "tags": [
+        "rca",
+        "closed-loop",
+        "hand-off",
+        "auditoria",
+        "converge"
+      ],
+      "examples": [
+        "Executar a skill gap-analyzer-auditor no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "gdrive-auditoria-limpeza",
+      "name": "gdrive-auditoria-limpeza",
+      "description": "Audita e higieniza a unidade Google Drive (G:/Meu Drive e MCP), detectando arquivos pesados (>100MB), duplicatas por hash/nome e pastas vazias com simulação segura de quarentena (Dry-run). Use para limpeza e deduplicação no Drive; não use para manutenção de pastas locais do Windows.",
+      "tags": [
+        "google-drive",
+        "limpeza",
+        "sha256",
+        "dry-run"
+      ],
+      "examples": [
+        "Executar a skill gdrive-auditoria-limpeza no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "gdrive-taxonomia-organizacao",
+      "name": "gdrive-taxonomia-organizacao",
+      "description": "Estrutura e categoriza arquivos e pastas no Google Drive (G:/Meu Drive), aplicando taxonomia canônica numerada, padronização de nomes com datas ISO (YYYY-MM-DD) e higienização de caracteres sem perdas. Use para organizar taxonomia no Drive; não use para exclusão de duplicatas sem triagem.",
+      "tags": [
+        "google-drive",
+        "taxonomia",
+        "datas-iso",
+        "organizacao"
+      ],
+      "examples": [
+        "Executar a skill gdrive-taxonomia-organizacao no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "high-level-context-planner",
+      "name": "high-level-context-planner",
+      "description": "Planejador cognitivo não-linear e arquiteto de contexto em malha fechada (intent-cognitive-planner). Use para diagnosticar intenção (Direta, Estruturada, Ambígua, HITL), selecionar frameworks (CLAREZA, CREATE, CoT, ReAct, ToT, Self-Refine), blindar a Parede de Complexidade (<=5 regras/nó) e decompor metas em Fase 0, tasks [ID] [P?] [US#] e Complexity Tracking; não use para tarefas triviais de comando único.",
+      "examples": [
+        "Executar a skill high-level-context-planner no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "manutencao-disco-windows",
+      "name": "manutencao-disco-windows",
+      "description": "Executa manutenção, triagem e higienização de pastas locais no Windows 11 (Downloads, Desktop, C:/Users/melki/dev/), isolando instaladores, limpando resíduos, organizando dev/sandbox/ e sincronizando dev/repos/. Use para higiene de disco local; não use para arquivos na nuvem Google Drive.",
+      "tags": [
+        "windows-11",
+        "powershell",
+        "downloads",
+        "disco",
+        "dev-workspace"
+      ],
+      "examples": [
+        "Executar a skill manutencao-disco-windows no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "nav-x-func",
+      "name": "nav-x-func",
+      "description": "Executa planejamento de MVP (CLAREZA/CREATE), arquitetura em Ilhas Funcionais (Island UI/UX), auditoria de navegação real (Clicar em X ativa Y, Dead Ends, <= 3 cliques), purga de pseudo-complexidade, suficiência funcional (Meios vs. Fins) e score determinístico SGA V1 vs V2 em HTML. Use para maturar projetos ou auditar navegação e funções; não use para ajustes isolados de CSS.",
+      "tags": [
+        "nav-x-func",
+        "system-architecture",
+        "island-architecture",
+        "mvp-critique",
+        "functional-sufficiency",
+        "deterministic-audit"
+      ],
+      "examples": [
+        "Executar a skill nav-x-func no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "organizador-fluxo-arvore-arquivos",
+      "name": "organizador-fluxo-arvore-arquivos",
+      "description": "Transforma ideias brutas e requisitos de apps em fluxos visuais (Mermaid), árvores de diretórios comentadas e planos de execução diretos com histórico de versões em Markdown (.md) ou PDF. Use para mapear fluxos e estrutura de pastas; não use para auditar segurança AST de código.",
+      "tags": [
+        "mermaid",
+        "arvore-arquivos",
+        "fluxogramas",
+        "planejamento"
+      ],
+      "examples": [
+        "Executar a skill organizador-fluxo-arvore-arquivos no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "organizador-projetos-ideias",
+      "name": "organizador-projetos-ideias",
+      "description": "Organiza ideias do zero (perguntas guiadas e sugestão de MVP) ou reestrutura projetos existentes (README.md fiel ao disco, AGENTS.md, SPEC.md, CONTEXT.md, DESIGN.md, .env/.gitignore e contratos MCP). Use para estruturar ou padronizar repositórios; não use para limpeza de sistema operacional.",
+      "tags": [
+        "organizador-projetos",
+        "refinamento-ideias",
+        "mvp",
+        "mcp-fastapi-rpc",
+        "documentacao-viva",
+        "higiene-repositorio"
+      ],
+      "examples": [
+        "Executar a skill organizador-projetos-ideias no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "redator-tecnico-markdown",
+      "name": "redator-tecnico-markdown",
+      "description": "Redige relatórios executivos, notas técnicas, atas de decisão e roadmaps em Markdown (.md) com frontmatter YAML, alertas GitHub, tabelas ricas, Google Style Guides e compatibilidade com Obsidian. Use para produzir documentação técnica estruturada; não use apenas para converter HTML em PDF.",
+      "tags": [
+        "markdown",
+        "obsidian",
+        "google-styleguides",
+        "documentacao"
+      ],
+      "examples": [
+        "Executar a skill redator-tecnico-markdown no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "refine-prompt",
+      "name": "refine-prompt",
+      "description": "Audita factibilidade ([FATO], [INFERÊNCIA], [LACUNA]), modula entropia (fluidez cognitiva vs. contratos de baixa entropia) e refina prompts sob Zero-Trust XML (<untrusted_user_input>) e OWASP LLM 2026 em 3 modos (Resposta Direta, Plug-and-Play, Socrático). Não use para criar skills (use evoluir-skills).",
+      "tags": [
+        "refine-prompt",
+        "zero-trust",
+        "epistemica",
+        "baixa-entropia",
+        "fluidez-cognitiva",
+        "owasp-llm"
+      ],
+      "examples": [
+        "Executar a skill refine-prompt no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "skill-orquestrador-planos-encadeados",
+      "name": "skill-orquestrador-planos-encadeados",
+      "description": "Orquestrador executivo de planos encadeados e compilador de grafos DAG (Kahn). Use para compilar planos em ondas sequenciais e paralelas, validar colisões de arquivos [P], isolar estado compartilhado em Context Fork (L2/L3 sem context rot), rotear fallbacks não-lineares e aplicar portões HITL; não use para perguntas simples de turno único.",
+      "tags": [
+        "orquestrador",
+        "planos-encadeados",
+        "dag",
+        "kahn",
+        "context-fork",
+        "multiagente"
+      ],
+      "examples": [
+        "Executar a skill skill-orquestrador-planos-encadeados no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    },
+    {
+      "id": "test-quality-auditor",
+      "name": "test-quality-auditor",
+      "description": "Executa auditoria de qualidade, determinismo e eficácia de suítes de testes em 5 módulos (Python, TS/JS, Go, MCP JSON-RPC e Harnesses/Evals), detectando Green Build Illusion e falhas AAA. Use para auditar suítes de testes e gerar grading.json; não use para auditar código de produção.",
+      "tags": [
+        "test-quality",
+        "ast-auditor",
+        "go-testing",
+        "mcp-testing",
+        "harness-testing",
+        "mirrored-evals"
+      ],
+      "examples": [
+        "Executar a skill test-quality-auditor no contexto atual"
+      ],
+      "inputModes": [
+        "text/plain",
+        "application/json"
+      ],
+      "outputModes": [
+        "text/plain",
+        "application/json"
+      ]
+    }
+  ],
+  "signatures": [
+    {
+      "protected": {
+        "alg": "HS256",
+        "kid": "franklin-key-2026-v1",
+        "jku": "http://localhost:10999/public_keys.json",
+        "typ": "JOSE+JSON"
+      },
+      "signature": "e7d73f70ce9b5eeac6987e9b30bd6a4fc0d97be103de05cf3344ae0fdd8b3ac5"
+    }
+  ]
+}

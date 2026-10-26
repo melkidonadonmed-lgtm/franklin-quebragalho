@@ -1,8 +1,7 @@
 ---
 name: context-sentinel
 description: >-
-  Audita a integridade da janela de contexto em conversas multi-turn e pipelines multiagente. A cada ciclo de turnos ou sob demanda, extrai o estado estruturado da sessão com validação determinística Pydantic/JSON (classificando [FATO], [PENDENCIA] e [LACUNA]) para persistência em SQLite ou JSON local.
-license: MIT
+  Audita a integridade da janela de contexto em conversas multi-turn e pipelines multiagente. Use a cada ciclo de turnos ou sob demanda para extrair estado estruturado Pydantic/JSON ([FATO], [PENDENCIA], [LACUNA]) em SQLite/JSON; não use para edição de código de domínio.
 metadata:
   version: "1.1.0"
   author: "Franklin-Main & Melki"

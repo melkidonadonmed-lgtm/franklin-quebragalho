@@ -110,7 +110,17 @@ def test_checkpoint_store_isolated_hitl_lifecycle(tmp_path: Path) -> None:
     assert len(store.list(status="PENDING")) == 2
     assert len(store.list(session_id="sess-alpha")) == 1
 
-    # 3. Transição de status HITL (PENDING -> APPROVED / REJECTED)
+    # 3. Transição de status HITL (PENDING -> APPROVED / REJECTED) e flag booleana approved
+    from shared.execution_orchestrator import harness_checkpoint_impl
+
+    res_flag_approve = json.loads(
+        harness_checkpoint_impl(store, tmp_path, action="list", checkpoint_id="chk-hitl-001", approved=True, notes="Aprovado pelo Melki")
+    )
+    res_flag_reject = json.loads(
+        harness_checkpoint_impl(store, tmp_path, action="resolve", checkpoint_id="chk-hitl-002", approved=False, notes="Cancelado")
+    )
+    assert res_flag_approve["status"] == "APPROVED"
+    assert res_flag_reject["status"] == "REJECTED"
     approved = store.update_status("chk-hitl-001", "approved", notes="Aprovado pelo Melki")
     rejected = store.update_status("chk-hitl-002", "rejected", notes="Cancelado")
     assert approved is not None and approved.status == "APPROVED"

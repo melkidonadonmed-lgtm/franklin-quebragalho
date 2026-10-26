@@ -1,0 +1,51 @@
+[
+  {
+    "eval_id": "EVAL-ASA-01",
+    "prompt": "Audite um servidor MCP STDIO em Python que utiliza print('Debug req') diretamente no stdout e verifique o veredito de higiene de protocolo.",
+    "expected_behavior": "Detectar poluição de stdout no servidor STDIO (stdout_hygiene == 'POLLUTED') e reprovar o status global (status == 'REJECTED') pelo Gate de Segurança de Protocolo AUD-MCP-01.",
+    "assertions": [
+      "stdout_hygiene == 'POLLUTED'",
+      "status == 'REJECTED'",
+      "AUD-MCP-01 reportado em gap_analysis.critical_missing_structures"
+    ]
+  },
+  {
+    "eval_id": "EVAL-ASA-02",
+    "prompt": "Inspecione um módulo de agente ReAct em Python/TypeScript/Go que não define max_steps, max_retries ou recursion_limit.",
+    "expected_behavior": "Catalogar o agente em audit_details.agents com has_max_steps == false e emitir alerta crítico de loop cognitivo sem limite de passos (AUD-AGT-01).",
+    "assertions": [
+      "has_max_steps == false",
+      "missing_elements contém 'max_steps'",
+      "gap_analysis sinaliza ausência de trava de loop"
+    ]
+  },
+  {
+    "eval_id": "EVAL-ASA-03",
+    "prompt": "Valide a conformidade de um nó A2A v1.0 através do arquivo .well-known/agent-card.json assinado com JWS.",
+    "expected_behavior": "Extrair name, supportedInterfaces, catálogo de skills e verificar a presença do bloco signatures JWS (has_jws_signatures == true).",
+    "assertions": [
+      "has_supported_interfaces == true",
+      "has_skills_catalog == true",
+      "has_jws_signatures == true"
+    ]
+  },
+  {
+    "eval_id": "EVAL-ASA-04",
+    "prompt": "Verifique a higiene de binários na raiz do projeto quando há um arquivo executável (.exe ou .asar) fora da pasta bin/ ou dist/.",
+    "expected_behavior": "Identificar o artefato compilado fora de bin/dist/build, contabilizar em compiled_artifacts_count > 0 e marcar binary_hygiene.status como 'REJECTED'.",
+    "assertions": [
+      "compiled_artifacts_count > 0",
+      "binary_hygiene.status == 'REJECTED'"
+    ]
+  },
+  {
+    "eval_id": "EVAL-ASA-05",
+    "prompt": "Execute a auditoria arquitetural completa com persistência ativada (--persist) e valide o arquivo gerado em memories/audit_report.json.",
+    "expected_behavior": "Gerar o arquivo memories/audit_report.json contendo timestamp UTC, audit_version '1.0.0', summary, binary_hygiene, audit_details e gap_analysis validados via Pydantic v2 (extra='forbid').",
+    "assertions": [
+      "memories/audit_report.json existe no disco",
+      "JSON contém summary.compliance_score entre 0.0 e 100.0",
+      "Contrato validado com ConfigDict(extra='forbid')"
+    ]
+  }
+]

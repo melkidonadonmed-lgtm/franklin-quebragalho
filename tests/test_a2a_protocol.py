@@ -33,7 +33,7 @@ def test_build_franklin_agent_card_validates_protobuf_and_jws_signature() -> Non
     # Assert: Identidade, Skills, Interfaces e Assinatura JWS
     assert card["name"] == "Franklin Quebra-Galho (A2A + MCP Orchestrator)"
     assert card["version"] == "1.2.0"
-    assert len(card["skills"]) >= 25
+    assert len(card["skills"]) >= 24
     assert card["capabilities"]["streaming"] is True
     assert card["capabilities"]["extendedAgentCard"] is True
     assert verify_agent_card_signature(card) is True

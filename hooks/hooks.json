@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "protocolVersion": "2026-07-28",
+  "hooks": {
+    "preToolUse": [
+      {
+        "id": "semantic-guard-pre-tool",
+        "description": "Inspeciona entradas de ferramentas contra comandos destrutivos, path traversal, SSRF e bloqueia mutacoes sensiveis sem approval_token (HITL-AUTH-*).",
+        "handler": "shared.harness_middleware:SemanticGuard.inspect_input",
+        "blocking": true,
+        "failClosed": true
+      }
+    ],
+    "postToolUse": [
+      {
+        "id": "semantic-guard-post-tool",
+        "description": "Sanitiza saidas contra injecao indireta (OWASP LLM01:2026) e registra telemetria de auditoria Read-After-Write.",
+        "handler": "shared.harness_middleware:SemanticGuard.sanitize_output",
+        "blocking": false
+      }
+    ]
+  }
+}

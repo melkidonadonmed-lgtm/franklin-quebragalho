@@ -1,8 +1,7 @@
 ---
 name: organizador-projetos-ideias
 description: >-
-  Organiza ideias do zero (perguntas guiadas, sugestão de MVP quando o usuário não sabe as funções, design e v1.0) ou reestrutura projetos existentes (README.md fiel ao disco, AGENTS.md, SPEC.md, CONTEXT.md, DESIGN.md, .env/.gitignore, contratos MCP/tools.json, FastAPI/RPC, Mermaid, limpeza da raiz e memória).
-version: "1.0.0"
+  Organiza ideias do zero (perguntas guiadas e sugestão de MVP) ou reestrutura projetos existentes (README.md fiel ao disco, AGENTS.md, SPEC.md, CONTEXT.md, DESIGN.md, .env/.gitignore e contratos MCP). Use para estruturar ou padronizar repositórios; não use para limpeza de sistema operacional.
 license: MIT
 compatibility: "Antigravity IDE, Gemini CLI, Claude Code, Cursor"
 allowed-tools: "Read Write Edit Glob Grep Bash MemorySearch AskQuestion"
@@ -20,6 +19,7 @@ metadata:
     - "mcp-fastapi-rpc"
     - "documentacao-viva"
     - "higiene-repositorio"
+version: "1.0.0"
 updated_at: "2026-10-21"
 author: "Melki & Franklin-Main"
 category: "Project Architecture, Idea Refinement & Repository Hygiene"

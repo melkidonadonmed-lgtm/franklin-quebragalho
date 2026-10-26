@@ -1,8 +1,7 @@
 ---
 name: design-md
 description: >-
-  Gera ou atualiza o contrato DESIGN.md na raiz do projeto ou via Google Stitch, alinhando tema, atmosfera, tipografia, espaçamento, contraste e camadas ao propósito do sistema (SaaS, Editorial, FinTech, AETHER, MedTech ou Terminal IBM). Não use para auditar repositório (use auditoria-projetos-sistema).
-version: "5.0.0"
+  Cria ou atualiza o contrato DESIGN.md na raiz do projeto, definindo tokens semânticos, escala tipográfica modular, hierarquia em 3 níveis, composição espacial (Grid, Stack, Cluster, Split-View) e estados FSM. Use para estabelecer o sistema de design; não use para auditoria de backend.
 license: MIT
 metadata:
   author: "FrontCraftMaster & Melki"
@@ -15,11 +14,12 @@ metadata:
     - "ex-umbris-ad-lucem"
     - "aether-2027"
     - "arquitetura-visual"
+version: "5.0.0"
 updated_at: 2026-10-19
 author: FrontCraftMaster & Melki
 category: Design System Adaptativo por Propósito, Arquitetura Visual e Documentação Canônica
 authorized_sub_skills:
-  - name: minimal-impact-ui
+  - name: design-md
     role: "Atlas Ex Umbris Ad Lucem + WinUI 3 Gallery (6 arquétipos de página, 28 efeitos, 3 temas e boilerplate HTML/CSS/JS)"
   - name: frontend-code-architect
     role: "Estruturação modular src/ em 5 camadas de Design Atômico e componentes guiados por propósito"
@@ -54,8 +54,8 @@ Utilitário especializado em inspecionar um projeto frontend (local em disco ou 
 ## ⚙️ Fluxo de Síntese por Propósito (`v5.0`)
 
 ### Passo 1: Diagnóstico do Propósito do Projeto e Escolha da Atmosfera
-Consulte [`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md), a skill [`../minimal-impact-ui/SKILL.md`](../minimal-impact-ui/SKILL.md) e as referências interativas:
-- [`../minimal-impact-ui/references/atlas_ex_umbris_winui.html`](../minimal-impact-ui/references/atlas_ex_umbris_winui.html) (*Atlas Ex Umbris + WinUI 3 Gallery* — 3 temas ao vivo, 4 cores pontuais de 2%, 6 arquétipos de composição de página além de formulários/gráficos, 28 efeitos de superfície/layout/motion/controles e nitidez tipográfica zero vermelho embaçado).
+Consulte [`../_template/references/DESIGN.md (SSOT)`](../_template/references/DESIGN.md (SSOT)), a skill [`../design-md/SKILL.md`](../design-md/SKILL.md) e as referências interativas:
+- [`../design-md/references/atlas_ex_umbris_winui.html`](../design-md/references/atlas_ex_umbris_winui.html) (*Atlas Ex Umbris + WinUI 3 Gallery* — 3 temas ao vivo, 4 cores pontuais de 2%, 6 arquétipos de composição de página além de formulários/gráficos, 28 efeitos de superfície/layout/motion/controles e nitidez tipográfica zero vermelho embaçado).
 - [`references/ex_umbris_ad_lucem_studio.html`](references/ex_umbris_ad_lucem_studio.html) (*Ex Umbris Ad Lucem Studio* — 3 famílias tonais, 4 níveis de tinta, sombra esculpida em 3 camadas + 1px Rim Light, proporção 98/2).
 - [`references/aether_2027_design_system.html`](references/aether_2027_design_system.html) (*AETHER 2027* — matriz de decisão por objetivo, `oklch()`, Bento Grid assimétrico e contraste perceptual APCA).
 - [`references/design_md_v4_5_studio.html`](references/design_md_v4_5_studio.html) (Referência opcional de controles de estúdio v4.5 quando o projeto exigir estética de hardware dedicado).

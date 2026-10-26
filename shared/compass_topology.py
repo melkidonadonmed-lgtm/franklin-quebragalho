@@ -47,6 +47,10 @@ UI_SUBAGENT_ALIASES: Dict[str, str] = {
     "verifier": "read-after-write-verifier",
     "raw-verifier": "read-after-write-verifier",
     "read_after_write_verifier": "read-after-write-verifier",
+    "publisher": "dev-workspace-publisher",
+    "workspace-publisher": "dev-workspace-publisher",
+    "dev-publisher": "dev-workspace-publisher",
+    "dev_workspace_publisher": "dev-workspace-publisher",
 }
 
 PERSONA_ALIASES: Dict[str, str] = {
@@ -63,9 +67,9 @@ PERSONA_ALIASES: Dict[str, str] = {
     "subagent-doc-maker": "DocMaker",
     "skillcraft": "SkillCraft",
     "subagent-skill-craft": "SkillCraft",
-    "frontcraftmaster": "FrontCraftMaster",
-    "frontcraft": "FrontCraftMaster",
-    "subagent-frontcraft-master": "FrontCraftMaster",
+    "ui-architect": "UI-Architect",
+    "uiarchitect": "UI-Architect",
+    "subagent-ui-architect": "UI-Architect",
     "vaultmaster": "VaultMaster",
     "subagent-vault-master": "VaultMaster",
     "loopplanner": "LoopPlanner",
@@ -87,23 +91,27 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
         "Foco em zero alocação no hot-loop (GC), multiplicação por dt e guarda contra NaN (sem burocracia de docstrings em helpers matemáticos).",
     ),
     (
-        ("medic", "saude", "clin", "prontuario", "receit", "calculadora", "paciente"),
-        "🩺 Software Médico & SaaS Clínico Minimalista",
-        ["design-interface-medica-minimalista", "arquitetura-design-implementacao-sistema", "design-md", "frontend-testing-auditor"],
+        ("medic", "saude", "clin", "prontuario", "receit", "calculadora", "paciente", "appmy", "scoreboard", "atlas", "hexagonal", "sofa"),
+        "🩺 Software Médico, Atlas 3D (`appmy`) & Scoreboard Hexagonal (`clinical_preceptor_orchestrator`)",
+        ["design-interface-medica-minimalista", "nav-x-func", "design-md", "frontend-testing-auditor"],
         [
             ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria adaptativa FrontierCode (Tipagem, Bare Except, Segurança)"),
             ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Sanitização e chunking SHA-256 para diretrizes clínicas/RAG"),
         ],
         "plans/ui_composition_dag.json",
-        "Zero dados identificáveis de pacientes fora de .env, contraste WCAG AA/AAA, tipografia tabular-nums e conformidade A4.",
+        "Coordenador clínico unificado (clinical_preceptor_orchestrator em adk-tests/py_agent/clinical_coordinator.py) com AgentTools separados: anatomy_3d_inspector (appmy) + hexagonal_score_calculator (scoreboard) e replanejamento dinâmico.",
     ),
     (
-        ("ui", "ux", "front", "tela", "botao", "menu", "css", "tailwind", "react", "design"),
-        "🎨 Engenharia de Interface & Arquitetura Visual Guiada por Propósito (`DESIGN.md` • Ex Umbris Ad Lucem & AETHER 2027)",
-        ["design-md", "frontend-code-architect", "frontend-testing-auditor", "auditoria-projetos-sistema"],
-        [("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Verificação rápida de código sem engessamento")],
+        ("ui", "ux", "front", "tela", "botao", "menu", "css", "tailwind", "react", "design", "sombra", "tatil", "tactile", "elevacao"),
+        "🎨 Engenharia de Interface, Elevação Tátil, Composição Espacial & Hierarquia Visual (`DESIGN.md` • SSOT)",
+        ["design-md", "frontend-code-architect", "frontend-ui-ux-auditor", "frontend-testing-auditor", "auditoria-projetos-sistema"],
+        [
+            ("frontend-ui-ux-auditor", "ui_ux_frontend_auditor.py", "Auditor determinístico de UI/UX, contraste WCAG, física da luz/sombras táteis e zero-reflow"),
+            ("frontend-testing-auditor", "audit_tactile_ui.py", "Auditor determinístico de composição, A11y, zero emojis, zero bloat Base64 e FSM"),
+            ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Verificação rápida de código sem engessamento"),
+        ],
         "plans/ui_composition_dag.json",
-        "Seleção de tema pelo propósito do projeto (Ad Lucem, Cinza #57545d + Menus #8e8999, Preto Terminal IBM + IBM Plex, AETHER 2027), contraste WCAG, sombra 3 camadas + 1px Rim Light e alvos >= 44x44px.",
+        "Tokens semânticos adaptados ao propósito do projeto, elevação óptica em camadas (Oclusão de Contato + Key Light + Specular Rim em references/tactile_elevation_and_shadows.md), hierarquia visual em 3 níveis (Squint Test) e tabular-nums.",
     ),
     (
         ("rag", "dado", "chunk", "jsonl", "vetor", "memoria", "obsidian", "nota", "vault"),
@@ -130,7 +138,7 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
     (
         ("revers", "binario", "binary", "decompil", "ghidra", "sqlite", "bundle", "macho", "objdump", "frida", "rizin"),
         "🔬 Engenharia Reversa Baseada em Evidências (`REA` • Binários Go/PE, SQLite & Bundles JS)",
-        ["auditoria-projetos-sistema", "gap-analyzer-auditor", "aprimoramento-expansibilidade-agentes-skills"],
+        ["auditoria-projetos-sistema", "gap-analyzer-auditor", "code-acceptability-auditor"],
         [
             ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria estrutural e de segurança pós-inspeção de artefatos"),
             ("curadoria-obsidian-vault", "vault_palace_search.py", "Busca híbrida (~35ms) e sincronização do Grafo de Conhecimento SQLite"),
@@ -141,27 +149,29 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
     (
         ("projeto", "repo", "organizar", "ideia", "mvp", "sincronizar", "readme", "estrutura", "auditar"),
         "📦 Organização de Projetos, Refinamento de Ideias, Diagnóstico de MVP & Auditoria (Trio Canônico 2026)",
-        ["organizador-projetos-ideias", "antigravity-project-auditor", "auditoria-projetos-sistema", "arquitetura-design-implementacao-sistema"],
+        ["organizador-projetos-ideias", "antigravity-project-auditor", "auditoria-projetos-sistema", "nav-x-func"],
         [
             ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (SRP, Tipagem Pydantic, Segurança)"),
-            ("arquitetura-design-implementacao-sistema", "deterministic_scorer.py", "Scanner determinístico SGA (Ilhas Funcionais, INE, ICI, IRM, IPC, ICTE)"),
+            ("nav-x-func", "deterministic_scorer.py", "Scanner determinístico SGA + TIF (Ilhas Funcionais, X ativa Y, INE, ICI, IRM, IPC, ICTE)"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST pré-commit de segurança e tipagem Python (Score >= 75)"),
         ],
         "plans/distributed_agent_mediation_dag.json | plans/ui_composition_dag.json",
         "Fluxo em 4 etapas: (1) Ideação/MVP ('organizador-projetos-ideias' Modo 1) -> (2) Diagnóstico Read-Only ('antigravity-project-auditor') -> (3) Saneamento & Paridade README/Contratos ('organizador-projetos-ideias' Modo 2) -> (4) Homologação 0-100 ('auditoria-projetos-sistema').",
     ),
     (
-        ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra", "test", "auditor", "rca", "converge", "gap"),
-        "🤖 Esteira de 3 Portões (AST • Testes/Evals • RCA/Convergência), Agentes & Skills (29 Canônicas)",
-        ["code-acceptability-auditor", "test-quality-auditor", "gap-analyzer-auditor", "high-level-context-planner", "evoluir-skills", "aprimoramento-expansibilidade-agentes-skills"],
+        ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra", "test", "auditor", "rca", "converge", "gap", "intencao", "cognitiv", "kahn", "a2a", "stdio"),
+        "🤖 Esteira de Qualidade (AST • Testes/Evals • Servidores MCP/A2A • RCA/Convergência), Planejamento Cognitivo Não-Linear & Orquestração DAG (26 Skills Canônicas)",
+        ["agent-server-auditor", "code-acceptability-auditor", "test-quality-auditor", "gap-analyzer-auditor", "high-level-context-planner", "skill-orquestrador-planos-encadeados"],
         [
+            ("agent-server-auditor", "agent_server_auditor.py", "Auditor arquitetural poliglota (Go/TS/Py) de agentes, higiene STDIO MCP, A2A JWS, binários e max_steps"),
+            ("high-level-context-planner", "cognitive_plan_builder.py", "Motor Cognitivo (intent-cognitive-planner): 4 quadrantes, CLAREZA/CREATE + CoT/ReAct/ToT/Self-Refine e Parede <= 5 regras/nó"),
+            ("skill-orquestrador-planos-encadeados", "dag_chain_validator.py", "Compilador de Ondas DAG (Kahn), detector de colisão de arquivos [P] e validador de Context Fork"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão 1 AST + Pydantic v2 (12 regras: Segurança, Tipagem, McCabe <= 10, Score >= 75)"),
             ("test-quality-auditor", "test_quality_auditor.py", "Portão 2 de qualidade de suítes de testes em 5 módulos (Py/TS/Go/MCP/Harness + PerfKit)"),
-            ("aprimoramento-expansibilidade-agentes-skills", "agent_spec_loader.py", "Carregador Declarative YAML Agent Spec com Zero-Config Defaults"),
-            ("workspace", "validate_skills.py", "Validador determinístico das 29 skills canônicas"),
+            ("workspace", "validate_skills.py", "Validador determinístico das 26 skills canônicas"),
         ],
         "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json | plans/distributed_agent_mediation_dag.json",
-        "Esteira em 3 Portões: (1) Código AST ('code-acceptability-auditor' >=75) -> (2) Testes AAA/Evals ('test-quality-auditor' Nível 4) -> (3) RCA & Convergência Spec-to-Code ('gap-analyzer-auditor' -> 'high-level-context-planner').",
+        "Planejamento Não-Linear ('high-level-context-planner' v3.0 <=5 regras/nó) -> Compilação de Ondas Kahn ('skill-orquestrador-planos-encadeados' v3.0) -> Esteira em 3 Portões ('code-acceptability-auditor' -> 'test-quality-auditor' -> 'gap-analyzer-auditor').",
     ),
 ]
 
@@ -170,7 +180,6 @@ def _resolve_agents_dir() -> Path:
     """Localiza o diretório de contratos de subagentes (agents/)."""
     for candidate in (
         ROOT_DIR / "agents",
-        ROOT_DIR / ".agents" / "agents",
         Path(r"C:\Users\melki\.gemini\config\plugins\franklin-skills\agents"),
         Path(r"C:\Users\melki\.gemini\config\agents"),
         Path(r"C:\Users\melki\.gemini\agents"),
@@ -181,7 +190,7 @@ def _resolve_agents_dir() -> Path:
 
 
 def _render_ecosystem_topology() -> str:
-    """Renderiza a topologia interativa de agentes em 5 camadas e 29 skills."""
+    """Renderiza a topologia interativa de agentes em 5 camadas e 24 skills."""
     skills = _get_all_skills_data()
     by_persona: Dict[str, List[str]] = {}
     for s in skills:
@@ -191,9 +200,9 @@ def _render_ecosystem_topology() -> str:
         "## 1. Camadas de Execução e Custo Cognitivo",
         "- **Camada 0 (Bússola & Heartbeat Zero-LLM — 0 tokens)**: `franklin_smart_compass()`, `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1`, `POST /rpc` (`mesh/heartbeat` em `adk-tests`).",
         "- **Camada 1 (Orquestração & Loop Fechado)**: `Franklin-Main` (Execução Direta) e `LoopPlanner` (`high-level-context-planner` Fase 0 -> `skill-orquestrador-planos-encadeados` -> `gap-analyzer-auditor`).",
-        "- **Camada 2 (Esquadrão Frontend & Arquitetura Visual por Propósito — Topologia 3+1)**: `FrontCraftMaster` + `ui-shell-navigator` (Onda 1) -> `ui-controls-data` + `ui-motion-interaction` (Onda 2) -> `ui-deterministic-observer` (Onda 3 Gatekeeper `AUDIT-VIS-01 >= 90`).",
+        "- **Camada 2 (Esquadrão Frontend & Composição Visual por Propósito — Topologia 3+1)**: `UI-Architect` + `ui-shell-navigator` (Onda 1) -> `ui-controls-data` + `ui-motion-interaction` (Onda 2) -> `ui-deterministic-observer` (Onda 3 Gatekeeper `AUDIT-VIS-01 >= 90`).",
         "- **Camada 3 (Gatekeepers Determinísticos AST/Pass@k — 0 tokens)**: `SkillCraft` (`code-acceptability-auditor` Score >= 75, `test-quality-auditor`), `3D Physics Auditor` (`franklin_execute_dag('physics')`) e `dispatch_skill_deterministic_tests` (Go Eval Harness).",
-        "- **Camada 4 (Malha Multiagente Cloud/Web & Clínica)**: `adk-tests` (`mesh_hybrid_orchestrator`, `self_healing_specialist`, `customer_issue_reviewer`, `AgyCalcCluster`), `epic-volta` (`DAGEngine` Kahn + `MCPBridgeAgent` + `ContextSentinel`), `mcp-web-agents` (Gateway 4+1 + `watchdogBridge.ts`) e `PCM`/`scoreboard` (`prescmed-clinical-reviewer`).\n",
+        "- **Camada 4 (Malha Multiagente Cloud/Web & Clínica)**: `adk-tests` (`mesh_hybrid_orchestrator`, `self_healing_specialist`, `customer_issue_reviewer`, `AgyCalcCluster`, `clinical_preceptor_orchestrator` -> `anatomy_3d_inspector` [`appmy`] + `hexagonal_score_calculator` [`scoreboard`]), `epic-volta` (`DAGEngine` Kahn + `MCPBridgeAgent` + `ContextSentinel`), `mcp-web-agents` (Gateway 4+1 + `watchdogBridge.ts`) e `PCM`/`scoreboard` (`prescmed-clinical-reviewer`).\n",
         "## 2. Personas Especialistas & Skills Vinculadas (`franklin-quebragalho`)",
     ]
     for p_name, s_list in sorted(by_persona.items()):
@@ -235,7 +244,7 @@ def get_agents_impl(agent_name: str = "") -> str:
     agents_dir = _resolve_agents_dir()
     if clean in ("ui", "3+1", "all-ui", "subagentes-ui"):
         ordered = ("ui-shell-navigator.md", "ui-controls-data.md", "ui-motion-interaction.md", "ui-deterministic-observer.md")
-        parts = ["# Esquadrão de Subagentes de UI (`Topologia 3+1` sob `FrontCraftMaster`)\n"]
+        parts = ["# Esquadrão de Subagentes de UI (`Topologia 3+1` sob `UI-Architect`)\n"]
         for fname in ordered:
             fpath = agents_dir / fname
             if fpath.exists():
@@ -257,14 +266,14 @@ def _resolve_compass_profile(q: str) -> Tuple[str, List[str], List[Tuple[str, st
         if any(k in q for k in keywords):
             return title, rec_skills, scripts, dag_plan, guardrail
     return (
-        "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 29 Skills)",
-        ["organizador-projetos-ideias", "antigravity-project-auditor", "auditoria-projetos-sistema", "arquiteto-conteudo-solucoes", "code-acceptability-auditor", "design-md", "evoluir-skills"],
+        "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 24 Skills)",
+        ["organizador-projetos-ideias", "antigravity-project-auditor", "auditoria-projetos-sistema", "arquiteto-conteudo-solucoes", "code-acceptability-auditor", "design-md", "frontend-code-architect"],
         [
             ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (detecta sozinho se é código Geral ou 3D)"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST pré-commit de segurança e tipagem Python (Score >= 75)"),
             ("code-quality-audit-3d-physics", "state_checker_observer.py", "Observador Pydantic com filtro anti-alucinação AST e nota Snorm"),
             ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Pipeline de sanitização e chunking JSONL para RAG"),
-            ("aprimoramento-expansibilidade-agentes-skills", "agent_spec_loader.py", "Instanciação declarativa de agentes via YAML"),
+            ("frontend-testing-auditor", "audit_tactile_ui.py", "Auditor determinístico de composição frontend, A11y e FSM"),
         ],
         "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json | plans/distributed_agent_mediation_dag.json",
         "Portão gradual: bloqueia apenas falhas críticas/altas (Hard Gate) e trata estilo/docstrings como sugestões leves (Soft Advisory).",

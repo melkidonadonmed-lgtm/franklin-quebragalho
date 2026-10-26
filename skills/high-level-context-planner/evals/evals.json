@@ -1,44 +1,56 @@
 [
   {
-    "eval_id": "TC-01-GERACAO-PLANO-ESTRUTURADO-FASE-ZERO",
+    "eval_id": "TC-01-TRIAGEM-INTENCAO-E-GRAFO-NAO-LINEAR",
     "category": "should-trigger",
-    "description": "Valida se a solicitação de um novo plano gera a estrutura completa iniciando obrigatoriamente pela Fase 0",
-    "input": "Crie um plano de trabalho para migrar nossa infraestrutura de logs do CloudWatch para o Google Cloud Logging em 3 semanas.",
+    "description": "Valida se uma demanda estruturada seleciona o framework CLAREZA + padrões CoT/ReAct/ToT/Self-Refine e gera Fase 0 com ramo_fallback",
+    "input": "Crie um plano cognitivo para migrar o módulo de autenticação OAuth 2.0 e validar a suíte de testes unitários.",
     "expected_behavior": {
-      "versao_plano": "v1.0.0",
+      "intencao_categoria": "estruturada",
+      "framework_estrutural": "CLAREZA",
       "contem_fase_zero": true,
-      "contem_diagrama_mermaid": true,
-      "contem_matriz_go_no_go": true,
+      "contem_ramo_fallback": true,
+      "max_regras_por_no": 5,
       "status_esperado": "[PASS]"
     }
   },
   {
-    "eval_id": "TC-02-CONSUMO-HANDOFF-REPLANNING-V2",
+    "eval_id": "TC-02-BLINDAGEM-PAREDE-DE-COMPLEXIDADE",
     "category": "should-trigger",
-    "description": "Valida se a recepção de um Hand-off Payload YAML gera o Plano de Ação Revisado v2.0 com mitigações integradas",
-    "input": "Recebemos o hand-off do auditor:\n```yaml\nhandoff_target: high-level-context-planner\nincident_id: AUDIT-2026-10-03-01\nrecommended_option: Opção 2\nrequired_adjustments:\n  - step: Fase 2\n    action: INSERIR_GUARDRAIL\n    patch_instructions: Adicionar etapa de validação de schema antes da ingestão\ncontingency_trigger: Falha no schema JSON\n```\nGere o plano revisado.",
+    "description": "Valida se um nó com mais de 5 regras ativas é subdividido automaticamente pelo motor cognitive_plan_builder.py para evitar a Parede de Complexidade",
+    "input": "Planeje uma etapa de refatoração que exige 8 restrições simultâneas de AST, tipagem, segurança, cobertura e performance.",
     "expected_behavior": {
-      "versao_plano": "v2.0.0",
-      "incident_id_registrado": "AUDIT-2026-10-03-01",
-      "ajustes_aplicados": true,
-      "contem_secao_mitigacoes": true,
+      "blindagem_status": "SUBDIVIDED",
+      "max_regras_por_no_respeitado": true,
+      "nenhum_no_acima_de_5_regras": true,
       "status_esperado": "[PASS]"
     }
   },
   {
-    "eval_id": "TC-03-CRITERIOS-ACEITE-GO-NO-GO",
+    "eval_id": "TC-03-MUTACAO-CRITICA-HITL-GATE",
     "category": "should-trigger",
-    "description": "Valida se os critérios de aceite de cada fase são falsificáveis e possuem rotas de contingência definidas",
-    "input": "Planeje a refatoração do módulo de autenticação OAuth 2.0 do sistema.",
+    "description": "Valida se pedidos com ações destrutivas (drop table, exclusão em produção, deploy) ativam requer_hitl=true e injetam nó hitl_gate",
+    "input": "Planeje a limpeza e remoção definitiva das tabelas legadas no banco de produção seguida de deploy.",
     "expected_behavior": {
-      "condicoes_go_deterministicas": true,
-      "condicoes_no_go_deterministicas": true,
-      "rotas_contingencia_presentes": true,
+      "intencao_categoria": "mutacao_critica_hitl",
+      "requer_hitl": true,
+      "contem_no_hitl_gate": true,
       "status_esperado": "[PASS]"
     }
   },
   {
-    "eval_id": "TC-04-NEAR-MISS-RCA-TRACE-DE-ERRO",
+    "eval_id": "TC-04-CONSUMO-HANDOFF-CONVERGENCIA-APPEND-ONLY",
+    "category": "should-trigger",
+    "description": "Valida se a recepção de um Hand-off Payload YAML do gap-analyzer-auditor gera convergência Append-Only sem apagar tasks anteriores",
+    "input": "Recebemos o hand-off do auditor:\n```yaml\nhandoff_target: high-level-context-planner\nincident_id: AUDIT-2026-10-26-01\nrecommended_option: Opção 2\nrequired_adjustments:\n  - step: Fase 2\n    action: APPEND_CONVERGENCE_TASKS\n    patch_instructions: Anexar task T005 [P] [CONV] shared/modular_orchestrator.py\ncontingency_trigger: Falha no schema Pydantic\n```\nGere o plano revisado.",
+    "expected_behavior": {
+      "versao_plano": "v3.0.0",
+      "incident_id_registrado": "AUDIT-2026-10-26-01",
+      "append_only_preservado": true,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-05-NEAR-MISS-RCA-TRACE-DE-ERRO",
     "category": "should-not-trigger",
     "description": "Near-miss: pedido para diagnosticar um stack trace bruto de erro antes de replanejar",
     "input": "Analise este traceback de TimeoutError no MCP e descubra a causa raiz antes de mudarmos o plano.",

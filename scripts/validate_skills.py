@@ -8,11 +8,16 @@ do catálogo de skills do Franklin Quebra-Galho (Padrão 2026).
 from __future__ import annotations
 
 import argparse
+import ast
 import json
 import re
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
+
+SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+NEGATIVE_TRIGGER_RE = re.compile(r"\b(n[aã]o use|do not use|don't use|skip when)\b", re.IGNORECASE)
+POSITIVE_TRIGGER_RE = re.compile(r"\b(use|ative|acion[ea]|when to use)\b", re.IGNORECASE)
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -50,23 +55,47 @@ REQUIRED_SECTIONS: List[Tuple[str, str]] = [
 
 
 def _validate_frontmatter_fields(meta: Dict[str, Any], dir_name: str, errors: List[str]) -> None:
-    """Valida os campos obrigatórios e limites de tamanho do frontmatter YAML."""
+    """Valida os campos obrigatórios, regex kebab-case e gatilhos positivos/negativos do frontmatter YAML."""
     if not meta:
         errors.append("[FAIL] Frontmatter YAML ausente ou malformado")
     for req in ("name", "description", "version"):
         if not meta.get(req):
             errors.append(f"[FAIL] Campo obrigatório '{req}' ausente no frontmatter")
 
-    name_val = meta.get("name")
+    name_val = str(meta.get("name", "")).strip()
     is_template = dir_name == "_template" and name_val == "template-skill"
-    if name_val and name_val != dir_name and not is_template:
-        errors.append(f"[FAIL] Nome no frontmatter ('{name_val}') difere da pasta ('{dir_name}')")
+    if name_val:
+        if len(name_val) > 64 or not SKILL_NAME_RE.match(name_val):
+            errors.append(f"[FAIL] Nome '{name_val}' viola o padrão kebab-case estrito (^[a-z0-9]+(-[a-z0-9]+)*$, máx 64 chars)")
+        if name_val != dir_name and not is_template:
+            errors.append(f"[FAIL] Nome no frontmatter ('{name_val}') difere da pasta ('{dir_name}')")
 
-    desc = str(meta.get("description", ""))
-    if desc and len(desc) > 420:
-        errors.append(f"[FAIL] Descrição excede o orçamento de contexto de 420 caracteres ({len(desc)} chars)")
-    if desc and len(desc) < 30:
-        errors.append(f"[FAIL] Descrição muito curta ou rasa ({len(desc)} chars)")
+    desc = str(meta.get("description", "")).strip()
+    if desc:
+        if len(desc) > 420:
+            errors.append(f"[FAIL] Descrição excede o orçamento L1 de 420 caracteres ({len(desc)} chars, máx spec 1024)")
+        if len(desc) < 30:
+            errors.append(f"[FAIL] Descrição muito curta ou rasa ({len(desc)} chars)")
+        if not POSITIVE_TRIGGER_RE.search(desc):
+            errors.append("[FAIL] Descrição deve conter formulação imperativa de ativação ('Use quando...' / 'Use para...')")
+        if not NEGATIVE_TRIGGER_RE.search(desc) and not is_template:
+            errors.append("[FAIL] Descrição deve declarar fronteira negativa de escopo ('Não use para...' / 'Do not use...')")
+
+
+def _validate_scripts_dir(skill_dir: Path, errors: List[str]) -> None:
+    """Audita scripts executáveis em scripts/ contra bloqueios TTY (input()) e erros de sintaxe AST."""
+    scripts_dir = skill_dir / "scripts"
+    if not scripts_dir.is_dir():
+        return
+    for py_file in sorted(scripts_dir.glob("*.py")):
+        try:
+            tree = ast.parse(py_file.read_text(encoding="utf-8"), filename=py_file.name)
+        except (OSError, SyntaxError) as exc:
+            errors.append(f"[FAIL] Erro de sintaxe em scripts/{py_file.name}: {exc}")
+            continue
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "input":
+                errors.append(f"[FAIL] Bloqueio TTY proibido: chamada 'input()' detectada em scripts/{py_file.name}")
 
 
 def _validate_evals_file(skill_dir: Path, errors: List[str]) -> None:
@@ -92,6 +121,14 @@ def _validate_evals_file(skill_dir: Path, errors: List[str]) -> None:
     for idx, tc in enumerate(evals_list):
         if not isinstance(tc, dict) or ("eval_id" not in tc and "id" not in tc):
             errors.append(f"[FAIL] Test case #{idx} em evals.json requer 'eval_id' (ou 'id')")
+            continue
+        if not any(k in tc for k in ("prompt", "query", "input", "scenario")):
+            errors.append(f"[FAIL] Test case #{idx} em evals.json requer 'prompt' (ou 'query'/'input')")
+        if not any(
+            k in tc
+            for k in ("assertions", "expected_assertions", "expected_output", "expected_behavior", "expected", "criteria", "expected_status")
+        ):
+            errors.append(f"[FAIL] Test case #{idx} em evals.json requer 'assertions' (ou 'expected_output')")
 
 
 def _validate_rules_and_references(skill_dir: Path, errors: List[str]) -> None:
@@ -127,10 +164,15 @@ def validate_skill_dir(skill_dir: Path) -> List[str]:
     meta, body = parse_frontmatter(content)
     _validate_frontmatter_fields(meta, skill_dir.name, errors)
 
+    body_lines = len(body.splitlines())
+    if body_lines > 500:
+        errors.append(f"[FAIL] Corpo L2 do SKILL.md excede o limite de 500 linhas ({body_lines} linhas)")
+
     for sec_pattern, sec_name in REQUIRED_SECTIONS:
         if not re.search(sec_pattern, body, re.IGNORECASE):
             errors.append(f"[FAIL] Seção essencial ausente: {sec_name}")
 
+    _validate_scripts_dir(skill_dir, errors)
     _validate_evals_file(skill_dir, errors)
     _validate_rules_and_references(skill_dir, errors)
     return errors
@@ -152,8 +194,6 @@ def main() -> int:
 
     root_path = Path(__file__).resolve().parent.parent
     agents_skills = root_path / "skills"
-    if not agents_skills.exists():
-        agents_skills = root_path / ".agents" / "skills"
     if not agents_skills.exists():
         print(f"[ERROR] Diretório skills não encontrado em {agents_skills}")
         return 1

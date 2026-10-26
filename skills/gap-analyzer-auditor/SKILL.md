@@ -1,31 +1,30 @@
 ---
 name: gap-analyzer-auditor
 description: >-
-  Auditor técnico, analista de brechas (RCA) e motor de convergência Spec-to-Code em malha fechada (Closed-Loop Reflection). Inspeciona logs, traces, código e planos/specs, separa fatos de inferências e emite Hand-off Payload YAML ou tasks de convergência append-only.
-license: MIT
+  Auditor técnico, analista de brechas (RCA) e motor de convergência Spec-to-Code em malha fechada. Use para inspecionar logs, traces, código e specs, separar fatos de inferências e emitir Hand-off YAML ou tasks de convergência; não use para planejamento inicial sem falhas ou specs prévias.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   author: "LoopPlanner & Melki"
   category: "Auditoria de Processos, RCA e Hand-off Multiagente"
-  updated_at: "2026-10-21"
+  updated_at: "2026-10-26"
   tags:
     - "rca"
     - "closed-loop"
     - "hand-off"
     - "auditoria"
     - "converge"
-version: 2.1.0
-updated_at: 2026-10-21
+version: 2.2.0
+updated_at: 2026-10-26
 author: LoopPlanner & Melki
 category: Auditoria de Processos, RCA e Hand-off Multiagente
 ---
 
-# SKILL: Analisador de Brechas, Auditor de Falhas & Convergência Spec-to-Code (`gap-analyzer-auditor` v2.1.0)
+# SKILL: Analisador de Brechas, Auditor de Falhas & Convergência Spec-to-Code (`gap-analyzer-auditor` v2.2.0)
 
 ## 1. Identificação e Metadados
 - **Nome Oficial**: `gap-analyzer-auditor`
-- **Identificador de Ativo**: `SKILL_GAP_ANALYZER_AUDITOR_V2_1`
-- **Versão de Referência**: `2.1.0`
+- **Identificador de Ativo**: `SKILL_GAP_ANALYZER_AUDITOR_V2_2`
+- **Versão de Referência**: `2.2.0`
 - **Compatibilidade Normativa**: Multi-LLM (Gemini 2.5+, Claude 3.5+, GPT-4o+, Google ADK, LangGraph, MCP Spec 2026-07-28, GitHub Spec Kit SDD `/speckit-converge`).
 - **Papel na Arquitetura**: Nó Crítico / Auditor de RCA e Convergência em malha fechada (*stateless analyzer & convergence engine*).
 
@@ -34,12 +33,12 @@ category: Auditoria de Processos, RCA e Hand-off Multiagente
 ## 2. Propósito e Missão (Quando Usar)
 
 ### Quando Usar (Portão 3 da Esteira de Qualidade e Convergência)
-Esta skill atua como o **Portão 3 (`gap-analyzer-auditor` `v2.1.0`)** da esteira canônica de qualidade, recebendo evidências factuais de:
+Esta skill atua como o **Portão 3 (`gap-analyzer-auditor` `v2.2.0`)** da esteira canônica de qualidade, recebendo evidências factuais de:
 - **Portão 1 (`code-acceptability-auditor` `v1.1.0`)**: Rejeições AST/Pydantic de código Python (`SEC001..003`, `SYN001`, `ERR001..003`, `TYP001..002`, `ARCH001..003`, `Score < 75.0`).
 - **Portão 2 (`test-quality-auditor` `v1.2.0`)**: Reprovações de suítes de testes e `evals/` nos 5 domínios (`python`, `ts_js`, `go`, `mcp`, `harness`, nota $< 81$ ou `pass_rate < 1.0`).
 - **Traces de Runtime & Logs Operacionais**: Comandos, scripts, pipelines ou automações que falharem ou emitirem stack traces inesperados.
 - **Modo Convergência Spec-to-Code (`/speckit-converge`)**: Para comparar a especificação/plano (`spec.md`, `plan.md`, `tasks.md`) contra o estado atual do código no disco, detectando requisitos não atendidos (`FR-###`, `SC-###`, `T###`) e gerando novas tasks rastreáveis *append-only* (`[ ] T0XX [P] [CONV] caminho/exato.ext`) sem reescrever o histórico.
-- Para isolar fatos documentados (`[FATO]`) de inferências diagnósticas (`[INFERÊNCIA]`) e lacunas (`[LACUNA]`), formulando alternativas estruturadas (Opção 1 Cirúrgica vs Opção 2 Arquitetural) e gerando o contrato de hand-off em YAML para retroalimentar o `high-level-context-planner`.
+- Para isolar fatos documentados (`[FATO]`) de inferências diagnósticas (`[INFERÊNCIA]`) e lacunas (`[LACUNA]`), formulando alternativas estruturadas (Opção 1 Cirúrgica vs Opção 2 Arquitetural) e gerando o contrato de hand-off em YAML para retroalimentar o `high-level-context-planner` (`intent-cognitive-planner`).
 
 ### Quando NÃO Usar e Fronteira com os Portões 1 e 2
 - **Para auditar estaticamente código Python de produção via AST** antes de saber se há falhas: acione primeiro o **Portão 1 (`code-acceptability-auditor`)**.
@@ -59,30 +58,17 @@ Esta skill atua como o **Portão 3 (`gap-analyzer-auditor` `v2.1.0`)** da esteir
 
 ---
 
-## 4. Diretrizes de Estilo por Propósito e Arquitetura Visual (`preferencias_estilo_e_temas.md`)
+## 4. Governança de Qualidade, Parede de Complexidade ($\le 5$ Regras) e Clareza Analítica
 
-Sempre que a auditoria gerar relatórios visuais, painéis de monitoramento, tabelas formatadas ou recomendações de UI, aplica os 4 módulos guiados pelo **propósito do projeto** ([`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md)):
-
-### Módulo 1: Atmosfera e Tema pelo Propósito (Sem Paleta Fixa)
-- **Ad Lucem (Claro Editorial/Técnico)**: Canvas (`#F3F3F5` / `#F6F6F4`), Card (`#FFFFFF`), Elevado (`#E6E6EA`) e Bloco de Contraste (`#18181C`).
-- **Cinza Monolítico**: Canvas (`#57545d`), Card (`#49464f`) e Menus `#8e8999` com tinta escura (`#16151A`).
-- **Preto Terminal IBM (`Ex Umbris`)**: Canvas (`#070709`), Card (`#101014`), acoplado a **`IBM Plex Sans` + `IBM Plex Mono`**.
-- **Isolamento de Acento (98/2 ou 60-30-10)**: Cor de destaque guiada pelo domínio e restrita a 1 CTA primário sólido vs. `.btn-ghost`.
-
-### Módulo 2: Contraste, Espaçamento, Tipografia e Camadas Esculpidas
-- **Profundidade e Camadas**: No dark mode, $L_{\text{card}} > L_{\text{canvas}}$. Sombra esculpida em 3 estágios (`--shadow-sculpted`) + `1px` Rim Light superior (`inset 0 1px 0 0 var(--rim-light)`).
-- **Tipografia & Anti-Squish**: Escala `clamp()`, `tabular-nums` em métricas/tabelas e proteção `flex-shrink: 0; white-space: nowrap;` em células de status e botões.
-
-### Módulo 3: Opções das Preferências do Desenvolvedor
-- **Estruturação Modular**: Formulação de alternativas alinhadas com Design Atômico em 5 camadas (`frontend-code-architect` v5.0).
-- **Consulta Interativa via `ask_question`**: Quando houver trade-offs arquiteturais significativos entre a correção imediata e a estrutural.
-
-### Módulo 4: Matriz de Detecção de Discrepâncias com as Preferências
-- Avaliação determinística dos relatórios técnicos e recomendações geradas:
-  * `[PASS / FAIL]` **Tema Coerente com o Propósito (`AUDIT-VIS-01`)**: Relatórios e UIs sem paleta fixa engessada e com contraste WCAG AA/AAA.
-  * `[PASS / FAIL]` **Camadas Esculpidas e `tabular-nums`**: Sombra 3 camadas + `1px` Rim Light e alinhamento numérico tabular.
-  * `[PASS / FAIL]` **Segregação de Fatos**: Classificação rigorosa sem alucinação de dados.
-  * `[PASS / FAIL]` **Contrato Estruturado**: Presença mandatória do payload YAML de hand-off.
+Para garantir máxima precisão diagnóstica sem sobrecarregar a janela de contexto (*Prompt Complexity Wall Shield*):
+1. **Segregação Epistêmica Estrita**: Separe rigorosamente `[FATO]` (evidência textual/log/disco), `[INFERÊNCIA]` (hipótese causal) e `[LACUNA]` (dado ausente).
+2. **Alinhamento Não-Linear com o Planejador (`high-level-context-planner` v3.0)**:
+   - Cada ajuste em `required_adjustments` deve respeitar o teto de **$\le 5$ regras ativas por nó** e indicar o padrão cognitivo recomendado (`ReAct`, `ToT` ou `Self-Refine`).
+   - Quando a anomalia envolver artefatos de interface/frontend, referencie o contrato `DESIGN.md` do projeto e a SSOT em [`Preferências de Trabalho com Agentes.md`](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md) (tokens semânticos orientados ao propósito sem cores travadas e `tabular-nums` em tabelas).
+3. **Matriz de Qualidade do Diagnóstico**:
+   - `[PASS / FAIL]` **Segregação de Fatos**: Classificação rigorosa sem alucinação de logs.
+   - `[PASS / FAIL]` **Paridade de Alternativas (`ToT`)**: Opção 1 (Cirúrgica) vs. Opção 2 (Arquitetural).
+   - `[PASS / FAIL]` **Contrato Estruturado Append-Only**: Payload YAML válido preservando tasks concluídas.
 
 ---
 
@@ -110,9 +96,9 @@ flowchart TD
 
 ### Fase 2: Análise de Causa-Raiz (RCA - Root Cause Analysis)
 Identificar a origem fundamental do desvio a partir dos 4 vetores de auditoria:
-1. *Falha de Contexto / Injeção*: Parâmetros ausentes, prompts ambíguos, contaminação de contexto ou schemas incompatíveis.
+1. *Falha de Contexto / Injeção*: Parâmetros ausentes, prompts ambíguos, sobrecarga da Parede de Complexidade ($>5$ regras/nó) ou schemas incompatíveis.
 2. *Falha de Ferramenta / MCP*: Retorno inválido de API, timeout, tool misuse ou discrepância de versão de protocolo.
-3. *Gargalo de Arquitetura*: Dependência circular, loop infinito sem condição de parada, estouro de token budget ou acoplamento excessivo.
+3. *Gargalo de Arquitetura*: Dependência circular, colisão de arquivos paralelos (`[P]`), loop infinito sem condição de parada ou estouro de token budget.
 4. *Risco de Segurança / Confiabilidade*: Mutações de estado irreversíveis sem confirmação humana, vazamento de PII ou exposição de credenciais.
 
 ### Fase 3: Mapeamento de Alternativas e Mitigações
@@ -169,7 +155,7 @@ recommended_option: "Opção 2"
 required_adjustments:
   - step: "[Etapa afetada no plano anterior]"
     action: "REFATORAR"
-    patch_instructions: "[Instrução técnica pontual para sanar a brecha]"
+    patch_instructions: "[Instrução técnica atômica (<= 5 regras) para sanar a brecha]"
   - step: "Fase N: Convergência Spec-to-Code"
     action: "APPEND_CONVERGENCE_TASKS"
     patch_instructions: "Anexar ao final do plano sem reescrever tasks concluídas: - [ ] T0XX [P] [CONV] src/caminho/exato.py"
@@ -189,4 +175,3 @@ contingency_trigger: "[Condição em que o fallback deve ser acionado]"
 - ❌ **Proibição de Reescrever Tasks Passadas na Convergência**: A convergência é estritamente *append-only* (`APPEND_CONVERGENCE_TASKS`); se tudo já convergiu (`CONVERGED`), nenhuma linha vazia deve ser anexada.
 - ❌ **Proibição de Alucinação de Logs**: Na ausência de dados comprovados, marcar obrigatoriamente como `[LACUNA]`.
 - ❌ **Bloqueio Mandatório para Mutações Críticas**: Diante de operações destrutivas ou de risco irreversível, emitir `[BLOQUEIO HITL]` imediatamente, suspendendo a cadeia.
-

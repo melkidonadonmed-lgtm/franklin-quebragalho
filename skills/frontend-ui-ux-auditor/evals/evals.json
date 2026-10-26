@@ -1,0 +1,25 @@
+{
+  "skill_name": "frontend-ui-ux-auditor",
+  "version": "1.0.0",
+  "evals": [
+    {
+      "eval_id": "ui-ux-auditor-full-rubric",
+      "prompt": "Audite este arquivo HTML/CSS com a skill frontend-ui-ux-auditor verificando a escala de 8px, contraste WCAG 2.1 AA, profundidade DOM, ícones 1:1, física da luz 135° e transições sem reflow.",
+      "expected_assertions": [
+        "Executa scripts/ui_ux_frontend_auditor.py e calcula o Score_UI/UX ponderado nas 6 dimensões (Tokens 20%, Tipografia/WCAG 20%, DOM 15%, Iconografia 15%, Luz/Elevação 15%, Movimento 15%)",
+        "Calcula a luminância relativa W3C e a razão de contraste CR = (L_claro + 0.05) / (L_escuro + 0.05) exigindo >= 4.5:1",
+        "Detecta valores arbitrários fora da escala de 8px (ex.: p-[13px], margin: 11px), divsoup ratio > 0.45 e animações com reflow (width/height/margin)"
+      ]
+    }
+  ],
+  "trigger_eval_queries": {
+    "should_trigger": [
+      "Execute o ui_ux_frontend_auditor.py para inspecionar Design Tokens de 8px, contraste WCAG 2.1 AA e física da luz 135°",
+      "Audite a densidade DOM, divsoup ratio, nitidez tipográfica mobile e ícones 1:1 desta interface"
+    ],
+    "near_misses": [
+      "Otimize esta query SQL no BigQuery",
+      "Limpe arquivos duplicados no Google Drive"
+    ]
+  }
+}

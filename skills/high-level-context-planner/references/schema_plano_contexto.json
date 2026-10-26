@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "StructuredPlanSchema",
-  "description": "Schema canônico para planos de trabalho estruturados emitidos pelo high-level-context-planner",
+  "title": "CognitiveAdaptivePlanSchema",
+  "description": "Schema canônico v3.0.0 para planos adaptativos não-lineares emitidos pelo high-level-context-planner (intent-cognitive-planner)",
   "type": "object",
   "properties": {
     "plan_id": {
@@ -18,65 +18,131 @@
     "strategic_goal": {
       "type": "string"
     },
-    "phases": {
+    "intencao": {
+      "type": "object",
+      "properties": {
+        "categoria": {
+          "type": "string",
+          "enum": ["direta", "estruturada", "ambigua", "mutacao_critica_hitl"]
+        },
+        "diagnostico": {
+          "type": "string"
+        },
+        "requer_hitl": {
+          "type": "boolean"
+        }
+      },
+      "required": ["categoria", "diagnostico", "requer_hitl"],
+      "additionalProperties": false
+    },
+    "frameworks_selecionados": {
+      "type": "object",
+      "properties": {
+        "estrutural": {
+          "type": "string",
+          "enum": ["CLAREZA", "CREATE", "RTF", "TAG", "TASS"]
+        },
+        "cognitivo": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["CoT", "ReAct", "ToT", "Self-Refine"]
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["estrutural", "cognitivo"],
+      "additionalProperties": false
+    },
+    "blindagem_complexidade": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["SHIELDED", "SUBDIVIDED", "VIOLATION"]
+        },
+        "max_regras_por_no": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "disclosure_tier": {
+          "type": "integer",
+          "enum": [1, 2, 3]
+        },
+        "estrategia": {
+          "type": "string"
+        }
+      },
+      "required": ["status", "max_regras_por_no", "disclosure_tier", "estrategia"],
+      "additionalProperties": false
+    },
+    "grafo_execucao": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
         "properties": {
-          "phase_id": {
+          "etapa_id": {
             "type": "string"
           },
-          "name": {
+          "nome": {
             "type": "string"
           },
           "responsible_skill": {
             "type": "string"
           },
-          "inputs": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "outputs": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "go_no_go_criteria": {
-            "type": "object",
-            "properties": {
-              "go_condition": {
-                "type": "string"
-              },
-              "no_go_condition": {
-                "type": "string"
-              },
-              "contingency_route": {
-                "type": "string"
-              }
-            },
-            "required": ["go_condition", "no_go_condition", "contingency_route"],
-            "additionalProperties": false
-          },
-          "effort_level": {
+          "tipo_execucao": {
             "type": "string",
-            "enum": ["Baixo", "Médio", "Alto"]
+            "enum": ["model_reasoning", "tool_io", "decision_gate", "deterministic_code", "hitl_gate"]
+          },
+          "padrao_cognitivo": {
+            "type": "string",
+            "enum": ["CoT", "ReAct", "ToT", "Self-Refine"]
+          },
+          "regras_ativas_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "regras_ativas": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 5
+          },
+          "precondicoes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "target_files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "criterio_aceite": {
+            "type": "string"
+          },
+          "ramo_fallback": {
+            "type": ["string", "null"]
           }
         },
         "required": [
-          "phase_id",
-          "name",
-          "responsible_skill",
-          "inputs",
-          "outputs",
-          "go_no_go_criteria",
-          "effort_level"
+          "etapa_id",
+          "nome",
+          "tipo_execucao",
+          "padrao_cognitivo",
+          "regras_ativas_count",
+          "precondicoes",
+          "criterio_aceite",
+          "ramo_fallback"
         ],
         "additionalProperties": false
-      },
-      "minItems": 2
+      }
     }
   },
   "required": [
@@ -84,7 +150,10 @@
     "version",
     "target_orchestrator",
     "strategic_goal",
-    "phases"
+    "intencao",
+    "frameworks_selecionados",
+    "blindagem_complexidade",
+    "grafo_execucao"
   ],
   "additionalProperties": false
 }

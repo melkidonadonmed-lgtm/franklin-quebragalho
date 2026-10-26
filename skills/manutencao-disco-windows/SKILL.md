@@ -1,8 +1,7 @@
 ---
 name: manutencao-disco-windows
 description: >-
-  Executa manutencao, triagem e higienizacao de pastas locais no Windows 11 (Downloads, Desktop, C:\Users\melki\dev\), isolando instaladores antigos, limpando residuos temporarios, organizando experimentos em dev\sandbox\ e sincronizando status de repositorios em dev\repos\ com simulacao preventiva.
-license: MIT
+  Executa manutenção, triagem e higienização de pastas locais no Windows 11 (Downloads, Desktop, C:/Users/melki/dev/), isolando instaladores, limpando resíduos, organizando dev/sandbox/ e sincronizando dev/repos/. Use para higiene de disco local; não use para arquivos na nuvem Google Drive.
 metadata:
   version: "1.1.0"
   author: "FileOpsLocal & Melki"

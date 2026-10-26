@@ -1,68 +1,95 @@
 [
   {
-    "eval_id": "TC-01-FLUXO-LINEAR-SUCESSO",
+    "eval_id": "TC-01-COMPILACAO-ONDAS-KAHN-E-CONTEXT-FORK",
     "category": "should-trigger",
-    "description": "Valida a execução de plano sequencial em fases com transição limpa de payload",
+    "description": "Valida a compilação de um grafo não-linear em ondas paralelas (Kahn) com isolamento de estado (isolated_state_key) e <= 5 regras por nó",
     "input": {
-      "structured_plan": {
-        "title": "Migração de Notas",
-        "phases": [
-          {
-            "phase_id": "fase_01",
-            "target_skill": "manutencao-disco-windows",
-            "input_payload": { "target_path": "C:\\Users\\melki\\Documents\\Notas" },
-            "expected_outputs": ["lista_arquivos"]
-          },
-          {
-            "phase_id": "fase_02",
-            "target_skill": "conversor-html-pdf",
-            "input_payload": { "source_files": ["lista_arquivos"] },
-            "expected_outputs": ["relatorio_pdf"]
-          }
-        ]
-      },
-      "execution_policy": "autonomous"
+      "grafo_execucao": [
+        {
+          "etapa_id": "step_00",
+          "nome": "Fase 0",
+          "responsible_skill": "high-level-context-planner",
+          "padrao_cognitivo": "CoT",
+          "regras_ativas_count": 2,
+          "regras_ativas": ["Validar schema", "Checar caminhos"],
+          "precondicoes": [],
+          "target_files": ["config.json"],
+          "criterio_aceite": "[PASS]"
+        },
+        {
+          "etapa_id": "step_01a",
+          "nome": "Auditoria AST",
+          "responsible_skill": "code-acceptability-auditor",
+          "padrao_cognitivo": "ReAct",
+          "regras_ativas_count": 2,
+          "regras_ativas": ["Score >= 75", "Zero eval/exec"],
+          "precondicoes": ["step_00"],
+          "target_files": ["server.py"],
+          "criterio_aceite": "[PASS]"
+        },
+        {
+          "etapa_id": "step_01b",
+          "nome": "Auditoria de Testes",
+          "responsible_skill": "test-quality-auditor",
+          "padrao_cognitivo": "ReAct",
+          "regras_ativas_count": 2,
+          "regras_ativas": ["AAA", "Zero Green Build Illusion"],
+          "precondicoes": ["step_00"],
+          "target_files": ["tests/test_server.py"],
+          "criterio_aceite": "[PASS]"
+        }
+      ]
     },
     "expected_behavior": {
-      "fase_0_status": "[PASS]",
+      "status": "[PASS]",
+      "total_waves": 2,
       "context_rot_mitigado": true,
-      "payload_envelopado": true,
-      "status_final": "COMPLETED"
+      "file_collisions": []
     }
   },
   {
-    "eval_id": "TC-02-FALHA-RECUPERAVEL-RETRY",
+    "eval_id": "TC-02-BLOQUEIO-COLISAO-ESCRITA-PARALELA",
     "category": "should-trigger",
-    "description": "Valida 1 ciclo de auto-correção quando o output da skill não atende ao critério de aceite",
+    "description": "Valida se dois nós alocados na mesma onda que tentam editar o mesmo arquivo são bloqueados com PARALLEL_FILE_COLLISION",
     "input": {
-      "phase_id": "fase_validacao",
-      "target_skill": "validador-teste",
-      "tentativa": 1,
-      "falha_observada": "chave_obrigatoria_ausente"
+      "grafo_execucao": [
+        {
+          "etapa_id": "worker_1",
+          "nome": "Worker 1",
+          "precondicoes": [],
+          "target_files": ["shared/modular_orchestrator.py"],
+          "regras_ativas_count": 1,
+          "criterio_aceite": "[PASS]"
+        },
+        {
+          "etapa_id": "worker_2",
+          "nome": "Worker 2",
+          "precondicoes": [],
+          "target_files": ["shared/modular_orchestrator.py"],
+          "regras_ativas_count": 1,
+          "criterio_aceite": "[PASS]"
+        }
+      ]
     },
     "expected_behavior": {
-      "disparou_retry": true,
-      "max_retries": 1,
-      "feedback_enviado": true,
-      "status_intermediario": "RETRYING"
+      "status": "[FAIL]",
+      "erro_esperado": "[FAIL: PARALLEL_FILE_COLLISION]"
     }
   },
   {
-    "eval_id": "TC-03-BLOQUEIO-CICLICO",
+    "eval_id": "TC-03-BLOQUEIO-CICLICO-KAHN",
     "category": "should-trigger",
-    "description": "Valida interrupção imediata na Fase 0 ao detectar loop de dependência circular",
+    "description": "Valida interrupção imediata ao detectar loop de dependência circular via algoritmo de Kahn",
     "input": {
-      "structured_plan": {
-        "phases": [
-          { "phase_id": "A", "depends_on": "B" },
-          { "phase_id": "B", "depends_on": "A" }
-        ]
-      }
+      "phases": [
+        { "phase_id": "A", "depends_on": "B" },
+        { "phase_id": "B", "depends_on": "A" }
+      ]
     },
     "expected_behavior": {
-      "execucao_pausada": true,
-      "status_regra_2": "[FAIL: Loop circular de dependência identificado]",
-      "intervencao_humana_solicitada": true
+      "status": "[FAIL]",
+      "has_cycle": true,
+      "status_regra_1": "[FAIL: Loop circular de dependência identificado (CYCLE_DETECTED)]"
     }
   },
   {

@@ -12,6 +12,7 @@ import sys
 import uuid
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+from pydantic import BaseModel, ConfigDict, Field
 
 from shared.a2a_bridge import (
     FranklinA2ATaskManager,
@@ -35,6 +36,15 @@ from shared.harness import (
 )
 
 
+class ExecutionGuardrailsContract(BaseModel):
+    """Contrato estrito de limites de loop e parada para execução de DAGs e scripts."""
+
+    model_config = ConfigDict(extra="forbid")
+    max_steps: int = Field(default=10, ge=1, le=100)
+    max_retries: int = Field(default=3, ge=0, le=10)
+    stop_condition: str = "COMPLETED"
+
+
 def _build_script_command(script_path: Path, args: Optional[List[str]]) -> Optional[List[str]]:
     """Monta a lista de argumentos de comando segura conforme a extensão do script."""
     suffix = script_path.suffix.lower()
@@ -53,27 +63,42 @@ def _build_script_command(script_path: Path, args: Optional[List[str]]) -> Optio
     return cmd
 
 
+def _resolve_execution_cwd(target_dir: str) -> Optional[Path]:
+    """Resolve o diretório de trabalho (cwd) para execução cross-project."""
+    if not target_dir.strip():
+        return ROOT_DIR
+    candidate = Path(target_dir.strip()).resolve()
+    if candidate.is_file():
+        return candidate.parent
+    return candidate if candidate.is_dir() else None
+
+
 def run_skill_script_impl(
     skill_name: str,
     script_name: str,
     args: Optional[List[str]] = None,
     timeout_seconds: int = 60,
+    target_dir: str = "",
 ) -> str:
     """Executa de forma segura um script utilitário associado a uma skill ou ao workspace."""
     if ".." in script_name or "/" in script_name or "\\" in script_name:
         return "Erro de Segurança: Nome de script inválido (Path Traversal detectado)."
 
     if skill_name.lower() in ("workspace", "root", "global"):
-        target_dir = ROOT_DIR / "scripts"
+        scripts_dir = ROOT_DIR / "scripts"
     else:
         skill_dir = _find_skill_dir(skill_name)
         if not skill_dir:
             return f"Erro: Skill '{skill_name}' não encontrada."
-        target_dir = skill_dir / "scripts"
+        scripts_dir = skill_dir / "scripts"
 
-    script_path = target_dir / script_name
+    script_path = scripts_dir / script_name
     if not script_path.exists():
-        return f"Erro: Script '{script_name}' não existe em {target_dir}."
+        return f"Erro: Script '{script_name}' não existe em {scripts_dir}."
+
+    resolved_cwd = _resolve_execution_cwd(target_dir)
+    if resolved_cwd is None:
+        return f"Erro: Diretório de destino (target_dir) '{target_dir}' não encontrado."
 
     cmd = _build_script_command(script_path, args)
     if not cmd:
@@ -82,7 +107,7 @@ def run_skill_script_impl(
     try:
         res = subprocess.run(
             cmd, capture_output=True, text=True, errors="replace",
-            timeout=timeout_seconds, cwd=str(ROOT_DIR), shell=False,
+            timeout=timeout_seconds, cwd=str(resolved_cwd), shell=False,
         )
         out = res.stdout.strip()
         if res.stderr:
@@ -176,8 +201,8 @@ def _resolve_dag_plan_file(plan_str: str, target_dir: str = "") -> Tuple[Optiona
 def _build_dag_cli_cmd(resolved_plan_path: Path, run_id: str, resume: bool, timeout_seconds: float, db_path: str) -> List[str]:
     """Monta a lista de argumentos CLI para invocar o orchestrator.cli do Epic-Volta."""
     cmd = ["uv", "--directory", str(EPIC_VOLTA_DIR), "run", "python", "-m", "orchestrator.cli", str(resolved_plan_path), "--json"]
-    if run_id.strip():
-        cmd.extend(["--run-id", run_id.strip()])
+    effective_run_id = run_id.strip() or (f"cli-run-{resolved_plan_path.stem}" if resume else f"run-{resolved_plan_path.stem}-{uuid.uuid4().hex[:8]}")
+    cmd.extend(["--run-id", effective_run_id])
     if resume:
         cmd.append("--resume")
     if timeout_seconds > 0:
@@ -302,6 +327,17 @@ def _mutate_checkpoint_status(harness_store: CheckpointStore, checkpoint_id: str
     return json.dumps({"status": target_status, "checkpointId": checkpoint_id, "message": msg, "record": rec.to_dict()}, indent=2, ensure_ascii=False)
 
 
+def _normalize_checkpoint_action(action: str, checkpoint_id: str, approved: bool) -> str:
+    """Normaliza a ação de checkpoint, resolvendo a flag booleana 'approved' quando aplicável."""
+    act = action.strip().lower()
+    if checkpoint_id.strip() and act in ("list", "resolve", "decide"):
+        if approved:
+            return "approve"
+        if act in ("resolve", "decide"):
+            return "reject"
+    return act
+
+
 def harness_checkpoint_impl(
     harness_store: CheckpointStore,
     sessions_dir: Path,
@@ -309,9 +345,10 @@ def harness_checkpoint_impl(
     session_id: str = "default",
     checkpoint_id: str = "",
     notes: str = "",
+    approved: bool = False,
 ) -> str:
     """Gerencia checkpoints de governança HITL e sub-ações recursivas Harness²."""
-    act = action.strip().lower()
+    act = _normalize_checkpoint_action(action, checkpoint_id, approved)
     h2_res = dispatch_harness2_action(act, notes, sessions_dir)
     if h2_res is not None:
         return h2_res
@@ -323,13 +360,12 @@ def harness_checkpoint_impl(
             return json.dumps({"error": "checkpoint_id é obrigatório para a ação 'get'"}, ensure_ascii=False)
         rec = harness_store.get(checkpoint_id)
         return json.dumps(rec.to_dict(), indent=2, ensure_ascii=False) if rec else json.dumps({"error": f"Checkpoint '{checkpoint_id}' não encontrado"}, ensure_ascii=False)
-    if act == "approve":
-        return _mutate_checkpoint_status(harness_store, checkpoint_id, "APPROVED", notes)
-    if act == "reject":
-        return _mutate_checkpoint_status(harness_store, checkpoint_id, "REJECTED", notes)
+    if act in ("approve", "reject"):
+        target_st = "APPROVED" if act == "approve" else "REJECTED"
+        return _mutate_checkpoint_status(harness_store, checkpoint_id, target_st, notes)
     if act == "clear":
         return json.dumps({"status": "CLEARED", "removedCount": harness_store.clear()}, indent=2, ensure_ascii=False)
-    return json.dumps({"error": f"Ação '{action}' inválida. Use: list, get, approve, reject, clear, validate_tree, evolve ou record_experience."}, ensure_ascii=False)
+    return json.dumps({"error": f"Ação '{action}' inválida. Use: list, get, approve, reject, resolve, clear, validate_tree, evolve ou record_experience."}, ensure_ascii=False)
 
 
 def a2a_agent_card_impl(skill_filter: str = "", verify_signature: bool = True) -> str:
@@ -348,8 +384,11 @@ def a2a_dispatch_task_impl(
     action: str = "send",
     execute_dag: bool = False,
     target_dir: str = "",
+    approval_token: str = "",
+    idempotency_key: str = "",
 ) -> str:
-    """Despacha, consulta ou cancela uma Task no protocolo Agent2Agent (A2A v1.0) acoplado ao Harness HITL."""
+    """Despacha, consulta, retoma ou cancela uma Task no protocolo Agent2Agent (A2A v1.0) acoplado ao Harness HITL."""
+    _ = idempotency_key
     act = action.strip().lower()
     if act == "send":
         task = a2a_task_manager.submit_task(query=query, skill_id=skill_id, context_id=context_id, task_id=task_id.strip() or None)
@@ -363,6 +402,17 @@ def a2a_dispatch_task_impl(
                 task["dagExecution"] = {"raw": dag_raw}
         return json.dumps(task, indent=2, ensure_ascii=False)
 
+    if act == "resume":
+        if not task_id.strip() or not approval_token.strip():
+            return json.dumps({"error": "task_id e approval_token são obrigatórios para action='resume'"}, ensure_ascii=False)
+        try:
+            resumed = a2a_task_manager.resume_task(task_id.strip(), approval_token.strip())
+        except PermissionError as exc:
+            return json.dumps({"error": str(exc)}, ensure_ascii=False)
+        if not resumed:
+            return json.dumps({"error": f"Task A2A '{task_id}' não encontrada"}, ensure_ascii=False)
+        return json.dumps(resumed, indent=2, ensure_ascii=False)
+
     if act in ("get", "cancel"):
         if not task_id.strip():
             return json.dumps({"error": f"task_id é obrigatório para action='{act}'"}, ensure_ascii=False)
@@ -371,4 +421,4 @@ def a2a_dispatch_task_impl(
             return json.dumps({"error": f"Task A2A '{task_id}' não encontrada"}, ensure_ascii=False)
         return json.dumps(found, indent=2, ensure_ascii=False)
 
-    return json.dumps({"error": f"Ação A2A '{action}' inválida. Use: send, get ou cancel."}, ensure_ascii=False)
+    return json.dumps({"error": f"Ação A2A '{action}' inválida. Use: send, get, resume ou cancel."}, ensure_ascii=False)

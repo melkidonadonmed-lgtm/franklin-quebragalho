@@ -61,7 +61,7 @@ Este documento estabelece as regras falsificáveis para validação e auditoria 
 
 ---
 
-### Regra 7: Aderência à Arquitetura Visual por Propósito (`preferencias_estilo_e_temas.md` — Artefatos Visuais)
+### Regra 7: Aderência à Arquitetura Visual por Propósito (`DESIGN.md (SSOT)` — Artefatos Visuais)
 - **Critério**: O entregável envolve interface, dashboards, relatórios ou estilos visuais?
 - **Teste**: Escolha do tema coerente com o propósito do projeto (sem paleta fixa repetitiva), contraste WCAG AA/AAA ($L_{\text{card}} > L_{\text{canvas}}$ no escuro, tinta escura em menus claros/`#8e8999`), escala `clamp()` com `tabular-nums` (`IBM Plex` no terminal preto), espaçamento ($\ge 25\%$ respiro) e camadas esculpidas (`--shadow-sculpted` + `1px` Rim Light)?
 - **Resultado**:

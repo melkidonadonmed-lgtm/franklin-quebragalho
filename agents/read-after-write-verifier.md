@@ -17,6 +17,8 @@ tools:
   - find_by_name
   - list_dir
   - run_command
+  - gemini_search_docs
+  - gemini_get_doc
 ---
 
 # Agente Intermediário: `read-after-write-verifier` (Validação Pós-Escrita & Fan-In)

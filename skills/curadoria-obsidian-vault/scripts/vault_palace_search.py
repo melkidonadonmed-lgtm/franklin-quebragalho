@@ -117,6 +117,11 @@ def _split_markdown_sections(
     meta, tags, body_start_line = _parse_frontmatter(md_text)
     if _is_private_note(meta, tags):
         return []
+    if (
+        meta.get("type", "").lower() in ("historico", "arquivo")
+        or meta.get("status", "").lower() in ("desatualizado", "obsoleto", "arquivado")
+    ):
+        room = "arquivo"
     title = meta.get("title") or abs_path.stem
     lines = md_text.splitlines(keepends=True)
     sections: List[Dict[str, Any]] = []

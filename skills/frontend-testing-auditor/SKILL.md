@@ -1,8 +1,7 @@
 ---
 name: frontend-testing-auditor
 description: >-
-  Gatekeeper determinístico de testes e qualidade frontend (scripts/audit_tactile_ui.py + Jest/Vitest + Axe-Core) para auditar arquitetura visual por propósito, contraste (WCAG AA/AAA), tipografia tabular (tabular-nums), camadas esculpidas, componentes órfãos, estados finitos FSM e anti-XSS. Não use para scaffolding (use frontend-code-architect).
-version: "3.0.0"
+  Audita deterministicamente interfaces web (HTML/CSS/React/TS) via scripts/audit_tactile_ui.py, verificando tokens, composição espacial, WAI-ARIA, foco, tabular-nums, estados FSM, zero emojis e anti-XSS. Use para validar qualidade técnica de UI; não use para implementar componentes novos.
 license: MIT
 compatibility: "Jest, Vitest, React Testing Library, Playwright, @axe-core/playwright, jest-axe, Python 3.11+"
 metadata:
@@ -16,11 +15,12 @@ metadata:
     - "wcag-aa"
     - "estilo-por-proposito"
     - "deterministic-audit"
+version: "3.0.0"
 updated_at: 2026-10-19
 author: FrontCraftMaster & Melki
 category: Frontend QA, Accessibility, Purpose-Driven Style & Deterministic Auditing
 authorized_sub_skills:
-  - name: minimal-impact-ui
+  - name: design-md
     role: "Referência Ex Umbris + WinUI 3 Gallery (atlas_ex_umbris_winui.html, 3 temas, 6 arquétipos e 28 efeitos)"
   - name: frontend-code-architect
     role: "Correção estrutural de componentes que reprovarem nos testes determinísticos"
@@ -32,16 +32,16 @@ authorized_sub_skills:
 
 ## 1. OBJETIVO E DIRETRIZES DE ATIVAÇÃO
 
-Esta Skill fornece uma esteira **determinística** de testes automatizados e auditoria estática para interfaces web modernas. Ela substitui avaliações subjetivas por **métricas verificáveis** de acessibilidade (Axe-Core / WCAG 2.1 AA), máquina de estados finitos (`idle`, `loading`, `error`, `pressed`), **adequação de estilo, contraste, nitidez tipográfica, espaçamento e camadas ao propósito do projeto** (`AUDIT-VIS-01`, alinhado a [`../minimal-impact-ui/SKILL.md`](../minimal-impact-ui/SKILL.md) e [`../minimal-impact-ui/references/atlas_ex_umbris_winui.html`](../minimal-impact-ui/references/atlas_ex_umbris_winui.html)) e segurança anti-XSS (`AUDIT-SEC-01`).
+Esta Skill fornece uma esteira **determinística** de testes automatizados e auditoria estática para interfaces web modernas. Ela substitui avaliações subjetivas por **métricas verificáveis** de acessibilidade (Axe-Core / WCAG 2.1 AA), máquina de estados finitos (`idle`, `loading`, `error`, `pressed`), **adequação de estilo, contraste, nitidez tipográfica, espaçamento e camadas ao propósito do projeto** (`AUDIT-VIS-01`, alinhado a [`../design-md/SKILL.md`](../design-md/SKILL.md) e [`../design-md/references/atlas_ex_umbris_winui.html`](../design-md/references/atlas_ex_umbris_winui.html)) e segurança anti-XSS (`AUDIT-SEC-01`).
 
 ### ✅ Gatilhos Positivos (Quando Usar):
-- Auditoria de componentes React/TypeScript, Vue ou HTML/CSS após geração pelo `frontend-code-architect` ou `minimal-impact-ui`.
+- Auditoria de componentes React/TypeScript, Vue ou HTML/CSS após geração pelo `frontend-code-architect` ou `design-md`.
 - Validação determinística via [`scripts/audit_tactile_ui.py`](scripts/audit_tactile_ui.py) de tokens semânticos (`--bg-canvas`, `--bg-surface`, `--ink-primary`), camadas esculpidas (`--shadow-sculpted` + `--rim-light`), alinhamento numérico (`tabular-nums`), estados FSM e ausência de componentes órfãos.
 - Criação de suítes de testes `*.test.tsx` ou `*.spec.ts` com **React Testing Library**, **Vitest/Jest**, **jest-axe** e **Playwright**.
 
 ### ❌ Quando NÃO Usar (Limites e Exceções):
 - Testes unitários de backend puro (Python/Go/SQL) sem DOM ou interface visual.
-- Para criar a estrutura inicial de pastas do zero (use `frontend-code-architect` ou `minimal-impact-ui`).
+- Para criar a estrutura inicial de pastas do zero (use `frontend-code-architect` ou `design-md`).
 
 ---
 
@@ -62,7 +62,7 @@ Esta Skill fornece uma esteira **determinística** de testes automatizados e aud
 
 ### Pilar 3: Tokens Semânticos por Propósito, Camadas Esculpidas & Anti-Orfandade (`AUDIT-VIS-01` — 20%)
 - **`[AUDIT-VIS-01]` Conformidade Arquitetural & Camadas:**
-  1. Aceita qualquer família semântica alinhada ao propósito do projeto (*Ex Umbris Ad Lucem / `minimal-impact-ui`*: `--bg-canvas`, `--bg-surface`, `--ink-primary`; *AETHER 2027*: `--surface-canvas`, `--surface-primary`, `--ink-primary`; ou *Studio v4.5*: `--surface-canvas`, `--surface-raised`, `--text-primary`).
+  1. Aceita qualquer família semântica alinhada ao propósito do projeto (*Ex Umbris Ad Lucem / `design-md`*: `--bg-canvas`, `--bg-surface`, `--ink-primary`; *AETHER 2027*: `--surface-canvas`, `--surface-primary`, `--ink-primary`; ou *Studio v4.5*: `--surface-canvas`, `--surface-raised`, `--text-primary`).
   2. Verifica a presença de **elevação em camadas esculpidas** (`--shadow-sculpted`, `--rim-light`, `.sculpted-card`, `.terrixa-card`, `.bento-card` ou `.ui-card-soft`) e alternância rítmica (`.surface-contrast`).
   3. **Detecção de Componentes Órfãos (`-25 pts`):** Reprova automaticamente projetos que criam `SurfaceCard.tsx` ou `SoftCard.tsx` em `src/components/ui/` mas não os importam nas views reais.
 

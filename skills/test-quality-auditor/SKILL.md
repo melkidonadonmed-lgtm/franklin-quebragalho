@@ -1,8 +1,7 @@
 ---
 name: test-quality-auditor
 description: >-
-  Executa auditoria de qualidade, determinismo e eficácia de suítes de testes com 5 módulos (Python, TS/JS, Go, MCP JSON-RPC e Harnesses/Evals). Detecta Green Build Illusion, falhas AAA e asserções tautológicas, classifica testes (Níveis 1-4) e gera grading.json.
-license: MIT
+  Executa auditoria de qualidade, determinismo e eficácia de suítes de testes em 5 módulos (Python, TS/JS, Go, MCP JSON-RPC e Harnesses/Evals), detectando Green Build Illusion e falhas AAA. Use para auditar suítes de testes e gerar grading.json; não use para auditar código de produção.
 metadata:
   version: "1.2.0"
   author: "SkillCraft, Franklin-Main & Melki"
@@ -132,9 +131,9 @@ uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py --run-
 
 ---
 
-## 🎨 Diretrizes de Estilo por Propósito e Arquitetura Visual (`preferencias_estilo_e_temas.md` & `minimal-impact-ui`)
+## 🎨 Diretrizes de Estilo por Propósito e Arquitetura Visual (`DESIGN.md (SSOT)` & `design-md`)
 
-Sempre que esta skill gerar relatórios visuais, dashboards HTML de cobertura/qualidade ou artefatos de interface, aplique obrigatoriamente os 4 módulos orientados ao **propósito do projeto** ([`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md) e [`../minimal-impact-ui/SKILL.md`](../minimal-impact-ui/SKILL.md)):
+Sempre que esta skill gerar relatórios visuais, dashboards HTML de cobertura/qualidade ou artefatos de interface, aplique obrigatoriamente os 4 módulos orientados ao **propósito do projeto** ([`../_template/references/DESIGN.md (SSOT)`](../_template/references/DESIGN.md (SSOT)) e [`../design-md/SKILL.md`](../design-md/SKILL.md)):
 
 ### Módulo 1: Seleção de Tema pelo Propósito e Isolamento 98/2 (`DESIGN.md v5.0`)
 - **4 Famílias Atmosféricas Adaptativas**:

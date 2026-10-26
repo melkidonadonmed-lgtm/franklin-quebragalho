@@ -1,12 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "ContextTransitionPayload",
-  "description": "Contrato estruturado de transição de contexto entre fases no orquestrador encadeado",
+  "title": "ContextTransitionEnvelopeSchema",
+  "description": "Contrato estruturado v3.0.0 de transição de contexto isolado (Context Fork) entre ondas e nós no skill-orquestrador-planos-encadeados",
   "type": "object",
   "required": [
     "phase_id",
+    "wave_index",
     "sequence_index",
     "target_skill",
+    "isolated_state_key",
     "input_payload",
     "expected_outputs",
     "status"
@@ -14,48 +16,67 @@
   "properties": {
     "phase_id": {
       "type": "string",
-      "description": "Identificador único da fase (ex: fase_01_planejamento)"
+      "description": "Identificador único do nó ou fase (ex: step_01_exploracao_react)"
+    },
+    "wave_index": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Índice da onda paralela compilada via algoritmo de Kahn"
     },
     "sequence_index": {
       "type": "integer",
       "minimum": 0,
-      "description": "Índice posicional cronológico da etapa"
+      "description": "Índice posicional determinístico na esteira"
     },
     "target_skill": {
       "type": "string",
-      "description": "Nome canônico da skill a ser acionada"
+      "description": "Nome canônico da skill ou subagente a ser acionado"
     },
-    "authorized_sub_skills": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Sub-skills que a skill ativa tem autorização contratual para invocar sob demanda"
+    "cognitive_pattern": {
+      "type": "string",
+      "enum": ["CoT", "ReAct", "ToT", "Self-Refine"],
+      "description": "Padrão cognitivo não-linear ativo para este nó"
+    },
+    "isolated_state_key": {
+      "type": "string",
+      "description": "Chave de estado isolada onde o worker grava seu resultado sem colisão (Fan-Out)"
     },
     "input_payload": {
       "type": "object",
-      "description": "Payload de dados exclusivamente necessários para esta fase (sem histórico bruto)"
+      "description": "Payload de dados exclusivamente necessários para este nó (proibido histórico bruto)"
     },
-    "context_constraints": {
+    "active_rules": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "string"
+      },
+      "description": "Até 5 regras operacionais ativas nesta etapa (Prompt Complexity Wall Shield)"
+    },
+    "target_files": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "description": "Restrições de negócio ou limites operacionais vigentes"
+      "description": "Arquivos tocados por este nó para verificação de colisão de escrita na mesma onda"
     },
     "expected_outputs": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "description": "Lista de entregáveis concretos esperados ao fim da fase"
+      "description": "Entregáveis concretos esperados ao fim do nó"
     },
     "acceptance_criteria": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "description": "Critérios falsificáveis para considerar a fase concluída"
+      "description": "Critérios falsificáveis para considerar o nó aprovado (Go)"
+    },
+    "fallback_branch": {
+      "type": ["string", "null"],
+      "description": "Nó de contingência não-linear acionado em caso de falha recuperável"
     },
     "status": {
       "type": "string",
@@ -64,10 +85,11 @@
         "IN_PROGRESS",
         "COMPLETED",
         "RETRYING",
+        "FALLBACK_ROUTED",
         "BLOCKED_HITL",
         "FAILED"
       ],
-      "description": "Estado atual da fase na máquina de estados"
+      "description": "Estado atual do nó na máquina de estados"
     }
   },
   "additionalProperties": false

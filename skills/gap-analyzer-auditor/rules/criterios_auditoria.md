@@ -1,4 +1,4 @@
-# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`gap-analyzer-auditor` v2.1.0)
+# CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`gap-analyzer-auditor` v2.2.0)
 
 Este documento estabelece as regras de corte falsificáveis para validação dos relatórios emitidos pela skill `gap-analyzer-auditor`. Cada verificação deve emitir estritamente um dos seguintes marcadores booleanos:
 - `[PASS]`: Requisito comprovado e verificado contra âncoras documentais reais.
@@ -61,10 +61,9 @@ Este documento estabelece as regras de corte falsificáveis para validação dos
 
 ---
 
-### Regra 7: Aderência à Arquitetura Visual por Propósito (`preferencias_estilo_e_temas.md`)
-- **Critério**: Os relatórios e matrizes gerados respeitam as diretrizes de estilo orientadas ao propósito do projeto?
-- **Teste**: Ausência de azul cobalto puro (`#0044FF`), tabelas alinhadas com `tabular-nums`, badges anti-squish e estrutura limpa?
+### Regra 7: Respeito à Parede de Complexidade ($\le 5$ Regras por Nó) nas Mitigações
+- **Critério**: As instruções de patch (`patch_instructions`) enviadas ao `high-level-context-planner` respeitam o teto de $\le 5$ regras ativas por etapa?
+- **Teste**: As mitigações são atômicas, testáveis e não introduzem sobrecarga de instruções em um único nó?
 - **Resultado**:
-  - Se conforme com a arquitetura visual orientada ao propósito -> `[PASS]`
-  - Se utilizar cores fluorescentes ou formatação corrompida de tabela -> `[FAIL: Inconformidade visual]`
-
+  - Se as mitigações forem atômicas e verificáveis -> `[PASS]`
+  - Se acumular $> 5$ restrições simultâneas no mesmo patch sem subdivisão -> `[FAIL: Mitigação viola a Parede de Complexidade]`

@@ -1,59 +1,56 @@
-# CRITÉRIOS DETERMINÍSTICOS DE ORQUESTRAÇÃO DE PLANOS ENCADEADOS
+# CRITÉRIOS DETERMINÍSTICOS DE ORQUESTRAÇÃO E COMPILAÇÃO DAG (`skill-orquestrador-planos-encadeados` v3.0.0)
 
-Para assegurar a transição previsível entre etapas e prevenir alucinações de fluxo, o orquestrador deve aplicar as seguintes regras determinísticas avaliadas sob:
-- `[PASS]`: Requisito comprovado e verificado sem ambiguidade.
+Para assegurar a compilação em ondas paralelas (Kahn), prevenir colisões de escrita e eliminar *context rot*, o orquestrador aplica as seguintes regras determinísticas avaliadas sob:
+- `[PASS]`: Requisito comprovado e verificado por `scripts/dag_chain_validator.py`.
 - `[FAIL]`: Requisito violado com bloqueio imediato do avanço.
 - `[UNVERIFIED]`: Dado não verificável por ausência de insumos.
 
 ---
 
-### Regra 1: Validação Estrutural da Fase 0
-- **Critério**: O plano possui fases numeradas coerentes e todas as skills citadas existem no catálogo?
+### Regra 1: Ordenação Topológica de Kahn e Ausência de Ciclos (DAG)
+- **Critério**: O grafo do plano forma um Grafo Acíclico Dirigido (DAG) compilável em ondas (`Wave 0..Wave N`)?
 - **Teste**:
-  - Toda fase possui: objetivo, skill responsável, inputs declarados, outputs esperados e critérios de aceite.
-  - As skills citadas estão presentes e ativas em `.agents/skills/` ou no catálogo oficial.
-- **Classificação**:
-  - Se todas as fases forem válidas e as skills existirem -> `[PASS]`
-  - Se faltar insumo vital ou citar skill inexistente -> `[FAIL: Skill inexistente ou plano incompleto na Fase 0]`
-
----
-
-### Regra 2: Detecção de Dependências Cíclicas
-- **Critério**: A topologia do plano forma um grafo acíclico direcionado (DAG)?
-- **Teste**:
-  - Não há referências circulares onde uma fase depende do resultado de uma fase futura.
+  - `scripts/dag_chain_validator.py` comprova `has_cycle == False` e agrupa os nós em ondas topológicas válidas.
 - **Classificação**:
   - Se a ordenação topológica for estrita -> `[PASS]`
-  - Se houver ciclo detectado -> `[FAIL: Loop circular de dependência identificado]`
+  - Se houver ciclo detectado -> `[FAIL: Loop circular de dependência identificado (CYCLE_DETECTED)]`
 
 ---
 
-### Regra 3: Isolamento Estrito de Contexto (Context Hygiene)
-- **Critério**: O payload transferido entre fases contém exclusivamente as variáveis necessárias?
+### Regra 2: Guarda Anti-Colisão de Escrita em Ondas Paralelas (`[P]`)
+- **Critério**: Nós alocados na mesma onda paralela (`Wave K`) tocam conjuntos disjuntos de arquivos (`target_files`)?
 - **Teste**:
-  - O histórico bruto inteiro da conversa NÃO deve ser injetado nas skills filhas.
-  - O payload deve obedecer à estrutura do `schema_transicao_contexto.json`.
+  - Dois subagentes ou tasks rodando em paralelo na mesma onda não disputam escrita simultânea no mesmo caminho de arquivo.
 - **Classificação**:
-  - Se o payload for isolado e tipado -> `[PASS]`
-  - Se houver injeção indiscriminada de contexto residual -> `[FAIL: Violação de higiene de contexto (context rot)]`
+  - Se `file_collisions` for vazio -> `[PASS]`
+  - Se houver interseção de `target_files` na mesma onda -> `[FAIL: Colisão de escrita paralela detectada (PARALLEL_FILE_COLLISION)]`
 
 ---
 
-### Regra 4: Verificação dos Critérios de Aceite na Transição
-- **Critério**: O entregável da fase atende a todos os critérios antes de disparar a próxima?
+### Regra 3: Isolamento Estrito de Contexto (*Context Fork*) e Teto de $\le 5$ Regras
+- **Critério**: O envelope `ContextTransitionEnvelope` contém apenas os dados necessários (`input_payload`), chave isolada (`isolated_state_key`) e no máximo 5 regras ativas (`active_rules <= 5`)?
 - **Teste**:
-  - O output gerado pela skill contém os campos e artefatos requeridos pelo contrato.
+  - O histórico bruto da conversa (`full_chat_history`, `raw_transcript`) NÃO é injetado nos subagentes e nenhum nó excede 5 regras simultâneas.
 - **Classificação**:
-  - Se aprovado com evidência mensurável -> `[PASS]`
-  - Se houver inconsistência recuperável -> Disparar 1 ciclo de auto-correção.
-  - Se houver inconsistência irrecuperável -> `[FAIL: Critério de aceite não atingido]`
+  - Se o payload for isolado, tipado e respeitar $\le 5$ regras -> `[PASS]`
+  - Se houver injeção de histórico bruto ou $> 5$ regras ativas -> `[FAIL: Violação de higiene de contexto ou Parede de Complexidade]`
 
 ---
 
-### Regra 5: Salvaguardas Human-in-the-Loop (HITL)
-- **Critério**: Ações potencialmente destrutivas foram submetidas para aprovação humana prévia?
+### Regra 4: Roteamento Não-Linear (`fallback_branch`) e Verificação *Read-After-Write*
+- **Critério**: O entregável de cada onda passa por verificação de estado real antes de avançar, desviando para `fallback_branch` em falhas recuperáveis?
 - **Teste**:
-  - Exclusão em massa, alterações irreversíveis no sistema de arquivos ou deploys requerem parada com confirmação explícita.
+  - O output gerado atende aos `acceptance_criteria` ou aciona `RETRYING` / `FALLBACK_ROUTED` de forma determinística.
+- **Classificação**:
+  - Se validado com evidência mensurável -> `[PASS]`
+  - Se falhar após retry e fallback sem rota -> `[FAIL: Critério de aceite não atingido]`
+
+---
+
+### Regra 5: Salvaguardas Human-in-the-Loop (`BLOCKED_HITL`)
+- **Critério**: Nós do tipo `hitl_gate` ou ações destrutivas foram pausados em `BLOCKED_HITL` aguardando aprovação humana?
+- **Teste**:
+  - Mutações críticas exigem checkpoint ativo e `approval_token` antes da execução.
 - **Classificação**:
   - Se respeitar os pontos de parada HITL -> `[PASS]`
-  - Se disparar ações críticas de forma autônoma sem consentimento -> `[FAIL: Violação de salvaguarda HITL]`
+  - Se disparar ações críticas sem consentimento -> `[FAIL: Violação de salvaguarda HITL]`

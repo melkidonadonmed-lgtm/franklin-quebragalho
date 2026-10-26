@@ -9,20 +9,19 @@ from __future__ import annotations
 import difflib
 import json
 import re
+import unicodedata
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+from shared.modular_orchestrator import LoadedSkill, ProgressiveSkillRegistry, SkillMetadata
 from shared.tools.frontmatter_parser import parse_frontmatter as _parse_frontmatter
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 CANONICAL_SKILLS_DIR = ROOT_DIR / "skills"
-AGENTS_SKILLS_DIR = ROOT_DIR / ".agents" / "skills"
 GLOBAL_PLUGIN_SKILLS_DIR = Path(r"C:\Users\melki\.gemini\config\plugins\franklin-skills\skills")
 
 if CANONICAL_SKILLS_DIR.exists():
     SKILLS_ROOT = CANONICAL_SKILLS_DIR
-elif AGENTS_SKILLS_DIR.exists():
-    SKILLS_ROOT = AGENTS_SKILLS_DIR
 elif GLOBAL_PLUGIN_SKILLS_DIR.exists():
     SKILLS_ROOT = GLOBAL_PLUGIN_SKILLS_DIR
 else:
@@ -35,11 +34,11 @@ if not EPIC_VOLTA_DIR.exists():
     EPIC_VOLTA_DIR = Path(r"C:\Users\melki\dev\repos\epic-volta")
 
 CANONICAL_PERSONA_MAPPING: Dict[str, str] = {
-    "design-interface-medica-minimalista": "FrontCraftMaster",
-    "design-md": "FrontCraftMaster",
-    "frontend-code-architect": "FrontCraftMaster",
-    "frontend-testing-auditor": "FrontCraftMaster",
-    "minimal-impact-ui": "FrontCraftMaster",
+    "design-interface-medica-minimalista": "UI-Architect",
+    "design-md": "UI-Architect",
+    "frontend-code-architect": "UI-Architect",
+    "frontend-testing-auditor": "UI-Architect",
+    "frontend-ui-ux-auditor": "UI-Architect",
     "gdrive-auditoria-limpeza": "DriveMaster",
     "gdrive-taxonomia-organizacao": "DriveMaster",
     "manutencao-disco-windows": "FileOpsLocal",
@@ -47,24 +46,20 @@ CANONICAL_PERSONA_MAPPING: Dict[str, str] = {
     "redator-tecnico-markdown": "DocMaker",
     "conversor-html-pdf": "DocMaker",
     "organizador-fluxo-arvore-arquivos": "DocMaker",
-    "evoluir-skills": "SkillCraft",
-    "skill-auditor-refatorador-skills": "SkillCraft",
-    "aprimoramento-expansibilidade-agentes-skills": "SkillCraft",
     "code-acceptability-auditor": "SkillCraft",
     "test-quality-auditor": "SkillCraft",
+    "agent-server-auditor": "SkillCraft",
     "high-level-context-planner": "LoopPlanner",
     "gap-analyzer-auditor": "LoopPlanner",
     "skill-orquestrador-planos-encadeados": "LoopPlanner",
     "arquiteto-conteudo-solucoes": "Franklin-Main",
-    "arquitetura-design-implementacao-sistema": "Franklin-Main",
+    "nav-x-func": "Franklin-Main",
     "auditoria-projetos-sistema": "Franklin-Main",
     "antigravity-project-auditor": "Franklin-Main",
     "organizador-projetos-ideias": "Franklin-Main",
     "code-quality-audit-3d-physics": "Franklin-Main",
     "context-sentinel": "Franklin-Main",
     "refine-prompt": "Franklin-Main",
-    "_template": "SkillCraft",
-    "template-skill": "SkillCraft",
     "EcosystemMatrix": "Franklin-Main",
 }
 
@@ -83,7 +78,6 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "windows": "manutencao-disco-windows",
     "medica": "design-interface-medica-minimalista",
     "medico": "design-interface-medica-minimalista",
-    "template": "_template",
     "sentinel": "context-sentinel",
     "code-auditor": "code-acceptability-auditor",
     "acceptability": "code-acceptability-auditor",
@@ -91,19 +85,26 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "test-auditor": "test-quality-auditor",
     "evals": "test-quality-auditor",
     "qa-testes": "test-quality-auditor",
-    "arquitetura": "arquitetura-design-implementacao-sistema",
-    "ilhas": "arquitetura-design-implementacao-sistema",
+    "arquitetura": "nav-x-func",
+    "arquitetura-design-implementacao-sistema": "nav-x-func",
+    "nav-x-func": "nav-x-func",
+    "nav": "nav-x-func",
+    "ilhas": "nav-x-func",
     "design": "design-md",
     "design.md": "design-md",
     "code-architect": "frontend-code-architect",
     "atomic-ui": "frontend-code-architect",
     "ui-testing": "frontend-testing-auditor",
     "frontend-auditor": "frontend-testing-auditor",
-    "minimal-impact-ui": "minimal-impact-ui",
-    "minimal-ui": "minimal-impact-ui",
-    "ex-umbris": "minimal-impact-ui",
-    "atlas-ui": "minimal-impact-ui",
-    "winui": "minimal-impact-ui",
+    "ui-ux-auditor": "frontend-ui-ux-auditor",
+    "ux-auditor": "frontend-ui-ux-auditor",
+    "wcag-auditor": "frontend-ui-ux-auditor",
+    "sombra": "frontend-ui-ux-auditor",
+    "sombras": "frontend-ui-ux-auditor",
+    "tatil": "frontend-ui-ux-auditor",
+    "tactile": "frontend-ui-ux-auditor",
+    "elevacao": "frontend-ui-ux-auditor",
+    "bevel": "frontend-ui-ux-auditor",
     "frontend": "design-md",
     "ui": "design-md",
     "consultor-ui": "design-md",
@@ -150,19 +151,22 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "plano": "high-level-context-planner",
     "planejar": "high-level-context-planner",
     "planner": "high-level-context-planner",
+    "intent-cognitive-planner": "high-level-context-planner",
+    "cognitive-planner": "high-level-context-planner",
+    "intencao": "high-level-context-planner",
+    "parede-complexidade": "high-level-context-planner",
     "gap": "gap-analyzer-auditor",
     "rca": "gap-analyzer-auditor",
     "brechas": "gap-analyzer-auditor",
     "orquestrar": "skill-orquestrador-planos-encadeados",
     "orquestrador": "skill-orquestrador-planos-encadeados",
     "dag": "skill-orquestrador-planos-encadeados",
-    "criar-skill": "evoluir-skills",
-    "evoluir": "evoluir-skills",
-    "nova-skill": "evoluir-skills",
-    "auditar-skill": "skill-auditor-refatorador-skills",
-    "refatorar-skill": "skill-auditor-refatorador-skills",
-    "agentes": "aprimoramento-expansibilidade-agentes-skills",
-    "mcp": "aprimoramento-expansibilidade-agentes-skills",
+    "kahn": "skill-orquestrador-planos-encadeados",
+    "ondas": "skill-orquestrador-planos-encadeados",
+    "server-auditor": "agent-server-auditor",
+    "agent-auditor": "agent-server-auditor",
+    "mcp-auditor": "agent-server-auditor",
+    "a2a-auditor": "agent-server-auditor",
 }
 
 REQUIRED_SKILL_SECTIONS: List[Tuple[str, str]] = [
@@ -321,8 +325,20 @@ def _format_skill_components(s: Dict[str, Any]) -> str:
     return ", ".join(comps) if comps else "Apenas Contrato"
 
 
+def get_progressive_registry() -> ProgressiveSkillRegistry:
+    """Instancia e popula o registro de Divulgação Progressiva em 3 níveis com precedência local > global."""
+    reg = ProgressiveSkillRegistry(
+        search_paths=[CANONICAL_SKILLS_DIR, GLOBAL_PLUGIN_SKILLS_DIR],
+        persona_map=_load_agents_map(),
+    )
+    reg.discover_skills()
+    return reg
+
+
 def skills_list_impl(status: str = "all", persona: str = "all", search: str = "", format: str = "markdown") -> str:
-    """Implementação da listagem filtrada de skills em Markdown ou JSON."""
+    """Implementação da listagem filtrada de skills em Markdown, JSON ou XML Nível 1 (<available_skills>)."""
+    if format.lower() == "xml":
+        return get_progressive_registry().render_catalog_prompt()
     skills = _get_all_skills_data()
     if not skills:
         return f"Nenhuma skill encontrada no diretório: {SKILLS_ROOT}"
@@ -337,7 +353,7 @@ def skills_list_impl(status: str = "all", persona: str = "all", search: str = ""
     ]
     for s in filtered:
         lines.append(f"| **`{s['name']}`** | `{s['version']}` | {s['status']} | `{s['persona']}` | {_format_skill_components(s)} |")
-    lines.append("\n**Dica de Uso**: Utilize `franklin_skills_get(skill_name)` para ler o contrato da skill ou `franklin_skills_search(query)` para encontrar a skill exata.")
+    lines.append("\n**Dica de Uso**: Utilize `franklin_skills_get(skill_name, section='activate')` (Nível 2) ou `franklin_skills_search(query)` para encontrar a skill exata.")
     return "\n".join(lines)
 
 
@@ -385,7 +401,7 @@ def _render_skill_scripts(skill_dir: Path) -> str:
 
 
 def skills_get_impl(skill_name: str, section: str = "contract") -> str:
-    """Implementação da recuperação granular de seções de uma skill."""
+    """Implementação da recuperação granular e Divulgação Progressiva (Níveis 2 e 3) de uma skill."""
     skill_dir = _find_skill_dir(skill_name)
     if not skill_dir:
         all_names = [d.name for d in SKILLS_ROOT.iterdir() if d.is_dir()]
@@ -393,7 +409,14 @@ def skills_get_impl(skill_name: str, section: str = "contract") -> str:
         sug_text = f" Sugestões: {', '.join(suggestions)}" if suggestions else ""
         return f"Erro: Skill '{skill_name}' não encontrada em {SKILLS_ROOT}.{sug_text}"
 
-    sec = section.strip().lower()
+    sec_raw = section.strip()
+    sec = sec_raw.lower()
+    if sec in ("activate", "tier2", "progressive"):
+        return get_progressive_registry().activate_skill(skill_dir.name)
+    if sec.startswith("resource:"):
+        rel_target = sec_raw.split(":", 1)[1].strip()
+        return get_progressive_registry().read_skill_resource(skill_dir.name, rel_target)
+
     direct_files = {
         "contract": (skill_dir / "SKILL.md", f"Erro: SKILL.md ausente na pasta {skill_dir.name}."),
         "rules": (skill_dir / "rules" / "criterios_auditoria.md", f"A skill '{skill_dir.name}' não possui arquivo dedicado de regras (rules/criterios_auditoria.md)."),
@@ -408,38 +431,88 @@ def skills_get_impl(skill_name: str, section: str = "contract") -> str:
         return _render_skill_scripts(skill_dir)
     if sec == "all":
         return _build_full_skill_package(skill_dir)
-    return f"Seção '{section}' inválida. Opções: 'contract', 'rules', 'references', 'evals', 'scripts', 'all'."
+    return "Seção '" + section + "' inválida. Opções: 'contract', 'activate', 'resource:<path>', 'rules', 'references', 'evals', 'scripts', 'all'."
+
+
+SEARCH_STOPWORDS: frozenset[str] = frozenset({
+    "de", "da", "do", "das", "dos", "para", "por", "em", "no", "na", "nos", "nas",
+    "com", "sem", "ou", "e", "o", "a", "os", "as", "um", "uma", "ao", "aos", "que", "se", "use", "nao",
+})
+
+
+def _strip_accents(text: str) -> str:
+    """Remove acentos e normaliza para ASCII minúsculo."""
+    return unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii").lower()
+
+
+def _split_positive_and_negative_desc(desc_norm: str) -> Tuple[str, str]:
+    """Separa a descrição Nível 1 em cláusula positiva (should-trigger) e cláusula de exclusão (não use para)."""
+    parts = re.split(r"\bnao use para\b", desc_norm, maxsplit=1)
+    if len(parts) == 2:
+        return parts[0], parts[1]
+    return desc_norm, ""
+
+
+def _score_single_term(
+    t: str, s_name: str, name_norm: str, pos_desc: str, neg_desc: str, persona_norm: str, norm_tags: set[str]
+) -> int:
+    """Calcula a contribuição de pontuação de um único termo significativo da consulta."""
+    delta = 25 if QUICK_SKILL_ALIASES.get(t) == s_name else 0
+    if t in name_norm:
+        delta += 18
+    if t in norm_tags and (not neg_desc or t in pos_desc or t in name_norm):
+        delta += 10
+    if t in pos_desc:
+        delta += 7
+    elif neg_desc and t in neg_desc:
+        delta -= 18
+    if t in persona_norm:
+        delta += 6
+    return delta
 
 
 def _score_skill_query(s: Dict[str, Any], clean_q: str, terms: List[str]) -> int:
-    """Calcula a pontuação de relevância de uma skill para uma consulta textual."""
-    score = 0
-    name_lower, desc_lower, persona_lower = s["name"].lower(), s["description"].lower(), s["persona"].lower()
-    if clean_q in name_lower:
-        score += 50
-    if clean_q in desc_lower:
-        score += 30
-    for t in terms:
-        if t in name_lower:
-            score += 15
-        if t in s["tags"]:
-            score += 10
-        if t in desc_lower:
-            score += 5
-        if t in persona_lower:
-            score += 8
+    """Calcula a pontuação de relevância Nível 1 de uma skill com penalização de cláusulas negativas."""
+    q_norm = _strip_accents(clean_q)
+    name_norm = _strip_accents(s["name"])
+    desc_norm = _strip_accents(s["description"])
+    persona_norm = _strip_accents(s["persona"])
+    pos_desc, neg_desc = _split_positive_and_negative_desc(desc_norm)
+    norm_tags = {_strip_accents(tg) for tg in s.get("tags", [])}
+
+    score = (60 if q_norm in name_norm else 0) + (35 if q_norm in pos_desc else 0)
+    if neg_desc and len(q_norm) > 5 and q_norm in neg_desc:
+        score -= 40
+
+    short_tech = {"ui", "ux", "3d", "go", "ts", "js", "qa", "pe", "a4"}
+    meaningful = [t for t in terms if t not in SEARCH_STOPWORDS and (len(t) > 2 or t in short_tech)]
+    for t in meaningful:
+        score += _score_single_term(t, s["name"], name_norm, pos_desc, neg_desc, persona_norm, norm_tags)
     return score
+
+
+def rank_skills_for_query(query: str, limit: int = 5) -> List[Tuple[int, Dict[str, Any]]]:
+    """Retorna a lista ranqueada (score, skill_dict) para uma consulta em linguagem natural."""
+    clean_q = query.strip().lower()
+    q_norm = _strip_accents(clean_q)
+    terms = re.findall(r"[a-z0-9_\-]+", q_norm)
+    if not terms:
+        return []
+    skills = _get_all_skills_data()
+    scored = sorted(
+        ((sc, s) for s in skills if (sc := _score_skill_query(s, clean_q, terms)) > 0),
+        key=lambda x: x[0],
+        reverse=True,
+    )
+    return scored[:limit]
 
 
 def skills_search_impl(query: str, limit: int = 5) -> str:
     """Implementação da busca ranqueada de skills por intenção."""
     clean_q = query.strip().lower()
-    terms = re.findall(r"[a-zA-Z0-9_\-]+", clean_q)
-    if not terms:
+    if not re.findall(r"[a-zA-Z0-9_\-]+", _strip_accents(clean_q)):
         return "Por favor, forneça termos de busca válidos."
-    skills = _get_all_skills_data()
-    scored = sorted(((sc, s) for s in skills if (sc := _score_skill_query(s, clean_q, terms)) > 0), key=lambda x: x[0], reverse=True)
-    top_matches = scored[:limit]
+    top_matches = rank_skills_for_query(query, limit=limit)
     if not top_matches:
         return f"Nenhuma skill encontrada para '{query}'. Use 'franklin_skills_list()' para inspecionar todas as opções."
     output = [f"### 🎯 Recomendações de Skills para: \"{query}\"\n"]
@@ -474,7 +547,7 @@ def _validate_skill_rules_and_evals(s_dir: Path, errs: List[str]) -> None:
 
 
 def _validate_single_skill_dir(s_dir: Path) -> List[str]:
-    """Valida a conformidade contratual, frontmatter, rules e evals de uma pasta de skill."""
+    """Valida a conformidade contratual, frontmatter (regex + fronteiras L1), L2 (<500 linhas), rules e evals de uma skill."""
     errs: List[str] = []
     skill_file = s_dir / "SKILL.md"
     if not skill_file.exists():
@@ -486,12 +559,19 @@ def _validate_single_skill_dir(s_dir: Path) -> List[str]:
             errs.append("Frontmatter YAML ausente ou malformado")
         missing = [req for req in ("name", "description", "version") if not meta.get(req)]
         errs.extend([f"Campo obrigatório '{req}' ausente no frontmatter" for req in missing])
-        desc_text = str(meta.get("description", ""))
+        name_val = str(meta.get("name", "")).strip()
+        is_template = s_dir.name == "_template" and name_val == "template-skill"
+        if name_val and (len(name_val) > 64 or not re.match(r"^[a-z0-9]+(-[a-z0-9]+)*$", name_val)):
+            errs.append(f"Nome '{name_val}' viola o padrão kebab-case estrito (^[a-z0-9]+(-[a-z0-9]+)*$)")
+        if name_val and name_val != s_dir.name and not is_template:
+            errs.append(f"Nome no frontmatter ('{name_val}') difere da pasta ('{s_dir.name}')")
+        desc_text = str(meta.get("description", "")).strip()
         if len(desc_text) > 420:
             errs.append(f"Descrição excede o orçamento de contexto de 420 chars ({len(desc_text)} chars)")
-        is_template = s_dir.name == "_template" and meta.get("name") == "template-skill"
-        if meta.get("name") and meta["name"] != s_dir.name and not is_template:
-            errs.append(f"Nome no frontmatter ('{meta['name']}') difere da pasta ('{s_dir.name}')")
+        if desc_text and not is_template and not re.search(r"\b(n[aã]o use|do not use|don't use|skip when)\b", desc_text, re.IGNORECASE):
+            errs.append("Descrição deve declarar fronteira negativa ('Não use para...' / 'Do not use...')")
+        if len(body.splitlines()) > 500:
+            errs.append(f"Corpo L2 do SKILL.md excede 500 linhas ({len(body.splitlines())} linhas)")
         errs.extend([f"Seção obrigatória ausente: {sec_name}" for sec_pattern, sec_name in REQUIRED_SKILL_SECTIONS if not re.search(sec_pattern, body, re.IGNORECASE)])
         _validate_skill_rules_and_evals(s_dir, errs)
     except (OSError, ValueError, KeyError) as e:

@@ -28,7 +28,7 @@ category: "Engenharia de Prompts, Auditoria Epistêmica, Modulação de Entropia
 - **Papel Canônico Único (SSOT)**: Auditoria de factibilidade técnica/científica (`[VEREDITO: INVIÁVEL/FALHO/SUBÓTIMO]`), classificação epistêmica estrita (`[FATO]`, `[INFERÊNCIA]`, `[LACUNA]`), **modulação de entropia** (*Determinismo na Borda vs. Fluidez Cognitiva no Centro* e contratos de **Baixa Entropia**), blindagem Zero-Trust (`<untrusted_user_input>`) e emissão nos 3 Módulos Operacionais.
 - **Eliminação de Redundâncias**:
   - Para **triagem rápida de nível de complexidade (Níveis 1/2/3: `RTF`, `CARE`, `CLAREZA`, `TASS`)** como sub-etapa de criação de skill, o pipeline usa `expansao-contexto-adaptativa`.
-  - Quando o prompt refinado envolver **Frontend/UI ou qualquer um dos 7 Módulos de Domínio (`M1`..`M7`)**, carregue sob demanda a SSOT em [`skills/_template/references/guardrails_por_modulo.md`](../_template/references/guardrails_por_modulo.md) e [`skills/_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md) (sem duplicar tabelas de cores no corpo desta skill).
+  - Quando o prompt refinado envolver **Frontend/UI ou qualquer um dos 7 Módulos de Domínio (`M1`..`M7`)**, carregue sob demanda a SSOT em [`skills/_template/references/guardrails_por_modulo.md`](../_template/references/guardrails_por_modulo.md) e [`skills/_template/references/DESIGN.md (SSOT)`](../_template/references/DESIGN.md (SSOT)) (sem duplicar tabelas de cores no corpo desta skill).
 
 ---
 
@@ -107,7 +107,7 @@ category: "Engenharia de Prompts, Auditoria Epistêmica, Modulação de Entropia
 - **Prevenção de *Self-Refine* Cego Autorregressivo**: Nunca instrua um modelo sem *Thinking tokens* nativos a "revisar tudo silenciosamente antes de responder" em turno único sem fornecer um campo preliminar de rascunho/auditoria (ex.: `"_pre_flight_check"` gerado **antes** do campo final no schema JSON).
 - **Parede de Complexidade (*Prompt Complexity Wall*)**: Nunca empilhe mais de 10–15 restrições negativas soltas num mesmo prompt; agrupe em contratos estruturados ou delegue a sub-skills.
 - **Zero Fragmentação no Módulo 2 e Teto de 3 Perguntas no Módulo 3**: Nunca quebre o artefato plug-and-play em múltiplos blocos desconexos nem faça perguntas abertas sem alternativas A/B com *trade-offs*.
-- **Conformidade Visual Sob Demanda (`Módulo 3 UI`)**: Quando o artefato envolver interfaces, selecione o tema de acordo com o **propósito do projeto** descrito em [`_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md).
+- **Conformidade Visual Sob Demanda (`Módulo 3 UI`)**: Quando o artefato envolver interfaces, selecione o tema de acordo com o **propósito do projeto** descrito em [`_template/references/DESIGN.md (SSOT)`](../_template/references/DESIGN.md (SSOT)).
 
 ---
 

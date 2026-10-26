@@ -1,8 +1,7 @@
 ---
 name: frontend-code-architect
 description: >-
-  Arquitetura, scaffolding e implementação frontend (src/ em 5 camadas de Design Atômico, globals.css, tokens e componentes) adaptando tema, espaçamento, contraste, tipografia e camadas ao propósito do projeto. Não use para auditoria somente-leitura (use frontend-testing-auditor).
-version: "5.0.0"
+  Implementa e refatora interfaces web (HTML/CSS/JS, React, Next.js, Tailwind) consumindo o contrato DESIGN.md, composição espacial intrínseca, tokens semânticos, estados finitos (FSM) e acessibilidade. Use para construir ou refatorar código UI; não use apenas para gerar o DESIGN.md.
 license: MIT
 compatibility: "React 18+, TypeScript 5+, Tailwind CSS v3/v4, CSS Variables, Next.js 14+"
 metadata:
@@ -16,11 +15,12 @@ metadata:
     - "estilo-por-proposito"
     - "ex-umbris-ad-lucem"
     - "aether-2027"
+version: "5.0.0"
 updated_at: 2026-10-19
 author: FrontCraftMaster & Melki
 category: Frontend Engineering, Design Atômico & Arquitetura Visual por Propósito
 authorized_sub_skills:
-  - name: minimal-impact-ui
+  - name: design-md
     role: "Atlas Ex Umbris + WinUI 3 Gallery (6 arquétipos de página, 28 efeitos e boilerplate HTML/CSS/JS)"
   - name: design-md
     role: "Síntese e atualização do contrato DESIGN.md guiado pelo propósito do projeto"
@@ -32,7 +32,7 @@ authorized_sub_skills:
 
 ## 1. OBJETIVO E DIRETRIZES DE ATIVAÇÃO
 
-Esta Skill fornece procedimentos padronizados para estruturar, implementar e evoluir aplicações frontend modernas em **5 camadas de Design Atômico**, selecionando **tema, atmosfera, arquétipo de página, espaçamento, contraste, tipografia e camadas** de acordo com o **propósito do projeto** (consulte [`../_template/references/preferencias_estilo_e_temas.md`](../_template/references/preferencias_estilo_e_temas.md), [`../minimal-impact-ui/SKILL.md`](../minimal-impact-ui/SKILL.md) e o modelo [`../minimal-impact-ui/references/atlas_ex_umbris_winui.html`](../minimal-impact-ui/references/atlas_ex_umbris_winui.html)).
+Esta Skill fornece procedimentos padronizados para estruturar, implementar e evoluir aplicações frontend modernas em **5 camadas de Design Atômico**, selecionando **tema, atmosfera, arquétipo de página, espaçamento, contraste, tipografia e camadas** de acordo com o **propósito do projeto** (consulte [`../_template/references/DESIGN.md (SSOT)`](../_template/references/DESIGN.md (SSOT)), [`../design-md/SKILL.md`](../design-md/SKILL.md) e o modelo [`../design-md/references/atlas_ex_umbris_winui.html`](../design-md/references/atlas_ex_umbris_winui.html)).
 
 ### 🚫 ANTI-PADRÕES A EVITAR:
 - ❌ **Paleta Fixa Repetitiva ou Letras Vermelhas Embaçadas sobre Cinza/Escuro:** Proibido `color: #e13535` puro ou serifa fina embaçada sobre `#57545d`, `#49464f` ou `#070709`. Use `.highlight-surgical` (Semibold + sublinhado `2px` em `--punctual-accent`) em títulos e `.accent-text` (`#FFFFFF` no cinza/escuro ou `#991B1B` no claro + fundo `--punctual-soft` + `border-left: 2.5px solid var(--punctual-accent)`) em badges.

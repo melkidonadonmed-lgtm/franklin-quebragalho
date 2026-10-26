@@ -52,7 +52,7 @@
 ---
 
 ## 5. Diretrizes para Skills Próprias
-- **Localização e Descoberta**: As 29 skills canônicas residem em `skills/<skill-name>/SKILL.md` e são sincronizadas fisicamente via `scripts/sync_gemini_ecosystem.py` para o plugin global `C:\Users\melki\.gemini\config\plugins\franklin-skills\skills\<skill-name>\SKILL.md`.
+- **Localização e Descoberta**: As 24 skills canônicas residem em `skills/<skill-name>/SKILL.md` e são sincronizadas fisicamente via `scripts/sync_gemini_ecosystem.py` para o plugin global `C:\Users\melki\.gemini\config\plugins\franklin-skills\skills\<skill-name>\SKILL.md`.
 - **Frontmatter Obrigatório**: Cada skill deve possuir cabeçalho YAML com `name`, `description` (em 3ª pessoa) e `version`.
 - **Divulgação Progressiva e Taxonomia de Pastas**:
   - `SKILL.md`: Contrato nuclear enxuto contendo fluxo decisório, gatilhos, exclusões e saídas esperadas.
@@ -83,14 +83,8 @@ Este workspace opera sob conformidade estrita com as diretrizes de governança g
 
 ---
 
-## Diretrizes Globais de Qualidade, Eficiência, Orquestração de Agentes e Execução Adaptativa
+## Diretrizes Globais de Qualidade, Eficiência, UI e Memória (Padrão 2026)
 Este repositório segue as diretrizes globais do workspace:
-- **Regras do Workspace (`dev`)**: [AGENTS.md](file:///C:/Users/melki/dev/AGENTS.md), [GEMINI.md](file:///C:/Users/melki/dev/GEMINI.md) e Hub Interativo [`tools\agent-hub.ps1`](file:///C:/Users/melki/dev/tools/agent-hub.ps1)
-- **Preferências e Memória Canônica**: [Preferências de Trabalho com Agentes.md](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md)
-- **Regra Global (`always_on`)**: [diretrizes-qualidade-eficiencia.md](file:///C:/Users/melki/.gemini/config/rules/diretrizes-qualidade-eficiencia.md) (1. Qualidade e Tipagem Estrita <= 300 linhas; 2. Eficiência, Zero Preâmbulo e Portões HITL; 3. Flexibilidade Anti-Engessamento; 4. Self-Refine Silencioso; 5. Proatividade com 1 Próximo Passo Concreto; 6. Preferências de Estilo, Arquitetura Visual e Temas por Objetivo — `preferencias_estilo_e_temas.md`, zero paleta fixa repetitiva, *Ad Lucem*, *Cinza Monolítico `#57545d` + Menus `#8e8999`*, *Preto Terminal IBM `Ex Umbris` + `IBM Plex`* ou *AETHER 2027*).
-- **Orquestração Interativa de Agentes (5 Camadas)**:
-  1. **Bússola & Heartbeat (`0 tokens`)**: `franklin_smart_compass(intent_or_path)` | `pwsh C:\Users\melki\dev\tools\agent-hub.ps1` | `POST /rpc` (`mesh/heartbeat`).
-  2. **Execução Direta vs. Loop Fechado**: Precedência `<user_rules>` **>** `franklin-skills` **>** `superpowers` (entrega direta sem entrevista em baixo risco; `LoopPlanner` Fase 0 + `gap-analyzer-auditor` em missões críticas).
-  3. **Esquadrão Frontend (`FrontCraftMaster` + Topologia `3+1`)**: `invoke_subagent` (`ui-shell-navigator` -> `ui-controls-data` + `ui-motion-interaction` -> `ui-deterministic-observer`) ou `franklin_execute_dag("ui")`.
-  4. **Gatekeepers Determinísticos**: `code-acceptability-auditor` (AST Python >= 75), `test-quality-auditor`, `franklin_execute_dag("physics")` (`Snorm >= 80`) e `dispatch_skill_deterministic_tests` (Go Pass@k).
-  5. **Malha Multiagente Cloud/Web & Clínica**: `adk-tests` (Watchdog SRE + A2A `:8080`), `epic-volta` (DAG Kahn + `MCPBridgeAgent`), `mcp-web-agents` (Gateway 4+1) e `PCM`/`scoreboard` (`prescmed-clinical-reviewer`).
+- **Regras do Workspace (`dev`)**: [AGENTS.md](file:///C:/Users/melki/dev/AGENTS.md), [GEMINI.md](file:///C:/Users/melki/dev/GEMINI.md) e Hub [`tools\agent-hub.ps1`](file:///C:/Users/melki/dev/tools/agent-hub.ps1)
+- **Preferências Canônicas**: [Preferências de Trabalho com Agentes.md](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md)
+- **Regra Global (`always_on`)**: [diretrizes-qualidade-eficiencia.md](file:///C:/Users/melki/.gemini/config/rules/diretrizes-qualidade-eficiencia.md) (1. Fidelidade à referência, anti-travamento `<= 300` linhas/chamada e proporcionalidade; 2. Zero emojis em UI/código, Squint Test em 3 níveis, `tabular-nums`, composição espacial e tokens semânticos guiados pelo propósito do projeto sem cores travadas; 3. Código limpo `pwsh` nativo; 4. Memória Obsidian + MemPalace).

@@ -1,0 +1,23 @@
+# Governança Zero-Trust (.geminiignore) — Bloqueio de leitura de segredos, certificados, bancos e caches
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+*.crt
+*.jks
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+.venv/
+venv/
+node_modules/
+__pycache__/
+.pytest_cache/
+.sessions/
+dist/
+*.log
