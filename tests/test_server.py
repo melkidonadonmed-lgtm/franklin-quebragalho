@@ -523,8 +523,8 @@ def test_gemini_ecosystem_directories() -> None:
         assert target.exists() and target.is_dir(), f"Diretório ausente: {target}"
 
     assert not (gemini_root / "plugins").exists()
-    assert not (gemini_root / "skills").exists()
     assert not (gemini_root / "docs").exists()
+    active_cli_dirs = {name: (gemini_root / name).exists() for name in ("skills", "extensions")}
     assert not (server.ROOT_DIR / ".agents" / "skills").exists()
     assert (server.ROOT_DIR / "plugin.json").exists()
     assert (gemini_root / "agents" / "ui-shell-navigator.md").exists()
@@ -558,6 +558,8 @@ def test_gemini_ecosystem_directories() -> None:
         summary = sync_ecosystem()
         assert summary["deduplicated_config_skills"] >= 1
         assert not dup_probe.exists()
+        for name, existed in active_cli_dirs.items():
+            assert (gemini_root / name).exists() == existed, f"sync não pode apagar ~/.gemini/{name} (diretório ativo do Gemini CLI)"
         assert (Path(r"C:\Users\melki\.agents\skills\agent-browser\SKILL.md")).exists()
     finally:
         if dup_probe.exists():

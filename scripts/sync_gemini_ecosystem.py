@@ -123,11 +123,11 @@ def _prepare_and_clean_dirs() -> None:
     for d in required_gemini_dirs:
         d.mkdir(parents=True, exist_ok=True)
 
+    # ~/.gemini/skills e ~/.gemini/extensions NÃO são legados: o Gemini CLI instala skills e extensões
+    # (ex.: wt-agent-hooks do Windows Terminal) ali. Apagá-los quebra o CLI e eles voltam na reinstalação.
     for legacy_dir in (
         GEMINI_ROOT / "plugins",
-        GEMINI_ROOT / "skills",
         GEMINI_ROOT / "docs",
-        GEMINI_ROOT / "extensions",
         GEMINI_ROOT / "staging",
         CONFIG_PLUGIN_ROOT / "agents",
         CONFIG_PLUGIN_ROOT / "hooks",
@@ -451,7 +451,7 @@ def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
     ui_u = ["vercel-react-best-practices", "web-design-guidelines", "ai-sdk", "live-api-function-auditor"]
     mcp_f = ["agent-server-auditor", "audit-skills-antigravity", "high-level-context-planner", "skill-orquestrador-planos-encadeados", "refine-prompt", "context-sentinel"]
     mcp_u = ["api-auditor", "build-mcp-server", "build-mcp-app", "build-mcpb", "mcp-use-app-builder", "live-api-function-auditor"]
-    adk_local_skills = ["backend-architecture-skill", "backfront-stress", "code-quality-validation", "context-architecture-skill", "estante", "gatekeeper-eval", "temperea", "weather-skill"]
+    adk_local_skills = ["adk-go-mcp-router", "agent-0meia", "backend-architecture-skill", "backfront-stress", "code-analysis-causal-review-team", "code-quality-validation", "context-architecture-skill", "estante", "gatekeeper-eval", "temperea", "weather-skill"]
     ui_profile = {"franklin_skills": ui_f, "user_skills": ui_u, "subagents": UI_SUBAGENTS}
     mcp_profile = {"franklin_skills": mcp_f, "user_skills": mcp_u, "subagents": GOV_SUBAGENTS}
     all_franklin = sorted(p.name for p in (ROOT_DIR / "skills").iterdir() if p.is_dir() and (p / "SKILL.md").exists())

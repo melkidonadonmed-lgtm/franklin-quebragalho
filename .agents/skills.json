@@ -47,8 +47,11 @@
     {
       "path": "C:/Users/melki/dev/repos/adk-tests/go_agent/skills",
       "include_only": [
+        "adk-go-mcp-router",
+        "agent-0meia",
         "backend-architecture-skill",
         "backfront-stress",
+        "code-analysis-causal-review-team",
         "code-quality-validation",
         "context-architecture-skill",
         "estante",
