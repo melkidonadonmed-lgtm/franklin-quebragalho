@@ -33,6 +33,13 @@ def test_identicos_nao_regravam(tmp_path: Path) -> None:
     assert (tmp_path / "SPEC.md").stat().st_mtime == 1_000_000
 
 
+def test_diferenca_so_de_fim_de_linha_nao_regrava(tmp_path: Path) -> None:
+    (tmp_path / ".context").mkdir()
+    (tmp_path / ".context" / "context.md").write_bytes(b"linha 1\nlinha 2\n")
+    (tmp_path / "CONTEXT.md").write_bytes(b"linha 1\r\nlinha 2\r\n")
+    assert _mirror_context_to_root(tmp_path) == []
+
+
 def test_raiz_nunca_sobrescreve_context(tmp_path: Path) -> None:
     """Adversarial: uma raiz editada à mão não pode vencer a fonte canônica."""
     _write(tmp_path / ".context" / "context.md", "canônico\n")

@@ -264,6 +264,10 @@ CONTEXT_MIRRORS: tuple[tuple[str, Path], ...] = (
 )
 
 
+def _eol_normalized(path: Path) -> bytes:
+    return path.read_bytes().replace(b"\r\n", b"\n")
+
+
 def _mirror_context_to_root(repo_dir: Path) -> list[str]:
     """[LOCK-03] .context/ é a fonte; CONTEXT.md/SPEC.md da raiz são espelhos sobrescritos a cada sync.
 
@@ -273,7 +277,8 @@ def _mirror_context_to_root(repo_dir: Path) -> list[str]:
     for root_name, ctx_rel in CONTEXT_MIRRORS:
         root_f, ctx_f = repo_dir / root_name, repo_dir / ctx_rel
         if ctx_f.is_file():
-            if not root_f.is_file() or root_f.read_bytes() != ctx_f.read_bytes():
+            # Compara ignorando CRLF/LF: com core.autocrlf=true o checkout da raiz vira CRLF sem mudar conteúdo.
+            if not root_f.is_file() or _eol_normalized(root_f) != _eol_normalized(ctx_f):
                 shutil.copy2(ctx_f, root_f)
                 written.append(root_name)
         elif root_f.is_file():
