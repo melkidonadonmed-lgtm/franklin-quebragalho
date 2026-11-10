@@ -49,23 +49,67 @@ const (
 
 // SkillAuditReport consolida as métricas e o diagnóstico final de uma Skill.
 type SkillAuditReport struct {
-	SkillName             string              `json:"skill_name"`
-	Scope                 string              `json:"scope"`
-	Path                  string              `json:"path"`
-	Language              string              `json:"language"`
-	Version               string              `json:"version"`
-	YAMLValid             bool                `json:"yaml_valid"`
-	HasProgressiveDiscl   bool                `json:"has_progressive_disclosure"`
-	RuleCount             int                 `json:"rule_count"`
-	TokenCountEst         int                 `json:"token_count_est"`
-	HasContextBloat       bool                `json:"has_context_bloat"`
-	HasComplexityWall     bool                `json:"has_complexity_wall"`
-	READependencies       []string            `json:"rea_dependencies,omitempty"`
-	PassAt1               float64             `json:"pass_at_1"`
-	PassAt3               float64             `json:"pass_at_3"`
-	FNR                   float64             `json:"false_negative_rate"`
-	Recommendation        AuditRecommendation `json:"recommendation"`
-	Justification         string              `json:"justification"`
+	SkillName           string              `json:"skill_name"`
+	Scope               string              `json:"scope"`
+	Path                string              `json:"path"`
+	Language            string              `json:"language"`
+	Version             string              `json:"version"`
+	YAMLValid           bool                `json:"yaml_valid"`
+	HasProgressiveDiscl bool                `json:"has_progressive_disclosure"`
+	RuleCount           int                 `json:"rule_count"`
+	TokenCountEst       int                 `json:"token_count_est"`
+	HasContextBloat     bool                `json:"has_context_bloat"`
+	HasComplexityWall   bool                `json:"has_complexity_wall"`
+	READependencies     []string            `json:"rea_dependencies,omitempty"`
+	PassAt1             float64             `json:"pass_at_1"`
+	PassAt3             float64             `json:"pass_at_3"`
+	FNR                 float64             `json:"false_negative_rate"`
+	Recommendation      AuditRecommendation `json:"recommendation"`
+	Justification       string              `json:"justification"`
+	ThirdPartySource    string              `json:"third_party_source,omitempty"`
+}
+
+// thirdPartySource identifica skills gerenciadas por instaladores externos (npx skills, rea-agents, autor externo ou
+// LICENSE de fornecedor). Elas são somente leitura para a auditoria: reescrevê-las (incidente de 2026-11-09) gerou
+// drift, `license` removida e links para references/extended_playbook.md inexistente. Retorna "" para skills próprias.
+func thirdPartySource(skillDir string, metadata map[string]any, license, homeDir, npmRoot string) string {
+	name := filepath.Base(skillDir)
+	if homeDir != "" {
+		if raw, err := os.ReadFile(filepath.Join(homeDir, ".agents", ".skill-lock.json")); err == nil {
+			var lock struct {
+				Skills map[string]struct {
+					Source string `json:"source"`
+				} `json:"skills"`
+			}
+			if json.Unmarshal(raw, &lock) == nil {
+				if entry, ok := lock.Skills[name]; ok {
+					return "npx skills (" + entry.Source + ")"
+				}
+			}
+		}
+	}
+	if npmRoot != "" && fileExists(filepath.Join(npmRoot, "rea-agents", "skills", name, "SKILL.md")) {
+		return "rea-agents"
+	}
+	author, _ := metadata["author"].(string)
+	own := strings.Contains(strings.ToLower(author), "melki")
+	if author != "" && !own {
+		return "autor externo (" + author + ")"
+	}
+	vendorLicense := license != "" || fileExists(filepath.Join(skillDir, "LICENSE.txt")) || fileExists(filepath.Join(skillDir, "LICENSE"))
+	if vendorLicense && !own {
+		return "licença de terceiro"
+	}
+	return ""
+}
+
+func defaultSkillOwnershipRoots() (string, string) {
+	home, _ := os.UserHomeDir()
+	npmRoot := ""
+	if appData := os.Getenv("APPDATA"); appData != "" {
+		npmRoot = filepath.Join(appData, "npm", "node_modules")
+	}
+	return home, npmRoot
 }
 
 func parseInlineList(val string) []string {
@@ -372,6 +416,13 @@ func AuditSkill(skillDir, scopeLabel string) (*SkillAuditReport, error) {
 	report.Version = fm.Version
 	if report.Version == "" {
 		report.Version = "1.0.0"
+	}
+	home, npmRoot := defaultSkillOwnershipRoots()
+	if src := thirdPartySource(skillDir, fm.Metadata, fm.License, home, npmRoot); src != "" {
+		report.ThirdPartySource = src
+		report.Recommendation = Keep
+		report.Justification = fmt.Sprintf("Skill de terceiro gerenciada por %s: somente leitura. Não editar frontmatter nem corpo; atualizar pelo instalador.", src)
+		return report, nil
 	}
 	tokenEst := len(body) / 4
 	ruleCount := countActiveGuardrailRules(body)
