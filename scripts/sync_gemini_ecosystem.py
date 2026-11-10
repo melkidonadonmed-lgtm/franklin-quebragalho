@@ -21,7 +21,9 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-GEMINI_ROOT = Path(r"C:\Users\melki\.gemini")
+# Raiz do usuário; os testes redirecionam USER_HOME/GEMINI_ROOT/REPOS_ROOT para tmp_path.
+USER_HOME = Path(r"C:\Users\melki")
+GEMINI_ROOT = USER_HOME / ".gemini"
 REPOS_ROOT = ROOT_DIR.parent
 CONFIG_PLUGIN_ROOT = GEMINI_ROOT / "config" / "plugins" / "franklin-skills"
 CONFIG_SKILLS_ROOT = GEMINI_ROOT / "config" / "skills"
@@ -180,7 +182,7 @@ def _sync_global_skills_json() -> None:
     payload = {
         "entries": [
             {
-                "path": "C:/Users/melki/.agents/skills",
+                "path": (USER_HOME / ".agents" / "skills").as_posix(),
                 "include_only": list(GLOBAL_CORE_USER_SKILLS),
             }
         ]
@@ -207,7 +209,7 @@ def _deduplicate_config_skills(skills_src: Path) -> int:
     plugins_dir = GEMINI_ROOT / "config" / "plugins"
     if plugins_dir.exists():
         canonical_names.update(p.parent.name for p in plugins_dir.glob("*/skills/*/SKILL.md"))
-    user_agents_skills = Path(r"C:\Users\melki\.agents\skills")
+    user_agents_skills = USER_HOME / ".agents" / "skills"
     if user_agents_skills.exists():
         canonical_names.update(p.name for p in user_agents_skills.iterdir() if p.is_dir() and (p / "SKILL.md").exists())
 
@@ -236,7 +238,7 @@ def _clean_redundant_skill_links(user_agents_skills: Path) -> None:
 
 def _sync_user_agents_root() -> int:
     """Mantém .agents/skills higienizado sem duplicar cópias em .gemini/config/skills."""
-    user_agents_root = Path(r"C:\Users\melki\.agents")
+    user_agents_root = USER_HOME / ".agents"
     user_agents_skills = user_agents_root / "skills"
     canonical_franklin = {p.name for p in (ROOT_DIR / "skills").iterdir() if p.is_dir() and (p / "SKILL.md").exists()}
 
@@ -300,8 +302,8 @@ def _sync_local_triad_and_plugin_assets() -> None:
             if end_fm > 0:
                 body_ssot = "\n".join(lines[end_fm + 1 :]).lstrip() + "\n"
         for global_agents_md in (
-            Path(r"C:\Users\melki\AGENTS.md"),
-            Path(r"C:\Users\melki\.agents\AGENTS.md"),
+            USER_HOME / "AGENTS.md",
+            USER_HOME / ".agents" / "AGENTS.md",
         ):
             global_agents_md.parent.mkdir(parents=True, exist_ok=True)
             global_agents_md.write_text(body_ssot, encoding="utf-8")
@@ -509,7 +511,7 @@ def _sync_project_scoped_customizations(agents_src: Path) -> int:
     """Gera .agents/skills.json e .agents/agents/*.md sob medida dentro de cada repositório de dev/repos."""
     profiles = _build_project_customization_profiles()
     franklin_skills_path = (ROOT_DIR / "skills").as_posix()
-    user_skills_path = Path(r"C:\Users\melki\.agents\skills").as_posix()
+    user_skills_path = (USER_HOME / ".agents" / "skills").as_posix()
     plugins_base = (GEMINI_ROOT / "config" / "plugins").as_posix()
     configured_repos = 0
 

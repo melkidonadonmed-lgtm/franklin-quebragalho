@@ -6,6 +6,8 @@ Testes determinísticos para validação do Franklin Skills MCP Server e Harness
 import json
 from pathlib import Path
 
+import pytest
+
 import server
 
 
@@ -513,29 +515,68 @@ def test_franklin_execute_dag_aliases_and_physics_plan(tmp_path: Path) -> None:
         assert res_ui["results"]["wave3_deterministic_observer"]["final_status"] == "PASS"
 
 
-def test_gemini_ecosystem_directories() -> None:
-    """Valida se os diretórios solicitados em C:\\Users\\melki\\.gemini estão criados, sincronizados e desduplicados."""
-    from scripts.sync_gemini_ecosystem import CONFIG_SKILLS_ROOT, sync_ecosystem
+def _seed(path: Path, text: str = "x\n") -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+    return path
 
-    gemini_root = Path(r"C:\Users\melki\.gemini")
+
+def test_gemini_ecosystem_directories(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Roda o sync completo num home temporário e valida criação, limpeza, preservação e deduplicação.
+
+    O home real (C:\\Users\\melki) nunca é escrito: USER_HOME, GEMINI_ROOT e REPOS_ROOT apontam para tmp_path.
+    """
+    import scripts.sync_gemini_ecosystem as sync
+
+    home = tmp_path / "home"
+    gemini_root = home / ".gemini"
+    monkeypatch.setattr(sync, "USER_HOME", home)
+    monkeypatch.setattr(sync, "GEMINI_ROOT", gemini_root)
+    monkeypatch.setattr(sync, "CONFIG_PLUGIN_ROOT", gemini_root / "config" / "plugins" / "franklin-skills")
+    monkeypatch.setattr(sync, "CONFIG_SKILLS_ROOT", gemini_root / "config" / "skills")
+    monkeypatch.setattr(sync, "REPOS_ROOT", tmp_path / "repos")
+
+    cli_skill = _seed(gemini_root / "skills" / "cli-skill" / "SKILL.md")
+    cli_extension = _seed(gemini_root / "extensions" / "wt-agent-hooks" / "gemini-extension.json", "{}\n")
+    _seed(gemini_root / "plugins" / "legado.txt")
+    _seed(gemini_root / "docs" / "legado.txt")
+    dup_probe = _seed(gemini_root / "config" / "skills" / "design-md" / "SKILL.md", "---\nname: design-md\n---\n")
+    user_skill = _seed(home / ".agents" / "skills" / "agent-browser" / "SKILL.md")
+    repo = tmp_path / "repos" / "scoreboard"
+    _seed(repo / ".context" / "context.md", "estado canônico\n")
+    _seed(repo / "CONTEXT.md", "raiz desatualizada\n")
+
+    real_home = Path(r"C:\Users\melki")
+    guarded = [p for p in (real_home / "AGENTS.md", real_home / ".gemini" / "config" / "skills.json") if p.exists()]
+    before = {p: p.stat().st_mtime_ns for p in guarded}
+
+    summary = sync.sync_ecosystem()
+
+    assert summary["status"] == "SYNCHRONIZED"
+    assert summary["deduplicated_config_skills"] >= 1 and not dup_probe.parent.exists()
     for sub in ("lib", "doc", "agents", "plans"):
-        target = gemini_root / sub
-        assert target.exists() and target.is_dir(), f"Diretório ausente: {target}"
-
-    assert not (gemini_root / "plugins").exists()
-    assert not (gemini_root / "docs").exists()
-    active_cli_dirs = {name: (gemini_root / name).exists() for name in ("skills", "extensions")}
-    assert not (server.ROOT_DIR / ".agents" / "skills").exists()
-    assert (server.ROOT_DIR / "plugin.json").exists()
+        assert (gemini_root / sub).is_dir(), f"Diretório ausente: {sub}"
+    assert not (gemini_root / "plugins").exists() and not (gemini_root / "docs").exists()
+    assert cli_skill.exists(), "sync não pode apagar ~/.gemini/skills (diretório ativo do Gemini CLI)"
+    assert cli_extension.exists(), "sync não pode apagar ~/.gemini/extensions (diretório ativo do Gemini CLI)"
+    assert user_skill.exists()
     assert (gemini_root / "agents" / "ui-shell-navigator.md").exists()
     assert (gemini_root / "config" / "agents" / "adk-go-operator.md").exists()
     assert not (gemini_root / "config" / "agents" / "ui-shell-navigator.md").exists()
-    assert (server.ROOT_DIR / ".agents" / "skills.json").exists()
     assert (gemini_root / "plans" / "ui_composition_dag.json").exists()
     assert (gemini_root / "lib" / "agent_spec_loader.py").exists()
-    assert (gemini_root / "doc" / "AGENTS.md").exists()
-    assert (gemini_root / "doc" / "agent_card.json").exists()
+    assert (gemini_root / "doc" / "AGENTS.md").exists() and (gemini_root / "doc" / "agent_card.json").exists()
     assert (gemini_root / "config" / "plugins" / "franklin-skills" / "plugin.json").exists()
+    skills_json = json.loads((gemini_root / "config" / "skills.json").read_text(encoding="utf-8"))
+    assert skills_json["entries"][0]["path"] == (home / ".agents" / "skills").as_posix()
+    assert (home / "AGENTS.md").exists() and (home / ".agents" / "AGENTS.md").exists()
+    assert (repo / "CONTEXT.md").read_text(encoding="utf-8") == "estado canônico\n"
+    assert (repo / ".agents" / "skills.json").exists()
+    assert {p: p.stat().st_mtime_ns for p in guarded} == before, "o teste escreveu no home real"
+
+    assert not (server.ROOT_DIR / ".agents" / "skills").exists()
+    assert (server.ROOT_DIR / "plugin.json").exists()
+    assert (server.ROOT_DIR / ".agents" / "skills.json").exists()
 
     card_data = json.loads((server.ROOT_DIR / "agent_card.json").read_text(encoding="utf-8"))
     expected_skill_ids = sorted(
@@ -549,23 +590,6 @@ def test_gemini_ecosystem_directories() -> None:
         target_dir=r"C:\Users\melki\dev\repos\franklin-quebragalho\skills\design-md\references",
     )
     assert 'target_dir="C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\skills\\design-md\\references"' in compass_out
-
-    # Simula injeção de skill duplicada em .gemini/config/skills e valida limpeza determinística
-    dup_probe = CONFIG_SKILLS_ROOT / "design-md"
-    try:
-        dup_probe.mkdir(parents=True, exist_ok=True)
-        (dup_probe / "SKILL.md").write_text("---\nname: design-md\ndescription: duplicate\n---\n", encoding="utf-8")
-        summary = sync_ecosystem()
-        assert summary["deduplicated_config_skills"] >= 1
-        assert not dup_probe.exists()
-        for name, existed in active_cli_dirs.items():
-            assert (gemini_root / name).exists() == existed, f"sync não pode apagar ~/.gemini/{name} (diretório ativo do Gemini CLI)"
-        assert (Path(r"C:\Users\melki\.agents\skills\agent-browser\SKILL.md")).exists()
-    finally:
-        if dup_probe.exists():
-            import shutil
-
-            shutil.rmtree(dup_probe)
 
 
 def test_docs_and_catalog_truth_parity() -> None:
