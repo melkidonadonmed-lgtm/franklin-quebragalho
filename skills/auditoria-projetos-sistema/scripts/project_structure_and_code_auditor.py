@@ -80,11 +80,17 @@ def _detect_complexity_level(root: Path, files: List[Path]) -> str:
 
 def _check_vital_files_and_git(root: Path) -> Tuple[Dict[str, str], Dict[str, Any], List[Dict[str, str]]]:
     """Audita presença real de arquivos vitais, .env.example e proteção .gitignore."""
-    vitals = ("README.md", "AGENTS.md", "SPEC.md", "CONTEXT.md")
+    # Tríade v2.0: .context/ é canônico; a raiz fica só como fallback para repositórios legados.
+    vitals: Dict[str, Tuple[str, ...]] = {
+        "README.md": ("README.md",),
+        "AGENTS.md": ("AGENTS.md", ".agents/AGENTS.md"),
+        "SPEC.md": (".context/spec.md", "SPEC.md"),
+        "CONTEXT.md": (".context/context.md", "CONTEXT.md"),
+    }
     vital_status: Dict[str, str] = {}
     blockers: List[Dict[str, str]] = []
-    for v in vitals:
-        exists = (root / v).is_file() and (root / v).stat().st_size > 20
+    for v, candidates in vitals.items():
+        exists = any((root / c).is_file() and (root / c).stat().st_size > 20 for c in candidates)
         vital_status[v] = "[PASS]" if exists else "[ARQUIVO AUSENTE]"
         if v == "README.md" and not exists:
             blockers.append({
@@ -213,7 +219,7 @@ def _cross_check_docs_vs_disk(root: Path, code_metrics: Dict[str, int]) -> List[
     """Confronta caminhos citados em README.md e SPEC.md contra os arquivos reais no disco."""
     parity: List[DocParityItem] = []
     seen_paths: Set[str] = set()
-    for doc_name in ("README.md", "SPEC.md"):
+    for doc_name in ("README.md", ".context/spec.md", "SPEC.md"):
         doc_path = root / doc_name
         if not doc_path.is_file():
             continue
@@ -305,8 +311,9 @@ def run_self_test() -> int:
             encoding="utf-8",
         )
         (root / "AGENTS.md").write_text("# Agents\nComandos executáveis de verificação.\n", encoding="utf-8")
-        (root / "SPEC.md").write_text("# Spec\nContratos de sistema validados.\n", encoding="utf-8")
-        (root / "CONTEXT.md").write_text("# Context\nEstado atual do projeto.\n", encoding="utf-8")
+        (root / ".context").mkdir()
+        (root / ".context" / "spec.md").write_text("# Spec\nContratos de sistema validados.\n", encoding="utf-8")
+        (root / ".context" / "context.md").write_text("# Context\nEstado atual do projeto.\n", encoding="utf-8")
         (root / "shared").mkdir()
         (root / "shared" / "core.py").write_text(
             "def compute_total(x: int, y: int) -> int:\n    return x + y\n",

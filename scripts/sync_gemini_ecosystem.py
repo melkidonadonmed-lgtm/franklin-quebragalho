@@ -258,6 +258,31 @@ def _sync_user_agents_root() -> int:
     return synced_agents_skills
 
 
+CONTEXT_MIRRORS: tuple[tuple[str, Path], ...] = (
+    ("CONTEXT.md", Path(".context") / "context.md"),
+    ("SPEC.md", Path(".context") / "spec.md"),
+)
+
+
+def _mirror_context_to_root(repo_dir: Path) -> list[str]:
+    """[LOCK-03] .context/ é a fonte; CONTEXT.md/SPEC.md da raiz são espelhos sobrescritos a cada sync.
+
+    Sem .context/, a cópia da raiz semeia o destino (repositórios legados). Retorna os arquivos gravados.
+    """
+    written: list[str] = []
+    for root_name, ctx_rel in CONTEXT_MIRRORS:
+        root_f, ctx_f = repo_dir / root_name, repo_dir / ctx_rel
+        if ctx_f.is_file():
+            if not root_f.is_file() or root_f.read_bytes() != ctx_f.read_bytes():
+                shutil.copy2(ctx_f, root_f)
+                written.append(root_name)
+        elif root_f.is_file():
+            ctx_f.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(root_f, ctx_f)
+            written.append(ctx_rel.as_posix())
+    return written
+
+
 def _sync_local_triad_and_plugin_assets() -> None:
     """Sincroniza a Tríade de Governança v2.0 (.agents/ e .context/), rules/, SSOT global, hooks e assets do plugin."""
     ssot_rule = ROOT_DIR / "rules" / "diretrizes-qualidade-eficiencia.md"
@@ -279,19 +304,12 @@ def _sync_local_triad_and_plugin_assets() -> None:
     for repo_dir in REPOS_ROOT.iterdir():
         if not repo_dir.is_dir() or repo_dir.name.startswith("."):
             continue
-        for src_name, dst_rel in (
-            ("AGENTS.md", Path(".agents") / "AGENTS.md"),
-            ("CONTEXT.md", Path(".context") / "context.md"),
-            ("SPEC.md", Path(".context") / "spec.md"),
-        ):
-            src_f = repo_dir / src_name
-            dst_f = repo_dir / dst_rel
-            if src_f.exists() and not dst_f.exists():
-                dst_f.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(src_f, dst_f)
-            elif repo_dir.name in ("franklin-quebragalho", "adk-tests") and src_f.exists():
-                dst_f.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(src_f, dst_f)
+        src_f = repo_dir / "AGENTS.md"
+        dst_f = repo_dir / ".agents" / "AGENTS.md"
+        if src_f.exists() and (not dst_f.exists() or repo_dir.name in ("franklin-quebragalho", "adk-tests")):
+            dst_f.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src_f, dst_f)
+        _mirror_context_to_root(repo_dir)
 
     for src_dir, dst_dir in (
         (ROOT_DIR / "rules", GEMINI_ROOT / "config" / "rules"),

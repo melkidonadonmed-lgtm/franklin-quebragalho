@@ -573,8 +573,8 @@ def test_docs_and_catalog_truth_parity() -> None:
     )
     count = len(expected_skills)
     readme_text = (server.ROOT_DIR / "README.md").read_text(encoding="utf-8")
-    spec_text = (server.ROOT_DIR / "SPEC.md").read_text(encoding="utf-8")
-    context_text = (server.ROOT_DIR / "CONTEXT.md").read_text(encoding="utf-8")
+    spec_text = (server.ROOT_DIR / ".context" / "spec.md").read_text(encoding="utf-8")
+    context_text = (server.ROOT_DIR / ".context" / "context.md").read_text(encoding="utf-8")
     my_skills_text = (server.ROOT_DIR / "MY_SKILLS.md").read_text(encoding="utf-8")
     agents_text = (server.ROOT_DIR / "AGENTS.md").read_text(encoding="utf-8")
 
