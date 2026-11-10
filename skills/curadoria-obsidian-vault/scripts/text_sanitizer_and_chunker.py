@@ -29,7 +29,7 @@ from pathlib import Path
 import re
 import sys
 from typing import Any, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 # =============================================================================
@@ -38,6 +38,7 @@ from pydantic import BaseModel, Field
 
 class SanitizationStats(BaseModel):
     """Estatísticas do processo de higienização de texto."""
+    model_config = ConfigDict(extra="forbid")
     invisible_chars_removed: int = Field(default=0, description="Caracteres invisíveis ou de controle expurgados")
     spaces_normalized: int = Field(default=0, description="Ocorrências de espaços múltiplos colapsados")
     duplicate_lines_removed: int = Field(default=0, description="Linhas redundantes ou duplicadas expurgadas")
@@ -48,6 +49,7 @@ class SanitizationStats(BaseModel):
 
 class ChunkMetadata(BaseModel):
     """Metadados anexados a cada fragmento para viabilizar filtragem híbrida."""
+    model_config = ConfigDict(extra="forbid")
     source_doc: str = Field(..., description="Documento ou URI de origem")
     category: str = Field(default="geral", description="Categoria temática para filtragem por metadados")
     chunk_index: int = Field(..., ge=0, description="Índice sequencial do chunk no documento (0-indexed)")
@@ -65,6 +67,7 @@ class ChunkMetadata(BaseModel):
 
 class TextChunk(BaseModel):
     """Estrutura representativa de um fragmento processado."""
+    model_config = ConfigDict(extra="forbid")
     chunk_id: str = Field(..., description="Hash identificador determinístico único do chunk (SHA-256 curto)")
     content_hash: str = Field(..., description="Hash SHA-256 integral do conteúdo textual do fragmento")
     parent_doc_hash: str = Field(..., description="Hash SHA-256 integral do documento de origem higienizado")
@@ -74,6 +77,7 @@ class TextChunk(BaseModel):
 
 class ChunkingResult(BaseModel):
     """Resultado consolidado da operação de higienização e chunking."""
+    model_config = ConfigDict(extra="forbid")
     source_doc: str
     category: str
     parent_doc_hash: str

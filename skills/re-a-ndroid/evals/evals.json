@@ -1,0 +1,50 @@
+[
+  {
+    "eval_id": "TC-01-STATIC-APK-PLACEBO-AND-CVE-AUDIT",
+    "category": "should-trigger",
+    "description": "Valida auditoria estática de APK via REA (DEX, lib/*.so, assinatura v1-v3.1), caça a funções placebo (isDeviceRooted -> false) e plano de reparo de CVEs",
+    "input": "Execute uma auditoria re-a-ndroid completa no APK app-release.apk usando REA: descompile o DEX e bibliotecas .so, verifique a assinatura v2/v3, procure funções placebo de root/token e aponte CVEs nas dependências.",
+    "expected_behavior": {
+      "inspeciona_apk_e_assinatura_via_rea": true,
+      "detecta_funcoes_placebo_retorno_fixo": true,
+      "verifica_esquemas_http_ws_e_ssl_pinning": true,
+      "vincula_achados_a_evidence_id": true,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-02-DYNAMIC-ADB-LAYOUT-48DP-AND-LATENCY",
+    "category": "should-trigger",
+    "description": "Valida inspeção dinâmica via ADB (am start -W, uiautomator dump, dumpsys gfxinfo), cálculo de A_rate e T_ratio (>= 48x48dp) e verificação de Haptic Feedback",
+    "input": "Audite em tempo real via ADB e re-a-ndroid o pacote com.example.finapp: meça a latência de Cold Start, extraia o window_dump.xml para validar contentDescription e alvos de toque de 48x48dp, verifique haptics e rotas órfãs.",
+    "expected_behavior": {
+      "mede_latencia_cold_start_am_start_w": true,
+      "audita_window_dump_xml_content_description_e_48dp": true,
+      "calcula_a_rate_t_ratio_e_m_rotas": true,
+      "emite_instrucoes_deterministicas_para_deep_coder": true,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-03-MATH-METRICS-AND-SELF-REFINE-REPORT",
+    "category": "should-trigger",
+    "description": "Valida cálculo determinístico das 6 métricas matemáticas (Pass@k, L_cold, M_rotas, A_rate, T_ratio, FNR) e formatação do Laudo Self-Refine",
+    "input": "Gere o Laudo de Auditoria RE-A-NDROID consolidando os achados SEC-01, PLC-01, ACC-01, PERF-01 e NAV-01 com as 6 métricas matemáticas (Pass@k, L_cold, M_rotas, A_rate, T_ratio, FNR < 0.001).",
+    "expected_behavior": {
+      "calcula_6_metricas_formais": true,
+      "inclui_tabela_consolidada_sec_plc_acc_perf_nav": true,
+      "inclui_bloco_reparo_deep_coder": true,
+      "status_esperado": "[PASS]"
+    }
+  },
+  {
+    "eval_id": "TC-04-NEAR-MISS-GREENFIELD-COMPOSE-MVP",
+    "category": "should-not-trigger",
+    "description": "Near-miss: pedido exclusivo para criar um novo projeto Android MVP do zero com AGP 9 Built-in Kotlin e Compose BOM sem engenharia reversa de APK",
+    "input": "Crie um aplicativo Android do zero (MVP greenfield) configurando o libs.versions.toml com AGP 9 Built-in Kotlin, KSP2 e Jetpack Compose Navigation 3.",
+    "expected_behavior": {
+      "aciona_re_a_ndroid": false,
+      "delega_para": "android-agy-projects"
+    }
+  }
+]

@@ -1,24 +1,19 @@
 ---
 name: gdrive-taxonomia-organizacao
-description: >-
-  Estrutura e categoriza arquivos e pastas no Google Drive (G:/Meu Drive), aplicando taxonomia canônica numerada, padronização de nomes com datas ISO (YYYY-MM-DD) e higienização de caracteres sem perdas. Use para organizar taxonomia no Drive; não use para exclusão de duplicatas sem triagem.
+description: "Estrutura e categoriza pastas no Google Drive aplicando taxonomia canônica numerada e padronização de datas ISO YYYY-MM-DD. Use para organizar taxonomia no Drive; não use para exclusão de duplicatas."
+version: "1.1.0"
+updated_at: "2026-10-14"
+compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "1.1.0"
+  updated_at: "2026-10-14"
   author: "DriveMaster & Melki"
   category: "Gestão Cloud e Taxonomia Documental"
-  updated_at: "2026-10-14"
-  tags:
-    - "google-drive"
-    - "taxonomia"
-    - "datas-iso"
-    - "organizacao"
-version: 1.1.0
-updated_at: 2026-10-14
-author: DriveMaster & Melki
-category: Gestão Cloud e Taxonomia Documental
+  tags: ["google-drive", "taxonomia", "datas-iso", "organizacao"]
 ---
-
 # 1. NOME DA SKILL
+
 `gdrive-taxonomia-organizacao` (Taxonomia Estruturada, Nomenclatura Canônica ISO e Classificação Temática em `G:\Meu Drive\`).
 
 ---
@@ -26,11 +21,13 @@ category: Gestão Cloud e Taxonomia Documental
 ## 2. GATILHOS DE ATIVAÇÃO (QUANDO USAR)
 
 Ative e execute esta skill sempre que:
+
 - O usuário solicitar: "organize as pastas do meu Google Drive", "arrume os arquivos soltos na raiz do Drive", "padronize os nomes de arquivos com datas no Drive", "classifique documentos nas pastas numeradas do Drive".
 - A raiz de `G:\Meu Drive\` tiver arquivos dispersos sem categorização semântica.
 - For necessário renomear lotes de arquivos para formato uniforme (`YYYY-MM-DD_Nome_Sem_Espaco_Duplo.ext`).
 
 ### Quando NÃO Usar
+
 - Para varredura de arquivos pesados (>100MB) ou quarentena de descarte de duplicatas por SHA-256 (utilize `gdrive-auditoria-limpeza`).
 - Para organização de notas locais no cofre Obsidian em `C:\Users\melki\dev\notes\` (utilize `obsidian-vault` ou `curadoria-obsidian-vault`).
 - Para manipulação de arquivos locais em `Downloads`/`Desktop`/`dev` do Windows (utilize `manutencao-disco-windows`).
@@ -70,10 +67,11 @@ G:\Meu Drive\
 ```
 
 ### 4.1. Regras de Nomenclatura Canônica
+
 1. **Datas ISO no Prefixo:** Documentos com data relevante devem adotar `YYYY-MM-DD_Assunto_Descritivo.ext`.
 2. **Higienização de Caracteres:**
-   * Substituição de espaços múltiplos por espaço único ou underline (`_`).
-   * Eliminação de caracteres problemáticos em nomes de arquivos (`#`, `%`, `&`, `{`, `}`, `\`, `<`, `>`, `*`, `?`, `/`, `$`, `!`, `'`, `"`, `:`, `@`).
+   - Substituição de espaços múltiplos por espaço único ou underline (`_`).
+   - Eliminação de caracteres problemáticos em nomes de arquivos (`#`, `%`, `&`, `{`, `}`, `\`, `<`, `>`, `*`, `?`, `/`, `$`, `!`, `'`, `"`, `:`, `@`).
 3. **Preservação de Extensão:** Nunca alterar a extensão original do arquivo.
 
 ---
@@ -81,13 +79,17 @@ G:\Meu Drive\
 ## 5. PROCESSO PASSO A PASSO (EXECUÇÃO DE TAXONOMIA)
 
 ### Passo 1: Mapeamento de Itens Soltos
+
 Listar todos os arquivos soltos na raiz de `G:\Meu Drive\` sem alterar nada:
+
 ```powershell
 Get-ChildItem -LiteralPath "G:\Meu Drive\" -File | Select-Object Name, Length, Extension, LastWriteTime
 ```
 
 ### Passo 2: Associação com a Taxonomia Real da Máquina
+
 Classificar cada arquivo em sua respectiva pasta temática existente:
+
 - Formulários/fichas do SUS (APAC, LME, GAL, SISCAN, SISREG) ➔ `16_Documentos_comp_SUS/`
 - Aulas médicas, slides (`.gslides`) e resumos de faculdade ➔ `03_Medicina_Faculdade/`
 - Protocolos clínicos e medicamentos ➔ `02_Protocolos_e_Medicamentos/`
@@ -97,10 +99,13 @@ Classificar cada arquivo em sua respectiva pasta temática existente:
 - Arquivos históricos e backups encerrados ➔ `99_Arquivo_Historico/`
 
 ### Passo 3: Apresentação da Simulação (Dry-Run)
+
 Exibir ao usuário a matriz de movimentação: `Arquivo Atual ➔ Destino Canônico`.
 
 ### Passo 4: Execução com Verificação (`-LiteralPath`)
+
 Aplicar a movimentação utilizando `-LiteralPath` para evitar expansão indevida de colchetes no PowerShell:
+
 ```powershell
 $destino = "G:\Meu Drive\03_Medicina_Faculdade"
 if (!(Test-Path -LiteralPath $destino)) { New-Item -ItemType Directory -Path $destino -Force }
@@ -112,6 +117,7 @@ Move-Item -LiteralPath "G:\Meu Drive\Tuberculose Novo modificado.gslides" -Desti
 ## 6. SAÍDAS E ENTREGÁVEIS (MODELO DE SAÍDA)
 
 A resposta final da skill entrega:
+
 1. **Mapa da Estrutura Canônica:**
    - Visualização das pastas reais de `G:\Meu Drive\` com a contagem de arquivos alocados.
 2. **Tabela de Arquivos Classificados:**

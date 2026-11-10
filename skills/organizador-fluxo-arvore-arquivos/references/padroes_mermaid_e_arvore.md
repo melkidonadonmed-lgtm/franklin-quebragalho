@@ -30,5 +30,6 @@ nome-do-projeto/
 ---
 
 ## 3. Pipeline de Exportação Direta (`.md` / `.pdf`)
-- **Arquivo Único Markdown (`.md`)**: Gravação com codificação UTF-8 e Lei da Linha em Branco antes/depois de blocos ```mermaid e ```text.
+
+- **Arquivo Único Markdown (`.md`)**: Gravação com codificação UTF-8 e Lei da Linha em Branco antes/depois de blocos ```mermaid e```text.
 - **Conversão para PDF (`.pdf`)**: Delegação à skill `conversor-html-pdf` via Microsoft Edge headless (`msedge.exe --headless --print-to-pdf`), garantindo `break-inside: avoid` nos diagramas e árvores.

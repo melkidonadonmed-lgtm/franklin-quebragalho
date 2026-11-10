@@ -93,7 +93,7 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
     (
         ("medic", "saude", "clin", "prontuario", "receit", "calculadora", "paciente", "appmy", "scoreboard", "atlas", "hexagonal", "sofa"),
         "🩺 Software Médico, Atlas 3D (`appmy`) & Scoreboard Hexagonal (`clinical_preceptor_orchestrator`)",
-        ["design-interface-medica-minimalista", "nav-x-func", "design-md", "frontend-testing-auditor"],
+        ["design-interface-medica-minimalista", "auditoria-projetos-sistema", "design-md", "frontend-testing-auditor"],
         [
             ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria adaptativa FrontierCode (Tipagem, Bare Except, Segurança)"),
             ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Sanitização e chunking SHA-256 para diretrizes clínicas/RAG"),
@@ -147,16 +147,17 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
         "Separação estrita entre [FATO OBSERVADO] (com evidence_id ev_...), [INFERÊNCIA] e [DESCONHECIDO].",
     ),
     (
-        ("projeto", "repo", "organizar", "ideia", "mvp", "sincronizar", "readme", "estrutura", "auditar"),
-        "📦 Organização de Projetos, Refinamento de Ideias, Diagnóstico de MVP & Auditoria (Trio Canônico 2026)",
-        ["organizador-projetos-ideias", "antigravity-project-auditor", "auditoria-projetos-sistema", "nav-x-func"],
+        ("projeto", "repo", "organizar", "ideia", "mvp", "sincronizar", "readme", "estrutura", "auditar", "android", "kotlin", "compose", "gradle", "agp"),
+        "📦 Organização de Projetos, Refinamento de Ideias, Auditoria Integrada 3-em-1 (`auditoria-projetos-sistema` v6.0) & Engenharia Android (`android-agy-projects`)",
+        ["auditoria-projetos-sistema", "organizador-projetos-ideias", "android-agy-projects"],
         [
+            ("auditoria-projetos-sistema", "project_structure_and_code_auditor.py", "Scanner físico AST e árvore real (órfãos, paridade README/SPEC vs disco, placebos e 60-30-10 OKLCH)"),
+            ("auditoria-projetos-sistema", "deterministic_scorer.py", "Scanner determinístico SGA + TIF (Ilhas Funcionais, X ativa Y, INE, ICI, IRM, IPC, ICTE)"),
             ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (SRP, Tipagem Pydantic, Segurança)"),
-            ("nav-x-func", "deterministic_scorer.py", "Scanner determinístico SGA + TIF (Ilhas Funcionais, X ativa Y, INE, ICI, IRM, IPC, ICTE)"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST pré-commit de segurança e tipagem Python (Score >= 75)"),
         ],
         "plans/distributed_agent_mediation_dag.json | plans/ui_composition_dag.json",
-        "Fluxo em 4 etapas: (1) Ideação/MVP ('organizador-projetos-ideias' Modo 1) -> (2) Diagnóstico Read-Only ('antigravity-project-auditor') -> (3) Saneamento & Paridade README/Contratos ('organizador-projetos-ideias' Modo 2) -> (4) Homologação 0-100 ('auditoria-projetos-sistema').",
+        "Fluxo unificado: (1) Ideação/MVP ('organizador-projetos-ideias' Modo 1) -> (2) Auditoria Física AST + Navegação SGA + Plano 3 Fases ('auditoria-projetos-sistema' v6.0) -> (3) Saneamento & Paridade README/Contratos ('organizador-projetos-ideias' Modo 2).",
     ),
     (
         ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra", "test", "auditor", "rca", "converge", "gap", "intencao", "cognitiv", "kahn", "a2a", "stdio"),

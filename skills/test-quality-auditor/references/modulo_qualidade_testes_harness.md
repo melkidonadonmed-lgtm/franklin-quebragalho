@@ -55,6 +55,7 @@ Em arquiteturas agênticas, o **Harness** é a camada de contenção crítica qu
 ## 🛠️ Módulo 5: Refatoração Cirúrgica (Antes vs. Depois)
 
 ### ❌ Antes (Nível 1/2 — Reprovado com `-85 pts`)
+
 ```python
 def test_harness_inseguro():
     # Sem pytest.raises(SecurityViolationError) e sem checar RiskLevel.CRITICAL
@@ -66,6 +67,7 @@ def test_harness_inseguro():
 ```
 
 ### ✅ Depois (Nível 4 — Aprovado com `100/100 pts`)
+
 ```python
 import pytest
 from shared.harness import CheckpointStore, RiskLevel, SecurityViolationError, SemanticGuard, evaluate_action_risk

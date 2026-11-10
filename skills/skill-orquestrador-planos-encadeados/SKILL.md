@@ -1,23 +1,16 @@
 ---
 name: skill-orquestrador-planos-encadeados
-description: >-
-  Orquestrador executivo de planos encadeados e compilador de grafos DAG (Kahn). Use para compilar planos em ondas sequenciais e paralelas, validar colisões de arquivos [P], isolar estado compartilhado em Context Fork (L2/L3 sem context rot), rotear fallbacks não-lineares e aplicar portões HITL; não use para perguntas simples de turno único.
+description: "Orquestrador executivo de planos encadeados DAG mapeando dependências entre skills especialistas e executando ondas sequenciais com Context Fork. Use para orquestrar planos DAG; não use para turno único."
+version: "3.0.0"
+updated_at: "2026-10-26"
+compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "3.0.0"
+  updated_at: "2026-10-26"
   author: "LoopPlanner & Melki"
   category: "Orquestração DAG, Compilação de Ondas, Context Fork & Transição de Estado"
-  updated_at: "2026-10-26"
-  tags:
-    - "orquestrador"
-    - "planos-encadeados"
-    - "dag"
-    - "kahn"
-    - "context-fork"
-    - "multiagente"
-version: 3.0.0
-updated_at: 2026-10-26
-author: LoopPlanner & Melki
-category: Orquestração DAG, Compilação de Ondas, Context Fork & Transição de Estado
+  tags: ["orquestrador", "planos-encadeados", "dag", "kahn", "context-fork", "multiagente"]
 ---
 
 # SKILL: Compilador e Orquestrador Executivo de Planos Encadeados e Grafos DAG (`skill-orquestrador-planos-encadeados` v3.0.0)
@@ -27,17 +20,20 @@ category: Orquestração DAG, Compilação de Ondas, Context Fork & Transição 
 Enquanto o `high-level-context-planner` (`intent-cognitive-planner`) diagnostica a intenção e projeta o grafo cognitivo não-linear, esta skill atua como o **Motor Executivo de Compilação Topológica (Kahn), Isolamento de Contexto (*Context Fork*) e Roteamento de Estado** entre skills e subagentes.
 
 Sua função real e determinística é:
+
 1. **Compilar Planos em Ondas Paralelas (`Wave 1..Wave N` via Algoritmo de Kahn):** Detectar ciclos de dependência e agrupar etapas independentes que podem rodar simultaneamente via `invoke_subagent` ou `franklin_execute_dag`.
 2. **Prevenir Colisões de Escrita em Paralelo (`[P]` Anti-Collision Gate):** Impedir que dois subagentes ou tasks na mesma onda editem o mesmo arquivo (`target_files`) simultaneamente.
 3. **Blindar a Memória de Trabalho (*Context Fork* & Teto $\le 5$ Regras):** Montar envelopes enxutos (`ContextTransitionPayload`) injetando apenas os dados necessários para o nó ativo e até 5 regras operacionais (Camadas L2/L3), eliminando o *context rot* do histórico bruto.
 4. **Executar Transições Não-Lineares (`ramo_fallback`), Verificação *Read-After-Write* e Portões HITL.**
 
 ### Quando Usar
+
 - Para compilar e executar um plano emitido pelo `high-level-context-planner` (`grafo_execucao` ou `phases`) ou um arquivo `plans/*.json` (`DAGExecutionPlan`).
 - Quando uma demanda aciona 2 ou mais skills/subagentes encadeados (ex.: Auditoria AST $\rightarrow$ Testes $\rightarrow$ RCA $\rightarrow$ Convergência, ou Topologia `3+1` de UI) exigindo isolamento de chaves de estado (`isolated_state_keys`).
 - Para validar deterministicamente via `scripts/dag_chain_validator.py` se um plano possui ciclos, colisões de escrita ou excesso de contexto antes do disparo.
 
 ### Quando NÃO Usar (Limites e Exclusões)
+
 - Para tarefas simples de turno único ou script isolado que não exigem encadeamento entre skills.
 - Para conceber o planejamento inicial ou selecionar frameworks cognitivos a partir de uma ideia crua (utilize primeiro `high-level-context-planner`).
 - Para executar mutações destrutivas sem passar pelo portão de aprovação humana (`BLOCKED_HITL` / `franklin_harness_checkpoint`).
@@ -67,13 +63,16 @@ flowchart TD
 ```
 
 ### Estágio 1: Validação Topológica (Kahn) e Detecção de Colisão de Escrita
+
 1. Antes de iniciar qualquer execução, valide o grafo usando `scripts/dag_chain_validator.py`:
    - **Detecção de Ciclos (DAG):** Calcula o grau de entrada (`in_degree`) de cada nó. Se `visited_nodes < total_nodes`, aborta com `[FAIL: CYCLE_DETECTED]`.
    - **Guarda Anti-Colisão de Arquivos (`target_files`):** Verifica se dois nós alocados na mesma onda paralela (`Wave K`) declaram interseção em `target_files`. Se houver colisão, serializa os nós em ondas distintas ou bloqueia com `[FAIL: PARALLEL_FILE_COLLISION]`.
    - **Validação de Catálogo:** Confirma que todas as `responsible_skill` / `target_skill` existem no catálogo do workspace.
 
 ### Estágio 2: Isolamento de Contexto (*Context Fork*) e Envelope de Transição
+
 Para evitar degradação de atenção (*context rot*) e respeitar a Parede de Complexidade ($\le 5$ regras por nó), o orquestrador **nunca repassa o histórico bruto da conversa** para os subagentes. Ele instancia o contrato `references/schema_transicao_contexto.json`:
+
 ```json
 {
   "phase_id": "step_01_exploracao_react",
@@ -98,10 +97,12 @@ Para evitar degradação de atenção (*context rot*) e respeitar a Parede de Co
 ```
 
 ### Estágio 3: Despacho Paralelo (*Fan-Out*) e Consolidação (*Fan-In*)
+
 - **Modo Subagentes Nativos (`invoke_subagent`)**: Dispara todos os nós da mesma onda (`Wave K`) em paralelo, gravando o retorno de cada subagente em sua respectiva chave isolada (`isolated_state_key`) para impedir sobrescrita concorrente.
 - **Modo Motor DAG (`franklin_execute_dag`)**: Despacha o plano JSON para o motor assíncrono do `epic-volta` com controle de `run_id`, `--resume` e `idempotency_key`.
 
 ### Estágio 4: Roteamento Não-Linear (`fallback_branch`), Retry e Portão HITL
+
 - **`COMPLETED` (Condição Go atendida)**: O entregável passa na verificação *Read-After-Write* e libera os nós dependentes na onda seguinte.
 - **`RETRYING` / `FALLBACK_ROUTED` (Falha Recuperável)**: Se o entregável violar o critério de aceite, o orquestrador executa até `max_retries = 1` enviando a discrepância exata ou desvia o fluxo para o nó declarado em `fallback_branch` (`ramo_fallback`).
 - **`BLOCKED_HITL` (Mutação Crítica)**: Se o nó for do tipo `hitl_gate` ou envolver ação destrutiva, aciona `franklin_harness_guard` / `franklin_harness_checkpoint` e aguarda aprovação humana explícita.
@@ -126,6 +127,7 @@ uv run python skills/skill-orquestrador-planos-encadeados/scripts/dag_chain_vali
 ## 5. Saídas e Entregáveis Estruturados
 
 Toda execução ou compilação emitida por esta skill entrega:
+
 1. **Mapa de Ondas Topológicas (Kahn Waves)**: Lista ordenada de ondas (`Wave 0`, `Wave 1`...) mostrando quais nós rodam em paralelo e quais chaves `isolated_state_key` recebem cada saída.
 2. **Painel de Rastreabilidade e Transição de Estado**: `Onda | Nó / Fase | Skill / Subagente | Padrão Cognitivo | Regras Ativas (<=5) | Status ([PASS]/[FAIL]/BLOCKED_HITL)`.
 3. **Veredito *Read-After-Write* Consolidado (`post_condition_verified: true/false`)**.

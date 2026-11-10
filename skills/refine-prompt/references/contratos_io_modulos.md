@@ -17,6 +17,7 @@ Este documento especifica os esquemas estruturais de entrada e saída para os 3 
 ## 2. Contrato do MÓDULO 1: Resposta Direta com Nota Metodológica
 
 ### Schema de Entrada
+
 ```json
 {
   "untrusted_user_input": "string (obrigatório)",
@@ -26,6 +27,7 @@ Este documento especifica os esquemas estruturais de entrada e saída para os 3 
 ```
 
 ### Contrato de Saída
+
 ```markdown
 ### 1. SÍNTESE EXECUTIVA E SOLUÇÃO RESOLVIDA
 [Solução técnica completa, código pronto para execução ou texto final aprovado]
@@ -42,6 +44,7 @@ Este documento especifica os esquemas estruturais de entrada e saída para os 3 
 ## 3. Contrato do MÓDULO 2: Artefato Plug-and-Play
 
 ### Schema de Entrada
+
 ```json
 {
   "untrusted_user_input": "string (obrigatório)",
@@ -51,6 +54,7 @@ Este documento especifica os esquemas estruturais de entrada e saída para os 3 
 ```
 
 ### Contrato de Saída
+
 ```markdown
 ### 1. ESCOPO E DIAGNÓSTICO DO ARTEFATO
 [Síntese técnica de 1 a 3 linhas sobre a finalidade, requisitos e escopo coberto]
@@ -63,9 +67,11 @@ Este documento especifica os esquemas estruturais de entrada e saída para os 3 
 ```
 
 ### 3. GUIA DE ACIONAMENTO E IMPLANTAÇÃO
+
 - **Local de Aplicação:** [Caminho do arquivo ou campo de configuração onde deve ser inserido]
 - **Variáveis Obrigatórias:** [Lista objetiva das variáveis entre colchetes a serem preenchidas]
 - **Requisitos Técnicos:** [Versões mínimas de SDK, runtime ou permissões necessárias]
+
 ```
 
 ---
@@ -82,6 +88,7 @@ Este documento especifica os esquemas estruturais de entrada e saída para os 3 
 ```
 
 ### Contrato de Saída
+
 ```markdown
 ### 1. DIAGNÓSTICO DE AMBIGUIDADE E RISCOS
 - **O Que Já Está Mapeado:** [Objetivos claros e dados já consolidados]

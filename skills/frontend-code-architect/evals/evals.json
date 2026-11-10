@@ -1,30 +1,30 @@
 {
   "skill_name": "frontend-code-architect",
-  "version": "5.0.0",
+  "version": "7.0.0",
   "evals": [
     {
-      "eval_id": "architect-atomic-purpose-driven",
-      "prompt": "Estruture o diretório src/ de um dashboard React + TypeScript usando Design Atômico em 5 camadas e escolha o tema adequado ao propósito (estúdio analítico em cinza monolítico #57545d com menus #8e8999 e alto contraste).",
+      "eval_id": "architect-3-tier-oklch-and-container-queries",
+      "prompt": "Estruture uma aplicação analítica em React + TypeScript (Nível 2 Feature-Driven) usando tokens em 3 camadas em OKLCH (light-dark, color-mix, RCS), propriedades lógicas, sombras multi-camadas, Card polimórfico com @container e Breadcrumbs acessíveis.",
       "expected_assertions": [
-        "Organiza src/ em components/ui, components/bento, components/layout, config, styles, types e views",
-        "Define variáveis CSS semânticas (--bg-canvas, --bg-surface, --bg-elevated, --bg-contrast-card, --nav-bg, --nav-ink)",
-        "Garante tinta escura de alto contraste sobre menus #8e8999 e isolamento de 1 CTA primário vs .btn-ghost",
-        "Implementa SurfaceCard com TypeScript estrito e estados FSM (idle, loading, error, pressed) acessíveis"
+        "Organiza src/ separando app/, styles/ (tokens.css + globals.css), components/{ui,layout}/ e features/<dominio>/ respeitando <= 300 linhas por arquivo",
+        "Define tokens em 3 camadas (Primitivos, Semânticos --bg-canvas/--surface-canvas, --bg-surface-1/--surface-card, --text-primary/--ink-primary com oklch(), light-dark() e color-mix()) e sombras multi-camadas em 3 níveis",
+        "Implementa Card polimórfico (elevated, outlined, subtle, interactive) com container-type: inline-size (@container) e estados reais (idle, loading, empty, error, pressed)",
+        "Implementa navegação com Breadcrumbs (<nav aria-label='Caminho de navegação'><ol role='list'> e aria-current='page'), Ordem DOM = Ordem Visual e travas tipográficas (font-synthesis: none, tabular-nums, text-wrap: balance/pretty)"
       ]
     },
     {
-      "eval_id": "architect-bento-grid-layers",
-      "prompt": "Crie os tokens e organismos para um Bento Grid de 12 colunas com sombra esculpida em 3 camadas, 1px Rim Light e tipografia IBM Plex para um terminal de telemetria.",
+      "eval_id": "architect-tier3-nextjs-app-router-pwa-fouc",
+      "prompt": "Implemente a estrutura de uma plataforma SaaS Fullstack & PWA em Next.js App Router (Nível 3) isolando o layout de Marketing do Workspace logado sem afetar a URL e prevenindo FOUC de tema claro/escuro.",
       "expected_assertions": [
-        "Seleciona atmosfera Preto Terminal IBM (Ex Umbris) acoplada a IBM Plex Sans e IBM Plex Mono com tabular-nums",
-        "Aplica sombra esculpida em 3 camadas com inset 0 1px 0 0 var(--rim-light) e raios concêntricos"
+        "Utiliza Grupos de Rotas src/app/(marketing)/ e src/app/(workspace)/ com pastas privadas _components colocadas por rota",
+        "Configura Viewport API (colorScheme: 'light dark', themeColor dual), script síncrono anti-FOUC no <head> (suppressHydrationWarning) e @media (display-mode: standalone) para PWA"
       ]
     }
   ],
   "trigger_eval_queries": {
     "should_trigger": [
-      "Organize a arquitetura frontend em Design Atômico adaptando o tema ao propósito do projeto",
-      "Estruture as pastas src/ e crie os componentes e estilos com bom espaçamento, contraste e camadas"
+      "Implemente a interface frontend seguindo o DESIGN.md com tokens OKLCH, container queries, 4 variantes de cards e controles funcionais reais",
+      "Estruture os componentes UI, Breadcrumbs e estilos nos 3 níveis de complexidade garantindo nitidez anti-borrão GPU e zero funções placebo"
     ],
     "near_misses": [
       "Audite as duplicatas da unidade G:\\Meu Drive",

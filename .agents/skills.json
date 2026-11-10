@@ -1,0 +1,61 @@
+{
+  "entries": [
+    {
+      "path": "C:/Users/melki/dev/repos/franklin-quebragalho/skills",
+      "include_only": [
+        "agent-server-auditor",
+        "android-agy-projects",
+        "arquiteto-conteudo-solucoes",
+        "audit-skills-antigravity",
+        "auditoria-projetos-sistema",
+        "code-acceptability-auditor",
+        "code-quality-audit-3d-physics",
+        "complex-zero",
+        "context-sentinel",
+        "conversor-html-pdf",
+        "curadoria-obsidian-vault",
+        "design-interface-medica-minimalista",
+        "design-md",
+        "frontend-code-architect",
+        "frontend-testing-auditor",
+        "frontend-ui-ux-auditor",
+        "gap-analyzer-auditor",
+        "gdrive-auditoria-limpeza",
+        "gdrive-taxonomia-organizacao",
+        "high-level-context-planner",
+        "manutencao-disco-windows",
+        "organizador-fluxo-arvore-arquivos",
+        "organizador-projetos-ideias",
+        "plan-uiux",
+        "re-a-ndroid",
+        "redator-tecnico-markdown",
+        "refine-prompt",
+        "skill-orquestrador-planos-encadeados",
+        "test-quality-auditor"
+      ]
+    },
+    {
+      "path": "C:/Users/melki/.agents/skills",
+      "include_only": [
+        "agent-skill-evaluator",
+        "skill-repair",
+        "build-mcp-server",
+        "api-auditor",
+        "live-api-function-auditor"
+      ]
+    },
+    {
+      "path": "C:/Users/melki/dev/repos/adk-tests/go_agent/skills",
+      "include_only": [
+        "backend-architecture-skill",
+        "backfront-stress",
+        "code-quality-validation",
+        "context-architecture-skill",
+        "estante",
+        "gatekeeper-eval",
+        "temperea",
+        "weather-skill"
+      ]
+    }
+  ]
+}

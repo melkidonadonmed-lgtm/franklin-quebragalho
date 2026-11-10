@@ -45,6 +45,28 @@ def _flush_multiline(
     target[current_key] = " ".join(multiline_val)
 
 
+def _apply_kv_assignment(
+    key: str,
+    val: str,
+    target: Dict[str, Any],
+) -> Tuple[Optional[str], bool]:
+    """Aplica atribuicao escalar ou inicia acumulo multilinha."""
+    if val in (">-", ">", "|", "|-"):
+        return key, False
+    cleaned = val.strip("'\"")
+    target[key] = cleaned
+    return None, bool(cleaned)
+
+
+def _merge_nested_metadata(meta: Dict[str, Any], metadata_dict: Dict[str, Any]) -> Dict[str, Any]:
+    """Mescla o bloco metadata no dicionario raiz sem sobrescrever chaves existentes."""
+    if metadata_dict:
+        meta["metadata"] = metadata_dict
+        for k, v in metadata_dict.items():
+            meta.setdefault(k, v)
+    return meta
+
+
 def _parse_fallback_lines(raw_yaml: str) -> Dict[str, Any]:
     """Parser leve sem dependências externas para blocos frontmatter simples."""
     meta: Dict[str, Any] = {}
@@ -64,17 +86,14 @@ def _parse_fallback_lines(raw_yaml: str) -> Dict[str, Any]:
         multiline_val, current_key = [], None
 
         if re.match(r"^metadata:\s*$", line):
-            in_metadata = True
-            last_was_scalar_root = False
+            in_metadata, last_was_scalar_root = True, False
             continue
 
         nested_match = re.match(r"^\s+([a-zA-Z0-9_\-]+):\s*(.*)$", line) if in_metadata else None
         if nested_match:
-            k, v = nested_match.group(1), nested_match.group(2).strip().strip("'\"")
-            if v in (">-", ">", "|", "|-"):
-                current_key = k
-            else:
-                metadata_dict[k] = v
+            current_key, _ = _apply_kv_assignment(
+                nested_match.group(1), nested_match.group(2).strip(), metadata_dict
+            )
             continue
 
         if last_was_scalar_root and re.match(r"^\s+[a-zA-Z0-9_\-]+:\s*", line):
@@ -83,20 +102,12 @@ def _parse_fallback_lines(raw_yaml: str) -> Dict[str, Any]:
         kv_match = re.match(r"^([a-zA-Z0-9_\-]+):\s*(.*)$", line)
         if kv_match:
             in_metadata = False
-            key, val = kv_match.group(1), kv_match.group(2).strip()
-            if val in (">-", ">", "|", "|-"):
-                current_key = key
-                last_was_scalar_root = False
-            else:
-                meta[key] = val.strip("'\"")
-                last_was_scalar_root = bool(val)
+            current_key, last_was_scalar_root = _apply_kv_assignment(
+                kv_match.group(1), kv_match.group(2).strip(), meta
+            )
 
     _flush_multiline(current_key, multiline_val, in_metadata, meta, metadata_dict)
-    if metadata_dict:
-        meta["metadata"] = metadata_dict
-        for k, v in metadata_dict.items():
-            meta.setdefault(k, v)
-    return meta
+    return _merge_nested_metadata(meta, metadata_dict)
 
 
 def parse_frontmatter(content: str) -> Tuple[Dict[str, Any], str]:

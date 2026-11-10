@@ -1,4 +1,4 @@
-# Universal App Template
+# # Universal App Template
 
 > **Padrão Arquitetural**: React 18 + TypeScript + Vite + Tailwind CSS  
 > **Design System**: *Luxury Obsidian & Mineral Slate* (Tactile Matte)  
@@ -9,16 +9,19 @@
 ## 🚀 Como Iniciar
 
 ### 1. Instalar Dependências
+
 ```powershell
 npm install
 ```
 
 ### 2. Rodar Servidor de Desenvolvimento Local
+
 ```powershell
 npm run dev
 ```
 
 ### 3. Build de Produção e Verificação de Tipos
+
 ```powershell
 npm run build
 ```

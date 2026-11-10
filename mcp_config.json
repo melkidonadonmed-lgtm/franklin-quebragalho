@@ -6,19 +6,40 @@
         "C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\server.py"
       ],
       "env": {
-        "PYTHONIOENCODING": "utf-8"
-      }
-    },
-    "gemini-api-docs": {
-      "url": "https://gemini-api-docs-mcp.dev",
-      "serverUrl": "https://gemini-api-docs-mcp.dev",
-      "tools": {
-        "gemini_search_docs": {
-          "eager": true
-        },
-        "gemini_get_doc": {
-          "eager": true
-        }
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "capabilities": {
+        "protocolVersion": "2026-07-28",
+        "tools": [
+          "franklin_skills_list",
+          "franklin_skills_get",
+          "franklin_skills_search",
+          "franklin_skills_validate",
+          "franklin_get_agents",
+          "franklin_smart_compass",
+          "franklin_run_skill_script",
+          "franklin_execute_dag",
+          "franklin_harness_guard",
+          "franklin_harness_checkpoint",
+          "franklin_a2a_agent_card",
+          "franklin_a2a_dispatch_task",
+          "franklin_mcp_build_advisor"
+        ],
+        "resources": [
+          "skills://mcp-2026/spec",
+          "skills://a2a/agent-card",
+          "skills://harness/checkpoints",
+          "skills://catalog",
+          "skills://manifest",
+          "skills://agents",
+          "skills://agent/{agent_name}",
+          "skills://skill/{skill_name}"
+        ],
+        "prompts": [
+          "activate_skill",
+          "tactile_frontend_audit"
+        ]
       }
     }
   }

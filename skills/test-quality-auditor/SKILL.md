@@ -1,38 +1,25 @@
 ---
 name: test-quality-auditor
-description: >-
-  Executa auditoria de qualidade, determinismo e eficácia de suítes de testes em 5 módulos (Python, TS/JS, Go, MCP JSON-RPC e Harnesses/Evals), detectando Green Build Illusion e falhas AAA. Use para auditar suítes de testes e gerar grading.json; não use para auditar código de produção.
+description: "Auditoria de suítes de testes em 5 módulos (Python, TS, Go, MCP e Harness) detectando Green Build Illusion e falhas AAA. Use para auditar suítes de testes e gerar grading.json; não use para código de produção."
+version: "1.3.0"
+updated_at: "2026-10-27"
+compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
-  version: "1.2.0"
-  author: "SkillCraft, Franklin-Main & Melki"
+  version: "1.3.0"
+  updated_at: "2026-10-27"
+  author: "Melki"
   category: "Auditoria de Qualidade de Testes e Engenharia de Evals"
-  updated_at: "2026-10-21"
-  tags:
-    - "test-quality"
-    - "ast-auditor"
-    - "go-testing"
-    - "mcp-testing"
-    - "harness-testing"
-    - "mirrored-evals"
-    - "aaa-pattern"
-    - "mutation-score"
-    - "evals"
-    - "grading-json"
-    - "benchmark-json"
-version: 1.2.0
-updated_at: 2026-10-21
-author: SkillCraft, Franklin-Main & Melki
-category: Auditoria de Qualidade de Testes e Engenharia de Evals
+  tags: ["test-quality", "ast-auditor", "go-testing", "mcp-testing", "harness-testing", "mirrored-evals", "aaa-pattern", "mutation-score", "evals", "grading-json", "benchmark-json"]
 ---
-
-# `test-quality-auditor` — Auditor Determinístico de Qualidade de Testes & Esteira de Evals (`v1.2.0`) 🛡️
+# `test-quality-auditor` — Auditor Determinístico de Qualidade de Testes & Esteira de Evals (`v1.3.0`) 🛡️
 
 Motor analítico estático e semântico modular (`<300` linhas por módulo) para auditoria de suítes de testes automatizados em **5 domínios especializados** com **espelhamento 1:1 em `evals/modules/*_evals.json`**:
 
 1. **Python (`test_*.py`, `*_test.py`):** Pytest & Unittest via AST ([`scripts/python_ast_auditor.py`](scripts/python_ast_auditor.py) $\leftrightarrow$ [`evals/modules/python_evals.json`](evals/modules/python_evals.json)).
 2. **TypeScript / JavaScript (`*.test.ts`, `*.test.js`):** Node Test Runner, Vitest & Jest ([`scripts/ts_js_auditor.py`](scripts/ts_js_auditor.py) $\leftrightarrow$ [`evals/modules/ts_js_evals.json`](evals/modules/ts_js_evals.json)).
 3. **Go (`*_test.go`):** Pacote `testing` (`testing.T`), *Table-Driven Tests*, goroutines e Google ADK Go v2 ([`scripts/go_test_auditor.py`](scripts/go_test_auditor.py) $\leftrightarrow$ [`evals/modules/go_evals.json`](evals/modules/go_evals.json) e [`references/modulo_qualidade_testes_go.md`](references/modulo_qualidade_testes_go.md)).
-4. **Protocolo MCP (`JSON-RPC 2.0` / `FastMCP` / `StdioServer` / `McpBridge`):** Ciclo de vida `initialize` ➔ `notifications/initialized` ➔ `tools/list` ➔ `tools/call`, códigos `-32601`, decodificação JSON e fronteiras Zero-Trust ([`scripts/mcp_test_auditor.py`](scripts/mcp_test_auditor.py) $\leftrightarrow$ [`evals/modules/mcp_evals.json`](evals/modules/mcp_evals.json) e [`references/modulo_qualidade_testes_mcp.md`](references/modulo_qualidade_testes_mcp.md)).
+4. **Protocolo MCP, WebSockets & APIs (`JSON-RPC 2.0` / `FastMCP` / `StdioServer` / `McpBridge` / `Gemini API`):** Ciclo de vida `initialize` ➔ `notifications/initialized` ➔ `tools/list` ➔ `tools/call`, códigos `-32601`, decodificação JSON, fronteiras Zero-Trust, ancoragem pre-flight em [`https://aistudio.google.com/llms.txt`](https://aistudio.google.com/llms.txt), [`https://aistudio.google.com/llms-full.txt`](https://aistudio.google.com/llms-full.txt), [`https://aistudio.google.com/docs`](https://aistudio.google.com/docs), [`https://aistudio.google.com/docs/antigravity-agent`](https://aistudio.google.com/docs/antigravity-agent) e [`https://github.com/google-gemini/cookbook`](https://github.com/google-gemini/cookbook), e sub-skill [`../agent-server-auditor/references/audit-websocket-jsonrpc.md`](../agent-server-auditor/references/audit-websocket-jsonrpc.md) ([`scripts/mcp_test_auditor.py`](scripts/mcp_test_auditor.py) $\leftrightarrow$ [`evals/modules/mcp_evals.json`](evals/modules/mcp_evals.json) e [`references/modulo_qualidade_testes_mcp.md`](references/modulo_qualidade_testes_mcp.md)).
 5. **Harness de Governança & Evals (`shared/harness.py` / `eval_harness.py`):** Guardas semânticas (`SemanticGuard.sanitize_input` / `SecurityViolationError`), *Policy Gates* HITL (`evaluate_action_risk` / `RiskLevel.CRITICAL`), isolamento e ciclo de vida de `CheckpointStore` (`create` ➔ `get` ➔ `update_status` ➔ `clear`) e validação de delta/evidência em `run_eval_harness` ([`scripts/harness_test_auditor.py`](scripts/harness_test_auditor.py) $\leftrightarrow$ [`evals/modules/harness_evals.json`](evals/modules/harness_evals.json) e [`references/modulo_qualidade_testes_harness.md`](references/modulo_qualidade_testes_harness.md)).
 
 Desmascara a **Falsa Sensação de Segurança (*Green Build Illusion*)**, diagnostica nos **7 Módulos** por que um teste passa com código 0 sem proteger a regra de negócio, classifica cada teste no **Espectro de Qualidade (Níveis 1 a 4)** e executa a validação científica via `evals/evals.json` e espelhos `evals/modules/*_evals.json`.
@@ -50,11 +37,11 @@ Ative esta skill quando o usuário solicitar:
 
 ---
 
-## 🚫 Limites, Exceções e Fronteira da Esteira de 3 Portões (`2026-10-21`)
+## 🚫 Limites, Exceções e Fronteira da Esteira de 3 Portões (`2026-10-27`)
 
 - **Fronteira na Esteira de Qualidade e Convergência (3 Portões)**:
   1. **Portão 1 — Código de Produção (`code-acceptability-auditor` `v1.1.0`)**: Audita arquivos Python de aplicação/domínio via AST e Pydantic (`12` regras: `SEC001..003`, `SYN001`, `ERR001..003`, `TYP001..002`, `ARCH001..003`, `Score >= 75.0`).
-  2. **Portão 2 — Suítes de Testes & Evals (`test-quality-auditor` `v1.2.0` — Esta Skill)**: Audita a eficácia, padrão AAA, falsificabilidade e determinismo de testes (`Python`, `TS/JS`, `Go`, `MCP JSON-RPC` e `Harness`) + telemetria estatística PerfKit (`perfkit_stats.py`: $P_{50}..P_{99.9}$, `stddev` `ddof=1`, `geomean`), exigindo Nível 4 (`81–100 pts`).
+  2. **Portão 2 — Suítes de Testes & Evals (`test-quality-auditor` `v1.3.0` — Esta Skill)**: Audita a eficácia, padrão AAA, falsificabilidade e determinismo de testes (`Python`, `TS/JS`, `Go`, `MCP JSON-RPC` e `Harness`) + telemetria estatística PerfKit (`perfkit_stats.py`: $P_{50}..P_{99.9}$, `stddev` `ddof=1`, `geomean`), exigindo Nível 4 (`81–100 pts`).
   3. **Portão 3 — RCA & Convergência Spec-to-Code (`gap-analyzer-auditor` `v2.1.0`)**: Quando os Portões 1 ou 2 reprovam um artefato ou ocorrem falhas de runtime/divergências em `SPEC.md`/`tasks.md`, consome as evidências factuais para RCA epistêmico (`[FATO]`, `[INFERÊNCIA]`, `[LACUNA]`) e convergência *append-only* (`/speckit-converge`).
 - **Não usar** para auditoria matemática exclusiva de motores de Física 3D/WebGL sem relação com suítes de testes ou Evals (use `code-quality-audit-3d-physics`).
 - **Não usar** para compilar binários Go ou fazer deploy de containers no Cloud Run sem auditoria de testes.
@@ -77,7 +64,7 @@ Toda auditoria conduzida por esta skill executa o pipeline determinístico em **
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
-│          PIPELINE DO AUDITOR DE QUALIDADE DE TESTES & EVALS ESPELHADOS (v1.2.0)     │
+│          PIPELINE DO AUDITOR DE QUALIDADE DE TESTES & EVALS ESPELHADOS (v1.3.0)     │
 ├─────────────────────────────────────────────────────────────────────────────────────┤
 │ Passo 1: Varredura Modular via scripts/test_quality_auditor.py                      │
 │   ├── python_ast_auditor.py   <-> evals/modules/python_evals.json                   │
@@ -131,33 +118,11 @@ uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py --run-
 
 ---
 
-## 🎨 Diretrizes de Estilo por Propósito e Arquitetura Visual (`DESIGN.md (SSOT)` & `design-md`)
+## 🎨 Diretrizes de Estilo por Propósito e Arquitetura Visual (`DESIGN.md` & SSOT)
 
-Sempre que esta skill gerar relatórios visuais, dashboards HTML de cobertura/qualidade ou artefatos de interface, aplique obrigatoriamente os 4 módulos orientados ao **propósito do projeto** ([`../_template/references/DESIGN.md (SSOT)`](../_template/references/DESIGN.md (SSOT)) e [`../design-md/SKILL.md`](../design-md/SKILL.md)):
-
-### Módulo 1: Seleção de Tema pelo Propósito e Isolamento 98/2 (`DESIGN.md v5.0`)
-- **4 Famílias Atmosféricas Adaptativas**:
-  1. **Cinza sobre Cinza Monolítico (Padrão Anti-TDAH para Dashboards de QA)**: Canvas `#57545d`, Cards `#49464f` e Menus/Pílulas `#8e8999` com **tinta escura `#16151A`** ($\ge 5.6:1$ AAA).
-  2. **Preto Terminal IBM (`Ex Umbris` — Telemetria CLI/AST)**: Canvas `#070709`, Cards `#101014` ($L_{\text{card}} > L_{\text{canvas}}$) e tipografia obrigatória **`IBM Plex Sans` + `IBM Plex Mono`**.
-  3. **Ad Lucem (Editorial / Relatórios de Homologação)**: Canvas `#F3F3F5` / `#F4F3EF`, Cards `#FFFFFF` e bloco de resumo executivo `#18181C`.
-  4. **AETHER 2027**: Tokens `oklch()`, Bento Grid 12 colunas e *Spring Physics*.
-- ❌ **Banimento Anti-Cobalto & Anti-Ruído (`AUDIT-VIS-01`):** Proibido azul cobalto puro (`#0044FF`, `#0057FF`, `#1D4ED8`, `#2563EB`), texto vermelho corrido em fundos cinzas/escuros (usar `.highlight-surgical`) e emojis decorativos em controles.
-
-### Módulo 2: Camadas Esculpidas, Regra 1+2 e Tipografia Tabular (`tabular-nums`)
-- **Superfícies Esculpidas**: Sombra física em 3 camadas (`--shadow-sculpted`) + `1px` Rim Light superior (`inset 0 1px 0 0 var(--rim-light)`).
-- **Orçamento de Densidade (Regra 1+2 e $\ge 25\%$ de Respiro)**: No máximo **1 ação primária** e **2 secundárias** visíveis por card, com `font-variant-numeric: tabular-nums` obrigatório em todas as colunas de notas (`0–100`), percentis ($P_{50}, P_{95}, P_{99}$) e contagens de asserções.
-- **Anti-Squish e Ergonomia TDAH**: Hierarquia escaneável em 3 segundos, badges com `flex-shrink: 0; white-space: nowrap;`, alvos interativos $\ge 44\times44\text{px}$ e zero `alert()` bloqueante.
-
-### Módulo 3: Mapeamento de Opções e Arquitetura Modular (`<300` linhas/módulo)
-- **Consulta Estruturada via `ask_question`:** Apenas em decisões destrutivas ou ambiguidades críticas (máx. 1–2 perguntas).
-- **Arquitetura de Código:** Separação limpa em módulos de responsabilidade única (`<300` linhas cada, `100.0/100.0` no `code-acceptability-auditor`): Domínio ([`scripts/models.py`](scripts/models.py)), Analisadores ([`scripts/python_ast_auditor.py`](scripts/python_ast_auditor.py), [`scripts/ts_js_auditor.py`](scripts/ts_js_auditor.py), [`scripts/go_test_auditor.py`](scripts/go_test_auditor.py), [`scripts/mcp_test_auditor.py`](scripts/mcp_test_auditor.py), [`scripts/harness_test_auditor.py`](scripts/harness_test_auditor.py)), Estatística PerfKit ([`scripts/perfkit_stats.py`](scripts/perfkit_stats.py)), Evals ([`scripts/eval_harness.py`](scripts/eval_harness.py)) e CLI ([`scripts/test_quality_auditor.py`](scripts/test_quality_auditor.py)), com espelhamento 1:1 em `evals/modules/*_evals.json`.
-
-### Módulo 4: Matriz de Detecção de Discrepâncias com as Preferências
-- Checklist determinístico validado em toda entrega:
-  * `[PASS / FAIL]` **Zero Exceção/Erro Silenciado (`except: pass` / `res, _ :=`):** Todos os blocos de erro nos testes e scripts tratam ou validam falhas explicitamente?
-  * `[PASS / FAIL]` **Tipagem Estrita e Desacoplamento (<300 linhas):** Todos os módulos em `scripts/` possuem `<300` linhas e contratos `dataclass` estritos?
-  * `[PASS / FAIL]` **Falsificabilidade Real Multi-Domínio (Python/TS/Go/MCP/Harness):** As asserções validam comportamento real, invariantes de negócio, protocolo JSON-RPC 2.0 e guardas HITL Zero-Trust?
-  * `[PASS / FAIL]` **Espelhamento 1:1 de Evals (`scripts/*_auditor.py` $\leftrightarrow$ `evals/modules/*_evals.json`):** Todos os 5 módulos possuem suíte de eval espelhada validada com `100% PASS`?
+Sempre que esta skill gerar relatórios visuais ou dashboards HTML de qualidade/cobertura, aplique o contrato [`../design-md/SKILL.md`](../design-md/SKILL.md) e [`references/dossie_qualidade_testes_e_evals.md`](references/dossie_qualidade_testes_e_evals.md):
+- **Tokens `--surface-*` e Sombras em 3 Níveis (`AUDIT-VIS-01`):** Luz zenital (`inset 0 1px 0 0`), `font-variant-numeric: tabular-nums` em notas/percentis ($P_{50}..P_{99}$), `antialiased`, `font-synthesis: none`, zero `scale()` fracionário e zero emojis em controles.
+- **Modularidade (`<300` linhas/módulo) e Checklist de Conformidade:** Zero erro silenciado (`except: pass` / `res, _ :=`), falsificabilidade multi-domínio (`Python/TS/Go/MCP/Harness`) e espelhamento `1:1` em `evals/modules/*_evals.json`.
 
 ---
 

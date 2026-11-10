@@ -62,6 +62,7 @@ No ecossistema multiagente (Google ADK / LangGraph / Antigravity), a orquestraç
 ## 3. Dinâmica do Hand-Off Estruturado
 
 O canal de comunicação entre o auditor e o planejador não utiliza linguagem natural difusa. Ele opera via contrato YAML padronizado:
+
 - `handoff_target`: Define o nó receptor no grafo (`high-level-context-planner`).
 - `incident_id`: Identificador único do ciclo de auditoria para rastreabilidade.
 - `recommended_option`: Seleção entre correção cirúrgica (`Opção 1`) ou refatoração arquitetural (`Opção 2`).

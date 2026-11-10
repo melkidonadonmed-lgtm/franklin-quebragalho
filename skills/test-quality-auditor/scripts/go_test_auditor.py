@@ -14,9 +14,9 @@ from models import AuditIssue, FileAuditReport, TestDossierRecord, classify_qual
 
 
 def _strip_go_comments_and_strings(line: str) -> str:
-    """Remove comentários de linha e literais de string para contagem exata de chaves {}."""
-    no_comment = re.sub(r"//.*$", "", line)
-    return re.sub(r"'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"|`[^`]*`", '""', no_comment)
+    """Remove literais de string e comentários de linha para contagem exata de chaves {}."""
+    no_str = re.sub(r"'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"|`[^`]*`", '""', line)
+    return re.sub(r"//.*$", "", no_str)
 
 
 def _find_go_block_end(lines: List[str], start_idx: int) -> int:

@@ -111,11 +111,18 @@ def _collect_a2a_skills(skills_dir: Path, kw: str) -> List[Dict[str, Any]]:
             continue
         content = skill_md.read_text(encoding="utf-8", errors="replace")
         fm, _ = parse_frontmatter(content)
-        name = str(fm.get("name", folder.name))
+        name = str(fm.get("name", folder.name)).strip() or folder.name
         desc = str(fm.get("description", ""))
         category = str(fm.get("category", "Produtividade & Engenharia Agêntica"))
-        tags_raw = fm.get("tags", [])
-        tags = [str(t) for t in tags_raw] if isinstance(tags_raw, list) else [folder.name, category]
+        meta_block = fm.get("metadata") if isinstance(fm.get("metadata"), dict) else {}
+        tags_raw = fm.get("tags") or meta_block.get("tags") or []
+        tags = (
+            [str(t).strip() for t in tags_raw if str(t).strip()]
+            if isinstance(tags_raw, list) and tags_raw
+            else [folder.name, category, "franklin-skills"]
+        )
+        if not tags:
+            tags = [folder.name, category, "franklin-skills"]
         if kw and kw not in name.lower() and kw not in desc.lower() and kw not in category.lower():
             continue
         skills_list.append(

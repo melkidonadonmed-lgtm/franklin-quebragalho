@@ -5,20 +5,18 @@ wave: 3
 parent_persona: LoopPlanner
 enable_write_tools: true
 enable_mcp_tools: true
+subagent: true
+mainAgent: false
+commandExecutionPolicy: auto
 covered_modules:
   - "M4_parallel_fan_in_merger"
   - "M5_read_after_write_verification"
   - "M6_visual_and_dom_grounding"
-description: >-
-  Intermediário Gatekeeper de Onda Final (Verificação Read-After-Write e Fusão Fan-In): consolida saídas paralelas de subagentes em chaves isoladas (fix_ux_result, fix_seo_result, fix_copy_result), executa leitura pós-mutação no sistema de origem e valida grounding visual/DOM antes de concluir.
+description: "Gatekeeper de Onda Final (Read-After-Write e Fan-In): consolida saídas paralelas de subagentes e verifica estado real pós-mutação no disco/DOM."
 tools:
-  - view_file
-  - grep_search
-  - find_by_name
-  - list_dir
+  - read_file
   - run_command
-  - gemini_search_docs
-  - gemini_get_doc
+  - call_mcp_tool
 ---
 
 # Agente Intermediário: `read-after-write-verifier` (Validação Pós-Escrita & Fan-In)

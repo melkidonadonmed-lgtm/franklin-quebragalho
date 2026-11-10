@@ -1,23 +1,39 @@
-# CONTEXTO OPERACIONAL — `franklin-quebragalho` (Catálogo de 26 Skills + 8 Subagentes + FastMCP + Ponte A2A v1.0 JWS)
+# CONTEXT.MD — Estado Autoritativo do Projeto (`franklin-quebragalho` / Franklin Quebra-Galho)
+>
+> **Última Atualização:** 2026-11-10 | **Status:** `ACTIVE`
 
-Este documento resume a arquitetura, as 25 skills canônicas, os 8 subagentes (incluindo intermediários de intenção/HITL e Read-After-Write) e o estado operacional do repositório **`franklin-quebragalho`**.
+## 1. Visão Geral & Arquitetura Atual
 
----
+- **Propósito:** Incubadora central das **29 Skills** canônicas (em 3 Tiers de *Progressive Disclosure*), **10 Subagentes Declarativos** (`agents/*.md`), servidor **FastMCP (`server.py` — 13 Ferramentas, 8 Recursos, 2 Prompts)** e ponte oficial **Agent2Agent (`A2A v1.0` + assinatura criptográfica JWS em `shared/a2a_bridge.py`)**.
+- **Stack & Runtime:** Python 3.12+ (`uv` / `pyproject.toml`, `FastMCP`, `Pydantic v2`, `a2a-sdk` 1.2.2) + TypeScript 5+ / Node LTS (`google-drive-index-app`, `templates/universal-app`) + Go 1.24+ (`skills/audit-skills-antigravity/scripts/skill_auditor_rea.go`) + Windows 11 (`pwsh`).
+- **Módulos Ativos:**
+  - `"shared/"` (`catalog_service.py`, `compass_topology.py`, `execution_orchestrator.py`, `modular_orchestrator.py`, `harness.py`, `harness2_engine.py`, `harness2_tree.py`, `a2a_bridge.py`, `mcp_2026_advisor.py`, `trigger_eval_suite.py`, `agent_spec_loader.py` e `tools/frontmatter_parser.py`).
+  - `"skills/"` (**29 Skills Canônicas** sincronizadas com o plugin global `C:\Users\melki\.gemini\config\plugins\franklin-skills\`, incluindo a fusão 3-em-1 em [`auditoria-projetos-sistema`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/auditoria-projetos-sistema/SKILL.md) `v6.0.0`).
+  - `"agents/"` (**10 Subagentes Declarativos**: Topologia `3+1` de UI `ui-shell-navigator`, `ui-controls-data`, `ui-motion-interaction`, `ui-deterministic-observer` + `intent-hitl-mediator`, `read-after-write-verifier`, `review-squad`, `vault-memory-retriever`, `adk-go-operator`, `dev-workspace-publisher`).
+  - `"plans/"`, `"rules/"`, `"scripts/"`, `"templates/"` e `"tests/"` (**77/77 testes aprovados** em `uv run pytest -q`, **29/29 skills validadas** em `uv run python scripts/validate_skills.py` com $F_1 = 1.0$, e **20/20 casos** no `test-quality-auditor` v1.3.0).
 
-## 1. Papel e Arquitetura
-O `franklin-quebragalho` é a incubadora central de habilidades agênticas (**Agent Skills** em 3 Tiers), servidor **FastMCP (`server.py`)** e ponte oficial **Agent2Agent (`A2A v1.0` + assinatura criptográfica JWS em `shared/a2a_bridge.py`)**.
-- **Catálogo de 26 Skills Canônicas (`skills/`)**: Sincronizado com o plugin global `C:\Users\melki\.gemini\config\plugins\franklin-skills\`.
-- **Servidor MCP (`server.py` — 13 Ferramentas)**: Expõe listagem, busca, validação de skills, bússola semântica (`franklin_smart_compass`), executor de scripts (`franklin_run_skill_script`), disparador DAG (`franklin_execute_dag`), guardas Zero-Trust (`franklin_harness_guard` / `franklin_harness_checkpoint`), consultor MCP `2026-07-28` (`franklin_mcp_build_advisor`) e ponte A2A (`franklin_a2a_agent_card` / `franklin_a2a_dispatch_task`).
-- **Esquadrão de 8 Subagentes (`agents/*.md` & `plans/*.json`)**:
-  - **UI `Topologia 3+1`**: `ui-shell-navigator`, `ui-controls-data`, `ui-motion-interaction`, `ui-deterministic-observer`.
-  - **Memória Híbrida (`~35ms`)**: `vault-memory-retriever`.
-  - **Intermediários Distribuídos (`plans/distributed_agent_mediation_dag.json`)**: `intent-hitl-mediator` (Triagem Pydantic + HITL + Resource Attribution DAK) e `read-after-write-verifier` (Validação pós-escrita e Fan-In).
+## 2. Decisões Técnicas Críticas (Não Violar)
 
----
+- **`[LOCK-01]` Fusão 3-em-1 em `auditoria-projetos-sistema` (`v6.0.0`):** `antigravity-project-auditor` e `nav-x-func` permanecem exclusivamente como aliases em `shared/catalog_service.py` apontando para `auditoria-projetos-sistema` (`project_structure_and_code_auditor.py`, `deterministic_scorer.py` e `audit_tactile_ui.py`).
+- **`[LOCK-02]` Regra `60-30-10` com Cores `OKLCH` e Sombras em 3 Camadas Reais:** Toda implementação e auditoria visual exige `oklch(L C H / alpha)` + `light-dark()` e 3 níveis de elevação (`--shadow-elevation-1..3` + `inset` combinando Umbra de Contato + Penumbra Difusa com *spread* negativo + Borda Zenital `inset 0 1px 0 0`).
+- **`[LOCK-03]` Sincronia Obrigatória Projeto $\leftrightarrow$ Memória Global (`~/.gemini`):** Toda alteração em `skills/`, `agents/`, `rules/`, `AGENTS.md`, `SPEC.md`, `CONTEXT.md` ou `CURRENT_STATE.md` exige a execução de `uv run python scripts/sync_gemini_ecosystem.py`.
+- **Fronteiras de I/O e Real-State:** Schemas estritamente tipados (`Pydantic v2` `extra="forbid"`), higiene `STDIO` (`stdout` exclusivo para JSON-RPC 2.0), Tolerância Zero a Funções Falsas (*Real-State*) e validação pós-escrita (*Read-After-Write*).
 
-## 2. Estado Operacional (Outubro/2026)
-1. **Autonomia Modular (`shared/`)**: Contém `shared/catalog_service.py`, `shared/compass_topology.py`, `shared/execution_orchestrator.py`, `shared/harness.py`, `shared/harness2_engine.py`, `shared/harness2_tree.py`, `shared/a2a_bridge.py`, `shared/mcp_2026_advisor.py` e `shared/tools/frontmatter_parser.py`.
-2. **Qualidade de Testes Nível 4 (`100.0/100`)**:
-   - **57/57 testes aprovados** em `uv run pytest -q` (distribuídos em 5 suítes em `tests/`).
-   - **25/25 skills validadas** em `python scripts/validate_skills.py`.
-   - **20/20 casos de avaliação (`evals/evals.json`)** aprovados no `test-quality-auditor` v1.2.0 com espelhamento 1:1 dos 5 módulos analisadores (`python`, `ts_js`, `go`, `mcp`, `harness`).
+## 3. Últimas Alterações (Changelog Recente)
+
+- `[2026-11-10]` **Reparo de Frontmatter YAML e Sanitização Markdown (`/skill-repair`)**: Restaurado o delimitador de abertura `---` e metadados YAML em `skills/skill-orquestrador-planos-encadeados/SKILL.md`, `agents/adk-go-operator.md`, `agents/dev-workspace-publisher.md` e `agents/intent-hitl-mediator.md`, além da remoção de asteriscos residuais (`****` / `**`) em `AGENTS.md`, `skills/code-acceptability-auditor/rules/criterios_auditoria.md` e `templates/universal-app/docs/frontend.design.md`. Validado com `29/29 PASS` em `scripts/validate_skills.py`, `29/29 [MANTIDA]` em `skill_auditor_rea.go`, `77/77 passed` em `pytest` e sincronia completa via `scripts/sync_gemini_ecosystem.py`.
+- `[2026-11-09]` **Upgrade para React 19 + Tailwind CSS v4 (`OKLCH`) nos Sub-Apps (`TASK-03`)**: Migrados `google-drive-index-app` e `templates/universal-app` de React 18 / Tailwind v3 para **React 19 (`^19.0.1`) + Tailwind v4 (`^4.1.14` + `@tailwindcss/vite` + `@theme` + `OKLCH` + `light-dark()` + `--shadow-elevation-1..3`)**, corrigido callback `ref` de React 19 em `TabsNav.tsx`, validados builds de produção (`tsc && vite build` `0` erros), `34/34` testes em `google-drive-index-app` e `100.0/100.0 PASS` em `audit_tactile_ui.py`.
+- `[2026-11-09]` Higienização da raiz global `C:\Users\melki\.gemini`: unificação de documentação em `.gemini/doc/` (removendo `.gemini/docs/` duplicada e `GEMINI.md` órfão), atualização de `plugin.json` para **29 Skills Canônicas** e `auditoria-projetos-sistema` (`[LOCK-01]`), eliminação do plugin redundante `gemini-skills` (preservando `gemini-api-cli` dentro do plugin oficial `gemini-api`), desativação da duplicata `google-developer-knowledge` em `config.json`, migração de `android-studio-mcp.mjs` para `.gemini/lib/`, remoção de `.gemini/extensions/` e `.gemini/staging/` e limpeza de entradas acidentais em `projects.json`, `history/`, `tmp/` e `settings.json`.
+- `[2026-11-09]` Higienização de arquivos redundantes/poluentes (`shared/{AGENTS,CLAUDE,CONTEXT,SPEC}.md`, `.context/{CURRENT_STATE,SESSION_LOG}.md`, `Indice_Google_Drive.html`, `workspace_index.json`, `skills/arquiteto-conteudo-solucoes/README.md`, restauração limpa de `SKILL.md` em `~/.agents/skills` sem arquivos sintéticos e limpeza de temporários em `adk-tests`), organização da Tríade de Governança v2.0 e caminhos em `adk-tests` (`AGENTS.md` / `.agents/AGENTS.md`, `CONTEXT.md` / `.context/context.md`, `SPEC.md` / `.context/spec.md`) e conclusão de `TASK-04` (`20/20 PASS` em `test_quality_auditor.py --self-test` e `113/113 [MANTIDA]` em `skill_auditor_rea.go`).
+- `[2026-11-09]` Padronização de frontmatter YAML 2026 (`version`, `updated_at`, `compatibility`, `allowed-tools` + `metadata`) nas **29 Skills Canônicas** e nas **73 Skills Globais** (`~/.agents/skills`), correção do motor Go [`skills/audit-skills-antigravity/scripts/skill_auditor_rea.go`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/audit-skills-antigravity/scripts/skill_auditor_rea.go) (`113/113` YAML válido, suporte `.go` em `execution_orchestrator.py`), inclusão de `audit-skills-antigravity` no plugin global (`GLOBAL_CORE_FRANKLIN_SKILLS`) e descoberta cruzada em `.agents/skills.json`.
+- `[2026-11-09]` Padronização da Tríade de Governança v2.0 (`AGENTS.md` / `.agents/AGENTS.md`, `CONTEXT.md` / `.context/context.md`, `SPEC.md` / `.context/spec.md`) alinhada ao Kernel Operacional v2.0 SSOT e sincronização automática em [`scripts/sync_gemini_ecosystem.py`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/scripts/sync_gemini_ecosystem.py).
+- `[2026-11-03]` Fase 30: Fusão 3-em-1 em `auditoria-projetos-sistema` (`v6.0.0`) com scanner físico AST/árvore (`project_structure_and_code_auditor.py`), criação de `rules/` e [`CURRENT_STATE.md`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/CURRENT_STATE.md) com travas anti-regressão (`[LOCK-01]` a `[LOCK-03]`), correção do pipeline de sombras multi-camadas em `elevationRenderer.ts` e sincronia automática de `memories/audit_report.json` e `.well-known/agent-card.json`.
+- `[2026-10-27 a 2026-11-02]` Fases 28 e 29: Consolidação do Guia Mestre de Frontend em 9 Eixos + Matriz de Complexidade (`OKLCH`, `light-dark()`, 3 camadas de tokens, 3 níveis de sombras, `@container`, 4 variantes de cards e navegação em 3 camadas), Topologia `3+1` de Subagentes de UI e auditores poliglotas (`re-a-ndroid`, `android-agy-projects`, `plan-uiux`, `audit-skills-antigravity`, `complex-zero`, `agent-server-auditor`).
+
+## 4. Backlog & Próximos Passos (Fila de Execução)
+
+- [x] `TASK-01`: Consolidar catálogo em **29 Skills** canônicas e **10 Subagentes** declarativos com `29/29 PASS` em `scripts/validate_skills.py` e precisão Top-1 $F_1 = 1.0$.
+- [x] `TASK-02`: Modularizar `server.py` e `shared/` (13 tools MCP `2026-07-28`, Harness² Zero-Trust e A2A `v1.0` JWS com `77/77 PASS` em `pytest`).
+- [x] `TASK-03`: Padronizar a Tríade de Governança v2.0 (`AGENTS.md` / `.agents/AGENTS.md`, `CONTEXT.md` / `.context/context.md`, `SPEC.md` / `.context/spec.md`) e espelhamento automático via `scripts/sync_gemini_ecosystem.py`.
+- [x] `TASK-04`: Validar baterias adversariais multi-repo em `test-quality-auditor` (`20/20 PASS` local e `100.0/100 Nível 4` em `adk-tests`), higienizar pastas e sincronizar a Tríade v2.0 entre `franklin-quebragalho` e `adk-tests`.
+- [ ] `TASK-05`: Manter monitoramento contínuo de latência e conformidade MCP `2026-07-28` / A2A `v1.0` JWS nas 29 skills canônicas e 11 skills locais Go.

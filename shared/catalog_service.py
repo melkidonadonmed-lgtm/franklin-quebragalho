@@ -34,6 +34,8 @@ if not EPIC_VOLTA_DIR.exists():
     EPIC_VOLTA_DIR = Path(r"C:\Users\melki\dev\repos\epic-volta")
 
 CANONICAL_PERSONA_MAPPING: Dict[str, str] = {
+    "complex-zero": "UI-Architect",
+    "plan-uiux": "UI-Architect",
     "design-interface-medica-minimalista": "UI-Architect",
     "design-md": "UI-Architect",
     "frontend-code-architect": "UI-Architect",
@@ -49,13 +51,14 @@ CANONICAL_PERSONA_MAPPING: Dict[str, str] = {
     "code-acceptability-auditor": "SkillCraft",
     "test-quality-auditor": "SkillCraft",
     "agent-server-auditor": "SkillCraft",
+    "audit-skills-antigravity": "SkillCraft",
+    "re-a-ndroid": "SkillCraft",
     "high-level-context-planner": "LoopPlanner",
     "gap-analyzer-auditor": "LoopPlanner",
     "skill-orquestrador-planos-encadeados": "LoopPlanner",
     "arquiteto-conteudo-solucoes": "Franklin-Main",
-    "nav-x-func": "Franklin-Main",
     "auditoria-projetos-sistema": "Franklin-Main",
-    "antigravity-project-auditor": "Franklin-Main",
+    "android-agy-projects": "Franklin-Main",
     "organizador-projetos-ideias": "Franklin-Main",
     "code-quality-audit-3d-physics": "Franklin-Main",
     "context-sentinel": "Franklin-Main",
@@ -64,6 +67,11 @@ CANONICAL_PERSONA_MAPPING: Dict[str, str] = {
 }
 
 QUICK_SKILL_ALIASES: Dict[str, str] = {
+    "complex-zero": "complex-zero",
+    "xyflow": "complex-zero",
+    "react-flow": "complex-zero",
+    "reactflow": "complex-zero",
+    "ghost-node": "complex-zero",
     "3d": "code-quality-audit-3d-physics",
     "fisica": "code-quality-audit-3d-physics",
     "fisica-3d": "code-quality-audit-3d-physics",
@@ -85,11 +93,11 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "test-auditor": "test-quality-auditor",
     "evals": "test-quality-auditor",
     "qa-testes": "test-quality-auditor",
-    "arquitetura": "nav-x-func",
-    "arquitetura-design-implementacao-sistema": "nav-x-func",
-    "nav-x-func": "nav-x-func",
-    "nav": "nav-x-func",
-    "ilhas": "nav-x-func",
+    "arquitetura": "auditoria-projetos-sistema",
+    "arquitetura-design-implementacao-sistema": "auditoria-projetos-sistema",
+    "nav-x-func": "auditoria-projetos-sistema",
+    "nav": "auditoria-projetos-sistema",
+    "ilhas": "auditoria-projetos-sistema",
     "design": "design-md",
     "design.md": "design-md",
     "code-architect": "frontend-code-architect",
@@ -129,10 +137,19 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "auditoria": "auditoria-projetos-sistema",
     "projeto": "auditoria-projetos-sistema",
     "repo": "auditoria-projetos-sistema",
-    "mvp-auditor": "antigravity-project-auditor",
-    "project-auditor": "antigravity-project-auditor",
-    "diagnostico-mvp": "antigravity-project-auditor",
-    "mvp": "antigravity-project-auditor",
+    "antigravity-project-auditor": "auditoria-projetos-sistema",
+    "mvp-auditor": "auditoria-projetos-sistema",
+    "project-auditor": "auditoria-projetos-sistema",
+    "diagnostico-mvp": "auditoria-projetos-sistema",
+    "mvp": "auditoria-projetos-sistema",
+    "android": "android-agy-projects",
+    "android-agy": "android-agy-projects",
+    "android-agy-projects": "android-agy-projects",
+    "compose": "android-agy-projects",
+    "jetpack-compose": "android-agy-projects",
+    "kotlin-android": "android-agy-projects",
+    "agp9": "android-agy-projects",
+    "gradle-android": "android-agy-projects",
     "organizar": "organizador-projetos-ideias",
     "organizador": "organizador-projetos-ideias",
     "organizar-projeto": "organizador-projetos-ideias",
@@ -167,6 +184,17 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "agent-auditor": "agent-server-auditor",
     "mcp-auditor": "agent-server-auditor",
     "a2a-auditor": "agent-server-auditor",
+    "plan-uiux": "plan-uiux",
+    "rea-uiux": "plan-uiux",
+    "audit-skills": "audit-skills-antigravity",
+    "audit-skills-antigravity": "audit-skills-antigravity",
+    "rea-skills": "audit-skills-antigravity",
+    "re-a-ndroid": "re-a-ndroid",
+    "rea-android": "re-a-ndroid",
+    "apk-auditor": "re-a-ndroid",
+    "apk": "re-a-ndroid",
+    "adb-audit": "re-a-ndroid",
+    "dex": "re-a-ndroid",
 }
 
 REQUIRED_SKILL_SECTIONS: List[Tuple[str, str]] = [
@@ -225,7 +253,11 @@ def _load_status_map() -> Dict[str, str]:
     return status_map
 
 
-def _collect_skill_data(skill_dir: Path) -> Optional[Dict[str, Any]]:
+def _collect_skill_data(
+    skill_dir: Path,
+    agents_map: Optional[Dict[str, str]] = None,
+    status_map: Optional[Dict[str, str]] = None,
+) -> Optional[Dict[str, Any]]:
     """Lê metadados completos e estrutura de uma pasta de skill."""
     skill_file = skill_dir / "SKILL.md"
     if not skill_file.exists():
@@ -248,12 +280,12 @@ def _collect_skill_data(skill_dir: Path) -> Optional[Dict[str, Any]]:
         ref_list = [f.name for f in ref_dir.iterdir() if f.is_file()] if ref_dir.is_dir() else []
 
         tags = {w for tok in (name, skill_dir.name, description) for w in re.findall(r"[a-zA-Z0-9_\-]+", tok.lower())}
-        agents_map = _load_agents_map()
-        status_map = _load_status_map()
+        active_agents_map = agents_map if agents_map is not None else _load_agents_map()
+        active_status_map = status_map if status_map is not None else _load_status_map()
         return {
             "name": name, "directory": skill_dir.name, "version": version,
-            "status": status_map.get(skill_dir.name, status_map.get(name, "✅ Validada")),
-            "persona": agents_map.get(skill_dir.name, agents_map.get(name, "Franklin-Main")),
+            "status": active_status_map.get(skill_dir.name, active_status_map.get(name, "✅ Validada")),
+            "persona": active_agents_map.get(skill_dir.name, active_agents_map.get(name, "Franklin-Main")),
             "description": description, "path": str(skill_file),
             "has_rules": rules_file.exists(), "has_evals": evals_file.exists(),
             "has_references": bool(ref_list), "references": ref_list,
@@ -267,10 +299,12 @@ def _get_all_skills_data() -> List[Dict[str, Any]]:
     """Varre o diretório de skills e consolida todos os metadados."""
     if not SKILLS_ROOT.exists():
         return []
+    agents_map = _load_agents_map()
+    status_map = _load_status_map()
     skills = []
     for item in sorted(SKILLS_ROOT.iterdir()):
         if item.is_dir():
-            data = _collect_skill_data(item)
+            data = _collect_skill_data(item, agents_map=agents_map, status_map=status_map)
             if data:
                 skills.append(data)
     return skills
@@ -566,8 +600,8 @@ def _validate_single_skill_dir(s_dir: Path) -> List[str]:
         if name_val and name_val != s_dir.name and not is_template:
             errs.append(f"Nome no frontmatter ('{name_val}') difere da pasta ('{s_dir.name}')")
         desc_text = str(meta.get("description", "")).strip()
-        if len(desc_text) > 420:
-            errs.append(f"Descrição excede o orçamento de contexto de 420 chars ({len(desc_text)} chars)")
+        if len(desc_text) > 240:
+            errs.append(f"Descrição excede o orçamento de contexto L1 de 240 chars ({len(desc_text)} chars)")
         if desc_text and not is_template and not re.search(r"\b(n[aã]o use|do not use|don't use|skip when)\b", desc_text, re.IGNORECASE):
             errs.append("Descrição deve declarar fronteira negativa ('Não use para...' / 'Do not use...')")
         if len(body.splitlines()) > 500:

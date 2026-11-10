@@ -267,8 +267,10 @@ def audit_light_and_motion(
     low = source.lower()
     has_light_135 = bool(
         re.search(r"border-top\s*:\s*1px\s+solid\s+rgba\(\s*255\s*,\s*255\s*,\s*255", low)
-        or re.search(r"inset\s+0\s+1px\s+0(?:\s+0)?\s+rgba\(\s*255\s*,\s*255\s*,\s*255", low)
+        or re.search(r"inset\s+0(?:px)?\s+1px\s+0(?:px)?(?:\s+0(?:px)?)?\s+(?:rgba\(\s*255\s*,\s*255\s*,\s*255|oklch\(\s*1\s+0\s+0|light-dark\()", low)
         or "--specular-rim" in low
+        or "--catch-light" in low
+        or "--shadow-inset" in low
         or ("border-t" in low and "white/" in low)
         or "135deg" in low
     )
@@ -278,6 +280,13 @@ def audit_light_and_motion(
         or any(
             tok in low
             for tok in (
+                "--shadow-elevation-1",
+                "--shadow-elevation-2",
+                "--shadow-elevation-3",
+                "--shadow-inset",
+                "--elevation-1",
+                "--elevation-2",
+                "--elevation-3",
                 "--elevation-low",
                 "--elevation-medium",
                 "--elevation-high",

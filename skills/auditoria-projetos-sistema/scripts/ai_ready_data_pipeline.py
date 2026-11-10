@@ -55,21 +55,26 @@ class AIReadyDataPipeline:
         category: str = "geral",
         extra_metadata: Optional[Dict[str, Any]] = None,
     ) -> List[Dict[str, Any]]:
-        """Gera chunks padronizados com metadados completos e deduplicação SHA-256."""
+        """Gera chunks padronizados preservando quebras de parágrafo (\\n\\n) e byte_range exato."""
         sanitized = self.sanitize_text(text)
         if not sanitized:
             return []
 
-        words = sanitized.split()
+        word_spans = [m.span() for m in re.finditer(r"\S+", sanitized)]
+        if not word_spans:
+            return []
+
         chunks: List[Dict[str, Any]] = []
-        i, running_char_offset = 0, 0
+        i = 0
         step = max(1, self.chunk_size - self.overlap)
 
-        while i < len(words):
-            chunk_words = words[i : i + self.chunk_size]
-            chunk_text = " ".join(chunk_words)
+        while i < len(word_spans):
+            window = word_spans[i : i + self.chunk_size]
+            start_char = window[0][0]
+            end_char = window[-1][1]
+            chunk_text = sanitized[start_char:end_char]
             chunk_bytes = chunk_text.encode("utf-8")
-            start_byte = len(sanitized[:running_char_offset].encode("utf-8"))
+            start_byte = len(sanitized[:start_char].encode("utf-8"))
             end_byte = start_byte + len(chunk_bytes)
 
             chunk_hash = hashlib.sha256(chunk_bytes).hexdigest()[:12]
@@ -81,7 +86,7 @@ class AIReadyDataPipeline:
                 "source": source_id,
                 "source_id": source_id,
                 "category": category,
-                "word_count": len(chunk_words),
+                "word_count": len(window),
                 "char_count": len(chunk_text),
                 "chunk_index": len(chunks),
                 "byte_range": [start_byte, end_byte],
@@ -92,8 +97,8 @@ class AIReadyDataPipeline:
                 chunk_metadata.update(extra_metadata)
 
             chunks.append({"chunk_id": f"{source_id}_{chunk_hash}", "text": chunk_text, "metadata": chunk_metadata})
-            advanced_words = " ".join(words[i : i + step])
-            running_char_offset = min(len(sanitized), running_char_offset + len(advanced_words) + 1)
+            if i + self.chunk_size >= len(word_spans):
+                break
             i += step
 
         return chunks

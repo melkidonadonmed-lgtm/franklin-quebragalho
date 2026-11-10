@@ -36,7 +36,7 @@
     3. RESPOSTA FÍSICA E DINÂMICA TÁTIL (INTERACTIONS):
        - Repouso (Resting): estado de repouso com elevação base (elevação de 1px a 2px).
        - Passagem (Hover): deslocamento ascendente suave (transform: translateY(-1px) ou translateY(-2px)) com expansão gradual do desfoque da sombra difusa.
-       - Acionamento (Active / Pressed): compressão física nítida (transform: translateY(1px) scale(0.99)), com retração drástica da sombra externa e aumento leve da oclusão interna, transmitindo a sensação mecânica de curso de botão.
+       - Acionamento (Active / Pressed): compressão física nítida com deslocamento inteiro (transform: translateY(0px) — proibido scale() fracionário em textos para evitar borrão de GPU), com retração da sombra externa de volta ao Nível 1 / oclusão interna, transmitindo a sensação mecânica de curso de tecla real.
        - Suavização: transições determinísticas de curva de Bézier (transition: transform 100ms-160ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 160ms cubic-bezier(0.2, 0, 0, 1)).
   </physics_and_visual_guidelines>
 
@@ -196,7 +196,7 @@
 }
 
 .btn-tactile:active {
-  transform: translateY(1px) scale(0.99);
+  transform: translateY(0px);
   box-shadow: var(--elevation-pressed);
   transition-duration: var(--motion-press);
 }
@@ -228,7 +228,7 @@
 }
 
 .card-tactile.interactive:active {
-  transform: translateY(0) scale(0.995);
+  transform: translateY(0px);
   box-shadow: var(--elevation-low), var(--specular-rim);
   transition-duration: var(--motion-press);
 }
@@ -348,7 +348,7 @@ module.exports = {
             boxShadow: theme('boxShadow.tactile-md'),
           },
           '&:active': {
-            transform: 'translateY(1px) scale(0.99)',
+            transform: 'translateY(0px)',
             boxShadow: theme('boxShadow.tactile-pressed'),
             transitionDuration: theme('transitionDuration.press'),
             transitionTimingFunction: theme('transitionTimingFunction.press-snappy'),
@@ -372,7 +372,7 @@ module.exports = {
             boxShadow: theme('boxShadow.tactile-md'),
           },
           '&.interactive:active': {
-            transform: 'translateY(0) scale(0.995)',
+            transform: 'translateY(0px)',
             boxShadow: theme('boxShadow.tactile-pressed'),
             transitionDuration: theme('transitionDuration.press'),
           },

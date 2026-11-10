@@ -64,6 +64,7 @@ Tokens dinâmicos que alternam entre o Dark Mineral e o Light Alabaster através
 ## 3. SISTEMA DE ELEVAÇÃO E MULTI-SOMBRA
 
 O segredo do acabamento premium está na **física da luz zenital**: um cartão nunca possui apenas uma sombra genérica e borrada. Ele é composto por 3 camadas sobrepostas:
+
 1. **Sombra de Contato (Oclusão de Ambiente):** curta, nítida e opaca, fixando o elemento na superfície.
 2. **Sombra Difusa (Penumbra):** ampla, suave e translúcida, transmitindo a distância da superfície.
 3. **Rim Light (Chanfro Zenital):** linha de 1px no topo interior do cartão, simulando a reflexão de luz que atinge a borda superior biselada.
@@ -228,9 +229,11 @@ A otimização de renderização exige manter o DOM limpo e enxuto:
 1. **Proibição de Cores Fixas (Hardcoded):** NUNCA declare `#ffffff`, `#000000`, `bg-white` ou `text-black` diretamente em nós JSX/HTML. Sempre utilize os tokens semânticos (`bg-[var(--surface-card)]`, `text-[var(--text-primary)]`).
 2. **Semântica de Interação Rígida:** NUNCA utilize elementos não semânticos para capturar cliques (ex.: `<div onClick={...}>` ou `<span onClick={...}>`). Todo elemento interativo deve ser um `<button type="button">` ou `<a>`, equipado com tratamento de teclado (Enter e Espaço nativos do botão) e atributos ARIA adequados.
 3. **Indicadores Visuais de Foco Invioláveis:** NUNCA use `outline-none` de forma isolada. É obrigatório fornecer o anel de foco acessível via `:focus-visible` com contraste de pelo menos `3:1` contra a superfície:
+
    ```css
    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-action)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--canvas-bg)]
    ```
+
 4. **Proibição de Azul Cobalto Saturado:** As interfaces do desenvolvedor banem cores neon e azuis agressivos (ex.: `#0044FF`, `#1D4ED8`, `bg-blue-600` padrão saturado). Preferir Ardósia, Minerais Foscos e o Acento Petróleo/Sky Blue calibrado.
 5. **Separação de Rede e Componente:** NENHUM componente de apresentação do Design System pode instanciar chamadas de rede diretas (`fetch`, `axios`). As chamadas de API devem residir em `src/services/` e ser consumidas através de Custom Hooks em `src/hooks/`.
 
@@ -241,6 +244,7 @@ A otimização de renderização exige manter o DOM limpo e enxuto:
 ### Exemplo 1: Detecção e Refatoração de Botão Não-Semântico
 
 **Input Analisado:**
+
 ```tsx
 <div 
   onClick={() => submitData()} 
@@ -251,12 +255,14 @@ A otimização de renderização exige manter o DOM limpo e enxuto:
 ```
 
 **Diagnóstico Determinístico:**
+
 - `[FAIL]` **Semântica:** Div interativa sem `role="button"`, sem `tabindex="0"` e inacessível por teclado (violação WCAG 2.1 Critério 2.1.1).
 - `[FAIL]` **Cromia:** Uso de azul cobalto agressivo `#0044ff` banido pelas diretrizes do desenvolvedor.
 - `[FAIL]` **Ergonomia:** Alvo de clique com padding reduzido (`5px`), inferior à altura mínima recomendada de 44px.
 - `[FAIL]` **Estilização:** CSS inline com valores hardcoded não adaptativos.
 
 **Refatoração Canônica Aplicada:**
+
 ```tsx
 import React from 'react';
 
@@ -300,6 +306,7 @@ export const SaveButton: React.FC<SaveButtonProps> = ({ onClick, isLoading }) =>
 ### Exemplo 2: Abas com Acessibilidade por Teclado e Relevo Mecânico
 
 **Refatoração Canônica Aplicada (`TabsNav.tsx`):**
+
 ```tsx
 import React, { useRef } from 'react';
 

@@ -1,22 +1,28 @@
 {
-  "version": "1.0.0",
-  "protocolVersion": "2026-07-28",
-  "hooks": {
-    "preToolUse": [
+  "franklin-semantic-guard": {
+    "enabled": false,
+    "PreToolUse": [
       {
-        "id": "semantic-guard-pre-tool",
-        "description": "Inspeciona entradas de ferramentas contra comandos destrutivos, path traversal, SSRF e bloqueia mutacoes sensiveis sem approval_token (HITL-AUTH-*).",
-        "handler": "shared.harness_middleware:SemanticGuard.inspect_input",
-        "blocking": true,
-        "failClosed": true
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/melki/dev/repos/franklin-quebragalho/.venv/Scripts/python.exe C:/Users/melki/dev/repos/franklin-quebragalho/hooks/antigravity_harness_hook.py PreToolUse",
+            "timeout": 10
+          }
+        ]
       }
     ],
-    "postToolUse": [
+    "PostToolUse": [
       {
-        "id": "semantic-guard-post-tool",
-        "description": "Sanitiza saidas contra injecao indireta (OWASP LLM01:2026) e registra telemetria de auditoria Read-After-Write.",
-        "handler": "shared.harness_middleware:SemanticGuard.sanitize_output",
-        "blocking": false
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/melki/dev/repos/franklin-quebragalho/.venv/Scripts/python.exe C:/Users/melki/dev/repos/franklin-quebragalho/hooks/antigravity_harness_hook.py PostToolUse",
+            "timeout": 10
+          }
+        ]
       }
     ]
   }

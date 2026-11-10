@@ -1,88 +1,61 @@
-# Protocolo `agent-browser` (@eX), Rubrica de Estilo por Propósito e Template de Relatório (`auditoria-projetos-sistema` v3.0.0)
+# Protocolo `agent-browser` (@eX), Cálculo `SGA`/`TIF` e Rubrica `60-30-10 OKLCH` (`auditoria-projetos-sistema` v6.0.0)
 
-Referência técnica de Tier 3 para inspeção visual dinâmica via `agent-browser`, rubrica de adequação do tema ao propósito do projeto (0 a 100) e template executivo de entrega.
+Referência técnica de Tier 3 unificando a inspeção dinâmica via `agent-browser` / `chrome-devtools-mcp`, o motor matemático `SGA` + `TIF` (`deterministic_scorer.py`) e a rubrica de **Proporção `60-30-10` em `OKLCH` + Sombras em 3 Níveis**.
 
 ---
 
-## 1. Protocolo de Inspeção Dinâmica com `agent-browser` (Módulos 4 e 5 — Requer HITL)
+## 1. Regra Cromática `60-30-10` em `OKLCH` e Sombras em 3 Camadas (Eixos 3, 4 e 5)
+
+| Proporção | Papel Estrutural | Tokens Semânticos Canônicos (`OKLCH` + `light-dark()`) | Regras de Auditoria |
+| :---: | :--- | :--- | :--- |
+| **60%** | **Superfície Dominante (Canvas / Fundo)** | `--bg-canvas` / `--surface-canvas`: Claro `oklch(0.985 0.004 255)` \| Escuro `oklch(0.16 0.02 260)` | Proibido `#000000` puro no Dark Mode; deve garantir respiro visual ($\ge 25\%$ de área livre). |
+| **30%** | **Estrutura Secundária (Cards, Painéis, Recessos)** | `--bg-surface-1` / `--surface-card` (`L = 0.22`), `--bg-surface-2` / `--surface-elevated` (`L = 0.27`), `--surface-sunken` (`L = 0.13`) | Diferenciação de planos por elevação progressiva de Luminosidade $L$ e **Sombras em 3 Níveis** (`--shadow-elevation-1..3`). |
+| **10%** | **Acento Cirúrgico e Ação Primária (CTA / Foco)** | `--brand-primary`: `oklch(0.62 0.19 255)` (derivado via `color-mix(in oklab, ...)` e `oklch(from ...)`) | Restrito a CTAs primários, `:focus-visible` e indicadores semânticos de `6px` / `2px`. Proibido espalhar cores neon. |
+
+### Anatomia Obrigatória das Sombras em 3 Níveis (Proibido Sombra Única Chapada)
+
+Cada nível (`--shadow-elevation-1` Repouso, `--shadow-elevation-2` Hover/Popover, `--shadow-elevation-3` Modal/Dock) combina **3 camadas físicas**:
+
+1. **Umbra de Contato (Oclusão Curta):** `0 1px 2px 0 oklch(0.15 0.02 255 / 0.06..0.35)`
+2. **Penumbra Difusa com `spread` Negativo (Luz Zenital 90°–120°):** `0 6px 12px -2px oklch(0.15 0.02 255 / 0.08..0.45)`
+3. **Borda Especular Zenital Superior (`Top Catch-Light`):** `inset 0 1px 0 0 oklch(1 0 0 / 0.85)` (Claro) / `oklch(1 0 0 / 0.12)` (Escuro).
+
+---
+
+## 2. Equações do Score Global de Arquitetura (`SGA`) e Suficiência (`TIF`)
+
+Calculadas automaticamente por `scripts/deterministic_scorer.py --scan <caminho>`:
+
+- **`INE` (25% — Navegabilidade em 3 Camadas):** Avalia $\le 3$ tags `<nav>`, ausência de *Dead Ends*, profundidade $\le 3$ cliques (`Ctrl+K`) e cobertura dos 4 estados (`idle/empty`, `loading`, `success`, `error`).
+- **`ICI` (20% — Coesão em Ilhas & Anti-Abas):** Avalia uso de `@container`, reuso de slots existentes (`<= 4` abas primárias, zero sub-abas aninhadas) e desacoplamento UI vs. I/O.
+- **`IPC` (25% — Pureza de Código & Tokens `OKLCH`):** Penaliza hardcodes de URL/cor e acoplamento direto de banco/rede dentro de componentes visuais.
+- **`IRM` (15% — Rigor de MVP):** Mede a razão de funções essenciais verificáveis vs. bloat desnecessário.
+- **`ICTE` (15% — Tipografia Fluida & Anti-Squish):** Verifica `clamp()`, `65ch`, `tabular-nums`, `flex-shrink: 0; white-space: nowrap` e menus descompactados (`font-size >= 13px`, `gap >= 8px`).
+
+$$\text{SGA} = 0.25 \cdot \text{INE} + 0.20 \cdot \text{ICI} + 0.25 \cdot \text{IPC} + 0.15 \cdot \text{IRM} + 0.15 \cdot \text{ICTE}$$
+
+---
+
+## 3. Protocolo de Inspeção Dinâmica com `agent-browser` (@eX) e `chrome-devtools-mcp` (Requer HITL)
 
 ```powershell
-# 1. Abertura, estabilização e extração de árvore semântica (@e1, @e2...)
+# 1. Auditoria determinística prévia de código e estrutura real (Sem HITL)
+uv run python skills/auditoria-projetos-sistema/scripts/project_structure_and_code_auditor.py --target .
+uv run python skills/auditoria-projetos-sistema/scripts/deterministic_scorer.py --scan .
+
+# 2. Inspeção dinâmica Live DOM via agent-browser (Requer HITL quando abrir URL ativa)
 agent-browser open $AppUrl
 agent-browser wait 1500
 agent-browser snapshot -i
-
-# 2. Conexão a instância existente do Chrome/Edge (CDP)
-agent-browser --cdp 9222 snapshot
-agent-browser --auto-connect snapshot
-
-# 3. Captura comparativa de Atmosferas / Temas (Dark / Light / Monolítico)
-agent-browser --color-scheme dark open $AppUrl
-agent-browser screenshot ./reports/dark_mode.png --full
-agent-browser --color-scheme light open $AppUrl
-agent-browser screenshot ./reports/light_mode.png --full
-
-# 4. Captura anotada com rótulos @eX para inspeção multimodal
+agent-browser --color-scheme dark screenshot ./reports/dark_mode.png --full
+agent-browser --color-scheme light screenshot ./reports/light_mode.png --full
 agent-browser screenshot ./reports/audit_annotated.png --annotate
-
-# 5. Teste de transição de abas/menus e mutação de estado (FSM)
-agent-browser click @e1
-agent-browser wait 800
-agent-browser snapshot -i
 ```
 
-### Falhas Determinísticas Rastreadas no Snapshot `@eX` & Estilo:
-- `[FAIL: TEMA_DESALINHADO_AO_PROPOSITO]`: Tema ou paleta aplicada mecanicamente sem relação com o objetivo do projeto (ex.: estética de entretenimento em sistema clínico ou falta de tipografia técnica em terminal).
-- `[FAIL: CONTRASTE_MENU_OU_WCAG]`: Texto branco lavado sobre menus claros/cinzas (`#8e8999`), razão WCAG $< 4.5:1$ ou inversão incorreta de luminância ($L_{\text{card}} \le L_{\text{canvas}}$ no escuro).
-- `[FAIL: HIERARQUIA_OU_TIPOGRAFIA_FRACA]`: Ausência de `clamp()`, falta de `tabular-nums` em KPIs/tabelas, ausência de `IBM Plex` em tema Preto Terminal (`Ex Umbris`) ou múltiplos CTAs primários competindo na mesma dobra.
-- `[FAIL: ESPACAMENTO_OU_CAMADAS_RUINS]`: Whitespace $< 25\%$, cards colados sem respiro, ausência de sombra esculpida em 3 camadas + `1px` Rim Light, ou violação de raios concêntricos.
-- `[FAIL: DIVSOUP_ACESSIBILIDADE]`: Tags `<div>`/`<span>` simulando botões sem semântica ARIA nem suporte a teclado.
-- `[FAIL: NO_INERTE_SEM_ACAO]`: Elementos interativos com `onClick` vazio, `preventDefault()` isolado ou sem mutação observável.
-- `[FAIL: ANTI_SQUISH_VIOLADO]`: Botões ou badges sem `flex-shrink: 0; white-space: nowrap;` ou alvos $< 44\times44\text{px}$.
+### Falhas Determinísticas Rastreadas no Snapshot `@eX`
 
----
-
-## 2. Template Canônico de Relatório de Auditoria (Saída Estruturada)
-
-```markdown
-# RELATÓRIO DE AUDITORIA TÉCNICA E VISUAL DO PROJETO
-
-## 1. RESUMO EXECUTIVO & NOTA GERAL
-- **Projeto Auditado:** [Nome ou Caminho]
-- **Propósito / Domínio Identificado:** [Conversão & SaaS | Editorial & Leitura | FinTech & Confiança | IA Nativa & AETHER | MedTech Clínico | DevTools & Terminal IBM]
-- **Tema / Atmosfera Recomendada vs. Atual:** [Ex: Ad Lucem / Cinza #57545d + Menus #8e8999 / Preto Terminal IBM Ex Umbris / AETHER 2027]
-- **Pontuação Consolidada:** [X / 100] -> [Enterprise (90-100) / Moderado (70-89) / Instável (50-69) / Reprovado (<50)]
-- **Diagnóstico Síntese:** [2 a 3 frases objetivas]
-
-## 2. AUDITORIA ESTRUTURAL E GOVERNANÇA DE PASTAS (20 pts)
-| Arquivo / Pasta Vital | Status | Observação Técnica |
-| :--- | :--- | :--- |
-| `AGENTS.md` / `README.md` | `[PASS]` / `[FAIL]` | [Diagnóstico] |
-| `CONTEXT.md` / `SPEC.md` | `[PASS]` / `[FAIL]` | [Diagnóstico] |
-| `DESIGN.md` (Arquitetura Visual & Propósito) | `[PASS]` / `[FAIL]` | [Diagnóstico] |
-| `.gitignore` & `.env.example` | `[PASS]` / `[FAIL]` | [Verificação de vazamento de segredos/build] |
-
-## 3. COERÊNCIA NARRATIVA: DOCUMENTADO VS. IMPLEMENTADO (20 pts)
-| Funcionalidade Declarada | Status | Evidência / Arquivo |
-| :--- | :--- | :--- |
-| [Recurso X] | `[IMPLEMENTADO_FUNCIONAL]` / `[MOCK_SUPERFICIAL]` / `[INEXISTENTE_DOCUMENTADO]` / `[CÓDIGO_FANTASMA]` | [Caminho] |
-
-## 4. HIGIENE DE CÓDIGO, TIPAGEM, CHUNKING & ARQUIVOS ÓRFÃOS (25 pts)
-- **Arquivos/Exports Órfãos:** [Lista]
-- **Desacoplamento, Tipagem e Chunking (`source_id`, `chunk_index`, `byte_range`):** [Diagnóstico]
-
-## 5. AUDITORIA DE PROPÓSITO VISUAL, ESTILO, CAMADAS & NÓS INTERATIVOS (20 pts)
-- **Encaixe do Tema ao Propósito (4 pts):** [Avaliação do tema atual vs. objetivo do projeto]
-- **Contraste, Proporção 98/2 (ou 60-30-10) & Menus (4 pts):** [WCAG AA/AAA, APCA, legibilidade de menus e isolamento de 1 CTA Primário]
-- **Tipografia, Hierarquia & `tabular-nums` (4 pts):** [Escala `clamp()`, 4 níveis de tinta, IBM Plex no terminal preto]
-- **Espaçamento, Respiro & Camadas Esculpidas (4 pts):** [Whitespace >= 25%, Bento Grid, raios concêntricos, sombra 3 camadas + 1px Rim Light, cards de contraste alternados]
-- **Snapshot Interativo (`agent-browser snapshot -i`) & FSM (4 pts):** [Relação de nós `@eX`, estados `idle/loading/error/pressed`, `divsoup` e nós inertes]
-
-## 6. SEGURANÇA, GIT & PROTOCOLOS MCP (15 pts)
-- **Configuração MCP e Schemas (`extra="forbid"`):** [Diagnóstico]
-
-## 7. PLANO DE AÇÃO IMEDIATO (PRIORIZADO)
-1. [Correção Crítica Bloqueante]
-2. [Ajuste de Tema, Contraste, Espaçamento ou Tipografia ao Propósito]
-3. [Saneamento de Orfandade / Nós Interativos]
-```
+- `[FAIL: VIOLACAO_60_30_10_OU_OKLCH]`: Ausência de tokens `oklch()`, uso de `#000000` puro ou poluição cromática fora da proporção `60-30-10`.
+- `[FAIL: SOMBRA_LAVADA_OU_SEM_LUZ_ZENITAL]`: Sombra simples borrada de camada única sem Umbra + Penumbra (`spread` negativo) + `inset 0 1px 0 0`.
+- `[FAIL: MENU_COMPACTADO_OU_PROLIFERACAO_ABAS]`: Botões de menu com `font-size < 13px`, `gap < 6px`, `min-block-size < 44px` ou criação de sub-abas aninhadas.
+- `[FAIL: BORRAO_GPU_OU_TIPOGRAFIA_FRACA]`: Ausência de `antialiased` + `font-synthesis: none`, uso de `scale()` fracionário em texto ou falta de `tabular-nums`.
+- `[FAIL: DIVSOUP_OU_NO_INERTE]`: Tags `<div>` simulando botões sem ARIA ou controles placebo sem ação real (`X não ativa Y`).

@@ -28,6 +28,7 @@ Este documento detalha os critérios técnicos obrigatórios para aprovação de
 $$\text{Quality Score} = \max\left(0.0, 100.0 - \sum_{i=1}^{n} \text{Penalidade}_i\right)$$
 
 Um artefato Python recebe o veredito **`APPROVED`** se, e somente se:
+
 1. `passed_syntax is True`
 2. `critical_violations == 0`
 3. `quality_score >= 75.0`

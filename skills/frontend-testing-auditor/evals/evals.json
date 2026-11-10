@@ -1,14 +1,14 @@
 {
   "skill_name": "frontend-testing-auditor",
-  "version": "3.0.0",
+  "version": "5.0.0",
   "evals": [
     {
-      "eval_id": "auditor-surfacecard-suite",
-      "prompt": "Crie a suíte de auditoria Jest + React Testing Library + Axe-Core para o componente <SurfaceCard /> validando camadas esculpidas, alinhamento tabular, FSM e anti-XSS.",
+      "eval_id": "auditor-surfacecard-9-axes-suite",
+      "prompt": "Crie a suíte de auditoria Jest + React Testing Library + Axe-Core para o componente <SurfaceCard /> validando as 4 variantes de Card (elevated, outlined, subtle, interactive), tokens em 3 camadas (OKLCH), sombras multi-camadas, alinhamento tabular, FSM e anti-XSS.",
       "expected_assertions": [
         "Inclui AUDIT-A11Y-01 (axe toHaveNoViolations) e AUDIT-A11Y-02 (foco de teclado, tabular-nums e prefers-reduced-motion)",
-        "Inclui AUDIT-VIS-01 verificando tokens semânticos por propósito, camadas esculpidas e ausência de componentes órfãos",
-        "Inclui AUDIT-STATE-01 (Loading role=status aria-busy=true -> Idle) e AUDIT-STATE-02 (Error role=alert)",
+        "Inclui AUDIT-VIS-01 verificando tokens semânticos em 3 camadas (--bg-canvas/--surface-canvas, --bg-surface-1/--surface-card, --text-primary/--ink-primary), sombras multi-camadas (--shadow-elevation-1..3 / --elevation-1..3), variantes de Card e ausência de componentes órfãos",
+        "Inclui AUDIT-STATE-01 (Loading role=status aria-busy=true -> Idle -> Pressed) e AUDIT-STATE-02 (Error role=alert)",
         "Inclui AUDIT-SEC-01 testando payload <img src=x onerror=alert(1)> e calcula o Score ponderado (0.35, 0.30, 0.20, 0.15)"
       ]
     }
@@ -16,7 +16,7 @@
   "trigger_eval_queries": {
     "should_trigger": [
       "Audite o componente React com Jest, Axe-Core, FSM e audit_tactile_ui.py",
-      "Gere os testes determinísticos de UI para validar contraste, camadas, estados Loading/Error e anti-XSS"
+      "Gere os testes determinísticos de UI para validar tokens OKLCH, 4 variantes de cards, contraste, camadas, estados Loading/Error e anti-XSS"
     ],
     "near_misses": [
       "Organize as pastas do Google Drive",

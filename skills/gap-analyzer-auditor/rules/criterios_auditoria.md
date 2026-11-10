@@ -1,6 +1,7 @@
 # CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`gap-analyzer-auditor` v2.2.0)
 
 Este documento estabelece as regras de corte falsificáveis para validação dos relatórios emitidos pela skill `gap-analyzer-auditor`. Cada verificação deve emitir estritamente um dos seguintes marcadores booleanos:
+
 - `[PASS]`: Requisito comprovado e verificado contra âncoras documentais reais.
 - `[FAIL]`: Requisito violado com motivo específico demonstrado.
 - `[UNVERIFIED]`: Não verificável por ausência de insumos no log ou contexto inspecionado.
@@ -8,6 +9,7 @@ Este documento estabelece as regras de corte falsificáveis para validação dos
 ---
 
 ### Regra 1: Ancoragem em Evidências e Proibição de Alucinação de Logs
+
 - **Critério**: Todas as falhas, exceções e anomalias relatadas correspondem a registros documentados no input ou estado real de arquivos no disco?
 - **Teste**: O auditor citou linhas, mensagens de erro, comandos ou stack traces presentes no texto sob análise?
 - **Resultado**:
@@ -17,6 +19,7 @@ Este documento estabelece as regras de corte falsificáveis para validação dos
 ---
 
 ### Regra 2: Segregação Epistêmica Determinística
+
 - **Critério**: O relatório classificou todas as informações em `[FATO]`, `[INFERÊNCIA]` e `[LACUNA]`?
 - **Teste**: Há separação clara entre o que é dado comprovado no trace e o que é hipótese diagnóstica do auditor?
 - **Resultado**:
@@ -26,6 +29,7 @@ Este documento estabelece as regras de corte falsificáveis para validação dos
 ---
 
 ### Regra 3: Delimitação Estrita de Papel (Proibição de Planejador Final)
+
 - **Critério**: O agente manteve sua função restrita a auditor crítico, motor de convergência e propositor de alternativas?
 - **Teste**: O relatório absteve-se de redigir um plano sequencial de fases completo com cronogramas e novos diagramas Mermaid de execução, delegando essa tarefa ao `high-level-context-planner`?
 - **Resultado**:
@@ -35,6 +39,7 @@ Este documento estabelece as regras de corte falsificáveis para validação dos
 ---
 
 ### Regra 4: Paridade Mandatória de Alternativas
+
 - **Critério**: A matriz de soluções apresenta no mínimo duas opções de naturezas distintas?
 - **Teste**: Há uma Opção 1 (Cirúrgica / Ajuste Imediato) e uma Opção 2 (Arquitetural / Correção Estrutural) com vantagens, desvantagens e complexidades discriminadas?
 - **Resultado**:
@@ -44,6 +49,7 @@ Este documento estabelece as regras de corte falsificáveis para validação dos
 ---
 
 ### Regra 5: Guardrail de Segurança e Bloqueio HITL Mandatório
+
 - **Critério**: A anomalia auditada envolve risco destrutivo irreversível (exclusão de banco, deleção de arquivos em massa, execução de código sem sandbox)?
 - **Teste**: O auditor emitiu o marcador `[BLOQUEIO HITL]` suspendendo o avanço da cadeia até aprovação humana explícita?
 - **Resultado**:
@@ -53,6 +59,7 @@ Este documento estabelece as regras de corte falsificáveis para validação dos
 ---
 
 ### Regra 6: Integridade do Contrato de Hand-Off YAML e Convergência *Append-Only*
+
 - **Critério**: O bloco de hand-off está formatado como YAML válido e, no modo de convergência Spec-to-Code (`/speckit-converge`), respeita a imutabilidade de tasks já concluídas?
 - **Teste**: Contém `handoff_target`, `incident_id`, `recommended_option`, `required_adjustments` (incluindo `APPEND_CONVERGENCE_TASKS` com notação `[ID] [P?] [CONV] caminho/exato.ext` quando aplicável, ou veredito `CONVERGED` byte-a-byte intacto) e `contingency_trigger`?
 - **Resultado**:
@@ -62,6 +69,7 @@ Este documento estabelece as regras de corte falsificáveis para validação dos
 ---
 
 ### Regra 7: Respeito à Parede de Complexidade ($\le 5$ Regras por Nó) nas Mitigações
+
 - **Critério**: As instruções de patch (`patch_instructions`) enviadas ao `high-level-context-planner` respeitam o teto de $\le 5$ regras ativas por etapa?
 - **Teste**: As mitigações são atômicas, testáveis e não introduzem sobrecarga de instruções em um único nó?
 - **Resultado**:

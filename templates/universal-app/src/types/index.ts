@@ -25,6 +25,15 @@ export interface NavItem {
   isActive?: boolean;
 }
 
+export type ElevationLevel =
+  | 'sunken'
+  | 'flat'
+  | 'card'
+  | 'raised'
+  | 'elevation-1'
+  | 'elevation-2'
+  | 'elevation-3';
+
 export interface ElevationCanvasOptions {
   x: number;
   y: number;
@@ -33,5 +42,6 @@ export interface ElevationCanvasOptions {
   radius: number;
   fillColor: string;
   rimColor?: string;
-  elevation?: 'flat' | 'card' | 'raised';
+  topHighlightColor?: string;
+  elevation?: ElevationLevel;
 }

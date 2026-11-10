@@ -1,10 +1,10 @@
-"""Servidor MCP Oficial do Franklin Quebra-Galho (Ecossistema de Skills 2026).
+"""Servidor MCP Oficial do Franklin Quebra-Galho (`franklin-skills` • MCP Spec 2026-07-28 + A2A v1.0 JWS).
 
-Ponto de entrada enxuto que registra as ferramentas (@mcp.tool), recursos (@mcp.resource)
-e prompts (@mcp.prompt) delegando a lógica de negócio para os módulos de domínio em shared/:
-- shared.catalog_service: Descoberta, busca híbrida, leitura e validação de skills.
-- shared.compass_topology: Subagentes, Topologia 3+1 de UI e Smart Compass.
-- shared.execution_orchestrator: Execução isolada de scripts, motor DAG, Harness² e A2A v1.0.
+Registra de forma concisa as 13 ferramentas (`@mcp.tool`), os recursos passivos (`@mcp.resource`)
+e os 2 prompts (`@mcp.prompt`), delegando toda a lógica de domínio aos módulos em `shared/`:
+- `shared.catalog_service`: Descoberta, busca, leitura em 3 Tiers e validação das 29 Agent Skills.
+- `shared.compass_topology`: Bússola Zero-LLM (`franklin_smart_compass`), 8 Personas e 10 Subagentes.
+- `shared.execution_orchestrator`: Execução confinada de scripts, motor DAG Kahn, Harness HITL e A2A v1.0.
 """
 
 from __future__ import annotations
@@ -65,7 +65,7 @@ from shared.execution_orchestrator import (
     harness_guard_impl,
     run_skill_script_impl,
 )
-from shared.harness import CheckpointStore
+from shared.harness import CheckpointStore, dispatch_harness2_action, execute_with_idempotency
 from shared.mcp_2026_advisor import evaluate_mcp_2026_architecture
 
 try:
@@ -158,13 +158,17 @@ def franklin_run_skill_script(
     idempotency_key: str = "",
 ) -> str:
     """Executa um script determinístico localizado na pasta scripts/ de uma skill (suporta target_dir cross-project)."""
-    _ = idempotency_key
-    return run_skill_script_impl(
-        skill_name=skill_name,
-        script_name=script_name,
-        args=args,
-        timeout_seconds=timeout_seconds,
-        target_dir=target_dir,
+    return execute_with_idempotency(
+        SESSIONS_DIR,
+        idempotency_key,
+        "franklin_run_skill_script",
+        lambda: run_skill_script_impl(
+            skill_name=skill_name,
+            script_name=script_name,
+            args=args,
+            timeout_seconds=timeout_seconds,
+            target_dir=target_dir,
+        ),
     )
 
 
@@ -179,14 +183,18 @@ def franklin_execute_dag(
     idempotency_key: str = "",
 ) -> str:
     """Executa um plano de orquestração em Grafo Acíclico Dirigido (DAG) no motor Epic-Volta."""
-    _ = idempotency_key
-    return execute_dag_impl(
-        plan_path_or_json=plan_path_or_json,
-        run_id=run_id,
-        resume=resume,
-        timeout_seconds=timeout_seconds,
-        db_path=db_path,
-        target_dir=target_dir,
+    return execute_with_idempotency(
+        SESSIONS_DIR,
+        idempotency_key,
+        "franklin_execute_dag",
+        lambda: execute_dag_impl(
+            plan_path_or_json=plan_path_or_json,
+            run_id=run_id,
+            resume=resume,
+            timeout_seconds=timeout_seconds,
+            db_path=db_path,
+            target_dir=target_dir,
+        ),
     )
 
 
@@ -214,15 +222,22 @@ def franklin_harness_checkpoint(
     idempotency_key: str = "",
 ) -> str:
     """Gerencia checkpoints de governança HITL e sub-ações recursivas Harness²."""
-    _ = (approval_token, idempotency_key)
-    return harness_checkpoint_impl(
-        harness_store=harness_store,
-        sessions_dir=SESSIONS_DIR,
-        action=action,
-        session_id=session_id,
-        checkpoint_id=checkpoint_id,
-        approved=approved,
-        notes=notes,
+    effective_notes = notes
+    if approval_token.strip() and not notes.strip().startswith("{"):
+        effective_notes = f"{notes} [approval_token={approval_token.strip()}]".strip()
+    return execute_with_idempotency(
+        SESSIONS_DIR,
+        idempotency_key,
+        "franklin_harness_checkpoint",
+        lambda: harness_checkpoint_impl(
+            harness_store=harness_store,
+            sessions_dir=SESSIONS_DIR,
+            action=action,
+            session_id=session_id,
+            checkpoint_id=checkpoint_id,
+            approved=approved,
+            notes=effective_notes,
+        ),
     )
 
 
@@ -283,106 +298,85 @@ def franklin_mcp_build_advisor(
 
 
 # -----------------------------------------------------------------------------
-# Recursos MCP (@mcp.resource) e Prompts (@mcp.prompt)
+# Recursos MCP (@mcp.resource) e Prompts (@mcp.prompt) — Enxutos e Sincronizados
 # -----------------------------------------------------------------------------
 @mcp.resource("skills://mcp-2026/spec")
 def get_mcp_2026_spec_resource() -> str:
-    """Recurso passivo expondo a matriz da especificação MCP 2026-07-28, SEP-2577 e Build with Agent Skills."""
+    """Matriz arquitetural MCP 2026-07-28 e diretrizes build-with-agent-skills."""
     return json.dumps(evaluate_mcp_2026_architecture(), indent=2, ensure_ascii=False)
 
 
 @mcp.resource("skills://a2a/agent-card")
 def get_a2a_agent_card_resource() -> str:
-    """Recurso passivo expondo o AgentCard oficial A2A v1.0 assinado do Franklin Quebra-Galho."""
+    """AgentCard oficial A2A v1.0 assinado com JWS (HMAC-SHA256)."""
     return json.dumps(build_franklin_agent_card(skills_dir=SKILLS_ROOT, sign=True), indent=2, ensure_ascii=False)
 
 
 @mcp.resource("skills://harness/checkpoints")
 def get_harness_checkpoints_resource() -> str:
-    """Recurso passivo expondo a lista de checkpoints e aprovações pendentes do Harness."""
+    """Checkpoints pendentes e histórico HITL do Harness."""
     return json.dumps([r.to_dict() for r in harness_store.list()], indent=2, ensure_ascii=False)
 
 
 @mcp.resource("skills://catalog")
 def get_catalog_resource() -> str:
-    """Recurso passivo expondo o catálogo consolidado de skills em formato JSON."""
+    """Catálogo consolidado das 29 Agent Skills em JSON."""
     return json.dumps(_get_all_skills_data(), indent=2, ensure_ascii=False)
 
 
 @mcp.resource("skills://catalog/xml")
 def get_catalog_xml_resource() -> str:
-    """Recurso passivo expondo o catálogo Nível 1 (<available_skills>) em XML enxuto."""
+    """Catálogo Nível 1 (<available_skills>) em XML enxuto."""
     return get_progressive_registry().render_catalog_prompt()
 
 
 @mcp.resource("skills://manifest")
 def get_manifest_resource() -> str:
-    """Recurso passivo expondo o manifesto completo e ciclo de vida de MY_SKILLS.md."""
+    """Manifesto completo de ciclo de vida (`MY_SKILLS.md`)."""
     return MY_SKILLS_MD_PATH.read_text(encoding="utf-8", errors="replace") if MY_SKILLS_MD_PATH.exists() else "MY_SKILLS.md não encontrado."
 
 
 @mcp.resource("skills://agents")
 def get_agents_resource() -> str:
-    """Recurso passivo expondo a arquitetura e diretrizes de AGENTS.md."""
+    """Arquitetura de Personas e Subagentes (`AGENTS.md`)."""
     return AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace") if AGENTS_MD_PATH.exists() else "AGENTS.md não encontrado."
 
 
 @mcp.resource("skills://agent/{agent_name}")
 def get_agent_contract_resource(agent_name: str) -> str:
-    """Recurso passivo para leitura direta do contrato de um subagente."""
+    """Contrato declarativo de uma persona ou subagente (`agents/*.md`)."""
     return franklin_get_agents(agent_name=agent_name)
 
 
 @mcp.resource("skills://skill/{skill_name}")
 def get_skill_resource(skill_name: str) -> str:
-    """Recurso passivo para leitura direta do contrato SKILL.md de uma skill."""
+    """Contrato operacional `SKILL.md` (Tier 2) de uma skill."""
     return franklin_skills_get(skill_name=skill_name, section="contract")
-
-
-@mcp.resource("skills://rules/{skill_name}")
-def get_rules_resource(skill_name: str) -> str:
-    """Recurso passivo para leitura direta dos critérios de auditoria de uma skill."""
-    return franklin_skills_get(skill_name=skill_name, section="rules")
-
-
-@mcp.resource("skills://references/{skill_name}")
-def get_references_resource(skill_name: str) -> str:
-    """Recurso passivo para leitura direta dos módulos de referência e exemplos técnicos de uma skill."""
-    return franklin_skills_get(skill_name=skill_name, section="references")
 
 
 @mcp.prompt("activate_skill")
 def activate_skill_prompt(skill_name: str, user_intent: str) -> str:
-    """Gera o prompt estruturado de ativação de uma skill sob os padrões de 2026."""
+    """Prompt estruturado de ativação de uma skill com seu contrato e regras."""
     skill_content = franklin_skills_get(skill_name=skill_name, section="contract")
     rules_content = franklin_skills_get(skill_name=skill_name, section="rules")
     return (
         f"Você está assumindo o papel de executor especialista da skill '{skill_name}'.\n"
-        f"Siga estritamente o contrato operacional e as regras determinísticas abaixo:\n\n"
-        f"--- CONTRATO DA SKILL ({skill_name}) ---\n{skill_content}\n\n"
-        f"--- REGRAS DE AUDITORIA E RESTRIÇÕES ---\n{rules_content}\n\n"
-        f"--- INTENÇÃO DO USUÁRIO ---\n{user_intent}\n\n"
-        f"Proceda com a execução seguindo a taxonomia determinística e as salvaguardas necessárias.\n"
+        f"Siga o contrato operacional e os critérios determinísticos abaixo:\n\n"
+        f"--- CONTRATO ({skill_name}) ---\n{skill_content}\n\n"
+        f"--- REGRAS ---\n{rules_content}\n\n"
+        f"--- INTENÇÃO ---\n{user_intent}\n"
     )
 
 
 @mcp.prompt("tactile_frontend_audit")
 def tactile_frontend_audit_prompt(component_or_url: str) -> str:
-    """Gera prompt para auditoria de composição frontend, sombras em camadas e efeito tátil sob o UI-Architect."""
+    """Prompt conciso para auditoria Frontend/UI-Architect acoplado ao SSOT (`rules/diretrizes-frontend-9-eixos.md`)."""
     return (
-        f"Atue como UI-Architect e audite a seguinte interface/código: {component_or_url}.\n"
-        "Coordene a Topologia 3+1 de Subagentes de UI (ui-shell-navigator, ui-controls-data, "
-        "ui-motion-interaction, ui-deterministic-observer) via invoke_subagent (Modo Nativo Antigravity em 3 ondas) "
-        "ou via franklin_get_agents(agent_name=\"ui\") / franklin_execute_dag(\"plans/ui_composition_dag.json\") "
-        "contra o contrato DESIGN.md do projeto e a SSOT (Preferências de Trabalho com Agentes.md).\n"
-        "Quando envolver qualidade de sombras ou efeito tátil, consulte franklin_skills_get(skill_name=\"frontend-ui-ux-auditor\", section=\"references\") "
-        "(tactile_elevation_and_shadows.md: elevation-tactile-system.css + tailwind.config.js) e avalie:\n"
-        "1. Diagnóstico do propósito do projeto e uso de tokens semânticos (--bg-canvas, --bg-surface, --ink-primary, --accent-primary) sem engessar cores fixas.\n"
-        "2. Elevação Óptica em Camadas (Oclusão de Contato 1-2px + Key Light direcional via --elevation-low/medium/high), Chanfro Especular Superior (--specular-rim: inset 0 1px 0 0) e resposta mecânica no :active (translateY(1px) scale(0.99) + --elevation-pressed).\n"
-        "3. Composição espacial intrínseca (Grid, Stack, Cluster, Split-View, escala Base-4/Base-8, CLS < 0.1) e botões ergonômicos (>= 44x44px).\n"
-        "4. Hierarquia visual em 3 níveis (Squint Test), equilíbrio de acento 90/8/2 (1 CTA primário sólido por vista), escala modular clamp() e tabular-nums.\n"
-        "5. Estados finitos executáveis (idle, loading, success, empty, error), zero emojis na UI, zero bloat Base64 e proteção contra XSS.\n"
-        "Emita o Relatório Comparativo determinístico com marcadores [PASS], [FAIL] e notas explicativas.\n"
+        f"Atue como UI-Architect e audite `{component_or_url}` contra `DESIGN.md` e os 9 Eixos do SSOT:\n"
+        "1. Regra 60-30-10 em `OKLCH` + `light-dark()` e tokens em 3 camadas (`--bg-canvas`, `--surface-card`, `--surface-elevated`, `--surface-sunken`).\n"
+        "2. Sombras Multi-Camadas em 3 Níveis (`--shadow-elevation-1..3` + `--shadow-inset`: Umbra + Penumbra + Luz Zenital `inset 0 1px 0 0`).\n"
+        "3. Navegação em 3 Camadas, `@container`, 4 Variantes de Cards, nitidez `tabular-nums`/`font-synthesis: none` e Engenharia Real-State.\n"
+        "Execute `audit_tactile_ui.py`, `ui_ux_frontend_auditor.py` e `deterministic_scorer.py` (`auditoria-projetos-sistema`).\n"
     )
 
 

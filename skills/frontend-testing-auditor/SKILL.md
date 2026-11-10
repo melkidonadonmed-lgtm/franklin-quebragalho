@@ -1,77 +1,69 @@
 ---
 name: frontend-testing-auditor
-description: >-
-  Audita deterministicamente interfaces web (HTML/CSS/React/TS) via scripts/audit_tactile_ui.py, verificando tokens, composição espacial, WAI-ARIA, foco, tabular-nums, estados FSM, zero emojis e anti-XSS. Use para validar qualidade técnica de UI; não use para implementar componentes novos.
-license: MIT
-compatibility: "Jest, Vitest, React Testing Library, Playwright, @axe-core/playwright, jest-axe, Python 3.11+"
+description: "Audita qualidade de interfaces web via audit_tactile_ui.py verificando WAI-ARIA, zero emojis, zero bloat Base64, OKLCH e anti-XSS. Use para validar qualidade de UI; não use para implementar componentes."
+version: "5.0.0"
+updated_at: "2026-10-27"
+compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
-  author: "FrontCraftMaster & Melki"
-  version: "3.0.0"
-  category: "Frontend QA, Accessibility, Purpose-Driven Style & Deterministic Auditing"
-  updated_at: "2026-10-19"
-  tags:
-    - "frontend-testing"
-    - "axe-core"
-    - "wcag-aa"
-    - "estilo-por-proposito"
-    - "deterministic-audit"
-version: "3.0.0"
-updated_at: 2026-10-19
-author: FrontCraftMaster & Melki
-category: Frontend QA, Accessibility, Purpose-Driven Style & Deterministic Auditing
-authorized_sub_skills:
-  - name: design-md
-    role: "Referência Ex Umbris + WinUI 3 Gallery (atlas_ex_umbris_winui.html, 3 temas, 6 arquétipos e 28 efeitos)"
-  - name: frontend-code-architect
-    role: "Correção estrutural de componentes que reprovarem nos testes determinísticos"
-  - name: design-md
-    role: "Validação cruzada de tokens e estilo contra o contrato DESIGN.md"
+  version: "5.0.0"
+  updated_at: "2026-10-27"
+  author: "UI-Architect & Melki"
+  category: "Frontend QA, Accessibility, OKLCH 3-Layer Tokens, Optical Physics & Deterministic Auditing"
+  tags: ["frontend-testing", "oklch", "axe-core", "wcag-aa", "anti-borrao-gpu", "deterministic-audit"]
 ---
+# Frontend Testing & Deterministic Auditor (`frontend-testing-auditor` v5.0.0 — 9 Eixos, OKLCH, `@container`, Breadcrumbs & FSM)
 
-# 🛡️ Frontend Testing & Deterministic Auditor (`frontend-testing-auditor` v3.0.0)
+## 1. Objetivo e Diretrizes de Ativação
 
-## 1. OBJETIVO E DIRETRIZES DE ATIVAÇÃO
+Esta Skill fornece a esteira **determinística** de testes automatizados e auditoria estática para interfaces web modernas, alinhada aos **9 Eixos + Matriz de Complexidade** da Fonte Única de Verdade (SSOT) em [`Preferências de Trabalho com Agentes.md`](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md) e [`../design-md/SKILL.md`](../design-md/SKILL.md). Substitui avaliações subjetivas por **métricas verificáveis** de acessibilidade e Navegação em 3 Camadas (Axe-Core / WCAG 2.1 AA / Breadcrumbs), nitidez anti-borrão de GPU, tokens em 3 camadas (`OKLCH`) e sombras multi-camadas (`AUDIT-VIS-01`), estados funcionais reais (`AUDIT-STATE-01`) e segurança anti-XSS (`AUDIT-SEC-01`).
 
-Esta Skill fornece uma esteira **determinística** de testes automatizados e auditoria estática para interfaces web modernas. Ela substitui avaliações subjetivas por **métricas verificáveis** de acessibilidade (Axe-Core / WCAG 2.1 AA), máquina de estados finitos (`idle`, `loading`, `error`, `pressed`), **adequação de estilo, contraste, nitidez tipográfica, espaçamento e camadas ao propósito do projeto** (`AUDIT-VIS-01`, alinhado a [`../design-md/SKILL.md`](../design-md/SKILL.md) e [`../design-md/references/atlas_ex_umbris_winui.html`](../design-md/references/atlas_ex_umbris_winui.html)) e segurança anti-XSS (`AUDIT-SEC-01`).
+### Gatilhos Positivos (Quando Usar)
 
-### ✅ Gatilhos Positivos (Quando Usar):
-- Auditoria de componentes React/TypeScript, Vue ou HTML/CSS após geração pelo `frontend-code-architect` ou `design-md`.
-- Validação determinística via [`scripts/audit_tactile_ui.py`](scripts/audit_tactile_ui.py) de tokens semânticos (`--bg-canvas`, `--bg-surface`, `--ink-primary`), camadas esculpidas (`--shadow-sculpted` + `--rim-light`), alinhamento numérico (`tabular-nums`), estados FSM e ausência de componentes órfãos.
+- Auditoria de componentes React/TypeScript, Next.js App Router, Vue ou HTML/CSS standalone após geração ou refatoração.
+- Validação determinística via [`scripts/audit_tactile_ui.py`](scripts/audit_tactile_ui.py) de tokens semânticos em 3 camadas (`--bg-canvas`/`--surface-canvas`, `--bg-surface-1`/`--surface-card`, `--bg-surface-2`/`--surface-sunken`/`--surface-elevated`, `--surface-glass`, `--text-primary`/`--ink-primary`, `oklch()`, `light-dark()`, `color-mix()`), camadas de elevação (`--shadow-elevation-1/2/3`, `--elevation-1/2/3`, `--shadow-inset`, `--catch-light`), alinhamento numérico (`tabular-nums`), estados executáveis e ausência de componentes órfãos.
 - Criação de suítes de testes `*.test.tsx` ou `*.spec.ts` com **React Testing Library**, **Vitest/Jest**, **jest-axe** e **Playwright**.
 
-### ❌ Quando NÃO Usar (Limites e Exceções):
+### Quando NÃO Usar (Limites e Exceções)
+
 - Testes unitários de backend puro (Python/Go/SQL) sem DOM ou interface visual.
 - Para criar a estrutura inicial de pastas do zero (use `frontend-code-architect` ou `design-md`).
 
 ---
 
-## 📥 Entradas e Pré-requisitos
-- `target_path`: Caminho do diretório ou arquivo frontend a ser auditado por `scripts/audit_tactile_ui.py` e `jest-axe`.
+## 1.5. Entradas e Pré-requisitos
+
+- `target_path` (obrigatório): Caminho do diretório frontend (`src/` nos Níveis 2/3) ou arquivo standalone (`.html`, `.tsx`, `.css` no Nível 1).
+- `design_contract` (opcional): Contrato `DESIGN.md` de referência.
 
 ---
 
-## 2. FLUXO DE EXECUÇÃO — MATRIZ DE AUDITORIA DETERMINÍSTICA (4 PILARES)
+## 2. Fluxo de Execução — Matriz de Auditoria Determinística (4 Pilares / 9 Eixos)
 
-### Pilar 1: Acessibilidade, Contraste, Nitidez Tipográfica, Foco & Alinhamento Tabular (`AUDIT-A11Y` — 35%)
-- **`[AUDIT-A11Y-01]` Zero Violações Axe-Core, Nitidez & Contraste:** Nenhum componente pode falhar nas regras WCAG 2.1 AA ($\ge 4.5:1$ para texto normal; $\ge 7.0:1$ para títulos/métricas críticas; tinta escura `#16151A` em menus `#8e8999`; texto escuro `#091318`/`#062016` em botões Azul `#35acd8`/Verde `#10B981`; zero letras vermelhas puras `#e13535` embaçadas sobre cinza `#57545d` — usar `.accent-text` ou `.highlight-surgical`).
-- **`[AUDIT-A11Y-02]` Navegabilidade por Teclado, `tabular-nums` & Proteção Vestibular:** Todo elemento interativo deve ser alcançável via `Tab` (`:focus-visible`), exibir números dinâmicos com `font-variant-numeric: tabular-nums` e respeitar `@media (prefers-reduced-motion: reduce)`.
+### Pilar 1: Acessibilidade, Navegação em 3 Camadas, Nitidez Anti-Borrão GPU & Alinhamento Tabular (`AUDIT-A11Y` — 35%)
 
-### Pilar 2: Máquina de Estados Finitos Executável (`AUDIT-STATE` — 30%)
-- **`[AUDIT-STATE-01]` Estados Finitos (`idle | loading | error | pressed`):** O componente deve expor atributos executáveis (`data-state`, `data-theme`, `aria-busy="true"`, `role="status"` / `role="alert"`).
+- **`[AUDIT-A11Y-01]` Zero Violações Axe-Core, Nitidez Tipográfica & Contraste Neutro:** Nenhum componente pode falhar nas regras WCAG 2.1 AA ($\ge 4.5:1$). Exige travas `antialiased`, `optimizeLegibility` e `font-synthesis: none` em `html, body`, escala `clamp()`, `max-inline-size: 65ch`, `text-wrap: balance/pretty`, proíbe `scale()` fracionário em contêineres de texto e proíbe texto colorido de baixo contraste sobre fundo cinza médio.
+- **`[AUDIT-A11Y-02]` Navegação Contextual, Teclado, `tabular-nums` & Proteção Vestibular:** Todo elemento interativo deve ser alcançável via `Tab` (`:focus-visible`) mantendo **Ordem do DOM = Ordem Visual** (zero `flex-direction: row-reverse` em `<nav>`), múltiplos `<nav>` com `aria-label` único (Breadcrumbs `<ol role="list">` exigidos apenas quando houver hierarquia de rotas $\ge 3$ níveis), números com `font-variant-numeric: tabular-nums`, alvos `@media (any-pointer: coarse)` $\ge 48\text{px}$ e `@media (prefers-reduced-motion: reduce)`.
+
+### Pilar 2: Engenharia Real-State & Máquina de Estados Executável (`AUDIT-STATE` — 30%)
+
+- **`[AUDIT-STATE-01]` Estados Finitos Reais (`idle | loading/active | empty | error | pressed`):** O componente deve expor atributos semânticos/executáveis (`data-state`, `data-theme`, `aria-busy="true"`, `role="status"` / `role="alert"`) e controles funcionais reais (proibido `setTimeout` placebo ou `alert('Em breve')`). Nomes de componentes e classes CSS são livres e devem refletir o domínio do projeto (não é obrigatório usar nomes fixos como `SurfaceCard` ou `.sculpted-card`).
 - **`[AUDIT-STATE-02]` Anti-Comment-Gaming:** Comentários estáticos simulando estados (`// idle | loading | error`) são removidos antes da análise e penalizados em `-25 pts`.
 
-### Pilar 3: Tokens Semânticos por Propósito, Camadas Esculpidas & Anti-Orfandade (`AUDIT-VIS-01` — 20%)
-- **`[AUDIT-VIS-01]` Conformidade Arquitetural & Camadas:**
-  1. Aceita qualquer família semântica alinhada ao propósito do projeto (*Ex Umbris Ad Lucem / `design-md`*: `--bg-canvas`, `--bg-surface`, `--ink-primary`; *AETHER 2027*: `--surface-canvas`, `--surface-primary`, `--ink-primary`; ou *Studio v4.5*: `--surface-canvas`, `--surface-raised`, `--text-primary`).
-  2. Verifica a presença de **elevação em camadas esculpidas** (`--shadow-sculpted`, `--rim-light`, `.sculpted-card`, `.terrixa-card`, `.bento-card` ou `.ui-card-soft`) e alternância rítmica (`.surface-contrast`).
-  3. **Detecção de Componentes Órfãos (`-25 pts`):** Reprova automaticamente projetos que criam `SurfaceCard.tsx` ou `SoftCard.tsx` em `src/components/ui/` mas não os importam nas views reais.
+### Pilar 3: Tokens em 3 Camadas (`OKLCH`), Sombras Multi-Camadas, `@container`, 4 Cards & Anti-Orfandade (`AUDIT-VIS-01` — 20%)
+
+- **`[AUDIT-VIS-01]` Conformidade Óptica, Box Lógico & Camadas:**
+  1. Verifica o uso de famílias semânticas de superfície e tinta (`--bg-canvas`/`--bg-surface-1`/`--text-primary` ou `--surface-canvas`/`--surface-card`/`--ink-primary` em `oklch()` / `light-dark()`) e estrutura de pastas compatível com os **3 Níveis de Complexidade** (Nível 1 `@layer`/standalone, Nível 2 `src/features/` + `src/components/ui/`, Nível 3 `src/app/(marketing)` + `(workspace)` + `_components`).
+  2. Verifica a presença de **iluminação zenital** (`inset 0 1px 0 0` / `--catch-light`), **sombras multi-camadas em 3 níveis** (Umbra + Penumbra com `spread` negativo via `--shadow-elevation-1/2/3` ou `--elevation-1/2/3`) e cavidade (`--shadow-inset` / `--sunken-recess`).
+  3. **Detecção de Componentes Órfãos (`-25 pts`), Zero Emojis (`AUDIT-VIS-EMOJI`) e Zero Bloat Base64 (`AUDIT-VIS-BLOAT`):** Reprova automaticamente componentes (`Card.tsx`, `SurfaceCard.tsx`, `SoftCard.tsx`) criados em `src/components/ui/` mas não importados nas views/features, emojis na interface e ativos Base64 `> 50 KB`.
 
 ### Pilar 4: Segurança Frontend & Sanitização (`AUDIT-SEC` — 15%)
-- **`[AUDIT-SEC-01]` Prevenção de XSS:** Proibido `dangerouslySetInnerHTML` sem `DOMPurify.sanitize()` ou uso de `eval()`.
+
+- **`[AUDIT-SEC-01]` Prevenção de XSS:** Proibido `dangerouslySetInnerHTML` sem `DOMPurify.sanitize()` (exceto o script estático síncrono anti-FOUC no `<head>` que apenas lê `localStorage` e aplica `document.documentElement.setAttribute('data-theme', saved)`) ou uso de `eval()`.
 
 ---
 
-## 3. TEMPLATE DE TESTE AUTOMATIZADO (`SurfaceCard.test.tsx`)
+## 3. Template de Teste Automatizado (`SurfaceCard.test.tsx`)
 
 ```tsx
 import React from 'react';
@@ -81,10 +73,10 @@ import { SurfaceCard } from './SurfaceCard';
 
 expect.extend(toHaveNoViolations);
 
-describe('Deterministic UI Audit: <SurfaceCard />', () => {
+describe('Deterministic UI Audit (9 Axes): <SurfaceCard />', () => {
   it('[AUDIT-A11Y-01] deve passar no motor Axe-Core com 0 violações WCAG 2.1 AA', async () => {
     const { container } = render(
-      <SurfaceCard title="Receita Recorrente" eyebrow="FINTECH">
+      <SurfaceCard title="Receita Recorrente" eyebrow="FINTECH" variant="elevated">
         <p className="tabular-metric">R$ 128.450,00</p>
       </SurfaceCard>
     );
@@ -92,18 +84,19 @@ describe('Deterministic UI Audit: <SurfaceCard />', () => {
     expect(results).toHaveNoViolations();
   });
 
-  it('[AUDIT-VIS-01] deve aplicar classe sculpted-card e variante de superfície', () => {
+  it('[AUDIT-VIS-01] deve aplicar classe sculpted-card e as 4 variantes de Card', () => {
     render(
-      <SurfaceCard title=" Bloco de Destaque" variant="contrast">
+      <SurfaceCard title="Bloco de Destaque" variant="outlined" interactive={true}>
         <span>Conteúdo</span>
       </SurfaceCard>
     );
     const card = screen.getByRole('article', { name: /Bloco de Destaque/i });
     expect(card).toHaveClass('sculpted-card');
-    expect(card).toHaveAttribute('data-variant', 'contrast');
+    expect(card).toHaveAttribute('data-variant', 'outlined');
+    expect(card).toHaveAttribute('data-interactive', 'true');
   });
 
-  it('[AUDIT-STATE-01/02] deve transitar entre loading, error e pressed na máquina de estados', () => {
+  it('[AUDIT-STATE-01/02] deve transitar entre loading, error, empty e pressed na máquina de estados', () => {
     const { rerender } = render(
       <SurfaceCard title="Telemetria" isLoading={true}>
         <span>OK</span>
@@ -144,7 +137,7 @@ describe('Deterministic UI Audit: <SurfaceCard />', () => {
 
 ---
 
-## 4. SAÍDAS E ENTREGÁVEIS — RUBRICA MATEMÁTICA DE APROVAÇÃO (SCORE 0 A 100)
+## 4. Saídas e Entregáveis — Rubrica Matemática de Aprovação (Score 0 a 100)
 
 Execute o auditor determinístico:
 ```powershell

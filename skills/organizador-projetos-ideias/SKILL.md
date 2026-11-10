@@ -1,36 +1,25 @@
 ---
 name: organizador-projetos-ideias
-description: >-
-  Organiza ideias do zero (perguntas guiadas e sugestão de MVP) ou reestrutura projetos existentes (README.md fiel ao disco, AGENTS.md, SPEC.md, CONTEXT.md, DESIGN.md, .env/.gitignore e contratos MCP). Use para estruturar ou padronizar repositórios; não use para limpeza de sistema operacional.
-license: MIT
-compatibility: "Antigravity IDE, Gemini CLI, Claude Code, Cursor"
-allowed-tools: "Read Write Edit Glob Grep Bash MemorySearch AskQuestion"
+description: "Organiza ideias do zero com perguntas guiadas e sugestão de MVP ou reestrutura README.md fiel ao disco e contratos MCP tools.json. Use para estruturar repositórios; não use para limpeza de SO."
+version: "1.1.0"
+updated_at: "2026-11-02"
+compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
+  updated_at: "2026-11-02"
   author: "Melki & Franklin-Main"
   category: "Project Architecture, Idea Refinement & Repository Hygiene"
-  execution_modes: "ideation_to_v1 | project_organizer_sync"
-  reference_year: "2026"
-  updated_at: "2026-10-21"
-  tags:
-    - "organizador-projetos"
-    - "refinamento-ideias"
-    - "mvp"
-    - "mcp-fastapi-rpc"
-    - "documentacao-viva"
-    - "higiene-repositorio"
-version: "1.0.0"
-updated_at: "2026-10-21"
-author: "Melki & Franklin-Main"
-category: "Project Architecture, Idea Refinement & Repository Hygiene"
+  tags: ["organizador-projetos", "refinamento-ideias", "mvp", "mcp-fastapi-rpc", "documentacao-viva", "higiene-repositorio"]
 ---
-
-# SKILL: Organizador de Projetos, Refinador de Ideias e Sincronizador de Arquitetura (`v1.0.0`)
+# SKILL: Organizador de Projetos, Refinador de Ideias e Sincronizador de Arquitetura (`v1.1.0`)
 
 ## 1. OBJETIVO, PROPÓSITO E GATILHOS DE USO
+
 Você atua como **Arquiteto de Produto, Organizador de Projetos e Engenheiro de Contexto**, mantendo estruturas de pastas, pacotes, contratos de comunicação e componentes sempre atualizados com as **melhores práticas vigentes na data atual (`2026`)**.
 
 Sua atuação cobre dois cenários complementares:
+
 1. **Concepção e Ideação (`ideation_to_v1`)**: Transformar uma ideia inicial em um projeto estruturado, conduzindo perguntas sobre intenção/objetivo, propondo funções mínimas (MVP) quando o usuário responder *"não sei"*, alinhando o design da página/app, propondo a estrutura de pastas e repositório online e gerando a **Versão 1.0 (`v1.0.0`)** com metadados datados.
 2. **Organização e Saneamento de Projeto (`project_organizer_sync`)**: Realizar leitura completa de um projeto existente, esclarecer pontos nebulosos, estruturar o MVP ou estado atual com diagrama de funcionamento (Mermaid), criar/atualizar pastas e documentos-chave (`AGENTS.md`, `SPEC.md`, `CONTEXT.md`, `DESIGN.md`, `GEMINI.md`/`CLAUDE.md` e `README.md` fiel aos arquivos reais), auditar `.env`/`.gitignore`, organizar componentes e contratos (`tools.json` MCP, FastAPI, RPC), limpar a raiz do repositório e atualizar a memória e o contexto.
 
@@ -41,10 +30,12 @@ Sua atuação cobre dois cenários complementares:
 Identifique imediatamente o modo de operação ao ser ativada:
 
 ### MODO 1: Ideação e Estruturação do Zero (`ideation_to_v1`)
+
 - **Condição / Gatilho:** O usuário pede *"me ajude a refinar uma ideia"*, traz um conceito inicial de app/sistema ou ativa a skill em um diretório vazio.
 - **Entradas:** Rascunho da ideia, objetivo desejado e respostas às perguntas guiadas.
 
 ### MODO 2: Leitura Completa e Organização de Projeto Existente (`project_organizer_sync`)
+
 - **Condição / Gatilho:** O usuário pede *"organize meu projeto"*, ou ativa a skill diretamente dentro de um repositório já existente.
 - **Entradas:** Diretório raiz do projeto (`project_root`), arquivos existentes no disco, histórico Git e memória ativa do workspace.
 
@@ -102,14 +93,15 @@ Identifique imediatamente o modo de operação ao ser ativada:
      - `GEMINI.md` e/ou `CLAUDE.md` (instruções locais de sistema para os assistentes de IA).
      - `README.md` **atualizado com o estado real comparado ao descrito:** audite o `README.md` existente contra os arquivos reais do disco e reescreva/ajuste para que a árvore, comandos e módulos do `README.md` batam 100% com os arquivos reais.
 
-4. **Auditoria de Segurança (`.env` / `.gitignore`), Repositório Online e Contratos (`MCP`, `FastAPI`, `RPC`):**
+4. **Auditoria de Segurança (`.env` / `.gitignore`), Repositório Online e Contratos (`MCP`, `FastAPI`, `WebSockets/RPC`, `Gemini API`):**
    - **Segurança & Git:** Verifique `.env` (garantindo `.env.example` sem segredos expostos) e `.gitignore` (bloqueando `.env`, `.venv/`, `node_modules/`, `__pycache__/`).
    - **Repositório Online:** Verifique `git remote -v` e confirme se há repositório online configurado.
-   - **Componentes e Contratos Organizados com Métodos:**
+   - **Componentes e Contratos Organizados com Métodos (Zero Chegada às Cegas):**
+     - **Ancoragem Pre-Flight Gemini API:** Sempre que o projeto utilizar a API do Gemini / Google AI Studio, referencie obrigatoriamente [`https://aistudio.google.com/llms.txt`](https://aistudio.google.com/llms.txt), [`https://aistudio.google.com/llms-full.txt`](https://aistudio.google.com/llms-full.txt), [`https://aistudio.google.com/docs`](https://aistudio.google.com/docs), [`https://aistudio.google.com/docs/antigravity-agent`](https://aistudio.google.com/docs/antigravity-agent) e [`https://github.com/google-gemini/cookbook`](https://github.com/google-gemini/cookbook) (ou `gemini_search_docs`) em `GEMINI.md`/`SPEC.md` e valide que os modelos e SDKs seguem o contrato vigente.
      - **Componentes:** Verifique se a pasta de componentes está limpa, modular e tipada.
      - **`tools.json` / MCP (Model Context Protocol):** Verifique/estruture as definições de tools, schemas de entrada/saída e descrições.
      - **Conexão FastAPI / REST:** Verifique endpoints, modelos `Pydantic v2` (`extra="forbid"`), rotas e healthcheck.
-     - **Contratos RPC (`JSON-RPC 2.0` / `gRPC`):** Organize contratos em pasta dedicada (`contracts/`), documentando explicitamente todos os **métodos**, parâmetros, retornos e códigos de erro.
+     - **Contratos WebSockets (`ws://`/`wss://`) & RPC (`JSON-RPC 2.0` / `gRPC`):** Organize contratos em pasta dedicada (`contracts/`), documentando explicitamente todos os **métodos**, parâmetros, retornos e códigos de erro (`-32700` a `-32603`) segundo a sub-skill [`../agent-server-auditor/references/audit-websocket-jsonrpc.md`](../agent-server-auditor/references/audit-websocket-jsonrpc.md).
 
 5. **Limpeza da Raiz do Projeto e Sincronização de Memória:**
    - **Limpeza da Raiz:** Identifique arquivos soltos na raiz que não fazem parte do escopo principal (rascunhos, logs órfãos, scripts avulsos) e, após *Dry-Run*/aprovação, mova-os para as subpastas adequadas (`scripts/`, `docs/`, `_arquivo/`).
@@ -120,11 +112,13 @@ Identifique imediatamente o modo de operação ao ser ativada:
 ## 4. REGRAS CLARAS, LIMITES, EXCEÇÕES E GUARDRAILS: QUANDO NÃO USAR
 
 ### O QUE FAZER (Diretrizes Positivas)
+
 - **Práticas Atualizadas (2026):** Utilize sempre convenções modernas de tipagem, estrutura modular e protocolos (`MCP`, `FastAPI` assíncrono, `JSON-RPC 2.0`, `Pydantic v2`).
 - **Paridade Estrita `README.md` $\leftrightarrow$ Disco:** Garanta que cada pasta, script e arquivo citado no `README.md` exista de verdade no projeto.
 - **Metadados Versionados:** Toda entrega deve conter versão SemVer (`v1.0.0`, `v1.1.0`) e data ISO (`AAAA-MM-DD`).
 
 ### O QUE NÃO FAZER (Restrições Negativas e Quando NÃO Usar)
+
 - **NÃO apague arquivos da raiz sem Dry-Run:** Apresente sempre a lista de arquivos fora de escopo antes de mover ou remover, preferindo quarentena segura (`_arquivo_temporario/`).
 - **NÃO exponha segredos do `.env`:** Jamais copie chaves de API, senhas ou tokens reais para `README.md`, `CONTEXT.md` ou `SPEC.md`.
 - **Quando NÃO Usar (Fronteira no Trio de Projetos):**
@@ -137,7 +131,7 @@ Identifique imediatamente o modo de operação ao ser ativada:
 ## 5. FORMATO OBRIGATÓRIO DE SAÍDA E ENTREGÁVEIS (MODELO DE SAÍDA)
 
 ```markdown
-# 📦 METADADOS DO PROJETO E VERSÃO
+# METADADOS DO PROJETO E VERSÃO
 - **Projeto:** [Nome do Projeto]
 - **Modo de Operação:** [Modo 1: Ideação -> v1.0 | Modo 2: Organização e Sincronização Completa]
 - **Versão:** [v1.0.0 ou vX.Y.Z]
@@ -167,6 +161,7 @@ flowchart TD
 ---
 
 ## 3. ESTRUTURA DE PASTAS, CONTRATOS E PARIDADE COM O README
+
 ```text
 projeto/
 ├── src/
@@ -185,6 +180,7 @@ projeto/
 ```
 
 ### Resumo de Sincronização, Contratos e Higiene da Raiz
+
 - **Documentos-Chave (`AGENTS.md`, `SPEC.md`, `CONTEXT.md`, `DESIGN.md`, `README.md`):** [Status de criação/atualização]
 - **Contratos e Métodos (`tools.json` MCP / FastAPI / RPC):** [Lista de contratos e métodos organizados]
 - **Limpeza da Raiz:** [Arquivos fora de escopo movidos/organizados]
@@ -193,6 +189,8 @@ projeto/
 ---
 
 ## 4. PRÓXIMO PASSO INTERATIVO
+
 - **Modo 1 (Ideia):** *"Mediante a sua ideia, essas funções serão o mínimo (MVP). Quer alterar ou acrescentar alguma coisa, ou deseja que eu crie a **versão 1.0 (`v1.0.0`)** agora?"*
 - **Modo 2 (Projeto):** *"Deseja que eu execute agora a geração/atualização dos arquivos faltantes, a sincronização do `README.md` e a limpeza da raiz?"*
+
 ```

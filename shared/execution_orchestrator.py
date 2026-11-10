@@ -33,6 +33,7 @@ from shared.harness import (
     SemanticGuard,
     dispatch_harness2_action,
     evaluate_action_risk,
+    execute_with_idempotency,
 )
 
 
@@ -47,20 +48,17 @@ class ExecutionGuardrailsContract(BaseModel):
 
 def _build_script_command(script_path: Path, args: Optional[List[str]]) -> Optional[List[str]]:
     """Monta a lista de argumentos de comando segura conforme a extensão do script."""
-    suffix = script_path.suffix.lower()
-    if suffix == ".py":
-        cmd = [sys.executable, str(script_path)]
-    elif suffix == ".js":
-        cmd = ["node", str(script_path)]
-    elif suffix == ".ps1":
-        cmd = ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script_path)]
-    elif suffix in (".cmd", ".bat"):
-        cmd = ["cmd.exe", "/c", str(script_path)]
-    else:
-        return None
-    if args:
-        cmd.extend(args)
-    return cmd
+    extra = list(args) if args else []
+    dispatch: Dict[str, List[str]] = {
+        ".py": [sys.executable, str(script_path)],
+        ".js": ["node", str(script_path)],
+        ".go": ["go", "run", str(script_path)],
+        ".ps1": ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script_path)],
+        ".cmd": ["cmd.exe", "/c", str(script_path)],
+        ".bat": ["cmd.exe", "/c", str(script_path)],
+    }
+    base_cmd = dispatch.get(script_path.suffix.lower())
+    return (base_cmd + extra) if base_cmd else None
 
 
 def _resolve_execution_cwd(target_dir: str) -> Optional[Path]:
@@ -365,7 +363,7 @@ def harness_checkpoint_impl(
         return _mutate_checkpoint_status(harness_store, checkpoint_id, target_st, notes)
     if act == "clear":
         return json.dumps({"status": "CLEARED", "removedCount": harness_store.clear()}, indent=2, ensure_ascii=False)
-    return json.dumps({"error": f"Ação '{action}' inválida. Use: list, get, approve, reject, resolve, clear, validate_tree, evolve ou record_experience."}, ensure_ascii=False)
+    return json.dumps({"error": f"Ação '{action}' inválida. Use: list, get, approve, reject, resolve, clear, validate_tree, evolve, record_experience, telemetry_report ou record_refinement."}, ensure_ascii=False)
 
 
 def a2a_agent_card_impl(skill_filter: str = "", verify_signature: bool = True) -> str:
@@ -373,6 +371,61 @@ def a2a_agent_card_impl(skill_filter: str = "", verify_signature: bool = True) -
     card = build_franklin_agent_card(skills_dir=SKILLS_ROOT, skill_filter=skill_filter, sign=True)
     card["signatureVerified"] = verify_agent_card_signature(card) if verify_signature else True
     return json.dumps(card, indent=2, ensure_ascii=False)
+
+
+def _attach_dag_to_a2a_task(task: Any, skill_id: str, query: str, target_dir: str) -> None:
+    """Executa o DAG correspondente e anexa o resultado ao dicionário da Task A2A."""
+    if not isinstance(task, dict):
+        return
+    resolved_skill = str(task.get("metadata", {}).get("skillId") or skill_id).lower()
+    dag_alias = "physics" if ("physics" in resolved_skill or "3d" in query.lower()) else "ui"
+    dag_raw = execute_dag_impl(dag_alias, target_dir=target_dir)
+    try:
+        task["dagExecution"] = json.loads(dag_raw)
+    except json.JSONDecodeError:
+        task["dagExecution"] = {"raw": dag_raw}
+
+
+def _resume_a2a_task_json(a2a_task_manager: FranklinA2ATaskManager, task_id: str, approval_token: str) -> str:
+    """Retoma uma Task A2A validando task_id e approval_token."""
+    if not task_id.strip() or not approval_token.strip():
+        return json.dumps({"error": "task_id e approval_token são obrigatórios para action='resume'"}, ensure_ascii=False)
+    try:
+        resumed = a2a_task_manager.resume_task(task_id.strip(), approval_token.strip())
+    except PermissionError as exc:
+        return json.dumps({"error": str(exc)}, ensure_ascii=False)
+    if not resumed:
+        return json.dumps({"error": f"Task A2A '{task_id}' não encontrada"}, ensure_ascii=False)
+    return json.dumps(resumed, indent=2, ensure_ascii=False)
+
+
+def _execute_a2a_dispatch_core(
+    a2a_task_manager: FranklinA2ATaskManager,
+    query: str,
+    skill_id: str,
+    context_id: str,
+    task_id: str,
+    action: str,
+    execute_dag: bool,
+    target_dir: str,
+    approval_token: str,
+) -> str:
+    act = action.strip().lower()
+    if act == "send":
+        task = a2a_task_manager.submit_task(query=query, skill_id=skill_id, context_id=context_id, task_id=task_id.strip() or None)
+        if execute_dag:
+            _attach_dag_to_a2a_task(task, skill_id, query, target_dir)
+        return json.dumps(task, indent=2, ensure_ascii=False)
+    if act == "resume":
+        return _resume_a2a_task_json(a2a_task_manager, task_id, approval_token)
+    if act in ("get", "cancel"):
+        if not task_id.strip():
+            return json.dumps({"error": f"task_id é obrigatório para action='{act}'"}, ensure_ascii=False)
+        found = a2a_task_manager.get_task(task_id.strip()) if act == "get" else a2a_task_manager.cancel_task(task_id.strip())
+        if not found:
+            return json.dumps({"error": f"Task A2A '{task_id}' não encontrada"}, ensure_ascii=False)
+        return json.dumps(found, indent=2, ensure_ascii=False)
+    return json.dumps({"error": f"Ação A2A '{action}' inválida. Use: send, get, resume ou cancel."}, ensure_ascii=False)
 
 
 def a2a_dispatch_task_impl(
@@ -388,37 +441,20 @@ def a2a_dispatch_task_impl(
     idempotency_key: str = "",
 ) -> str:
     """Despacha, consulta, retoma ou cancela uma Task no protocolo Agent2Agent (A2A v1.0) acoplado ao Harness HITL."""
-    _ = idempotency_key
-    act = action.strip().lower()
-    if act == "send":
-        task = a2a_task_manager.submit_task(query=query, skill_id=skill_id, context_id=context_id, task_id=task_id.strip() or None)
-        if execute_dag and isinstance(task, dict):
-            resolved_skill = str(task.get("metadata", {}).get("skillId") or skill_id).lower()
-            dag_alias = "physics" if "physics" in resolved_skill or "3d" in query.lower() else "ui"
-            dag_raw = execute_dag_impl(dag_alias, target_dir=target_dir)
-            try:
-                task["dagExecution"] = json.loads(dag_raw)
-            except json.JSONDecodeError:
-                task["dagExecution"] = {"raw": dag_raw}
-        return json.dumps(task, indent=2, ensure_ascii=False)
-
-    if act == "resume":
-        if not task_id.strip() or not approval_token.strip():
-            return json.dumps({"error": "task_id e approval_token são obrigatórios para action='resume'"}, ensure_ascii=False)
-        try:
-            resumed = a2a_task_manager.resume_task(task_id.strip(), approval_token.strip())
-        except PermissionError as exc:
-            return json.dumps({"error": str(exc)}, ensure_ascii=False)
-        if not resumed:
-            return json.dumps({"error": f"Task A2A '{task_id}' não encontrada"}, ensure_ascii=False)
-        return json.dumps(resumed, indent=2, ensure_ascii=False)
-
-    if act in ("get", "cancel"):
-        if not task_id.strip():
-            return json.dumps({"error": f"task_id é obrigatório para action='{act}'"}, ensure_ascii=False)
-        found = a2a_task_manager.get_task(task_id.strip()) if act == "get" else a2a_task_manager.cancel_task(task_id.strip())
-        if not found:
-            return json.dumps({"error": f"Task A2A '{task_id}' não encontrada"}, ensure_ascii=False)
-        return json.dumps(found, indent=2, ensure_ascii=False)
-
-    return json.dumps({"error": f"Ação A2A '{action}' inválida. Use: send, get, resume ou cancel."}, ensure_ascii=False)
+    sessions_dir = ROOT_DIR / ".sessions"
+    return execute_with_idempotency(
+        sessions_dir,
+        idempotency_key,
+        f"franklin_a2a_dispatch_task::{action.strip().lower()}",
+        lambda: _execute_a2a_dispatch_core(
+            a2a_task_manager=a2a_task_manager,
+            query=query,
+            skill_id=skill_id,
+            context_id=context_id,
+            task_id=task_id,
+            action=action,
+            execute_dag=execute_dag,
+            target_dir=target_dir,
+            approval_token=approval_token,
+        ),
+    )

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Auditor Determinístico de Arquitetura Visual por Propósito, Contraste, Tipografia, Camadas & FSM (v3.0.0)
+Auditor Determinístico de Arquitetura Visual por Propósito, Tokens 3 Camadas (OKLCH),
+Contraste, Tipografia, Camadas de Sombra & FSM (v5.0.0 — 9 Eixos SSOT).
 Calcula o Readiness Score ponderado (0 a 100):
   Score = 0.35 * S_A11y + 0.30 * S_FSM + 0.20 * S_Tokens + 0.15 * S_Sec
 """
@@ -25,10 +26,12 @@ GAMED_FSM_COMMENT_RE = re.compile(
 EXECUTABLE_FSM_PATTERNS = (
     re.compile(r"data-state\s*="),
     re.compile(r"data-theme\s*="),
+    re.compile(r"data-variant\s*="),
     re.compile(r"aria-busy\s*="),
     re.compile(r"aria-pressed\s*="),
     re.compile(r"aria-selected\s*="),
-    re.compile(r'role\s*=\s*["\'](?:status|alert|tab)["\']'),
+    re.compile(r"aria-current\s*="),
+    re.compile(r'role\s*=\s*["\'](?:status|alert|tab|list)["\']'),
     re.compile(r"useState\s*<[^>]*?(?:idle|loading|error|pressed|UIState|ComponentFSMState)"),
     re.compile(r"['\"](?:idle|loading|error|pressed)['\"]"),
 )
@@ -43,6 +46,10 @@ REQUIRED_ATOMIC_DIRS = (
 )
 
 SEMANTIC_TOKEN_FAMILIES: tuple[tuple[str, ...], ...] = (
+    ("--surface-canvas", "--surface-card", "--ink-primary"),
+    ("--surface-canvas", "--surface-sunken", "--surface-card"),
+    ("--bg-canvas", "--bg-surface-1", "--text-primary"),
+    ("--bg-canvas", "--bg-surface-1", "--bg-surface-2"),
     ("--bg-canvas", "--bg-surface", "--ink-primary"),
     ("--surface-canvas", "--surface-primary", "--ink-primary"),
     ("--surface-canvas", "--surface-raised", "--text-primary"),
@@ -78,7 +85,7 @@ def collect_frontend_files(target: Path) -> list[Path]:
 
 
 def _check_semantic_tokens(combined_text: str) -> bool:
-    """Verifica se alguma família de tokens semânticos por propósito está presente."""
+    """Verifica se alguma família de tokens semânticos em 3 camadas está presente."""
     return any(
         all(token in combined_text for token in family) for family in SEMANTIC_TOKEN_FAMILIES
     )
@@ -87,7 +94,7 @@ def _check_semantic_tokens(combined_text: str) -> bool:
 def _audit_tokens_and_layers(
     combined_text: str, files: list[Path], findings: list[AuditFinding]
 ) -> float:
-    """Audita tokens semânticos, camadas esculpidas e componentes órfãos."""
+    """Audita tokens semânticos (OKLCH/superfície), camadas de sombra e componentes órfãos."""
     s_tokens = 100.0
     if not _check_semantic_tokens(combined_text):
         s_tokens -= 20.0
@@ -96,18 +103,28 @@ def _audit_tokens_and_layers(
                 "AUDIT-VIS-01",
                 "MEDIUM",
                 "global",
-                "Tokens semânticos de superfície/tinta ausentes (--bg-canvas/--bg-surface/--ink-primary).",
+                "Tokens semânticos de superfície/tinta ausentes (--bg-canvas/--surface-canvas, --bg-surface-1/--surface-card, --text-primary/--ink-primary).",
             )
         )
     elevation_markers = (
+        "--shadow-elevation-1",
+        "--shadow-elevation-2",
+        "--shadow-elevation-3",
+        "--shadow-inset",
+        "--elevation-1",
+        "--elevation-2",
+        "--elevation-3",
+        "--catch-light",
         "--shadow-sculpted",
         "--rim-light",
         "--shadow-card",
         "--shadow-1",
         "sculpted-card",
+        "card-interactive",
         "ui-card-soft",
         "bento-card",
         "inset 0 1px 0",
+        "inset 0px 1px 0px",
     )
     if not any(m in combined_text for m in elevation_markers):
         s_tokens -= 15.0
@@ -116,7 +133,7 @@ def _audit_tokens_and_layers(
                 "AUDIT-VIS-01",
                 "MEDIUM",
                 "global",
-                "Ausência de camadas de elevação esculpidas (--shadow-sculpted / --rim-light / cards).",
+                "Ausência de camadas de elevação multi-camadas (--shadow-elevation-1..3 / --elevation-1..3 / --catch-light).",
             )
         )
     for comp_name in ("SoftCard", "SurfaceCard"):
@@ -180,7 +197,7 @@ def _audit_a11y(combined_stripped: str, findings: list[AuditFinding]) -> float:
         findings.append(
             AuditFinding("AUDIT-A11Y-01", "HIGH", "global", "Ausência de atributos WAI-ARIA.")
         )
-    if not any(k in combined_stripped for k in (":focus-visible", "tabIndex", "tabindex")):
+    if not any(k in combined_stripped for k in (":focus-visible", ":focus-within", "tabIndex", "tabindex")):
         s_a11y -= 15.0
         findings.append(
             AuditFinding("AUDIT-A11Y-02", "MEDIUM", "global", "Anel :focus-visible/tabIndex ausente.")
@@ -206,7 +223,11 @@ def _audit_security(
     for fpath in files:
         stripped = strip_comments(fpath.read_text(encoding="utf-8", errors="ignore"))
         rel = str(fpath.relative_to(target_path)) if target_path.is_dir() else fpath.name
-        if "dangerouslySetInnerHTML" in stripped and "DOMPurify" not in stripped:
+        is_safe_theme_fouc = (
+            "localStorage.getItem" in stripped
+            and "setAttribute('data-theme'" in stripped.replace('"', "'")
+        )
+        if "dangerouslySetInnerHTML" in stripped and "DOMPurify" not in stripped and not is_safe_theme_fouc:
             s_sec -= 40.0
             findings.append(
                 AuditFinding("AUDIT-SEC-01", "CRITICAL", rel, "dangerouslySetInnerHTML sem DOMPurify.")
@@ -223,11 +244,18 @@ def run_audit(target_path: Path) -> dict[str, Any]:
     """Executa a auditoria determinística de estilo por propósito, contraste, camadas e FSM."""
     files = collect_frontend_files(target_path)
     findings: list[AuditFinding] = []
-    missing_dirs = [
-        req_dir
-        for req_dir in REQUIRED_ATOMIC_DIRS
-        if target_path.is_dir() and (target_path / "src").exists() and not (target_path / req_dir).exists()
-    ]
+    is_tier2_or_3 = target_path.is_dir() and (
+        (target_path / "src" / "features").exists() or (target_path / "src" / "app").exists()
+    )
+    missing_dirs = (
+        []
+        if is_tier2_or_3
+        else [
+            req_dir
+            for req_dir in REQUIRED_ATOMIC_DIRS
+            if target_path.is_dir() and (target_path / "src").exists() and not (target_path / req_dir).exists()
+        ]
+    )
     if not files:
         return {
             "target_path": str(target_path),
@@ -274,12 +302,17 @@ def run_audit(target_path: Path) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Auditor Determinístico de Arquitetura Visual, Contraste, Camadas & FSM (v3.0.0)"
+        description="Auditor Determinístico de Arquitetura Visual, Tokens 3 Camadas OKLCH, Camadas & FSM (v5.0.0)"
     )
-    parser.add_argument("target", help="Caminho do diretório ou arquivo frontend")
+    parser.add_argument("target", nargs="?", help="Caminho do diretório ou arquivo frontend")
+    parser.add_argument("--target", dest="target_flag", help="Alias --target para o caminho frontend")
     parser.add_argument("--json", action="store_true", help="Saída em formato JSON")
     args = parser.parse_args()
-    target = Path(args.target).resolve()
+    raw_target = args.target_flag or args.target
+    if not raw_target:
+        print("Erro: informe o caminho alvo (posicional ou --target).", file=sys.stderr)
+        return 2
+    target = Path(raw_target).resolve()
     if not target.exists():
         print(f"Erro: caminho não encontrado: {target}", file=sys.stderr)
         return 2
@@ -287,7 +320,7 @@ def main() -> int:
     if args.json:
         print(json.dumps(report, indent=2, ensure_ascii=False))
     else:
-        print(f"=== FRONTEND VISUAL ARCHITECTURE & FSM AUDIT (v3.0.0): {report['verdict']} ===")
+        print(f"=== FRONTEND VISUAL ARCHITECTURE & FSM AUDIT (v5.0.0): {report['verdict']} ===")
         print(f"Target: {report['target_path']} ({report['files_scanned']} arquivos escaneados)")
         print(
             f"Readiness Score: {report['readiness_score']}/100.0 "

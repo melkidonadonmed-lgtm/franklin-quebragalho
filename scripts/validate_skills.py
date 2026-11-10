@@ -54,6 +54,20 @@ REQUIRED_SECTIONS: List[Tuple[str, str]] = [
 ]
 
 
+def _validate_description_field(desc: str, is_template: bool, errors: List[str]) -> None:
+    """Valida comprimento e gatilhos positivos/negativos da descrição Nível 1."""
+    if not desc:
+        return
+    if len(desc) > 240:
+        errors.append(f"[FAIL] Descrição excede o orçamento L1 de 240 caracteres ({len(desc)} chars, máx Antigravity ~400 chars linha)")
+    if len(desc) < 30:
+        errors.append(f"[FAIL] Descrição muito curta ou rasa ({len(desc)} chars)")
+    if not POSITIVE_TRIGGER_RE.search(desc):
+        errors.append("[FAIL] Descrição deve conter formulação imperativa de ativação ('Use quando...' / 'Use para...')")
+    if not NEGATIVE_TRIGGER_RE.search(desc) and not is_template:
+        errors.append("[FAIL] Descrição deve declarar fronteira negativa de escopo ('Não use para...' / 'Do not use...')")
+
+
 def _validate_frontmatter_fields(meta: Dict[str, Any], dir_name: str, errors: List[str]) -> None:
     """Valida os campos obrigatórios, regex kebab-case e gatilhos positivos/negativos do frontmatter YAML."""
     if not meta:
@@ -70,16 +84,7 @@ def _validate_frontmatter_fields(meta: Dict[str, Any], dir_name: str, errors: Li
         if name_val != dir_name and not is_template:
             errors.append(f"[FAIL] Nome no frontmatter ('{name_val}') difere da pasta ('{dir_name}')")
 
-    desc = str(meta.get("description", "")).strip()
-    if desc:
-        if len(desc) > 420:
-            errors.append(f"[FAIL] Descrição excede o orçamento L1 de 420 caracteres ({len(desc)} chars, máx spec 1024)")
-        if len(desc) < 30:
-            errors.append(f"[FAIL] Descrição muito curta ou rasa ({len(desc)} chars)")
-        if not POSITIVE_TRIGGER_RE.search(desc):
-            errors.append("[FAIL] Descrição deve conter formulação imperativa de ativação ('Use quando...' / 'Use para...')")
-        if not NEGATIVE_TRIGGER_RE.search(desc) and not is_template:
-            errors.append("[FAIL] Descrição deve declarar fronteira negativa de escopo ('Não use para...' / 'Do not use...')")
+    _validate_description_field(str(meta.get("description", "")).strip(), is_template, errors)
 
 
 def _validate_scripts_dir(skill_dir: Path, errors: List[str]) -> None:

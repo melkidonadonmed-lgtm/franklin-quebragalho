@@ -22,14 +22,18 @@ Todo prompt ou especificação técnica refinada sob o `refine-prompt` ancora su
 ## 2. Engenharia de Fluidez vs. Rigor (Como Evitar Respostas Engessadas)
 
 ### 2.1. Causa Raiz do Engessamento (*Prompt-Induced Mode Collapse*)
+
 Impor templates visuais fixos para interações humanas abertas (ex.: *"Responda sempre com 3 tópicos de no máximo 30 palavras começando com um resumo"*) provoca **Colapso de Modo Induzido por Prompt**. O modelo perde a capacidade de calibrar a forma à complexidade real: uma dúvida conceitual simples vira uma tabela burocrática, enquanto uma análise arquitetural profunda é mutilada em tópicos rasos.
 
 ### 2.2. Regra de Ouro: Determinismo na Borda, Fluidez Cognitiva no Centro
+
 Separe a arquitetura em dois regimes operacionais distintos:
+
 1. **Regime de Máquina (Borda / APIs / Tools / Persistência)**: Exija schemas estritos (`JSON Schema`, `Pydantic v2`, `Zod`), enums fechados, campo `"_pre_flight_check"` prévio e zero prosa conversacional.
 2. **Regime Cognitivo (Interface Humana)**: Estabeleça **Invariantes Epistêmicos de Conteúdo** (`[FATO]`, `[INFERÊNCIA]`, `[LACUNA]`, zero alucinação), mas mantenha o **Roteamento Visual Dinâmico** guiado pela natureza da pergunta.
 
 ### 2.3. Quatro Técnicas de Desengessamento de Alta Precisão
+
 1. **Ancoragem Causal (*Why-First Principle*)**: Inicie a frase 1 explicando diretamente o mecanismo causal (o *porquê* técnico do fenômeno, falha ou decisão arquitetural), seguido imediatamente pela solução operacional, sem saudações ou preâmbulos.
 2. **Roteamento Dinâmico de Formato (Anti-Template Fixo)**:
    - *Diagnóstico único ou pergunta conceitual* $\rightarrow$ Prosa corrida densa com termos-chave em **negrito**.
@@ -39,6 +43,7 @@ Separe a arquitetura em dois regimes operacionais distintos:
 4. **Proporcionalidade Elástica**: Zero enchimento em perguntas diretas (2 frases bastam se resolverem a causa raiz); cobertura exaustiva e código contínuo completo em entregas de engenharia.
 
 ### 2.4. Bloco Canônico de Estilo de Comunicação (Injeção Direta)
+
 ```xml
 <communication_style>
   - Vá direto ao ponto na primeira frase, sem saudações, sem elogios ao pedido e sem anunciar o que vai fazer.
@@ -53,7 +58,9 @@ Separe a arquitetura em dois regimes operacionais distintos:
 ## 3. Padrões e Exemplos de Baixa Entropia (Uso Regular e Recorrente)
 
 ### 3.1. Definição Operacional de Baixa Entropia
+
 Na Teoria da Informação (Shannon), a entropia $H(X) = -\sum P(x)\log_2 P(x)$ mede a incerteza da distribuição de saída:
+
 - **Tarefas de Alta Entropia** (brainstorming, concepção criativa, exploração aberta) admitem amplo espaço de variações válidas.
 - **Tarefas de Baixa Entropia** são rotinas operacionais regulares e recorrentes cujo espaço de saída válido é estreito ($H(Y \mid X) \to 0$): dados os mesmos insumos factuais, o artefato deve ser previsível, rápido, auditável e livre de variação criativa indesejada.
 
@@ -75,6 +82,7 @@ $$\text{Entrada Bruta} \xrightarrow{\text{Invariantes de Higienização + Zero I
 ## 4. Micro-Prompts Plug-and-Play de Baixa Entropia (Módulo 2)
 
 ### Exemplo A: Conversor de Anotações Brutas em Registro Estruturado Auditável
+
 - **Por que funciona**: Elimina alucinação em dados clínicos, jurídicos ou executivos ao exigir um token de escape determinístico (`[NÃO INFORMADO: ...]`) para qualquer parâmetro ausente, preservando a fluidez da prosa técnica onde há relação causal.
 
 ```xml
@@ -91,6 +99,7 @@ $$\text{Entrada Bruta} \xrightarrow{\text{Invariantes de Higienização + Zero I
 ```
 
 ### Exemplo B: Triagem Rápida de Stack Trace e Logs de Erro (Diagnóstico em 10s)
+
 - **Por que funciona**: Suprime explicações didáticas genéricas sobre a linguagem ou framework e isola imediatamente a condição disparadora da exceção, o diff mínimo e o comando de teste.
 
 ```xml
@@ -106,6 +115,7 @@ $$\text{Entrada Bruta} \xrightarrow{\text{Invariantes de Higienização + Zero I
 ```
 
 ### Exemplo C: Higienizador e Renomeador Determinístico de Arquivos em Lote
+
 - **Por que funciona**: Converte uma tarefa manual sujeita a inconsistências humanas em uma tabela determinística auditável antes da execução física (`--dry-run`).
 
 ```xml
@@ -122,6 +132,7 @@ $$\text{Entrada Bruta} \xrightarrow{\text{Invariantes de Higienização + Zero I
 ```
 
 ### Exemplo D: Extrator Zero-Trust com Pre-Flight Check para Contratos JSON / Tools
+
 - **Por que funciona**: Combina isolamento contra *Indirect Prompt Injection* (`<untrusted_data>`) com buffer autorregressivo (`"_pre_flight_check"`) antes da extração final, garantindo alta precisão mesmo em modelos sem *Thinking* nativo.
 
 ```xml
@@ -160,6 +171,7 @@ $$\text{Entrada Bruta} \xrightarrow{\text{Invariantes de Higienização + Zero I
 Para que o agente mantenha baixa entropia ao interagir com sistemas externos sem alucinar parâmetros na retentativa, as tools devem validar a borda e devolver dicas de recuperação (`agent_hint`):
 
 ### 5.1. Python (`Pydantic v2` + `extra="forbid"`)
+
 ```python
 from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
@@ -200,6 +212,7 @@ def query_database(params: DatabaseQueryInput) -> dict[str, object]:
 ```
 
 ### 5.2. TypeScript (`Zod` & MCP SDK)
+
 ```typescript
 import { z } from "zod";
 
@@ -231,35 +244,36 @@ export async function processPayment(rawInput: unknown) {
 ```
 
 ### 5.3. Go (`Structs` Tipadas & Fallback Determinístico de Janela)
+
 ```go
 package main
 
 import (
-	"errors"
-	"fmt"
+ "errors"
+ "fmt"
 )
 
 type FileReadRequest struct {
-	FilePath string `json:"file_path"`
-	MaxBytes int64  `json:"max_bytes"`
+ FilePath string `json:"file_path"`
+ MaxBytes int64  `json:"max_bytes"`
 }
 
 type FileReadResult struct {
-	Content string `json:"content"`
-	Bytes   int64  `json:"bytes_read"`
+ Content string `json:"content"`
+ Bytes   int64  `json:"bytes_read"`
 }
 
 func ReadExecutionLog(req FileReadRequest) (*FileReadResult, error) {
-	if req.FilePath == "" {
-		return nil, errors.New("invalid_argument: 'file_path' vazio. Informe um caminho absoluto válido")
-	}
-	if req.MaxBytes <= 0 || req.MaxBytes > 32768 {
-		req.MaxBytes = 4096 // Fallback determinístico para proteger a janela de contexto
-	}
-	return &FileReadResult{
-		Content: fmt.Sprintf("Log lido de %s", req.FilePath),
-		Bytes:   req.MaxBytes,
-	}, nil
+ if req.FilePath == "" {
+  return nil, errors.New("invalid_argument: 'file_path' vazio. Informe um caminho absoluto válido")
+ }
+ if req.MaxBytes <= 0 || req.MaxBytes > 32768 {
+  req.MaxBytes = 4096 // Fallback determinístico para proteger a janela de contexto
+ }
+ return &FileReadResult{
+  Content: fmt.Sprintf("Log lido de %s", req.FilePath),
+  Bytes:   req.MaxBytes,
+ }, nil
 }
 ```
 

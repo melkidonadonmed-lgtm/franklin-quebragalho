@@ -29,9 +29,13 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from shared.harness import (
     CheckpointStore,
+    RefinementTelemetryRecord,
+    RefinementTelemetryStore,
     RiskLevel,
+    RootCauseCategory,
     SecurityViolationError,
     SemanticGuard,
+    classify_failure_root_cause,
     evaluate_action_risk,
 )
 from shared.tools.frontmatter_parser import parse_frontmatter
@@ -244,6 +248,8 @@ class PlanDecompositionResult(BaseModel):
     disclosure_tier: Literal[1, 2, 3] = 2
     max_rules_per_node: int = Field(default=3, ge=1, le=5)
     complexity_shield_status: Literal["SHIELDED", "SUBDIVIDED"] = "SHIELDED"
+    execution_mode: Literal["AGENT_TOOL", "SUBAGENT_FORK"] = "AGENT_TOOL"
+    expected_evidence_keys: List[str] = Field(default_factory=lambda: ["records_analyzed", "output"])
     steps: List[str] = Field(default_factory=list)
     dag_alias: str = ""
     target_dir: str = ""
@@ -269,6 +275,8 @@ class QualityAuditResult(BaseModel):
     score: float = Field(..., ge=0.0, le=1.0)
     critique_feedback: str
     should_retry: bool = False
+    root_cause_category: Optional[str] = None
+    post_condition_verified: bool = False
 
 
 # ==============================================================================
@@ -283,6 +291,7 @@ class BaseSubAgent(ABC):
     @abstractmethod
     async def process(self, context_payload: Dict[str, Any]) -> Any:
         """Executa a transformação determinística do subagente."""
+        raise NotImplementedError("Subclasses devem implementar process(context_payload)")
 
 
 class IntentAnalysisAgent(BaseSubAgent):
@@ -348,16 +357,21 @@ class PlannerAgent(BaseSubAgent):
         q_low = str(intent_res.action_parameters.get("query", "")).lower()
         dag_alias = "physics" if ("3d" in q_low or "fisica" in q_low or "physics" in q_low) else "ui"
         tier: Literal[1, 2, 3] = 3 if intent_res.category in ("RESEARCH", "MUTATION") else 2
+        exec_mode: Literal["AGENT_TOOL", "SUBAGENT_FORK"] = (
+            "AGENT_TOOL" if intent_res.category == "DIRECT" else "SUBAGENT_FORK"
+        )
         cog_str = "+".join(intent_res.cognitive_patterns)
         return PlanDecompositionResult(
             plan_id=f"plan-{uuid.uuid4().hex[:8]}",
             disclosure_tier=tier,
             max_rules_per_node=3,
             complexity_shield_status="SHIELDED",
+            execution_mode=exec_mode,
+            expected_evidence_keys=["records_analyzed", "output"],
             steps=[
                 f"1. [CoT | Tier {tier}] Ativar contrato '{intent_res.recommended_skill}' sob framework {intent_res.structural_framework} (<= 5 regras/nó)",
-                f"2. [{cog_str}] Executar worker '{intent_res.recommended_worker}' em Context Fork isolado",
-                "3. [Self-Refine] Auditar saída pelo CriticAuditorAgent contra critérios determinísticos",
+                f"2. [{cog_str}] Executar worker '{intent_res.recommended_worker}' via {exec_mode}",
+                "3. [Self-Refine] Auditar saída pelo CriticAuditorAgent via verificação Read-After-Write determinística",
             ],
             dag_alias=dag_alias if intent_res.category == "DAG_WORKFLOW" else "",
             target_dir=str(intent_res.action_parameters.get("target_dir", "")),
@@ -365,7 +379,7 @@ class PlannerAgent(BaseSubAgent):
 
 
 class MCPWorkerAgent(BaseSubAgent):
-    """3. Subagente Especialista Executor em Context Fork isolado."""
+    """3. Subagente Especialista Executor em Context Fork isolado ou Agent Tool determinística."""
 
     def __init__(self, name: str, tool_dispatcher: Optional[Callable[[Dict[str, Any]], Dict[str, Any]]] = None) -> None:
         super().__init__(name)
@@ -373,20 +387,42 @@ class MCPWorkerAgent(BaseSubAgent):
 
     async def process(self, context_payload: Dict[str, Any]) -> TaskExecutionResult:
         params = dict(context_payload.get("action_parameters", {}))
+        plan: Optional[PlanDecompositionResult] = context_payload.get("plan")
         feedback = str(context_payload.get("feedback", "")).strip()
         if feedback:
             params["retry_feedback"] = feedback
 
         try:
             if self.tool_dispatcher is not None:
-                execution_data = self.tool_dispatcher(params)
+                execution_data = dict(self.tool_dispatcher(params) or {})
             else:
-                execution_data = {
-                    "records_analyzed": 1,
-                    "skill_activated": params.get("skill_name", "franklin-main"),
-                    "target_dir": params.get("target_dir", ""),
-                    "summary": f"Processamento isolado concluído para: {params.get('query', '')}",
-                }
+                target_str = str(params.get("target_dir", "")).strip()
+                skill_name = str(params.get("skill_name", "auditoria-projetos-sistema")).strip()
+                repo_skills_dir = Path(__file__).resolve().parent.parent / "skills" / skill_name
+                if target_str and Path(target_str).exists():
+                    t_path = Path(target_str)
+                    files_count = sum(1 for _ in t_path.iterdir()) if t_path.is_dir() else 1
+                    execution_data = {
+                        "records_analyzed": max(1, files_count),
+                        "skill_activated": skill_name,
+                        "target_dir": target_str,
+                        "output": f"[PASS] Inspeção determinística de {files_count} item(ns) em {target_str}.",
+                    }
+                elif not target_str and repo_skills_dir.exists():
+                    execution_data = {
+                        "records_analyzed": 1,
+                        "skill_activated": skill_name,
+                        "target_dir": str(repo_skills_dir),
+                        "output": f"[PASS] Contrato da skill '{skill_name}' verificado no disco.",
+                    }
+                else:
+                    execution_data = {}
+
+            if execution_data and plan is not None:
+                execution_data.setdefault("plan_id_executed", plan.plan_id)
+                execution_data.setdefault("execution_mode", plan.execution_mode)
+                execution_data.setdefault("steps_completed", len(plan.steps))
+
             return TaskExecutionResult(worker_id=self.name, status="SUCCESS", data_payload=execution_data)
         except (OSError, ValueError, RuntimeError, KeyError) as exc:
             logger.error("[%s] Erro na execução isolada da tool MCP: %s", self.name, exc)
@@ -394,29 +430,65 @@ class MCPWorkerAgent(BaseSubAgent):
 
 
 class CriticAuditorAgent(BaseSubAgent):
-    """5. Subagente Crítico / Avaliador (Self-Refine / Critic Loop)."""
+    """5. Subagente Crítico / Observador Read-After-Write Determinístico (0 tokens LLM)."""
 
     async def process(self, context_payload: Dict[str, Any]) -> QualityAuditResult:
         task_result: TaskExecutionResult = context_payload["task_result"]
+        plan: Optional[PlanDecompositionResult] = context_payload.get("plan")
+        payload = task_result.data_payload or {}
+
         if task_result.status != "SUCCESS":
+            cat, why = classify_failure_root_cause(task_result.error_message or "FAILED", payload)
             return QualityAuditResult(
-                approved=False,
-                score=0.0,
-                critique_feedback=f"Falha de execução no worker '{task_result.worker_id}': {task_result.error_message}",
-                should_retry=True,
+                approved=False, score=0.0,
+                critique_feedback=f"[FAIL:{cat.value}] Falha de execução no worker '{task_result.worker_id}': {why}",
+                should_retry=True, root_cause_category=cat.value, post_condition_verified=False,
             )
-        if task_result.data_payload and ("records_analyzed" in task_result.data_payload or "output" in task_result.data_payload):
+
+        job_status = str(payload.get("job_status", "")).upper()
+        if job_status in ("PENDING", "RUNNING", "IN_PROGRESS"):
             return QualityAuditResult(
-                approved=True,
-                score=0.98,
-                critique_feedback="[PASS] Critérios de aceite e consistência determinística atendidos.",
-                should_retry=False,
+                approved=False, score=0.20,
+                critique_feedback=f"[FAIL:{RootCauseCategory.PREMATURE_RETURN_NO_WAIT.value}] O worker retornou antes da conclusão do job ({job_status}).",
+                should_retry=True, root_cause_category=RootCauseCategory.PREMATURE_RETURN_NO_WAIT.value,
+                post_condition_verified=False,
             )
+
+        target_dir = str(payload.get("target_dir", "")).strip()
+        if target_dir and not Path(target_dir).exists():
+            return QualityAuditResult(
+                approved=False, score=0.10,
+                critique_feedback=f"[FAIL:{RootCauseCategory.POST_CONDITION_FAILED.value}] Read-After-Write falhou: target_dir '{target_dir}' não existe no disco.",
+                should_retry=True, root_cause_category=RootCauseCategory.POST_CONDITION_FAILED.value,
+                post_condition_verified=False,
+            )
+
+        written_files = payload.get("written_files")
+        if isinstance(written_files, list):
+            missing_or_empty = [f for f in written_files if not Path(str(f)).is_file() or Path(str(f)).stat().st_size == 0]
+            if missing_or_empty:
+                return QualityAuditResult(
+                    approved=False, score=0.25,
+                    critique_feedback=f"[FAIL:{RootCauseCategory.POST_CONDITION_FAILED.value}] Read-After-Write falhou para arquivos: {missing_or_empty}",
+                    should_retry=True, root_cause_category=RootCauseCategory.POST_CONDITION_FAILED.value,
+                    post_condition_verified=False,
+                )
+
+        has_evidence = "records_analyzed" in payload or "output" in payload
+        if has_evidence:
+            plan_verified = bool(plan is None or payload.get("plan_id_executed") == plan.plan_id)
+            score = 0.98 if plan_verified else 0.90
+            return QualityAuditResult(
+                approved=True, score=score,
+                critique_feedback="[PASS] Pós-condição Read-After-Write e vínculo Planejador-Executor verificados.",
+                should_retry=False, root_cause_category=None, post_condition_verified=True,
+            )
+
+        cat, why = classify_failure_root_cause("[FAIL] Saída vazia ou sem marcadores verificáveis.", payload)
         return QualityAuditResult(
-            approved=False,
-            score=0.40,
-            critique_feedback="[FAIL] Saída vazia ou sem marcadores verificáveis.",
-            should_retry=True,
+            approved=False, score=0.40,
+            critique_feedback=f"[FAIL:{cat.value}] {why}",
+            should_retry=True, root_cause_category=cat.value, post_condition_verified=False,
         )
 
 
@@ -428,28 +500,34 @@ class ReporterAgent(BaseSubAgent):
         plan: PlanDecompositionResult = context_payload["plan"]
         task_result: TaskExecutionResult = context_payload["task_result"]
         audit: QualityAuditResult = context_payload["audit"]
-        report_envelope = {
+        telemetry_info: Optional[Dict[str, Any]] = context_payload.get("telemetry_info")
+        report_envelope: Dict[str, Any] = {
             "status": "APPROVED" if audit.approved else "REJECTED",
             "intentCategory": intent.category,
             "persona": intent.persona,
             "skill": intent.recommended_skill,
             "planId": plan.plan_id,
+            "executionMode": plan.execution_mode,
             "workerId": task_result.worker_id,
             "qualityScore": audit.score,
+            "postConditionVerified": audit.post_condition_verified,
             "critique": audit.critique_feedback,
             "data": task_result.data_payload,
         }
+        if telemetry_info:
+            report_envelope["refinementTelemetry"] = telemetry_info
         return json.dumps(report_envelope, indent=2, ensure_ascii=False)
 
 
 class AgentOrchestrator:
-    """Orquestrador Central Desacoplado coordenando os 6 papéis e o Gate HITL."""
+    """Orquestrador Central Desacoplado coordenando os 6 papéis, Gate HITL e Telemetria Pós-Refinamento."""
 
     def __init__(
         self,
         checkpoint_store: Optional[CheckpointStore] = None,
         tool_dispatcher: Optional[Callable[[Dict[str, Any]], Dict[str, Any]]] = None,
         max_retries: int = 3,
+        telemetry_store: Optional[RefinementTelemetryStore] = None,
     ) -> None:
         self.intent_agent = IntentAnalysisAgent("IntentClassifier")
         self.planner_agent = PlannerAgent("ContractPlanner")
@@ -463,6 +541,7 @@ class AgentOrchestrator:
         self.reporter_agent = ReporterAgent("ReporterSynthesizer")
         self.checkpoint_store = checkpoint_store
         self.max_retries = max_retries
+        self.telemetry_store = telemetry_store
 
     def _create_hitl_approval_response(self, user_query: str, intent: IntentAnalysisResult, session_id: str) -> str:
         """Registra checkpoint HITL para mutações críticas e retorna o envelope de pausa."""
@@ -480,6 +559,32 @@ class AgentOrchestrator:
             "message": f"[Aguardando Aprovação Humana]: A operação '{intent.intent}' requer confirmação.",
         }, indent=2, ensure_ascii=False)
 
+    def _record_turn_telemetry(
+        self,
+        plan_id: str,
+        intent: IntentAnalysisResult,
+        attempts: int,
+        root_cause: str,
+        why_failed: str,
+        recovery_action: str,
+        verified: bool,
+        user_query: str,
+    ) -> Optional[Dict[str, Any]]:
+        """Registra telemetria pós-refinamento quando telemetry_store está configurado."""
+        if self.telemetry_store is None:
+            return None
+        rec = RefinementTelemetryRecord(
+            run_id=plan_id,
+            step_id=intent.recommended_worker,
+            attempt=attempts,
+            root_cause=root_cause,
+            why_failed_first_time=why_failed,
+            chosen_path=f"{intent.recommended_skill}:{intent.recommended_worker}",
+            recovery_action=recovery_action,
+            post_condition_verified=verified,
+        )
+        return self.telemetry_store.record_refinement(rec, user_query=user_query)
+
     async def execute_turn(
         self,
         user_query: str,
@@ -489,12 +594,11 @@ class AgentOrchestrator:
         target_dir: str = "",
         session_id: str = "default",
     ) -> str:
-        """Executa o ciclo completo em 6 estágios com proteção Zero-Trust, HITL e Critic Loop."""
+        """Executa o ciclo completo em 6 estágios com proteção Zero-Trust, HITL, Critic Loop e Telemetria."""
         intent = await self.intent_agent.process({
             "user_query": user_query, "skill_name": skill_name, "persona": persona, "target_dir": target_dir,
         })
         plan = await self.planner_agent.process({"intent_result": intent})
-
         if intent.requires_hitl:
             return self._create_hitl_approval_response(user_query, intent, session_id)
 
@@ -502,20 +606,50 @@ class AgentOrchestrator:
         if not worker:
             return json.dumps({"status": "ERROR", "error": f"Worker '{intent.recommended_worker}' não registrado."}, ensure_ascii=False)
 
-        attempts = 0
-        current_feedback = ""
+        attempts, current_feedback, first_fail_cause, first_fail_why = 0, "", "", ""
         while attempts < self.max_retries:
             attempts += 1
-            task_result = await worker.process({"action_parameters": intent.action_parameters, "feedback": current_feedback})
-            audit = await self.critic_agent.process({"task_result": task_result})
+            task_result = await worker.process({
+                "action_parameters": intent.action_parameters, "plan": plan, "feedback": current_feedback,
+            })
+            audit = await self.critic_agent.process({"task_result": task_result, "plan": plan})
             if audit.approved:
-                return await self.reporter_agent.process({"intent": intent, "plan": plan, "task_result": task_result, "audit": audit})
+                telemetry_info = (
+                    self._record_turn_telemetry(
+                        plan.plan_id, intent, attempts,
+                        first_fail_cause or RootCauseCategory.POST_CONDITION_FAILED.value,
+                        first_fail_why or current_feedback,
+                        f"Refined execution with deterministic critic feedback on attempt {attempts}",
+                        True, user_query,
+                    )
+                    if attempts > 1
+                    else None
+                )
+                return await self.reporter_agent.process({
+                    "intent": intent, "plan": plan, "task_result": task_result,
+                    "audit": audit, "telemetry_info": telemetry_info,
+                })
+            if attempts == 1:
+                first_fail_cause = audit.root_cause_category or RootCauseCategory.POST_CONDITION_FAILED.value
+                first_fail_why = audit.critique_feedback
             current_feedback = audit.critique_feedback
             if not audit.should_retry:
                 break
 
+        exhaust_cause = (
+            RootCauseCategory.STUCK_IN_LOOP.value
+            if attempts >= self.max_retries
+            else (first_fail_cause or RootCauseCategory.POST_CONDITION_FAILED.value)
+        )
+        self._record_turn_telemetry(
+            plan.plan_id, intent, attempts, exhaust_cause,
+            first_fail_why or current_feedback,
+            "Exhausted retries without satisfying deterministic post-condition",
+            False, user_query,
+        )
         return json.dumps({
             "status": "FAILED", "attempts": attempts, "critique": current_feedback,
+            "rootCause": first_fail_cause or RootCauseCategory.STUCK_IN_LOOP.value,
             "message": f"Falha na entrega após {attempts} tentativa(s).",
         }, indent=2, ensure_ascii=False)
 

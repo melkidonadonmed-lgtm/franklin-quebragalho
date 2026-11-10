@@ -37,7 +37,9 @@ class SurfaceSpec:
     trigger_line: str = "- When {desc}, load the `{name}` skill.\n"
     subagent_requires_mode: bool = False
     hooks_file: Optional[str] = ".codex/hooks.json"
-    hook_events: FrozenSet[str] = frozenset({"PreToolUse", "PostToolUse", "SessionStart", "Stop"})
+    hook_events: FrozenSet[str] = frozenset(
+        {"PreToolUse", "PostToolUse", "PreInvocation", "PostInvocation", "SessionStart", "Stop"}
+    )
     compile_skill_scripts: bool = True
     reject_empty_always_on: bool = True
 
@@ -72,7 +74,7 @@ def is_allowed_path(surface: SurfaceSpec, rel: str) -> bool:
         norm = normalize_rel(rel)
     except ValueError:
         return False
-    if norm in surface.always_on or (surface.hooks_file and norm == surface.hooks_file):
+    if norm in surface.always_on or norm == "hooks.json" or (surface.hooks_file and norm == surface.hooks_file):
         return True
     rxs = _surface_regexes(surface)
     return any(rxs[k].fullmatch(norm) for k in ("skill", "skill_script", "subagent", "script"))

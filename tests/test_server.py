@@ -293,14 +293,14 @@ def test_smart_compass_and_aliases() -> None:
 
     skill_mvp = server._find_skill_dir("mvp")
     assert skill_mvp is not None
-    assert skill_mvp.name == "antigravity-project-auditor"
+    assert skill_mvp.name == "auditoria-projetos-sistema"
 
     # Teste de descoberta por intenção livre no Smart Compass
     compass_proj = server.franklin_smart_compass("preciso organizar um projeto, revisar o README e diagnosticar o MVP")
-    assert "Trio Canônico 2026" in compass_proj
+    assert "Auditoria Integrada 3-em-1" in compass_proj
     assert "organizador-projetos-ideias" in compass_proj
-    assert "antigravity-project-auditor" in compass_proj
     assert "auditoria-projetos-sistema" in compass_proj
+    assert "project_structure_and_code_auditor.py" in compass_proj
 
     compass_3d = server.franklin_smart_compass("tenho um jogo three.js com bug de colisão e física")
     assert "Física 3D" in compass_3d
@@ -361,10 +361,11 @@ def test_franklin_mcp_build_advisor_2026_spec() -> None:
 
 
 def test_arquitetura_deterministic_scorer_v2() -> None:
-    """Valida o motor determinístico SGA + TIF (V1 vs V2) e o scanner AST/Regex da skill nav-x-func v4.0.0."""
+    """Valida a fusão 3-em-1 em auditoria-projetos-sistema v6.0.0 (deterministic_scorer.py + project_structure_and_code_auditor.py)."""
     skill_dir = server._find_skill_dir("arquitetura")
-    assert skill_dir is not None and skill_dir.name == "nav-x-func"
+    assert skill_dir is not None and skill_dir.name == "auditoria-projetos-sistema"
     assert server._find_skill_dir("nav-x-func") == skill_dir
+    assert server._find_skill_dir("antigravity-project-auditor") == skill_dir
     assert server._find_skill_dir("arquitetura-design-implementacao-sistema") == skill_dir
 
     res = server.franklin_run_skill_script("nav-x-func", "deterministic_scorer.py", ["--self-test"])
@@ -375,12 +376,20 @@ def test_arquitetura_deterministic_scorer_v2() -> None:
     assert '"status": "PASS"' in res
 
     scan_res = server.franklin_run_skill_script(
-        "nav-x-func",
+        "auditoria-projetos-sistema",
         "deterministic_scorer.py",
         ["--scan", str(skill_dir / "templates")],
     )
     assert "[Exit Code: 0]" in scan_res
     assert '"icte_typography_structure": 100.0' in scan_res
+
+    struct_res = server.franklin_run_skill_script(
+        "auditoria-projetos-sistema",
+        "project_structure_and_code_auditor.py",
+        ["--self-test"],
+    )
+    assert "[Exit Code: 0]" in struct_res
+    assert '"self_test": "STRUCTURE_AND_CODE_AUDITOR_OK"' in struct_res
 
 
 def test_frontend_skills_and_ui_subagents_integration() -> None:
@@ -431,7 +440,7 @@ def test_frontend_skills_and_ui_subagents_integration() -> None:
     ):
         parsed_spec = module.load_agent_spec(str(server.ROOT_DIR / "agents" / agent_md), verbose=False)
         assert parsed_spec["name"] == agent_md.removesuffix(".md")
-        assert parsed_spec["version"] in ("1.1.0", "1.2.0", "3.0.0")
+        assert parsed_spec["version"] in ("1.1.0", "1.2.0", "3.0.0", "3.1.0", "4.0.0")
         assert parsed_spec["enable_write_tools"] is True
         assert parsed_spec["enable_mcp_tools"] is True
         assert len(parsed_spec["description"]) > 20
@@ -509,20 +518,23 @@ def test_gemini_ecosystem_directories() -> None:
     from scripts.sync_gemini_ecosystem import CONFIG_SKILLS_ROOT, sync_ecosystem
 
     gemini_root = Path(r"C:\Users\melki\.gemini")
-    for sub in ("lib", "doc", "docs", "agents", "plans"):
+    for sub in ("lib", "doc", "agents", "plans"):
         target = gemini_root / sub
         assert target.exists() and target.is_dir(), f"Diretório ausente: {target}"
 
     assert not (gemini_root / "plugins").exists()
     assert not (gemini_root / "skills").exists()
+    assert not (gemini_root / "docs").exists()
     assert not (server.ROOT_DIR / ".agents" / "skills").exists()
     assert (server.ROOT_DIR / "plugin.json").exists()
     assert (gemini_root / "agents" / "ui-shell-navigator.md").exists()
-    assert (gemini_root / "config" / "agents" / "ui-shell-navigator.md").exists()
+    assert (gemini_root / "config" / "agents" / "adk-go-operator.md").exists()
+    assert not (gemini_root / "config" / "agents" / "ui-shell-navigator.md").exists()
+    assert (server.ROOT_DIR / ".agents" / "skills.json").exists()
     assert (gemini_root / "plans" / "ui_composition_dag.json").exists()
     assert (gemini_root / "lib" / "agent_spec_loader.py").exists()
     assert (gemini_root / "doc" / "AGENTS.md").exists()
-    assert (gemini_root / "docs" / "agent_card.json").exists()
+    assert (gemini_root / "doc" / "agent_card.json").exists()
     assert (gemini_root / "config" / "plugins" / "franklin-skills" / "plugin.json").exists()
 
     card_data = json.loads((server.ROOT_DIR / "agent_card.json").read_text(encoding="utf-8"))
@@ -697,6 +709,15 @@ def test_cognitive_planner_and_dag_chain_validator_scripts() -> None:
     assert "[Exit Code: 0]" in dag_out
     assert '"kahn_waves_verified": true' in dag_out
     assert '"collision_detection_verified": true' in dag_out
+
+    rea_out = server.franklin_run_skill_script(
+        skill_name="audit-skills-antigravity",
+        script_name="skill_auditor_rea.go",
+        args=[str(server.SKILLS_ROOT)],
+    )
+    assert "[Exit Code: 0]" in rea_out
+    assert "[MANTIDA]" in rea_out
+    assert "[RECOMENDAÇÃO: OTIMIZAR YAML]" not in rea_out
 
 
 

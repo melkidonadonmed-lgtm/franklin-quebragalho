@@ -57,7 +57,9 @@ export const TabsNav: React.FC<TabsNavProps> = ({
         return (
           <button
             key={tab.id}
-            ref={(el) => (tabsRef.current[idx] = el)}
+            ref={(el) => {
+              tabsRef.current[idx] = el;
+            }}
             role="tab"
             type="button"
             id={`tab-${tab.id}`}

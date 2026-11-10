@@ -1,22 +1,26 @@
-# Critérios Determinísticos de Auditoria — `design-md` (`v5.0.0`)
+# Critérios Determinísticos de Auditoria — `design-md` (`v7.0.0`)
 
-Critérios objetivos e falsificáveis (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) para auditar a geração e atualização do contrato arquitetural `DESIGN.md` guiado pelo propósito do projeto (Módulo **M3**).
+Critérios objetivos e falsificáveis (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) para auditar a geração e atualização do contrato arquitetural `DESIGN.md` alinhado aos **9 Eixos da SSOT** (`Preferências de Trabalho com Agentes.md`).
 
 ---
 
-## 1. Alinhamento ao Propósito do Projeto e Tokens Semânticos (`[AUDIT-DESIGN-01]`)
-- **`[PASS]`**: O arquivo `DESIGN.md` na raiz do projeto explicita o `project_purpose`, seleciona uma atmosfera coerente com o domínio (*Ad Lucem*, *Cinza Monolítico `#57545d` + Menus `#8e8999`*, *Preto Terminal IBM `Ex Umbris`*, *AETHER 2027* ou paleta própria fundamentada) e declara as camadas de superfície (`--bg-canvas`, `--bg-surface`, `--bg-elevated`, `--bg-contrast-card`) e 4 níveis de tinta (`--ink-primary..subtle`).
-- **`[FAIL: TEMA_FIXO_SEM_PROPOSITO]`**: Aplicação mecânica de paleta fixa sem diagnosticar o propósito do projeto ou omissão das camadas de superfície e tinta.
+## 1. Box Model Lógico, Anti-Colapso de Margem e Identidade por Propósito (`[AUDIT-DESIGN-01]`)
+
+- **`[PASS]`**: O arquivo `DESIGN.md` explicita o `project_purpose`, o `complexity_tier` (*Nível 1: `@layer` Estático*, *Nível 2: SPA Feature-Driven* ou *Nível 3: Fullstack App Router & PWA*), seleciona um dos **6 Arquétipos Canônicos de Layout** e define `box-sizing: border-box`, propriedades lógicas (`inline-size`, `block-size`, `padding-inline`, `margin-block`) e prevenção de colapso de margem (`display: flow-root`, `gap` no pai e `.prose > * + *`).
+- **`[FAIL: TEMA_FIXO_OU_BOX_FISICO_LEGADO]`**: Reutilização mecânica de layout/paleta de outro projeto sem relação com o propósito, ou omissão das propriedades lógicas e contenção BFC.
 - **`[UNVERIFIED]`**: Caminho raiz do projeto inacessível no disco.
 
-## 2. Camadas Esculpidas, Rim Light e Espaçamento Concêntrico (`[AUDIT-DESIGN-02]`)
-- **`[PASS]`**: Define sombra esculpida em 3 camadas (`--shadow-sculpted`: Umbra + Penumbra + Difusão) combinada com `1px` Rim Light (`inset 0 1px 0 0 var(--rim-light)`), respiro de canvas ($\ge 25\%$) e fórmula de raios concêntricos ($R_{\text{interno}} = R_{\text{externo}} - \text{Padding}$).
-- **`[FAIL: CAMADAS_OU_ESPACAMENTO_AUSENTES]`**: Sombras borradas genéricas sem separação de camadas, falta de respiro ou ausência de diretrizes de espaçamento.
+## 2. Cores Perceptuais `OKLCH`, Temas Claro/Escuro e Tokens em 3 Camadas (`[AUDIT-DESIGN-02]`)
 
-## 3. Contraste Perceptual, Isolamento de Acento e Legibilidade de Menus (`[AUDIT-DESIGN-03]`)
-- **`[PASS]`**: Garante contraste WCAG 2.1 AA/AAA (APCA $L_c \ge 60/75$), tinta escura nítida sobre menus claros ou `#8e8999` (`--nav-ink`), e isolamento do acento pontual (proporção 98/2 ou 60-30-10 com 1 único CTA primário sólido vs. `.btn-ghost`).
-- **`[FAIL: CONTRASTE_OU_POLUICAO_CROMATICA]`**: Texto branco sobre fundo claro/cinza médio, múltiplos CTAs primários competindo ou abuso de cores saturadas sem hierarquia.
+- **`[PASS]`**: Estrutura os tokens em **3 Camadas Hierárquicas** (*1. Primitivos*, *2. Semânticos/Alias* reativos via `oklch()`, `light-dark()`, `color-mix(in oklab, ...)` e Sintaxe de Cores Relativas RCS `from`, *3. Componente*), sincroniza `<meta name="color-scheme" content="light dark">` e `color-scheme: light dark`, e define elevação progressiva de luminosidade $L$ no Modo Escuro (`0.16 -> 0.22 -> 0.27`, evitando `#000000` puro).
+- **`[FAIL: POLUICAO_CROMATICA_OU_SEM_3_CAMADAS]`**: Uso de cores neon/saturadas para contraste artificial, preto puro `#000000` causando *smearing* no escuro, ou ausência da separação entre tokens primitivos e semânticos (`--bg-canvas`/`--surface-canvas`, `--bg-surface-1`/`--surface-card`, `--text-primary`/`--ink-primary`).
 
-## 4. Tipografia Fluida (`clamp()`), `tabular-nums` e Integração Atômica (`[AUDIT-DESIGN-04]`)
-- **`[PASS]`**: Especifica escala fluida com `clamp()`, `font-variant-numeric: tabular-nums` para dados numéricos, acoplamento `IBM Plex Sans` + `IBM Plex Mono` quando o tema for Preto Terminal (`Ex Umbris`), e estrutura `src/` em 5 camadas atômicas com estados FSM (`idle | loading | error | pressed`).
-- **`[FAIL: TIPOGRAFIA_OU_ARQUITETURA_INCOMPLETA]`**: Ausência de `tabular-nums`, falta de escala tipográfica ou omissão dos estados FSM.
+## 3. Sombras Multi-Camadas (3 Tipos), Luz Zenital e Nitidez Tipográfica Fluida (`[AUDIT-DESIGN-03]`)
+
+- **`[PASS]`**: Especifica os 3 tipos de sombra (`box-shadow` com `inset` e `spread` negativo, `text-shadow`, `filter: drop-shadow()`), sombras realistas em 3 níveis (Umbra + Penumbra + Catch-Light `inset 0 1px 0 0` e `--shadow-inset`), `isolation: isolate` para blend modes, escala fluida `clamp()`, `max-inline-size: 65ch`, `text-wrap: balance/pretty`, travas `antialiased` + `font-synthesis: none`, zero `scale()` fracionário em textos e `font-variant-numeric: tabular-nums`.
+- **`[FAIL: SOMBRA_LAVADA_OU_RISCO_BORRAO_GPU]`**: Sombra simples de camada única (`0 4px 12px rgba(0,0,0,0.4)`), ausência de `font-synthesis: none` ou omissão de `tabular-nums`.
+
+## 4. Macro/Microlayout (`@container`), 4 Variantes de Cards, Navegação em 3 Camadas e Real-State (`[AUDIT-DESIGN-04]`)
+
+- **`[PASS]`**: Distingue Macrolayout (`@media`, Grid RAM) de Microlayout (`@container`), define as **4 Variantes de Cards** (*Elevated*, *Outlined*, *Filled/Subtle*, *Interactive*), especifica as **3 Camadas de Navegação** (*Global*, *Local/In-Page*, *Breadcrumbs* `<ol role="list">` + `aria-current="page"`, Ordem DOM = Ordem Visual), curvas `cubic-bezier(0.22, 1, 0.36, 1)`, `@media (prefers-reduced-motion: reduce)`, `@media (pointer: coarse)` ($\ge 44\text{px}$), zero emojis e 100% Engenharia Real-State.
+- **`[FAIL: EMOJI_PLACEBO_OU_NAVEGACAO_QUEBRADA]`**: Permissão de emojis na UI, `flex-direction: row-reverse` quebrando a ordem de `Tab`, ou omissão dos estados funcionais reais (`idle`, `active`, `empty`, `error`).

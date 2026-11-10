@@ -19,7 +19,7 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Tuple
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -43,6 +43,7 @@ from physics_test_runner import (
 # 1. Schemas Pydantic do Estado Global (AuditState)
 # -----------------------------------------------------------------------------
 class IssueFinding(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     issue_id: str
     title: str
     category: str
@@ -65,6 +66,7 @@ class IssueFinding(BaseModel):
 
 
 class SubagentExecutionResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     subagent_name: str
     execution_status: Literal["SUCCESS", "FAILED", "NEEDS_RETRY"] = "SUCCESS"
     findings: List[IssueFinding] = Field(default_factory=list)
@@ -72,6 +74,7 @@ class SubagentExecutionResult(BaseModel):
 
 
 class GlobalAuditState(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     project_files: List[str]
     detected_profile: str = "3d_physics"
     audited_files: List[str] = Field(default_factory=list)

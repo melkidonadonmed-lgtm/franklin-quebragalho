@@ -64,7 +64,8 @@ def _find_ts_block_end(lines: List[str], start_idx: int) -> int:
     depth = 0
     started = False
     for j in range(start_idx, len(lines)):
-        clean = re.sub(r"//.*$", "", lines[j])
+        no_str = re.sub(r"'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"|`(?:\\.|[^`\\])*`", '""', lines[j])
+        clean = re.sub(r"//.*$", "", no_str)
         opens = clean.count("{")
         closes = clean.count("}")
         if opens > 0:

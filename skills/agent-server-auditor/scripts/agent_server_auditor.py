@@ -225,12 +225,30 @@ def _classify_framework_and_lang(f: Path, text: str) -> Tuple[str, str]:
 
 
 def _audit_agents(root: Path, files: List[Path]) -> List[AgentAuditItem]:
-    """Audita módulos de orquestradores e agentes em Python, TypeScript e Go."""
+    """Audita módulos de orquestradores (Py/TS/Go) e contratos declarativos de subagentes (agents/*.md)."""
     items: List[AgentAuditItem] = []
     for f in files:
-        if f.suffix.lower() not in {".py", ".ts", ".go"} or "test" in f.name.lower():
-            continue
         rel = f.relative_to(root).as_posix()
+        suffix = f.suffix.lower()
+        if suffix == ".md" and rel.startswith("agents/"):
+            text = f.read_text(encoding="utf-8", errors="replace").lstrip("\ufeff")
+            has_fm = text.startswith("---") and "\n---" in text[3:]
+            items.append(
+                AgentAuditItem(
+                    name=f.stem,
+                    file=rel,
+                    language="Markdown",
+                    framework="Antigravity Declarative Subagent",
+                    reasoning_pattern="Wave / Subagent Contract",
+                    has_max_steps=True,
+                    has_stop_condition=True,
+                    type_safety=has_fm,
+                    missing_elements=[] if has_fm else ["frontmatter"],
+                )
+            )
+            continue
+        if suffix not in {".py", ".ts", ".go"} or "test" in f.name.lower():
+            continue
         is_agent_path = "orchestrator" in f.name.lower() or "agent" in f.name.lower()
         if not is_agent_path or rel.startswith("skills/"):
             continue

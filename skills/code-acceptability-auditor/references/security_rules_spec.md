@@ -7,16 +7,19 @@ Especificação de engenharia para detecção determinística das 12 regras (`SE
 ## 1. Inspeção de Segurança (`SEC001` – `SEC003`)
 
 ### `SEC001` — Execução Dinâmica (`eval` / `exec`)
+
 - **Nó AST**: `ast.Call`
 - **Condição**: `isinstance(node.func, ast.Name)` com `node.func.id in {"eval", "exec"}` ou `isinstance(node.func, ast.Attribute)` com `node.func.attr in {"eval", "exec"}` quando o objeto base é `builtins`.
 - **Exclusão Segura**: `ast.literal_eval` é permitido e não dispara alerta.
 
 ### `SEC002` — Injeção de Comando (`shell=True` / `os.system`)
+
 - **Nó AST**: `ast.Call`
 - **Condição A**: Chamada a `subprocess.{run, Popen, call, check_call, check_output}` contendo `ast.keyword(arg="shell", value=ast.Constant(value=True))`.
 - **Condição B**: Chamada direta a `os.system(...)` ou `os.popen(...)`.
 
 ### `SEC003` — Vazamento de Credenciais e Chaves Secretas
+
 - **Inspeção Híbrida (AST + Regex)**:
   1. **AST (`ast.Assign`, `ast.AnnAssign`, `ast.Dict`)**: Identificadores que casam com `(api[_-]?key|secret|password|passwd|pwd|access[_-]?token|auth[_-]?token|private[_-]?key|client[_-]?secret|jwt[_-]?secret)` atribuídos a constantes `str` não-vazias (`len >= 6`) que não sejam placeholders (`YOUR_...`, `<...>`, `changeme`, `dummy`, `example`, `none`, `null`, `todo`).
   2. **Regex de Assinatura de Tokens**: Detecta prefixos conhecidos em literais de string:

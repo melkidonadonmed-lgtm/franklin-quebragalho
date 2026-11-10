@@ -1,24 +1,19 @@
 ---
 name: gdrive-auditoria-limpeza
-description: >-
-  Audita e higieniza a unidade Google Drive (G:/Meu Drive e MCP), detectando arquivos pesados (>100MB), duplicatas por hash/nome e pastas vazias com simulação segura de quarentena (Dry-run). Use para limpeza e deduplicação no Drive; não use para manutenção de pastas locais do Windows.
+description: "Audita e higieniza Google Drive detectando arquivos pesados >100MB, duplicatas por hash e pastas vazias órfãs com Dry-run. Use para limpeza de arquivos duplicados no Drive; não use para disco local."
+version: "1.0.0"
+updated_at: "2026-10-04"
+compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "1.0.0"
+  updated_at: "2026-10-04"
   author: "DriveMaster & Melki"
   category: "Gestão Cloud e Higienização de Armazenamento"
-  updated_at: "2026-10-04"
-  tags:
-    - "google-drive"
-    - "limpeza"
-    - "sha256"
-    - "dry-run"
-version: 1.0.0
-updated_at: 2026-10-04
-author: DriveMaster & Melki
-category: Gestão Cloud e Higienização de Armazenamento
+  tags: ["google-drive", "limpeza", "sha256", "dry-run"]
 ---
-
 # 1. NOME DA SKILL
+
 `gdrive-auditoria-limpeza` (Auditoria de Armazenamento, Detecção de Duplicatas e Quarentena Segura no Google Drive).
 
 ---
@@ -26,12 +21,14 @@ category: Gestão Cloud e Higienização de Armazenamento
 ## 2. GATILHOS DE ATIVAÇÃO (QUANDO USAR)
 
 Ative e execute esta skill sempre que:
+
 - O usuário solicitar: "audite o espaço do meu Google Drive", "encontre arquivos pesados no Drive", "remova duplicados do Drive", "limpe arquivos temporários ou desnecessários no Drive".
 - O volume do Google Drive estiver próximo do limite de cota de armazenamento.
 - For necessário fazer uma triagem de arquivos zips órfãos, instaladores esquecidos ou cópias repetidas na unidade `G:\Meu Drive`.
 - Antes de grandes reestruturações de pastas no Drive, para eliminar entulho previamente.
 
 ### Quando NÃO Usar
+
 - Para definir novas estruturas de pastas temáticas ou padronizar nomes com datas ISO (utilize `gdrive-taxonomia-organizacao`).
 - Para executar exclusões permanentes e destrutivas (`Remove-Item -Force` definitivo sem confirmação explícita).
 - Para operações em pastas do disco local fora do Google Drive (utilize `manutencao-disco-windows`).
@@ -53,15 +50,18 @@ Ative e execute esta skill sempre que:
 Toda auditoria e limpeza no Google Drive segue o protocolo de preservação de dados:
 
 ### 4.1. Princípio da Quarentena Preventiva (Sem Exclusão Direta)
+
 - ⚠️ **PROIBIÇÃO DE EXCLUSÃO DEFINITIVA:** É proibido executar comandos como `Remove-Item -Recurse -Force` diretamente em arquivos do Drive.
 - Qualquer item indicado para descarte deve ser **movido** para uma subpasta `_Quarentena_Descarte/` com carimbo de data ISO (`_Quarentena_Descarte/YYYY-MM-DD/`).
 - O descarte definitivo na lixeira do Google Drive é exclusivo do usuário ou mediante aprovação humana expressa (Human-in-the-Loop).
 
 ### 4.2. Detecção de Duplicatas Determinística
+
 1. **Fase 1 (Triagem Rápida):** Agrupamento por tamanho exato em bytes (`Length`) e extensão.
 2. **Fase 2 (Confirmação por Hash SHA256):** Para arquivos suspeitos com mesmo tamanho, cálculo do hash criptográfico via PowerShell (`Get-FileHash -Algorithm SHA256`). Apenas itens com hash idêntico são marcados como duplicatas reais.
 
 ### 4.3. Rastreamento de Arquivos Pesados e Resíduos
+
 - Varredura de instaladores esquecidos (`.exe`, `.msi`, `.iso`, `.dmg`).
 - Varredura de arquivos compactados redundantes (`.zip`, `.rar`, `.7z`, `.tar.gz`).
 - Localização de diretórios vazios sem nenhum arquivo interno.
@@ -84,7 +84,9 @@ Toda auditoria e limpeza no Google Drive segue o protocolo de preservação de d
 ```
 
 ### Passo 1: Varredura de Armazenamento
+
 Executar levantamento estatístico no PowerShell 7:
+
 ```powershell
 # Levantar os 20 maiores arquivos da unidade
 Get-ChildItem -Path "G:\Meu Drive" -File -Recurse -ErrorAction SilentlyContinue |
@@ -93,6 +95,7 @@ Get-ChildItem -Path "G:\Meu Drive" -File -Recurse -ErrorAction SilentlyContinue 
 ```
 
 ### Passo 2: Detecção de Duplicatas Reais
+
 ```powershell
 # Agrupar arquivos com mesmo tamanho para cálculo de hash
 $candidatos = Get-ChildItem -Path "G:\Meu Drive\pasta-alvo" -File -Recurse -ErrorAction SilentlyContinue |
@@ -100,10 +103,13 @@ $candidatos = Get-ChildItem -Path "G:\Meu Drive\pasta-alvo" -File -Recurse -Erro
 ```
 
 ### Passo 3: Geração de Relatório de Simulação (Dry-Run)
+
 Apresentar uma tabela determinística contendo os itens candidatos a quarentena com tamanho total recuperável.
 
 ### Passo 4: Movimentação para Quarentena
+
 Após a confirmação do usuário, mover os arquivos duplicados/pesados para a pasta segura:
+
 ```powershell
 $quarentena = "G:\Meu Drive\_Quarentena_Descarte\$(Get-Date -Format 'yyyy-MM-dd')"
 if (!(Test-Path $quarentena)) { New-Item -ItemType Directory -Path $quarentena -Force }
@@ -115,6 +121,7 @@ Move-Item -Path "G:\Meu Drive\arquivo-duplicado.zip" -Destination $quarentena -W
 ## 6. SAÍDAS E ENTREGÁVEIS (MODELO DE SAÍDA)
 
 A resposta final da skill entrega:
+
 1. **Resumo Executivo de Ocupação:**
    - Total de espaço inspecionado e volume ocupado por arquivos grandes.
 2. **Tabela de Arquivos Pesados (> 100MB):**

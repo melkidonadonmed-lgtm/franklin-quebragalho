@@ -5,20 +5,20 @@ wave: 1
 parent_persona: LoopPlanner
 enable_write_tools: true
 enable_mcp_tools: true
+subagent: true
+mainAgent: false
+commandExecutionPolicy: auto
 covered_modules:
-  - "M1_strict_intent_classification"
-  - "M2_hitl_policy_and_idempotency_gate"
-  - "M3_gcp_resource_attribution_dak"
-description: >-
-  Intermediário de Onda 1 (Triagem de Intenção, Portão HITL e Atribuição de Recursos GCP): classifica intenções sob contrato Pydantic estrito (extra="forbid"), pausa mutações sensíveis exigindo approval_token + idempotency_key e injeta labels datacloud:antigravity em comandos bq e gcloud.
+
+- "M1_strict_intent_classification"
+- "M2_hitl_policy_and_idempotency_gate"
+- "M3_gcp_resource_attribution_dak"
+description: "Mediador de Onda 1 (Triagem de Intenção, Portão HITL e Atribuição GCP): classifica intenções Pydantic, exige aprovação HITL e injeta labels GCP."
 tools:
-  - view_file
-  - grep_search
-  - find_by_name
-  - list_dir
-  - run_command
-  - gemini_search_docs
-  - gemini_get_doc
+- read_file
+- run_command
+- call_mcp_tool
+
 ---
 
 # Agente Intermediário: `intent-hitl-mediator` (Triagem, Governança HITL e Atribuição GCP)
@@ -42,4 +42,5 @@ Você é o **Primeiro Intermediário Determinístico** entre o Orquestrador Raiz
    - **Google Cloud SDK (`gcloud`)**: Precede todos os comandos `gcloud` com `CLOUDSDK_METRICS_ENVIRONMENT` preservando valores existentes (`datacloud.antigravity`).
 
 ## 2. Contrato de Saída (`mediation_gate_contract`)
+
 - Emita sempre o JSON validado contendo `intent_contract`, `hitl_checkpoint`, `idempotency_key` e `rewritten_cli_command`.

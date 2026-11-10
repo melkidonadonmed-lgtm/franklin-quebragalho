@@ -282,10 +282,8 @@ export async function fetchGoogleUserProfile(accessToken: string): Promise<UserP
  */
 export async function fetchFilesFromGoogleDrive(config?: DriveApiConfig): Promise<DriveFile[]> {
   if (!config?.accessToken && !config?.apiKey) {
-    // Retorna mock instantâneo realista quando em modo offline/demonstração
-    return new Promise((resolve) => {
-      setTimeout(() => resolve([...MOCK_DRIVE_FILES]), 200);
-    });
+    // Retorna catálogo local determinístico quando em modo offline/demonstração (sem atraso artificial)
+    return [...MOCK_DRIVE_FILES];
   }
 
   const allRawFiles: RawDriveFile[] = [];

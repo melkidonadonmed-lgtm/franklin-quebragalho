@@ -1,28 +1,32 @@
 ---
 name: frontend-ui-ux-auditor
-description: >-
-  Audita com precisão matemática navegabilidade UI/UX, densidade DOM, fidelidade a Design Tokens (DESIGN.md), ícones, tipografia mobile, contraste WCAG 2.1 AA, física da luz (135°) e elevação por sombras. Use para diagnóstico visual e ergonômico de frontend; não use para testes de backend.
-version: "1.0.0"
-license: MIT
+description: "Audita com precisão matemática densidade de nós DOM, contraste WCAG 2.1 AA, física da luz 135, elevação por sombras, espaçamento e camadas. Use para diagnóstico visual de frontend; não use para backend."
+version: "3.0.0"
+updated_at: "2026-10-27"
+compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
-  version: "1.0.0"
+  version: "3.0.0"
+  updated_at: "2026-10-27"
   author: "UI-Architect & Melki"
-  category: "Frontend UI/UX Mathematical Auditing"
+  category: "Frontend UI/UX Mathematical Auditing, OKLCH Design Tokens, Logical Box Model & Optical Physics"
+  tags: []
 ---
-
-# Skill: Auditor de UI/UX, Navegabilidade e Design Systems Frontend
+# Skill: Auditor de UI/UX, Box Model Lógico, Cores Perceptuais `OKLCH`, Navegação em 3 Camadas e Física da Luz (`v3.0.0`)
 
 ## 1. Objetivo, Propósito e Quando Usar (Gatilhos)
 
-Esta Skill estabelece a esteira de auditoria técnica para inspecionar componentes e layouts frontend, garantindo acabamento estético de elite, acessibilidade estrita e conformidade com Design Tokens. A arquitetura segue a separação estrita de responsabilidades: o modelo cognitivo atua na análise contextual e decisões de refinamento, enquanto o script Python (`scripts/ui_ux_frontend_auditor.py`) executa cálculos determinísticos de contraste WCAG, contagem de nós no DOM e detecção de classes arbitrárias fora da escala.
+Esta Skill estabelece a esteira de auditoria matemática para inspecionar componentes e layouts frontend, garantindo acabamento alinhado aos **9 Eixos da SSOT** ([`Preferências de Trabalho com Agentes.md`](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md)). O motor determinístico (`scripts/ui_ux_frontend_auditor.py`) avalia Design Tokens em 3 camadas (`OKLCH` / escala `4px/8px`), propriedades lógicas e prevenção de colapso de margem, contraste WCAG 2.1 AA, nitidez tipográfica fluida anti-borrão GPU, árvore DOM, navegação em 3 camadas, sombras multi-camadas e Container Queries (`@container`).
 
-### Gatilhos Positivos (Quando Usar):
-- Solicitação de auditoria ou inspeção visual de telas, interfaces, menus e layouts.
-- Verificação de Design Tokens, variáveis CSS e conformidade com o `DESIGN.md` (escala modular de 8px).
-- Avaliação de renderização móvel, nitidez tipográfica e responsividade desktop-mobile.
-- Auditoria de acessibilidade (contraste WCAG 2.1 AA, luminância relativa W3C e touch targets $\ge 44 \times 44\text{ px}$).
+### Gatilhos Positivos (Quando Usar)
 
-### Gatilhos Negativos (Exceções e Limites — Quando NÃO Usar):
+- Solicitação de auditoria ou inspeção visual/estrutural de telas, interfaces, menus, cards e layouts.
+- Verificação de Design Tokens em 3 camadas (`--bg-canvas`/`--surface-canvas`, `--text-primary`/`--ink-primary`, `oklch()`, `light-dark()`, `color-mix()`, RCS `from`) e conformidade com `DESIGN.md` (escala Base-4 / Base-8).
+- Avaliação de Box Model lógico (`inline-size`, `padding-inline`, `margin-block`), contenção de colapso de margem (`display: flow-root`, `gap`, `.prose > * + *`), nitidez tipográfica (`clamp()`, `65ch`, `text-wrap: balance/pretty`, `antialiased`, `font-synthesis: none`) e `@container`.
+- Auditoria de acessibilidade e navegação em 3 camadas (contraste WCAG 2.1 AA, `<nav aria-label>`, Breadcrumbs `<ol role="list">` + `aria-current="page"`, Ordem DOM = Ordem Visual e touch targets $\ge 44 \times 44\text{ px}$).
+
+### Gatilhos Negativos (Quando NÃO Usar)
+
 - Revisão de regras de negócio puramente backend (queries SQL, rotas gRPC isoladas).
 - Testes unitários de algoritmos computacionais sem relação com a camada visual.
 
@@ -32,139 +36,61 @@ Esta Skill estabelece a esteira de auditoria técnica para inspecionar component
 
 1. **Alvo da Auditoria:** Arquivo `.html`, `.css`, `.jsx`, `.tsx`, `.vue` ou diretório raiz do frontend.
 2. **Motor Determinístico:** `scripts/ui_ux_frontend_auditor.py`, executável via CLI (`python scripts/ui_ux_frontend_auditor.py --target <caminho>`) ou MCP (`franklin_run_skill_script`).
-3. **Contrato de Design (Opcional):** `DESIGN.md` na raiz do projeto definindo variáveis semânticas (`--border-muted`, `--accent`, etc.).
+3. **Contrato de Design (Opcional):** `DESIGN.md` na raiz do projeto.
 
 ---
 
-## 3. Processamento e Fluxo: As 8 Dimensões Invioláveis da Auditoria Frontend UI/UX
+## 3. Processamento e Fluxo: As 6 Dimensões da Auditoria Frontend UI/UX (Cobrindo os 9 Eixos)
 
-### 3.1. Inventário, Densidade de Componentes e Árvore DOM
-O auditor decompõe a interface nas quatro camadas do **Design Atômico** para evitar proliferação de nós órfãos:
-- **Átomos:** Botões (`<button>`), campos (`<input>`), etiquetas (`<label>`), badges e ícones SVG isolados.
-- **Moléculas:** Inputs compostos com ícone integrado, cards de métricas simples e chips de filtro.
-- **Organismos:** Navbars, Sidebars colapsáveis, Bento Grids estruturais, modais de confirmação e tabelas de dados.
-- **Templates e Layout:** Grids responsivos de 12 colunas e contêineres mestre.
+### 3.1. Dimensão 1: Design Tokens em 3 Camadas (`OKLCH`) e Escala Modular Base-4 / Base-8 (`W = 0.20`)
 
-**Limites de Densidade Estrutural:**
-- **Teto de Profundidade:** Profundidade máxima da árvore DOM limitada a **$\le 12$ níveis** para prevenir gargalos de pintura e recálculo de estilo.
-- **Divsoup Ratio:** A razão entre tags genéricas e o total de nós ($\frac{\text{tags } \langle\text{div}\rangle}{\text{total de tags}}$) deve ser mantida **$\le 0.45$**, exigindo o emprego universal de HTML5 semântico (`<main>`, `<header>`, `<nav>`, `<aside>`, `<section>`, `<article>`).
+- **Arquitetura em 3 Camadas (Eixos 3 & 4):** Verifica a separação entre *Primitivos* (`--primitive-*`, `--space-*`), *Semânticos* (`--bg-canvas`/`--surface-canvas`, `--bg-surface-1`/`--surface-card`, `--text-primary`/`--ink-primary`, `--border-subtle`) e *Componente*, com suporte a `oklch()`, `light-dark()`, `color-mix(in oklab, ...)` e RCS (`from`), além de elevação progressiva no Modo Escuro ($L = 0.16 \to 0.22 \to 0.27$, zero `#000000` puro).
+- **Grade de Espaçamento e Detecção de Valores Arbitrários:** Todo `padding`, `margin` e `gap` deve derivar da progressão canônica (`4, 8, 12, 16, 24, 32, 48, 64px`) e raios concêntricos ($R_{\text{interno}} = \max(4\text{px}, R_{\text{externo}} - \text{Padding})$), rejeitando valores arbitrários (`p-[13px]`, `w-[37px]`, `margin: 11px`).
 
-### 3.2. Design Tokens e Escala Modular de 8px (`DESIGN.md`)
-Os Design Tokens funcionam como a fonte normativa única de verdade para espaçamentos, bordas e cores:
-- **Grade de Espaçamento Base 8px:** Todo `padding`, `margin` e `gap` deve obrigatoriamente derivar da progressão canônica: `4px (0.5), 8px (1), 12px (1.5), 16px (2), 24px (3), 32px (4), 48px (6), 64px (8)`.
-- **Detecção de Valores Arbitrários:** O auditor sinaliza e rejeita qualquer declaração pontual fora do catálogo do sistema (ex.: `p-[13px]`, `w-[37px]`, `gap-[7px]`, `margin: 11px`).
-- **Espessamento de Tokens de Borda:**
-  - Bordas estruturais em superfícies de repouso: estritamente `1px solid var(--border-muted)`.
-  - Bordas de destaque ou foco ativo: padronizadas em `2px solid var(--accent)`.
-  - É proibido mesclar espessuras aleatórias entre componentes da mesma hierarquia.
+### 3.2. Dimensão 2: Tipografia Fluida, Nitidez Anti-Borrão GPU e Contraste WCAG 2.1 AA (`W = 0.20`)
 
-### 3.3. Navegabilidade Estrutural (Sidebar, Topbar, Menus e Acessibilidade)
-A navegação deve manter previsibilidade tanto no Desktop quanto no Mobile:
-- **Barra Lateral (Sidebar):**
-  - **Desktop:** Largura fixa previsível (`240px` a `280px`), colapsabilidade com persistência de estado e transição suave.
-  - **Mobile:** Conversão automática para Drawer/Menu Hambúrguer flutuante com camada de desfoque/escurecimento de fundo (*backdrop overlay*), suporte a fechamento pela tecla `Escape` e bloqueio de rolagem do body quando aberto.
-- **Acessibilidade de Navegação por Teclado:**
-  - Anéis de foco visíveis e destacados em todos os elementos acionáveis via `:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }`.
-  - Mapeamento explícito da página ativa através do atributo semântico `aria-current="page"`.
-  - Ordem sequencial lógica de `tabindex` correspondente à leitura visual.
+- **Travas de Renderização e Escala Fluida (Eixo 2):** Exige `-webkit-font-smoothing: antialiased`, `text-rendering: optimizeLegibility`, `font-optical-sizing: auto` e `font-synthesis: none` em `html, body`; escala `clamp()`, `max-inline-size: 65ch` (`text-wrap: pretty` em `p, li`), `text-wrap: balance` em títulos (`h1`–`h4`) e `font-variant-numeric: tabular-nums` em métricas.
+- **Prevenção de Borrão GPU e Contraste WCAG 2.1 AA:** Proíbe `scale()` fracionário em textos, texto colorido de baixo contraste sobre fundo médio, fontes $< 12\text{px}$ e valida a luminância relativa W3C ($CR = \frac{L_{\text{claro}} + 0.05}{L_{\text{escuro}} + 0.05} \ge 4.5:1$ para texto normal; $\ge 3.0:1$ para texto grande/UI).
 
-### 3.4. Iconografia e Consistência Geométrica
-Ícones comunicam função semântica e não devem sofrer distorções ou discrepâncias estilísticas:
-- **Bounding Box Padronizado:**
-  - Ícones em linhas de texto / badges: **$16 \times 16\text{ px}$** (`w-4 h-4`).
-  - Ícones em botões e menus de navegação: **$20 \times 20\text{ px}$** (`w-5 h-5`).
-  - Ícones de cabeçalho de seção e cartões de destaque: **$24 \times 24\text{ px}$** (`w-6 h-6`).
-  - **Proporção Obrigatória 1:1:** O auditor reprova ícones com caixas assimétricas (ex.: `width="22"` e `height="18"`).
-- **Consistência de Traço e Família:**
-  - Emprego de uma única biblioteca vetorial (ex.: Lucide ou Heroicons), banindo a coexistência de pacotes visuais concorrentes.
-  - Espessura de traço (*stroke-width*) padronizada (`1.5px`, `1.75px` ou `2.0px`) em todo o sistema.
+### 3.3. Dimensão 3: Box Model Lógico, Anti-Colapso de Margem, Árvore DOM e Navegação em 3 Camadas (`W = 0.15`)
 
-### 3.5. Tipografia, Escala Modular e Nitidez Mobile (Anti-Embaçamento)
-A tipografia define a hierarquia visual e não pode sofrer artefatos de renderização:
-- **Escala Tipográfica Proporcional:** Estruturada sob razão modular (ex.: Major Second `1.125` ou Minor Third `1.20`):
-  - `Display / H1`: 32px – 48px | `line-height: 1.15` | `font-weight: 700`
-  - `H2`: 24px – 30px | `line-height: 1.25` | `font-weight: 600`
-  - `Body`: 14px – 16px | `line-height: 1.5` a `1.6` | `font-weight: 400`
-  - `Label / Caps`: 11px – 12px | `letter-spacing: 0.05em` | `font-weight: 500`
-- **Mitigação de Fontes Embaçadas no Mobile:**
-  - Em telas OLED e de alta densidade de pixels (Retina), exige-se a ativação de renderização subpixel nítida:
-    ```css
-    body {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-    }
-    ```
-  - Configuração obrigatória da meta tag no cabeçalho do documento:
-    ```html
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    ```
-  - Proibição de textos corridos com tamanho inferior a **12px**.
+- **Box Model e Colapso de Margem (Eixo 1):** Verifica `box-sizing: border-box`, propriedades lógicas (`inline-size`, `block-size`, `padding-inline`, `margin-block`, `border-inline-start`), contenção BFC com `display: flow-root`, espaçamento delegado ao pai via `gap` e `.prose > * + *`.
+- **Densidade DOM:** Profundidade máxima **$\le 12$ níveis** e `divsoup_ratio` ($\frac{\text{tags } \langle\text{div}\rangle}{\text{total de tags}}$) **$\le 0.45$**, exigindo HTML5 semântico (`<main>`, `<header>`, `<nav>`, `<aside>`, `<section>`, `<article>`).
+- **Navegação Contextual (Eixo 8):** (1) *Global* (`<nav aria-label>`), (2) *Local/In-Page* (quando a vista possuir múltiplas seções/filtros), (3) *Estrutural/Breadcrumbs* (`<nav aria-label="Caminho de navegação"><ol role="list">` + `aria-current="page"`, exigido **apenas em fluxos com hierarquia profunda $\ge 3$ níveis**, dispensado em landing pages, modais ou cockpits de tela única), `:focus-visible` e **Ordem DOM = Ordem Visual** (proibido `flex-direction: row-reverse` ou `order` arbitrário que quebre a tecla `Tab`).
 
-### 3.6. Acessibilidade Cromática e Contraste WCAG 2.1 AA
-O cálculo de contraste é executado deterministicamente com base na luminância relativa da norma W3C:
+### 3.4. Dimensão 4: Iconografia Vetorial 1:1 e Zero Emojis (`W = 0.15`)
 
-$$L = 0.2126 \cdot R' + 0.7152 \cdot G' + 0.0722 \cdot B'$$
+- **Bounding Box Padronizado (1:1):** $16 \times 16\text{ px}$ (`w-4 h-4`), $20 \times 20\text{ px}$ (`w-5 h-5`) ou $24 \times 24\text{ px}$ (`w-6 h-6`), família vetorial única (**Lucide** ou **Phosphor**, `stroke-width: 1.75`), `filter: drop-shadow()` quando houver sombra em máscara alfa e **zero emojis na interface**.
 
-Onde cada canal $C \in \{R, G, B\}$ em escala sRGB de 8 bits é normalizado por:
+### 3.5. Dimensão 5: Os 3 Tipos de Sombra, Luz Zenital (90°–120°) e Blend Isolation (`W = 0.15`)
 
-$$C' = \begin{cases} \frac{C/255}{12.92}, & \frac{C}{255} \le 0.04045 \\ \left(\frac{C/255 + 0.055}{1.055}\right)^{2.4}, & \frac{C}{255} > 0.04045 \end{cases}$$
+Conforme [`references/tactile_elevation_and_shadows.md`](references/tactile_elevation_and_shadows.md):
 
-A razão de contraste ($CR$) entre a cor de primeiro plano e a cor de fundo deve satisfazer:
+- **Sombras Realistas em Camadas (Eixo 5):** Combina **Umbra de contato** + **Penumbra difusa com `spread` negativo** + **Borda Especular Superior (`inset 0 1px 0 0` / `--catch-light`)** nos 3 níveis (`--shadow-elevation-1..3` / `--elevation-1..3`) e cavidade tátil (`--shadow-inset` / `--sunken-recess`), proibindo sombra única lavada.
+- **Blend Modes e Gradientes OKLCH:** Exige `isolation: isolate` em contêineres com `mix-blend-mode` e recomenda `linear-gradient(in oklch longer hue ...)`.
 
-$$CR = \frac{L_{\text{mais claro}} + 0.05}{L_{\text{mais escuro}} + 0.05}$$
+### 3.6. Dimensão 6: Macro/Microlayout (`@container`), 4 Variantes de Cards, PWA e Movimento Físico (`W = 0.15`)
 
-- **Texto Normal (< 18pt regular ou < 14pt negrito):** **$CR \ge 4.5:1$** (Conformidade AA obrigatória).
-- **Texto Grande e Componentes de Interface:** **$CR \ge 3.0:1$**.
-- **Touch Targets no Mobile:** Área física clicável de no mínimo **$44 \times 44\text{ px}$** para impedir erros de acionamento em telas de toque.
-
-### 3.7. Física da Luz (Eixo 135° / Chanfro Especular), Elevação Tátil e Bordas Reflexivas
-Interfaces modernas de alto padrão aplicam regras de iluminação física (detalhadas em [`references/tactile_elevation_and_shadows.md`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/frontend-ui-ux-auditor/references/tactile_elevation_and_shadows.md)) para produzir profundidade atmosférica sem poluição visual:
-- **Chanfro Especular Superior (*Specular Micro-Bevel*) ou Eixo 135°:** Todo elemento de superfície elevada (botões, cards, modais) recebe destaque interno sutil de `1px` no topo (`--specular-rim: inset 0 1px 0 0 rgba(255, 255, 255, 0.75)` no Light Mode; `0.14` a `0.22` no Dark Mode) ou borda superior reflexiva (`border-top: 1px solid rgba(255, 255, 255, 0.15)`), combinado com bordas perimetrais translúcidas (`1px solid var(--border-subtle)` / `rgba(15, 23, 42, 0.08)`).
-- **Elevação em Camadas (*Multi-Layered Shadows* — proibido sombra única pesada/preta pura no Light Mode):**
-  1. *Oclusão de Contato (Ambient Occlusion):* deslocamento curto (`1px` a `2px`), desfoque mínimo e opacidade baixa (`4%` a `6%`) ancorando à base.
-  2. *Difusão Direcional (Key Light):* projeção descendente no eixo Y com desfoque progressivo (`4px` a `32px`) e tom derivado da superfície (`rgba(15, 23, 42, 0.04..0.10)` no Light Mode):
-     - **Baixa (`--elevation-low` / `tactile-low`):** `0 1px 2px -1px rgba(15,23,42,0.06), 0 2px 4px 0 rgba(15,23,42,0.04)`
-     - **Média (`--elevation-medium` / `tactile-md`):** `0 2px 4px -1px rgba(15,23,42,0.06), 0 6px 14px -2px rgba(15,23,42,0.08)`
-     - **Alta (`--elevation-high` / `tactile-lg`):** `0 4px 8px -2px rgba(15,23,42,0.05), 0 16px 32px -4px rgba(15,23,42,0.10)`
-     - **Comprimida (`--elevation-pressed` / `tactile-pressed`):** `0 1px 1px 0 rgba(15,23,42,0.08), inset 0 1px 2px rgba(15,23,42,0.12)`
-- **Glassmorphism com Desfoque Otimizado:** `backdrop-filter: blur(12px)` a `blur(16px)` acompanhado de fundo semi-transparente (`rgba(15, 23, 42, 0.75)`).
-
-### 3.8. Transições, Dinâmica Tátil (`Hover` / `Active`) e Prevenção de Reflow
-- **Zero Reflow (Aceleração Exclusiva por GPU):** Animar estritamente `transform`, `box-shadow`, `background-color` e `opacity`. Reprovação imediata ao animar `width`, `height`, `padding`, `margin`, `top` ou `left` (*layout thrashing*).
-- **Microdinâmica Mecânica de Mola:**
-  - *Hover:* Ascensão suave (`transform: translateY(-1px)` em botões, `translateY(-2px)` em cards interativos) com expansão para `--elevation-medium` (`--motion-release: 160ms cubic-bezier(0.2, 0, 0, 1)`).
-  - *Active / Pressed:* Amortecimento físico nítido (`transform: translateY(1px) scale(0.99)` e `--elevation-pressed`) com transição rápida (`--motion-press: 100ms cubic-bezier(0.2, 0.8, 0.2, 1)`).
-- **Acessibilidade a Movimento:** Respeito obrigatório à preferência `@media (prefers-reduced-motion: reduce)`.
+- **Macrolayout (`@media`) vs. Microlayout (`@container`) & 4 Cards (Eixos 6 & 7):** CSS Grid RAM para página, `container-type: inline-size` + `@container` para cards (*Elevated*, *Outlined*, *Filled/Subtle*, *Interactive*) e `@media (display-mode: standalone)` para PWAs.
+- **Movimento Físico e Acessibilidade Motora:** Animar apenas `transform`, `box-shadow`, `background-color`, `border-color` e `opacity` (`cubic-bezier(0.22, 1, 0.36, 1)`), respeitando `@media (prefers-reduced-motion: reduce)` e `@media (pointer: coarse)` ($\ge 44 \times 44\text{ px}$).
 
 ---
 
-## 4. Saídas e Entregáveis: Rubrica Matemática, Checklist e Relatório
-
-A nota global da interface ($\text{Score}_{\text{UI/UX}} \in [0, 100]$) é calculada por combinação linear ponderada:
+## 4. Saídas e Entregáveis: Rubrica Matemática
 
 $$\text{Score}_{\text{UI/UX}} = \sum_{j=1}^{6} W_j \cdot S_j$$
 
 | Dimensão Auditada | Peso ($W_j$) | Critério Central de Avaliação |
 | :--- | :---: | :--- |
-| **Design Tokens** | **0.20 (20%)** | Taxa de aderência à escala de 8px e ausência de valores arbitrários. |
-| **Tipografia & Mobile** | **0.20 (20%)** | Legibilidade mobile, `antialiased`, entrelinha, meta viewport e contraste WCAG AA. |
-| **Estrutura & Semântica** | **0.15 (15%)** | HTML5 semântico, `divsoup ratio` $\le 0.45$ e profundidade DOM $\le 12$. |
-| **Iconografia** | **0.15 (15%)** | Proporção 1:1, bounding box padronizado (16/20/24px) e stroke uniforme. |
-| **Física da Luz & Elevação** | **0.15 (15%)** | Aresta superior reflexiva 135° e sombras de elevação difusas. |
-| **Movimento & Transições** | **0.15 (15%)** | Zero reflow (GPU), curvas Bézier e suporte a `prefers-reduced-motion`. |
-
-### Checklist Silencioso de Liberação (Self-Refine)
-- [ ] O contraste de texto em relação ao fundo atende ao mínimo de $4.5:1$ da WCAG 2.1 AA?
-- [ ] Todos os alvos de clique no mobile possuem dimensão mínima de $44 \times 44\text{ px}$?
-- [ ] A tag `<meta name="viewport" content="width=device-width, initial-scale=1.0">` está configurada?
-- [ ] As regras de suavização de fonte (`antialiased` e `optimizeLegibility`) estão ativas?
-- [ ] Nenhum elemento interativo anima propriedades de layout geométrico (`width`, `height`, `margin`)?
-- [ ] Todos os ícones possuem formato quadrado (1:1) e derivam de uma família vetorial única?
-- [ ] As superfícies elevadas possuem a borda reflexiva de refração do eixo de luz 135°?
-- [ ] A barra lateral (sidebar) fecha e abre sem provocar transbordamento horizontal (*horizontal scroll*) no mobile?
+| **Design Tokens 3 Camadas & OKLCH** | **0.20 (20%)** | Escala Base-4/Base-8, tokens semânticos (`oklch`/`light-dark`) e zero valores arbitrários. |
+| **Tipografia Fluida & Nitidez GPU** | **0.20 (20%)** | `clamp()`, `65ch`, `balance/pretty`, `antialiased`, `font-synthesis: none` e contraste WCAG AA. |
+| **Box Lógico, DOM & Nav 3 Camadas** | **0.15 (15%)** | `border-box`, propriedades lógicas/`flow-root`, DOM $\le 12$, `divsoup` $\le 0.45$, Breadcrumbs e Ordem Tab. |
+| **Iconografia 1:1 & Zero Emojis** | **0.15 (15%)** | Proporção 1:1 (16/20/24px), `stroke-width` uniforme e zero emojis. |
+| **Luz Zenital, 3 Sombras & Isolation** | **0.15 (15%)** | Catch-light (`inset 0 1px 0 0`), sombras multi-camadas em 3 níveis e `isolation: isolate`. |
+| **Macro/Micro `@container`, Cards & Motion** | **0.15 (15%)** | Zero reflow GPU, `@container`, curvas Bézier, `pointer: coarse` $\ge 44\text{px}$ e `prefers-reduced-motion`. |
 
 ### Execução do Motor Determinístico (`scripts/ui_ux_frontend_auditor.py`)
+
 ```powershell
 uv run python skills/frontend-ui-ux-auditor/scripts/ui_ux_frontend_auditor.py --target "<arquivo_ou_diretorio>"
 ```

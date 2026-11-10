@@ -9,7 +9,9 @@ Este documento estabelece a blindagem defensiva e o protocolo de isolamento comp
 No modelo Zero-Trust para agentes cognitivos, **nenhuma entrada externa é confiável**. Isso se aplica a dados passados pelo usuário, arquivos lidos do disco, respostas de APIs ou resultados de busca na web.
 
 ### Delimitação Obrigatória em Tags XML
+
 Toda interação opera sob tripartição estrita:
+
 ```xml
 <system_instructions>
 <!-- Diretrizes imutáveis de governança, restrições e personas -->
@@ -41,6 +43,7 @@ Toda interação opera sob tripartição estrita:
 ## 3. Protocolo de Ferramentas e Runtime MCP (Spec 2026-07-28)
 
 O ecossistema adota a especificação do Model Context Protocol (MCP) consolidada em 28/07/2026:
+
 - **`tools`**: Ferramentas com tipagem estrita via esquemas JSON Schema/Zod e validação defensiva de borda.
 - **`resources`**: Recursos com URIs canônicas imutáveis (esquemas `file:///`, `mcp://`).
 - **`prompts`**: Modelos parametrizados com controle semântico de versão.
@@ -51,6 +54,7 @@ O ecossistema adota a especificação do Model Context Protocol (MCP) consolidad
 ## 4. Callbacks Determinísticos de Ciclo de Vida
 
 Para garantir rastreabilidade e segurança em runtime:
+
 - **`BeforeToolCallback`**: Executado imediatamente antes da chamada de qualquer ferramenta. Inspeciona argumentos, higieniza inputs suspeitos de injeção e barra comandos destrutivos.
 - **`AfterToolCallback`**: Executado após o retorno da ferramenta. Mascara tokens, segredos (`API_KEY`, Bearer tokens) e valida a conformidade da resposta contra o contrato de dados.
 

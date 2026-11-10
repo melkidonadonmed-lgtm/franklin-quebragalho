@@ -228,21 +228,21 @@ CANONICAL_TRIGGER_EVAL_CASES: List[TriggerEvalCase] = [
         near_miss_skills=["high-level-context-planner", "gap-analyzer-auditor"],
         rationale="Execução de ondas DAG encadeadas com isolamento de estado compartilhado.",
     ),
-    # Cluster 6: Organização de Projetos, Diagnóstico de MVP & Arquitetura de Ilhas
+    # Cluster 6: Organização de Projetos, Diagnóstico de MVP & Arquitetura de Ilhas (Fusão 3-em-1)
     TriggerEvalCase(
         case_id="TRG-20",
         cluster="Projetos, MVP & Arquitetura",
-        query="auditoria arquitetural e diagnóstico de MVP para Antigravity varrendo CONTEXT.md, AGENTS.md, SPEC.md e README.md isoladamente",
-        expected_skill="antigravity-project-auditor",
-        near_miss_skills=["auditoria-projetos-sistema", "organizador-projetos-ideias"],
-        rationale="Diagnóstico read-only de MVP e arquivos base para Antigravity.",
+        query="auditoria integrada 3-em-1 de projetos, sistemas, MVP e navegabilidade com project_structure_and_code_auditor.py e Plano de Evolução em 3 Fases",
+        expected_skill="auditoria-projetos-sistema",
+        near_miss_skills=["organizador-projetos-ideias", "frontend-testing-auditor"],
+        rationale="Diagnóstico de MVP, árvore física AST e plano em 3 fases consolidados em auditoria-projetos-sistema v6.0.",
     ),
     TriggerEvalCase(
         case_id="TRG-21",
         cluster="Projetos, MVP & Arquitetura",
         query="auditar integridade estrutural de repositórios, código órfão e esteira dinâmica via agent-browser @eX com nota de 0 a 100",
         expected_skill="auditoria-projetos-sistema",
-        near_miss_skills=["antigravity-project-auditor", "frontend-testing-auditor"],
+        near_miss_skills=["organizador-projetos-ideias", "frontend-testing-auditor"],
         rationale="Auditoria estrutural 0-100 combinada com esteira dinâmica agent-browser (@eX).",
     ),
     TriggerEvalCase(
@@ -250,16 +250,16 @@ CANONICAL_TRIGGER_EVAL_CASES: List[TriggerEvalCase] = [
         cluster="Projetos, MVP & Arquitetura",
         query="organizar ideias do zero com perguntas guiadas e sugestão de MVP ou reestruturar README.md fiel ao disco e contratos MCP tools.json",
         expected_skill="organizador-projetos-ideias",
-        near_miss_skills=["antigravity-project-auditor", "organizador-fluxo-arvore-arquivos"],
+        near_miss_skills=["auditoria-projetos-sistema", "organizador-fluxo-arvore-arquivos"],
         rationale="Ideação guiada do zero ou reestruturação de README.md e contratos MCP/FastAPI.",
     ),
     TriggerEvalCase(
         case_id="TRG-23",
         cluster="Projetos, MVP & Arquitetura",
-        query="arquitetura em Ilhas Funcionais Island UI/UX, auditoria de navegação real Clicar em X ativa Y, Dead Ends, suficiência funcional e score determinístico SGA V1 vs V2 em HTML",
-        expected_skill="nav-x-func",
-        near_miss_skills=["design-md", "auditoria-projetos-sistema"],
-        rationale="Aglomeração funcional por ilhas (Island UI/UX), navegação real (X ativa Y), suficiência funcional (TIF) e score comparativo V1 vs V2.",
+        query="auditoria de navegação em 3 camadas, Ilhas Funcionais, Clicar em X ativa Y, Dead Ends, suficiência funcional e score determinístico SGA V1 vs V2 com deterministic_scorer.py",
+        expected_skill="auditoria-projetos-sistema",
+        near_miss_skills=["design-md", "organizador-projetos-ideias"],
+        rationale="Navegação em 3 camadas, Ilhas Funcionais (X ativa Y) e motor SGA V1 vs V2 unificados em auditoria-projetos-sistema v6.0.",
     ),
     # Cluster 7: Documentos Markdown, Conversão PDF & Fluxos Mermaid
     TriggerEvalCase(
@@ -291,15 +291,55 @@ CANONICAL_TRIGGER_EVAL_CASES: List[TriggerEvalCase] = [
         cluster="Código, Testes & 3D",
         query="auditar sistemas agênticos, servidores MCP 2026-07-28 STDIO stdout, nós A2A agent-card JWS, higiene de binários, travas max_steps e persistir memories/audit_report.json",
         expected_skill="agent-server-auditor",
-        near_miss_skills=["antigravity-project-auditor", "test-quality-auditor", "code-acceptability-auditor"],
+        near_miss_skills=["auditoria-projetos-sistema", "test-quality-auditor", "code-acceptability-auditor"],
         rationale="Auditoria arquitetural de agentes, servidores MCP STDIO, A2A agent-card JWS e snapshot memories/audit_report.json.",
+    ),
+    TriggerEvalCase(
+        case_id="TRG-28",
+        cluster="Frontend & UI",
+        query="auditar via ciclo ReAct CDP DevTools e AST aplicações frontend complexas com canvas infinito @xyflow/react WebSocket Chokidar, detecção de nós fantasmas funções falsas e Next.js 15 async params",
+        expected_skill="complex-zero",
+        near_miss_skills=["frontend-code-architect", "frontend-testing-auditor", "frontend-ui-ux-auditor"],
+        rationale="Auditoria ReAct + CDP/DevTools + AST anti-fake de grafos reativos @xyflow/react, WebSocket/Chokidar e Next.js 15+ async params.",
+    ),
+    TriggerEvalCase(
+        case_id="TRG-29",
+        cluster="Frontend & UI",
+        query="análise minuciosa e global de frontend UI/UX com REA Reverse Engineer Anything, proporção 60-30-10 OKLCH e propostas de mutação Antes Depois plan-uiux",
+        expected_skill="plan-uiux",
+        near_miss_skills=["frontend-ui-ux-auditor", "design-md", "frontend-code-architect"],
+        rationale="Auditoria estrutural de frontend com REA (analyze_javascript_application / inspect_analysis_view) e mutações Antes vs. Depois.",
+    ),
+    TriggerEvalCase(
+        case_id="TRG-30",
+        cluster="Código, Testes & 3D",
+        query="executar audit-skills-antigravity em habilidades Skills privadas em Python Go e JS via REA analisando Context Bloat, colisões e métricas Pass@k e FNR",
+        expected_skill="audit-skills-antigravity",
+        near_miss_skills=["agent-server-auditor", "test-quality-auditor", "code-acceptability-auditor"],
+        rationale="Auditoria matemática e estrutural de Skills privadas via REA + motor Go (Context Bloat, Pass@k e FNR).",
+    ),
+    TriggerEvalCase(
+        case_id="TRG-31",
+        cluster="Projetos, MVP & Arquitetura",
+        query="criar app Android do zero ou auditar gargalos de build Gradle AGP 9 Built-in Kotlin KSP2 Jetpack Compose Navigation 3 R8 ANR e memory leaks com android-agy-projects",
+        expected_skill="android-agy-projects",
+        near_miss_skills=["auditoria-projetos-sistema", "frontend-code-architect"],
+        rationale="Engenharia e auditoria especializada de projetos Android (Kotlin 2.4+, AGP 9.x Built-in Kotlin, KSP2, Compose BOM 2026.09.00, Navigation 3 e R8).",
+    ),
+    TriggerEvalCase(
+        case_id="TRG-32",
+        cluster="Código, Testes & 3D",
+        query="engenharia reversa e auditoria de APKs Android com re-a-ndroid REA e ADB descompilando DEX .so assinaturas v1-v3.1 funções placebo latência de rotas e alvos 48dp",
+        expected_skill="re-a-ndroid",
+        near_miss_skills=["android-agy-projects", "audit-skills-antigravity", "plan-uiux"],
+        rationale="Engenharia reversa e auditoria binária/dinâmica de APKs Android com REA + ADB (DEX, .so, assinaturas v1-v3.1, funções placebo e touch targets 48dp).",
     ),
 ]
 
 
 def _evaluate_single_case(case: TriggerEvalCase) -> TriggerCaseOutcome:
     """Executa o ranqueamento Nível 1 para um caso e verifica Top-1 e rejeição de near-misses."""
-    ranked = rank_skills_for_query(case.query, limit=30)
+    ranked = rank_skills_for_query(case.query, limit=50)
     score_by_name: Dict[str, int] = {item[1]["name"]: item[0] for item in ranked}
     top3_names = [item[1]["name"] for item in ranked[:3]]
     top1_name = top3_names[0] if top3_names else ""

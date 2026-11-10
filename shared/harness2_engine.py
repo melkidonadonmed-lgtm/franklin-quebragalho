@@ -126,12 +126,19 @@ def _execute_recursion_step(
     ledger: RecursionLedger,
     trees: Dict[str, Tree],
     stages: List[Dict[str, Any]],
+    probe_evaluator_fn: Optional[Callable[[Tree], Tuple[bool, str]]] = None,
 ) -> Tree:
-    """Executa um estágio individual de proposição, reparo autotrigger e validação Answer-Free."""
+    """Executa um estágio individual de proposição, reparo autotrigger, probe determinístico e validação Answer-Free."""
     proposed, notes = prop(label, dim, dict(fallback))
     autotrigger_skills(surface, proposed)
+    probe_passed = True
+    probe_feedback = ""
     try:
         validate_harness_tree(surface, proposed)
+        if probe_evaluator_fn is not None:
+            probe_passed, probe_feedback = probe_evaluator_fn(proposed)
+            if not probe_passed:
+                raise ValueError(f"Deterministic probe failed: {probe_feedback}")
         fell_back, err = False, ""
         chosen_tree = proposed
     except ValueError as exc:
@@ -147,6 +154,8 @@ def _execute_recursion_step(
             "dim": dim,
             "kept_base": kept_base,
             "fell_back": fell_back,
+            "probe_passed": probe_passed,
+            "probe_feedback": probe_feedback,
             "notes": notes,
             "error": err,
         }
@@ -166,7 +175,10 @@ def _build_default_proposer(
         skills = skill_names(surface, cand)
         scripts = sorted(rel for rel in cand if rel.startswith("scripts/") or "/scripts/" in rel)
         if dim == "INV":
-            inv_line = f"- [INV:{label}] Enforce AUDIT-VIS-01 (zero emojis, tabular-nums) and AST <= 60 lines."
+            inv_line = (
+                f"- [INV:{label}] Enforce AUDIT-VIS-01 (--surface-*, zenithal lighting 90-120 deg, "
+                "zero emojis, tabular-nums, zero fractional scale) and AST <= 60 lines."
+            )
             if inv_line not in base_text:
                 base_text = f"{base_text}\n{inv_line}"
             note_msg = f"Synthesized deterministic invariant guard ({label})"
@@ -192,6 +204,32 @@ def _build_default_proposer(
     return _propose
 
 
+def _record_winner_experience(
+    experience_lib: Optional["ExperienceLibrary"],
+    finals: List[str],
+    stages: List[Dict[str, Any]],
+    trees: Dict[str, Tree],
+    ledger: RecursionLedger,
+    task_id: str,
+    mode: str,
+    k: int,
+) -> Optional[str]:
+    """Persiste o candidato vencedor na ExperienceLibrary quando habilitada."""
+    if experience_lib is None or not finals:
+        return None
+    winner_lbl = finals[-1]
+    failed_stages = [s["label"] for s in stages if s.get("fell_back")]
+    exp_path = experience_lib.add_experience(
+        task_id,
+        trees[winner_lbl],
+        cue=f"Contrastive {mode} recursion on task '{task_id}' (k={k})",
+        lesson=f"Compose INV+DOM invariants in '{winner_lbl}' while rejecting fallback stages ({failed_stages or 'none'}).",
+        evidence=f"Validated {len(stages)} stages under budget R={ledger.R}, P={ledger.P}.",
+        why="Selected final composed candidate after deterministic surface and probe validation.",
+    )
+    return str(exp_path)
+
+
 def simulate_propose_probe_compose(
     task_id: str,
     base_tree: Tree,
@@ -200,8 +238,10 @@ def simulate_propose_probe_compose(
     k: int = 1,
     surface: SurfaceSpec = FRANKLIN_SURFACE,
     proposer_fn: Optional[Callable[[str, str, Tree], Tuple[Tree, str]]] = None,
+    probe_evaluator_fn: Optional[Callable[[Tree], Tuple[bool, str]]] = None,
+    experience_lib: Optional["ExperienceLibrary"] = None,
 ) -> Dict[str, Any]:
-    """Executa o loop contrastivo Propose-Probe-Compose (R=4k, P=3k) com reparo e validação."""
+    """Executa o loop contrastivo Propose-Probe-Compose (R=4k, P=3k) com reparo, probe real e validação."""
     if mode not in ("agg", "seq"):
         raise ValueError("mode must be 'agg' (parallel) or 'seq' (sequential)")
     k = max(1, int(k))
@@ -218,11 +258,13 @@ def simulate_propose_probe_compose(
         for i in range(1, k + 1):
             for d in ("INV", "DOM"):
                 lbl = f"{d.lower()}{i}"
-                _execute_recursion_step(lbl, d, base_tree, surface, prop, ledger, trees, stages)
+                _execute_recursion_step(lbl, d, base_tree, surface, prop, ledger, trees, stages, probe_evaluator_fn)
                 ledger.rollout(lbl)
         for i in range(1, k + 1):
             lbl = f"agg{i}"
-            _execute_recursion_step(lbl, "AGG", trees.get(f"inv{i}", base_tree), surface, prop, ledger, trees, stages)
+            _execute_recursion_step(
+                lbl, "AGG", trees.get(f"inv{i}", base_tree), surface, prop, ledger, trees, stages, probe_evaluator_fn
+            )
             ledger.rollout(lbl)
             finals.append(lbl)
     else:
@@ -230,19 +272,25 @@ def simulate_propose_probe_compose(
         for t in range(1, k + 1):
             for d in ("INV", "DOM"):
                 lbl = f"{d.lower()}{t}"
-                _execute_recursion_step(lbl, d, cur, surface, prop, ledger, trees, stages)
+                _execute_recursion_step(lbl, d, cur, surface, prop, ledger, trees, stages, probe_evaluator_fn)
                 ledger.rollout(lbl)
             ck = f"c{t}"
-            cur = _execute_recursion_step(ck, "COMPOSE", trees.get(f"inv{t}", cur), surface, prop, ledger, trees, stages)
+            cur = _execute_recursion_step(
+                ck, "COMPOSE", trees.get(f"inv{t}", cur), surface, prop, ledger, trees, stages, probe_evaluator_fn
+            )
             ledger.rollout(ck)
             finals.append(ck)
 
     ledger.assert_identity()
+    recorded_experience_dir = _record_winner_experience(
+        experience_lib, finals, stages, trees, ledger, task_id, mode, k
+    )
     return {
         "mode": mode, "task_id": task_id, "k": k, "finals": finals,
         "anonymous_pool": assign_anonymous_ids(finals, task_id=task_id, k=k, mode=mode),
         "stages": stages, "diversity": tree_diversity({f: trees[f] for f in finals}),
         "ledger": ledger.to_dict(),
+        "recorded_experience_dir": recorded_experience_dir,
     }
 
 

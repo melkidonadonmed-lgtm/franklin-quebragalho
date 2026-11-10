@@ -1,0 +1,47 @@
+[
+  {
+    "eval_id": "ACT-01-dashboard-container-queries-oklch",
+    "prompt": "Analise meu dashboard e veja por que os cards quebram na barra lateral e o foco do teclado some.",
+    "expected_assertions": [
+      "Executa inspeção nos Eixos 1 e 2 substituindo @media nos cards por container-type: inline-size e @container",
+      "Restaura o anel de foco acessível via :focus-visible com outline em oklch() e garante alvos >= 48x48px em @media (any-pointer: coarse)",
+      "Aplica font-variant-numeric: tabular-nums nos indicadores numéricos e remove emojis da UI"
+    ]
+  },
+  {
+    "eval_id": "ACT-02-xyflow-websocket-chokidar-batch-150ms",
+    "prompt": "Crie um mapa visual de arquivos em tempo real usando React Flow que pisca quando salvo um arquivo no VS Code.",
+    "expected_assertions": [
+      "Utiliza o pacote moderno @xyflow/react com CustomMetricNode isolando cliques via className='nodrag nopan' e e.stopPropagation()",
+      "Implementa servidor WebSocket + chokidar com lote de 150ms (BATCH_UPDATE) e telemetria real (monitorEventLoopDelay e process.memoryUsage)",
+      "Aplica animação reativa em oklch() respeitando @media (prefers-reduced-motion: reduce)"
+    ]
+  },
+  {
+    "eval_id": "ACT-03-ast-ghost-node-and-fake-function-detection",
+    "prompt": "Verifique se os nós do meu grafo realmente existem no projeto ou se são apenas mocks visuais com funções vazias.",
+    "expected_assertions": [
+      "Executa auditoria AST (complex_zero_ast_auditor.py / auditGraphIntegrity) cruzando fs.existsSync confinado contra Path Traversal",
+      "Detecta e reprova Ghost Nodes, funções com corpo vazio {}, stubs console.log isolados, strings '[PASS]' hardcoded e Math.random()",
+      "Emite relatório determinístico de 0 a 100 pontos + ponte SGA/TIF da nav-x-func com veredito [PASS] ou [FAIL]"
+    ]
+  },
+  {
+    "eval_id": "ACT-04-nextjs15-async-params-migration",
+    "prompt": "Meu componente de página no Next.js 15 está dando erro ao acessar params.slug diretamente.",
+    "expected_assertions": [
+      "Refatora a tipagem de params e searchParams para Promise<{ slug: string }>",
+      "Aplica await params em Server Components (async function Page) ou React.use(params) em Client Components ('use client')",
+      "Documenta generateStaticParams e a separação arquitetural entre params (identidade) e searchParams (filtros)"
+    ]
+  },
+  {
+    "eval_id": "ACT-05-visual-hierarchy-cramped-menus-and-anti-tab-sprawl",
+    "prompt": "Minha interface está uma bagunça: menus compactados com tipografia horrível (11px/12px), várias entradas de chat repetidas e cada alteração cria novas abas em vez de usar os elementos da página.",
+    "expected_assertions": [
+      "Aciona a fusão complex-zero v3.0 + nav-x-func v6.0 reprovando CRAMPED_MENU_OR_BAD_TYPOGRAPHY (font-size < 13px, gap < 6px, min-block-size < 40px) e VISUAL_HIERARCHY_FLATNESS",
+      "Aplica a regra de Consolidação In-Place (TAB_AND_NAV_SPRAWL_NO_SLOT_REUSE): proíbe criar novas abas ou sub-abas aninhadas, reduz <nav> para <= 3 camadas e unifica inputs de chat em 1 único Composer",
+      "Executa Print (take_screenshot) + Sonda DOM (evaluate_script via --dump-cdp-script) no Chrome DevTools MCP para validar a hierarquia real renderizada"
+    ]
+  }
+]

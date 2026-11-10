@@ -1,0 +1,15 @@
+{
+  "skill_name": "plan-uiux",
+  "version": "1.1.0",
+  "evals": [
+    {
+      "id": "eval-plan-uiux-01",
+      "prompt": "Execute o plan-uiux com REA para auditar a arquitetura OKLCH 60-30-10, sombras multi-camadas e Container Queries do frontend e gerar o plano CLAREZA Antes vs. Depois.",
+      "expected_assertions": [
+        "Invoca analyze_javascript_application ou inspect_go_binary seguido de inspect_analysis_view",
+        "Classifica achados em [FATO OBSERVADO], [INFERÊNCIA TÉCNICA] e [INCERTEZA / LACUNA]",
+        "Emite plano CLAREZA com diff Antes vs. Depois em OKLCH e @container"
+      ]
+    }
+  ]
+}

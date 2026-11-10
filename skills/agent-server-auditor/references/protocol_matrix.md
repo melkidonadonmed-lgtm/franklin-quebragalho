@@ -1,12 +1,26 @@
-# Matriz de Conformidade de Protocolos Agênticos (`MCP 2026-07-28` & `A2A v1.0`)
+# Matriz de Conformidade de Protocolos Agênticos (`MCP 2026-07-28`, `A2A v1.0`, `Gemini API` & `WebSockets/JSON-RPC 2.0`)
 
-Documento de referência técnica da skill **`agent-server-auditor`** para inspeção estática poliglota (**Python**, **TypeScript** e **Go**).
+Documento de referência técnica da skill **`agent-server-auditor`** para inspeção estática e contratual poliglota (**Python**, **TypeScript** e **Go**).
+
+---
+
+## 0. Ancoragem Documental Pre-Flight (Proibido Chegar às Cegas)
+
+Antes de auditar qualquer cliente/servidor de API, modelo ou protocolo, consulte obrigatoriamente as fontes oficiais:
+
+- **Portal Oficial Gemini API (`docs`) & Antigravity Agent:** [`https://aistudio.google.com/docs`](https://aistudio.google.com/docs) | [`https://aistudio.google.com/docs/antigravity-agent`](https://aistudio.google.com/docs/antigravity-agent)
+- **Gemini API / Google AI Studio Docs Index (`llms.txt`):** [`https://aistudio.google.com/llms.txt`](https://aistudio.google.com/llms.txt)
+- **Gemini API / Google AI Studio Full Corpus (`llms-full.txt`):** [`https://aistudio.google.com/llms-full.txt`](https://aistudio.google.com/llms-full.txt)
+- **Google Gemini Cookbook (GitHub):** [`https://github.com/google-gemini/cookbook`](https://github.com/google-gemini/cookbook)
+- **Google ADK Docs (`llms.txt` & `llms-full.txt`):** [`https://adk.dev/llms.txt`](https://adk.dev/llms.txt) | [`https://adk.dev/llms-full.txt`](https://adk.dev/llms-full.txt)
+- **Sub-Skill WebSockets & JSON-RPC 2.0:** [`audit-websocket-jsonrpc.md`](audit-websocket-jsonrpc.md)
 
 ---
 
 ## 1. Model Context Protocol (`MCP Spec 2026-07-28`)
 
 ### 1.1. Higiene de Streams no Transporte `STDIO`
+
 - **Regra Canônica:** No transporte `STDIO`, o descritor `stdout` é o barramento binário/textual de quadros `JSON-RPC 2.0`. Qualquer byte não pertencente a um envelope JSON-RPC válido corrompe o parser do cliente MCP.
 - **Padrões Proibidos em Servidores STDIO (`stdout_hygiene = "POLLUTED"`):**
   - **Python:** `print(...)` sem `file=sys.stderr`.
@@ -18,6 +32,7 @@ Documento de referência técnica da skill **`agent-server-auditor`** para inspe
   - **Go:** `fmt.Fprintln(os.Stderr, ...)`, `slog.New(slog.NewJSONHandler(os.Stderr, nil))`.
 
 ### 1.2. Primitivas e Contratos MCP
+
 - **Primitivas Expostas:** Declaração explícita de `tools` (`@mcp.tool`), `resources` (`@mcp.resource`) e `prompts` (`@mcp.prompt`).
 - **Stateless Core & Metadados:** Suporte a `_meta` com `io.modelcontextprotocol/protocolVersion` (`2026-07-28`).
 - **Transporte HTTP/SSE:** Exige validação de OAuth 2.1, Resource Indicators (RFC 8707) e proteção contra SSRF/DNS Rebinding.
@@ -27,7 +42,9 @@ Documento de referência técnica da skill **`agent-server-auditor`** para inspe
 ## 2. Agent-to-Agent Protocol (`A2A v1.0`)
 
 ### 2.1. Estrutura Obrigatória do `agent-card.json`
+
 Localização padrão: `/.well-known/agent-card.json` (ou espelho na raiz `agent_card.json`).
+
 - `name` (`string`): Identificador legível do nó agêntico.
 - `description` (`string`): Propósito operacional do agente.
 - `version` (`string`): Versão semântica do manifesto.
@@ -37,7 +54,9 @@ Localização padrão: `/.well-known/agent-card.json` (ou espelho na raiz `agent
 - `signatures` (`array`): Assinatura JWS sobre JSON Canônico (RFC 8785 JCS + RFC 7515 JWS) garantindo autenticidade e integridade contra *impersonation* e MITM.
 
 ### 2.2. Máquina de Estados de Tarefas A2A (`TaskState`)
+
 Transições válidas exigidas em gerenciadores de tarefas A2A:
+
 - `TASK_STATE_SUBMITTED` $\rightarrow$ `TASK_STATE_WORKING`
 - `TASK_STATE_WORKING` $\rightarrow$ `TASK_STATE_INPUT_REQUIRED` (Portão HITL para ações `RiskLevel.CRITICAL`)
 - `TASK_STATE_WORKING` $\rightarrow$ `TASK_STATE_COMPLETED` | `TASK_STATE_FAILED`
@@ -45,18 +64,27 @@ Transições válidas exigidas em gerenciadores de tarefas A2A:
 
 ---
 
-## 3. Padrões de Loops Cognitivos e Travas Operacionais
+## 3. WebSockets (`ws://` / `wss://`) & Contratos JSON-RPC 2.0 ([`audit-websocket-jsonrpc.md`](audit-websocket-jsonrpc.md))
+
+- **Transporte e Autenticação:** Uso obrigatório de `wss://` (TLS 1.3) em produção, credenciais via header `Authorization: Bearer <token>` ou *Ephemeral Tokens* (proibido passar chave permanente na Query String).
+- **Resiliência e Reconexão:** Heartbeat `ping`/`pong` (15–30s), *Exponential Backoff com Jitter* ($t_{\text{wait}} = \min(t_{\text{max}}, t_{\text{base}} \times 2^{\text{tentativa}}) + \text{jitter}$) e fila limitada para mensagens pendentes.
+- **Contrato JSON-RPC 2.0:** `"jsonrpc": "2.0"` explícito, exclusividade mútua entre `"result"` e `"error"`, casamento estrito de `"id"` (e ausência de `"id"` em notificações), códigos reservados `-32700` a `-32603`, quadro máximo $\le 1\text{ MB}$, $RTT_{\text{avg}} < 150\text{ ms}$ e $\text{Pass}@3 \ge 0.95$.
+
+---
+
+## 4. Padrões de Loops Cognitivos e Travas Operacionais
 
 | Linguagem | Frameworks Reconhecidos | Indicadores de Padrão de Raciocínio | Travas de Profundidade (`has_max_steps`) | Condição de Parada (`has_stop_condition`) |
 | :--- | :--- | :--- | :--- | :--- |
 | **Python** | Google ADK 2.x, LangGraph (`StateGraph`), CrewAI, FastMCP, Orquestradores Custom | `ReAct`, `StateGraph`, `Chain-of-Thought`, `AgentOrchestrator`, `DAGEngine` | `max_steps`, `max_retries`, `max_turns`, `max_iterations`, `recursion_limit` | `stop_condition`, `END`, `Read-After-Write`, `COMPLETED`, `APPROVED` |
 | **TypeScript** | `@modelcontextprotocol/sdk`, LangGraph.js, Genkit TS, OpenAI Agents SDK | `ReAct`, `StateGraph`, `defineFlow`, `tool_use` | `maxSteps`, `maxRetries`, `maxTurns`, `recursionLimit` | `stopCondition`, `isTerminal`, `COMPLETED` |
-| **Go** | Google ADK Go v2 (`google.golang.org/adk`), `mcp-go`, Orquestradores Go | `ReAct`, `Dual-Track`, `CognitiveRouter`, `Runner` | `MaxSteps`, `MaxTurns`, `MaxRetries`, `context.WithTimeout` | `StopCondition`, ` Verify`, `COMPLETED` |
+| **Go** | Google ADK Go v2 (`google.golang.org/adk`), `mcp-go`, Orquestradores Go | `ReAct`, `Dual-Track`, `CognitiveRouter`, `Runner` | `MaxSteps`, `MaxTurns`, `MaxRetries`, `context.WithTimeout` | `StopCondition`, `Verify`, `COMPLETED` |
 
 ---
 
-## 4. Contratos de Dados Estritos (Prevenção de Alucinação de Parâmetros)
+## 5. Contratos de Dados Estritos (Prevenção de Alucinação de Parâmetros)
 
 - **Pydantic v2 (Python):** `model_config = ConfigDict(extra="forbid")`
 - **Zod (TypeScript):** `z.object({...}).strict()`
+- **Go (`encoding/json`):** `dec.DisallowUnknownFields()`
 - **JSON Schema / MCP Tool Input Schema:** `"additionalProperties": false`

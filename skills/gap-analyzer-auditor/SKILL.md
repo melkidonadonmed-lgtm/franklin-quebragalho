@@ -1,27 +1,21 @@
 ---
 name: gap-analyzer-auditor
-description: >-
-  Auditor técnico, analista de brechas (RCA) e motor de convergência Spec-to-Code em malha fechada. Use para inspecionar logs, traces, código e specs, separar fatos de inferências e emitir Hand-off YAML ou tasks de convergência; não use para planejamento inicial sem falhas ou specs prévias.
+description: "Analista de brechas RCA e convergência Spec-to-Code inspecionando logs e traces para separar fatos de inferências e emitir Hand-off Payload YAML. Use para RCA de falhas; não use para planejamento inicial."
+version: "2.2.0"
+updated_at: "2026-10-26"
+compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "2.2.0"
+  updated_at: "2026-10-26"
   author: "LoopPlanner & Melki"
   category: "Auditoria de Processos, RCA e Hand-off Multiagente"
-  updated_at: "2026-10-26"
-  tags:
-    - "rca"
-    - "closed-loop"
-    - "hand-off"
-    - "auditoria"
-    - "converge"
-version: 2.2.0
-updated_at: 2026-10-26
-author: LoopPlanner & Melki
-category: Auditoria de Processos, RCA e Hand-off Multiagente
+  tags: ["rca", "closed-loop", "hand-off", "auditoria", "converge"]
 ---
-
 # SKILL: Analisador de Brechas, Auditor de Falhas & Convergência Spec-to-Code (`gap-analyzer-auditor` v2.2.0)
 
 ## 1. Identificação e Metadados
+
 - **Nome Oficial**: `gap-analyzer-auditor`
 - **Identificador de Ativo**: `SKILL_GAP_ANALYZER_AUDITOR_V2_2`
 - **Versão de Referência**: `2.2.0`
@@ -33,7 +27,9 @@ category: Auditoria de Processos, RCA e Hand-off Multiagente
 ## 2. Propósito e Missão (Quando Usar)
 
 ### Quando Usar (Portão 3 da Esteira de Qualidade e Convergência)
+
 Esta skill atua como o **Portão 3 (`gap-analyzer-auditor` `v2.2.0`)** da esteira canônica de qualidade, recebendo evidências factuais de:
+
 - **Portão 1 (`code-acceptability-auditor` `v1.1.0`)**: Rejeições AST/Pydantic de código Python (`SEC001..003`, `SYN001`, `ERR001..003`, `TYP001..002`, `ARCH001..003`, `Score < 75.0`).
 - **Portão 2 (`test-quality-auditor` `v1.2.0`)**: Reprovações de suítes de testes e `evals/` nos 5 domínios (`python`, `ts_js`, `go`, `mcp`, `harness`, nota $< 81$ ou `pass_rate < 1.0`).
 - **Traces de Runtime & Logs Operacionais**: Comandos, scripts, pipelines ou automações que falharem ou emitirem stack traces inesperados.
@@ -41,6 +37,7 @@ Esta skill atua como o **Portão 3 (`gap-analyzer-auditor` `v2.2.0`)** da esteir
 - Para isolar fatos documentados (`[FATO]`) de inferências diagnósticas (`[INFERÊNCIA]`) e lacunas (`[LACUNA]`), formulando alternativas estruturadas (Opção 1 Cirúrgica vs Opção 2 Arquitetural) e gerando o contrato de hand-off em YAML para retroalimentar o `high-level-context-planner` (`intent-cognitive-planner`).
 
 ### Quando NÃO Usar e Fronteira com os Portões 1 e 2
+
 - **Para auditar estaticamente código Python de produção via AST** antes de saber se há falhas: acione primeiro o **Portão 1 (`code-acceptability-auditor`)**.
 - **Para medir qualidade AAA, falsos positivos e Níveis 1 a 4 de suítes de testes**: acione primeiro o **Portão 2 (`test-quality-auditor`)**.
 - Para assumir o papel de planejador final ou redesenhar planos inteiros com cronogramas e novos diagramas Mermaid (esta responsabilidade cabe ao `high-level-context-planner` ou `skill-orquestrador-planos-encadeados`).
@@ -61,6 +58,7 @@ Esta skill atua como o **Portão 3 (`gap-analyzer-auditor` `v2.2.0`)** da esteir
 ## 4. Governança de Qualidade, Parede de Complexidade ($\le 5$ Regras) e Clareza Analítica
 
 Para garantir máxima precisão diagnóstica sem sobrecarregar a janela de contexto (*Prompt Complexity Wall Shield*):
+
 1. **Segregação Epistêmica Estrita**: Separe rigorosamente `[FATO]` (evidência textual/log/disco), `[INFERÊNCIA]` (hipótese causal) e `[LACUNA]` (dado ausente).
 2. **Alinhamento Não-Linear com o Planejador (`high-level-context-planner` v3.0)**:
    - Cada ajuste em `required_adjustments` deve respeitar o teto de **$\le 5$ regras ativas por nó** e indicar o padrão cognitivo recomendado (`ReAct`, `ToT` ou `Self-Refine`).
@@ -88,6 +86,7 @@ flowchart TD
 ```
 
 ### Fase 1: Isolamento de Fatos e Evidências Textuais
+
 1. Extrair exclusivamente os eventos comprovados do log, trace, erro ou arquivo sob inspeção em `<context>`.
 2. Classificar deterministicamente cada fragmento sob a taxonomia epistêmica:
    - `[FATO]`: Registro explícito, erro com stack trace, linha de comando ou instrução documental auditável.
@@ -95,18 +94,23 @@ flowchart TD
    - `[LACUNA]`: Informação indispensável ausente no log para emitir um diagnóstico definitivo.
 
 ### Fase 2: Análise de Causa-Raiz (RCA - Root Cause Analysis)
+
 Identificar a origem fundamental do desvio a partir dos 4 vetores de auditoria:
+
 1. *Falha de Contexto / Injeção*: Parâmetros ausentes, prompts ambíguos, sobrecarga da Parede de Complexidade ($>5$ regras/nó) ou schemas incompatíveis.
 2. *Falha de Ferramenta / MCP*: Retorno inválido de API, timeout, tool misuse ou discrepância de versão de protocolo.
 3. *Gargalo de Arquitetura*: Dependência circular, colisão de arquivos paralelos (`[P]`), loop infinito sem condição de parada ou estouro de token budget.
 4. *Risco de Segurança / Confiabilidade*: Mutações de estado irreversíveis sem confirmação humana, vazamento de PII ou exposição de credenciais.
 
 ### Fase 3: Mapeamento de Alternativas e Mitigações
+
 Para cada brecha diagnosticada, estruturar no mínimo duas rotas resolutivas:
+
 - **Opção 1 (Cirúrgica / Imediata)**: Ajuste pontual de menor esforço para restabelecer a operação rápida do fluxo.
 - **Opção 2 (Arquitetural / Estrutural)**: Readequação definitiva com guardrails determinísticos, tolerância a falhas e desacoplamento.
 
 ### Fase 4: Geração do Contrato de Hand-Off e Convergência *Append-Only* (`/speckit-converge`)
+
 1. Sintetizar as descobertas em um payload YAML padronizado contendo alvo, ID de incidente, opção recomendada, ajustes necessários por etapa e gatilhos de contingência.
 2. **Protocolo de Convergência Spec-to-Code**:
    - Quando acionada para comparar `spec.md`/`plan.md`/`tasks.md` contra o código real no disco:
@@ -165,6 +169,7 @@ contingency_trigger: "[Condição em que o fallback deve ser acionado]"
 ---
 
 **Deseja acionar o `high-level-context-planner` agora com este payload para emitir o plano corretivo revisado (Convergência Append-Only), ou deseja ajustar a alternativa recomendada?**
+
 ```
 
 ---

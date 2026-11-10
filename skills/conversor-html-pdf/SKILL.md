@@ -1,24 +1,19 @@
 ---
 name: conversor-html-pdf
-description: >-
-  Converte documentos Markdown (.md) e HTML para arquivos PDF profissionais via Microsoft Edge ou Chrome headless, aplicando CSS de impressão calibrado e quebras de página inteligentes. Use para exportar relatórios e manuais em PDF; não use para redigir conteúdo técnico do zero.
+description: "Converte documentos Markdown e HTML para arquivos PDF profissionais via Microsoft Edge ou Chrome headless com CSS de impressão. Use para exportar relatórios em PDF; não use para redigir do zero."
+version: "1.0.0"
+updated_at: "2026-10-04"
+compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "1.0.0"
+  updated_at: "2026-10-04"
   author: "DocMaker & Melki"
   category: "Publicação e Conversão de Documentos"
-  updated_at: "2026-10-04"
-  tags:
-    - "pdf"
-    - "headless-browser"
-    - "css-print"
-    - "conversao"
-version: 1.0.0
-updated_at: 2026-10-04
-author: DocMaker & Melki
-category: Publicação e Conversão de Documentos
+  tags: ["pdf", "headless-browser", "css-print", "conversao"]
 ---
-
 # 1. NOME DA SKILL
+
 `conversor-html-pdf` (Pipeline Determinístico de Conversão Markdown/HTML para PDF via Browser Headless).
 
 ---
@@ -26,12 +21,14 @@ category: Publicação e Conversão de Documentos
 ## 2. GATILHOS DE ATIVAÇÃO (QUANDO USAR)
 
 Ative e execute esta skill sempre que:
+
 - O usuário solicitar: "converta este markdown para PDF", "gere um PDF profissional deste relatório", "imprima este documento sem quebras feias", "exporte esta documentação para PDF".
 - Após a redação de um documento por `redator-tecnico-markdown` quando for solicitada a versão final para compartilhamento ou impressão.
 - Para gerar PDFs com CSS de impressão profissional (`@page`, cabeçalhos limpos, tabelas zebradas e blocos de código protegidos contra quebra de página).
 - Quando for necessário transformar arquivos HTML estáticos ou relatórios de auditoria em documentos PDF portáveis.
 
 ### Quando NÃO Usar
+
 - Para redigir o conteúdo técnico ou estruturar as seções do documento (utilize `redator-tecnico-markdown`).
 - Para diagramação de materiais gráficos complexos de publicidade ou diagramas editoriais com sangria personalizada (InDesign).
 - Quando o usuário quiser apenas a nota no Obsidian Vault em formato `.md`.
@@ -53,18 +50,23 @@ Ative e execute esta skill sempre que:
 A conversão emprega regras estritas de CSS `@media print` para eliminar problemas comuns de diagramação:
 
 ### 4.1. Prevenção de Quebras de Página Inadequadas
+
 - **Blocos Indivisíveis:** Tabelas, blocos de código (`pre code`), cartões e caixas de alerta devem incluir obrigatoriamente:
+
   ```css
   page-break-inside: avoid;
   break-inside: avoid;
   ```
+
 - **Títulos Órfãos:** Títulos (`h1`, `h2`, `h3`) devem forçar conexão com o elemento seguinte:
+
   ```css
   page-break-after: avoid;
   break-after: avoid;
   ```
 
 ### 4.2. Margens e Dimensões Canônicas da Página
+
 ```css
 @page {
   size: A4 portrait;
@@ -73,6 +75,7 @@ A conversão emprega regras estritas de CSS `@media print` para eliminar problem
 ```
 
 ### 4.3. Tipografia e Cores de Impressão
+
 - Fonte principal: **Inter**, **Segoe UI** ou **Helvetica Neue** com `line-height: 1.55`.
 - Código monoespaçado: **JetBrains Mono**, **Consolas** com fundo cinza suave (`#F3F4F6`) e borda tênue (`#E5E7EB`).
 - Ausência de fundos escuros pesados no tema `light_executive` para economizar tinta e manter legibilidade perfeita no papel.
@@ -82,16 +85,21 @@ A conversão emprega regras estritas de CSS `@media print` para eliminar problem
 ## 5. PROCESSO PASSO A PASSO (EXECUÇÃO DE CONVERSÃO)
 
 ### Passo 1: Inspeção do Arquivo de Entrada
+
 Verificar a existência e o tipo do arquivo alvo:
+
 ```powershell
 Test-Path -Path $inputFilePath
 ```
 
 ### Passo 2: Conversão de Markdown para HTML com Template de Impressão
+
 Se a entrada for `.md`, envolver o conteúdo no envelope HTML canônico com os estilos de impressão calibrados contidos em `references/print_theme.css`.
 
 ### Passo 3: Disparo do Browser Headless Nativo
+
 Localizar o binário do Microsoft Edge no Windows 11 e executar a conversão:
+
 ```powershell
 $edgePath = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 if (!(Test-Path $edgePath)) {
@@ -103,7 +111,9 @@ if (!(Test-Path $edgePath)) {
 ```
 
 ### Passo 4: Validação Determinística do PDF Gerado
+
 Conferir se o arquivo PDF de saída existe e possui tamanho superior a 0 bytes:
+
 ```powershell
 $pdfItem = Get-Item -Path $outputPdfPath
 if ($pdfItem.Length -gt 0) {
@@ -118,6 +128,7 @@ if ($pdfItem.Length -gt 0) {
 ## 6. SAÍDAS E ENTREGÁVEIS (MODELO DE SAÍDA)
 
 A resposta final da skill entrega:
+
 1. **Confirmação de Geração do PDF:**
    - Tamanho final em KB, total estimado de páginas e tema aplicado.
 2. **Status Determinístico de Validação:**

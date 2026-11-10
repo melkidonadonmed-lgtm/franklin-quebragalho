@@ -1,0 +1,15 @@
+{
+  "skill_name": "audit-skills-antigravity",
+  "version": "2.1.0",
+  "evals": [
+    {
+      "id": "eval-audit-skills-rea-01",
+      "prompt": "Execute audit-skills-antigravity via REA e motor Go para auditar Context Bloat, YAML frontmatter, Pass@3 e FNR das skills privadas do repositório.",
+      "expected_assertions": [
+        "Coleta evidências estáticas via REA (analyze_javascript_application / inspect_analysis_view) e motor Go",
+        "Calcula Tokens Estimados, contagem de regras (teto <= 10), Pass@3 e FNR",
+        "Classifica cada skill nas 6 categorias ([MANTER], [ATUALIZAÇÃO], [AJUSTE], [MELHORIA], [EXCLUSÃO], [FUSÃO])"
+      ]
+    }
+  ]
+}

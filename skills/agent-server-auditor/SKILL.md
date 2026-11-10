@@ -1,41 +1,37 @@
 ---
 name: agent-server-auditor
-description: >-
-  Audita estaticamente sistemas agênticos, servidores MCP (Model Context Protocol 2026-07-28) e nós A2A (Agent-to-Agent v1.0) em Go, TypeScript e Python. Use para inspecionar higiene de binários, STDIO stdout, AgentCard JWS, travas max_steps em loops ReAct/StateGraph/ADK e persistir memories/audit_report.json; não use para testes dinâmicos de UI ou suítes unitárias AAA.
-version: "1.0.0"
-date: "2026-10-26"
-updated_at: "2026-10-26"
-license: MIT
-author: "SkillCraft, Franklin-Main & Melki"
-category: "Agent Architecture, Protocol Compliance & Static Code Auditing"
-compatibility: Python 3.11+, TypeScript 5+, Go 1.22+, MCP Spec 2026-07-28, A2A v1.0, Google ADK 2.x, LangGraph, CrewAI
+description: "Audita sistemas agênticos, servidores MCP 2026-07-28 STDIO stdout, nós A2A agent-card JWS, binários, max_steps e memories/audit_report.json. Use para auditar agentes e MCP; não use para UI."
+version: "1.1.0"
+updated_at: "2026-11-02"
+compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
+  updated_at: "2026-11-02"
   author: "SkillCraft, Franklin-Main & Melki"
   category: "Agent Architecture, Protocol Compliance & Static Code Auditing"
-  updated_at: "2026-10-26"
-  protocols: "MCP (Model Context Protocol), A2A (Agent-to-Agent Protocol), JSON-RPC 2.0"
-  supported_languages: "Go, TypeScript, Python"
-  standards: "Agent Skills (SKILL.md), Zero-Trust Agent Architecture, OWASP GenAI 2026"
-  tags:
-    - "agent-server-auditor"
-    - "mcp-2026-07-28"
-    - "a2a-protocol"
-    - "agent-card-jws"
-    - "stdio-hygiene"
-    - "max-steps"
-    - "binary-hygiene"
-    - "audit-report"
+  tags: ["agent-server-auditor", "mcp-2026-07-28", "a2a-protocol", "audit-websocket-jsonrpc", "agent-card-jws", "stdio-hygiene", "max-steps", "binary-hygiene", "audit-report"]
 ---
+# Skill: `agent-server-auditor` — Auditoria Arquitetural de Agentes, APIs Gemini, WebSockets/JSON-RPC e Servidores (`v1.1.0`)
 
-# 🕵️‍♂️ Skill: `agent-server-auditor` — Auditoria Arquitetural de Agentes e Servidores (`v1.0.0`)
-
-## 1. Objetivo e Missão Arquitetural
+## 1. Objetivo, Ancoragem Pre-Flight e Missão Arquitetural
 A Skill **`agent-server-auditor`** fornece uma esteira determinística e padronizada de inspeção estática, conformidade de protocolos e validação estrutural para ecossistemas de agentes autônomos.
+
+### Regra Inegociável: Ancoragem Documental Pre-Flight (Proibido Auditar APIs às Cegas)
+Antes de auditar chamadas à **Gemini API**, **Live API**, **Google ADK**, **WebSockets (`ws://`/`wss://`)** ou **JSON-RPC 2.0** (`MCP`/`A2A`), o auditor **nunca deve operar às cegas**:
+1. **Referências Oficiais da Gemini API, Antigravity Agent & Cookbook:**
+   - Tools MCP (quando disponíveis): `gemini_search_docs` e `gemini_get_doc`.
+   - **Portal Oficial de Documentação (`docs`):** [`https://aistudio.google.com/docs`](https://aistudio.google.com/docs)
+   - **Antigravity Agent Official Docs:** [`https://aistudio.google.com/docs/antigravity-agent`](https://aistudio.google.com/docs/antigravity-agent)
+   - **Índice Oficial (`llms.txt`):** [`https://aistudio.google.com/llms.txt`](https://aistudio.google.com/llms.txt)
+   - **Corpus Completo (`llms-full.txt`):** [`https://aistudio.google.com/llms-full.txt`](https://aistudio.google.com/llms-full.txt)
+   - **Google Gemini Cookbook (GitHub):** [`https://github.com/google-gemini/cookbook`](https://github.com/google-gemini/cookbook)
+2. **Referências Oficiais do Google ADK:** [`https://adk.dev/llms.txt`](https://adk.dev/llms.txt) e [`https://adk.dev/llms-full.txt`](https://adk.dev/llms-full.txt).
+3. **Sub-Skill de WebSockets e Contratos JSON-RPC 2.0:** Carregue e aplique obrigatoriamente [`references/audit-websocket-jsonrpc.md`](references/audit-websocket-jsonrpc.md) para inspecionar handshakes TLS 1.3 (`wss://`), *Exponential Backoff + Jitter*, validação estrita `"jsonrpc": "2.0"`, exclusividade mútua entre `"result"` e `"error"`, códigos reservados (`-32700` a `-32603`), latência $RTT_{\text{avg}} < 150\text{ ms}$ e $\text{Pass}@3 \ge 0.95$.
 
 Atuando a partir da raiz do projeto (`root_dir`), esta Skill resolve os seguintes gargalos críticos da engenharia de IA:
 1. **Desorganização Estrutural e Dispersão de Contexto:** Falta de separação canônica entre orquestradores, subagentes especialistas, manifestos de skills (`SKILL.md`) e artefatos compilados.
-2. **Quebra de Protocolos em Servidores (MCP & A2A):** Poluição do canal `stdout` em servidores MCP via STDIO, ausência de descoberta estruturada, omissão de schemas estritos ou ausência de Cartões de Agente A2A (`agent-card.json`) assinados.
+2. **Quebra de Protocolos em Servidores (MCP, WebSockets & A2A):** Poluição do canal `stdout` em servidores MCP via STDIO, ausência de descoberta estruturada, reconexão sem Jitter, violação de JSON-RPC 2.0 ou ausência de Cartões de Agente A2A (`agent-card.json`) assinados.
 3. **Loops Cognitivos Desgovernados:** Agentes configurados sem travas de profundidade (`max_steps`), sem critérios objetivos de parada verificáveis e sem correspondência fidedigna entre a descrição da função e sua implementação real.
 4. **Falta de Memória Auditável:** Execuções efêmeras sem registro de metadados estruturados para rastreabilidade e governança corporativa (`memories/audit_report.json`).
 
@@ -43,10 +39,10 @@ Atuando a partir da raiz do projeto (`root_dir`), esta Skill resolve os seguinte
 
 ## 2. Gatilhos de Ativação (Quando Usar)
 
-### ✅ Quando Ativar (Gatilhos Positivos)
-- Solicitação explícita para auditar a raiz da pasta de um sistema agêntico, validar agentes, inspecionar servidores MCP ou verificar conformidade A2A (`agent-card.json`).
-- Pré-deploy ou homologação de novas skills e agentes nas linguagens **Go, TypeScript ou Python**.
-- Diagnóstico de falhas de comunicação entre clientes e servidores de ferramentas (ex: `"JSON-RPC parser error"`, `"Tool call timeout"`, poluição de `stdout` em transporte `STDIO`).
+### Quando Ativar (Gatilhos Positivos)
+- Solicitação explícita para auditar a raiz da pasta de um sistema agêntico, validar agentes, inspecionar servidores MCP, conexões WebSockets/JSON-RPC 2.0 ou verificar conformidade A2A (`agent-card.json`).
+- Pré-deploy ou homologação de novas skills, integrações Gemini API e agentes nas linguagens **Go, TypeScript ou Python**.
+- Diagnóstico de falhas de comunicação entre clientes e servidores de ferramentas (ex: `"JSON-RPC parser error"`, `"Tool call timeout"`, queda de WebSocket sem backoff, poluição de `stdout` em transporte `STDIO`).
 - Auditoria de segurança de contratos de dados (`Pydantic`, `Zod`, `JSON Schema`) e verificação de travas de loop (`max_steps`, `max_turns`, `recursion_limit`).
 
 ---
@@ -65,6 +61,10 @@ Atuando a partir da raiz do projeto (`root_dir`), esta Skill resolve os seguinte
 
 ```text
                     ┌─────────────────────────────────────────────────────────┐
+                    │ 0. PRE-FLIGHT: llms.txt / llms-full.txt / WS-JSONRPC    │
+                    └────────────────────────────┬────────────────────────────┘
+                                                 ▼
+                    ┌─────────────────────────────────────────────────────────┐
                     │          RAIZ DO PROJETO (VARREDURA RECURSIVA)          │
                     └────────────────────────────┬────────────────────────────┘
                                                  │
@@ -72,12 +72,12 @@ Atuando a partir da raiz do projeto (`root_dir`), esta Skill resolve os seguinte
          ▼                              ▼                       ▼                              ▼
 ┌──────────────────┐          ┌──────────────────┐    ┌──────────────────┐          ┌──────────────────┐
 │ 1. HIGIENE &     │          │ 2. AGENTES &     │    │ 3. SERVIDORES    │    ┌─────┤ 4. CONTRATOS &   │
-│    BINÁRIOS      │          │    LOOPS         │    │    MCP & A2A     │    │     │    MEMÓRIA       │
+│    BINÁRIOS      │          │    LOOPS         │    │  MCP, WS & A2A   │    │     │    MEMÓRIA       │
 ├──────────────────┤          ├──────────────────┤    ├──────────────────┤    │     ├──────────────────┤
 │• .gitignore      │          │• Go / TS / Py    │    │• MCP 2026-07-28  │    │     │• JSON Schema     │
 │• .env.example    │          │• ReAct / CoT     │    │• Higiene STDIO   │    │     │• Zod / Pydantic  │
-│• bin/ / dist/    │          │• StateGraph/ADK  │    │• A2A Agent Card  │    │     │• max_steps       │
-│• Sem blobs soltos│          │• Skills próprios │    │• Task Lifecycle  │    │     │• audit_report    │
+│• bin/ / dist/    │          │• StateGraph/ADK  │    │• WS & JSON-RPC   │    │     │• max_steps       │
+│• Sem blobs soltos│          │• Gemini API Spec │    │• A2A Agent Card  │    │     │• audit_report    │
 └──────────────────┘          └──────────────────┘    └──────────────────┘    │     └──────────────────┘
                                                                               ▼
                                                                ┌───────────────────────────────┐
@@ -89,22 +89,26 @@ Atuando a partir da raiz do projeto (`root_dir`), esta Skill resolve os seguinte
 - **Proteção de Segredos:** Verificação da presença de `.gitignore`, `.env.example` e ausência de chaves de API commitadas.
 - **Segregação de Artefatos Compilados:** Binários nativos (`ELF`, `Mach-O`, `.exe`, `.dll`, `.so`, `.dylib`), pacotes Electron (`.asar`) ou bundles compilados devem residir estritamente em pastas designadas (`bin/`, `dist/`, `build/`), jamais dispersos no diretório raiz ou de código-fonte.
 
-### Dimensão 2: Agentes Próprios e Skills Modulares
+### Dimensão 2: Agentes Próprios, Gemini API e Skills Modulares
 - **Estrutura Canônica de Skills (`SKILL.md`):**
   - Existência obrigatória do manifesto `SKILL.md` em `skills/<nome>/` ou `.claude/skills/<nome>/`.
   - Frontmatter YAML válido contendo `name`, `description` e `version` / `compatibility`.
   - Separação modular de recursos: pasta `scripts/` para código executável determinístico, `references/` para documentação contextual e `evals/evals.json` para baterias de testes.
-- **Topologia de Agentes (Go, TypeScript, Python):**
+- **Topologia de Agentes e Conformidade Gemini API (Go, TypeScript, Python):**
   - Identificação de orquestradores centrais e subagentes especialistas.
-  - Verificação de bibliotecas reais: Google ADK 2.x (`google.golang.org/adk`, `google.adk`), LangGraph (`StateGraph`), CrewAI, Anthropic Claude SDK, OpenAI Agents SDK, FastMCP.
+  - Verificação de bibliotecas e SDKs reais contra [`https://aistudio.google.com/llms.txt`](https://aistudio.google.com/llms.txt), [`https://aistudio.google.com/llms-full.txt`](https://aistudio.google.com/llms-full.txt) e [`https://adk.dev/llms-full.txt`](https://adk.dev/llms-full.txt): Google GenAI SDK (`google-genai`, `@google/genai`, `google.golang.org/genai`), Google ADK 2.x (`google.golang.org/adk`, `google.adk`), LangGraph (`StateGraph`), CrewAI, FastMCP.
   - Mapeamento da correlação semântica entre descrição do papel, prompt do agente e ferramentas atribuídas.
 
-### Dimensão 3: Protocolos de Comunicação (MCP e A2A)
+### Dimensão 3: Protocolos de Comunicação (MCP, WebSockets/JSON-RPC 2.0 e A2A)
 - **Servidores MCP (Model Context Protocol 2026-07-28):**
   - **Stateless Core:** Cada requisição carrega versão em `_meta` (`io.modelcontextprotocol/protocolVersion`).
   - **Higiene Crítica no Transporte STDIO:** O canal `stdout` é reservado **exclusivamente** para mensagens JSON-RPC. O uso de `print()`, `console.log()` ou `fmt.Println()` para depuração no fluxo de servidor STDIO corrompe o parser do host; logs devem ser canalizados para `stderr` (`sys.stderr`, `console.error`, `os.Stderr`) ou drivers de log estruturados.
   - **Primitivas Expostas:** Declaração explícita de `tools`, `resources` e `prompts`.
   - **Segurança de Transporte HTTP/SSE:** Validação de OAuth 2.1, Resource Indicators e proteção contra SSRF e DNS Rebinding.
+- **Conexões WebSockets (`ws://` / `wss://`) e Contratos JSON-RPC 2.0 ([`references/audit-websocket-jsonrpc.md`](references/audit-websocket-jsonrpc.md)):**
+  - **Handshake & Transporte:** Exigir `wss://` (TLS 1.3), headers `Authorization: Bearer <token>` (ou Ephemeral Tokens na Gemini Live API, nunca chaves permanentes na URL) e SSL/TLS Pinning quando aplicável.
+  - **Resiliência:** Heartbeat `ping`/`pong` (15–30s), reconexão com *Exponential Backoff + Jitter* ($t_{\text{wait}} = \min(t_{\text{max}}, t_{\text{base}} \times 2^{\text{tentativa}}) + \text{jitter}$) e fila limitada (*bounded buffer*).
+  - **Sintaxe JSON-RPC 2.0 & QoS:** Exigir `"jsonrpc": "2.0"`, casamento estrito de `"id"`, exclusividade mútua entre `"result"` e `"error"`, códigos `-32700` a `-32603`, teto de quadro ($\le 1\text{ MB}$), $RTT_{\text{avg}} < 150\text{ ms}$ e $\text{Pass}@3 \ge 0.95$.
 - **Nós e Servidores A2A (Agent-to-Agent Protocol v1.0):**
   - **Cartão de Agente (`/.well-known/agent-card.json` ou `agent_card.json`):** Campos obrigatórios: `name`, `description`, `version`, `supportedInterfaces` (com `protocolBinding: "JSONRPC"` ou `"gRPC"`), `defaultInputModes`, `defaultOutputModes` e catálogo de `skills`.
   - **Segurança e Identidade:** Suporte a `signatures` JWS (RFC 7515 sobre RFC 8785) ou `securitySchemes` para prevenir falsificação de identidade (*impersonation*).
@@ -123,14 +127,16 @@ Atuando a partir da raiz do projeto (`root_dir`), esta Skill resolve os seguinte
 - **Contratos de Dados Estritos:**
   - Pydantic v2: proibição de propriedades soltas via `model_config = ConfigDict(extra="forbid")`.
   - Zod: aplicação estrita de `.strict()`.
+  - Go: `json.NewDecoder(...).DisallowUnknownFields()`.
   - JSON Schema: `additionalProperties: false`.
 
 ### Fluxo de Execução Passo a Passo e Comandos (`pwsh`)
-1. **Passo 1 — Varredura da Raiz e Detecção Poliglota:** O script [`scripts/agent_server_auditor.py`](scripts/agent_server_auditor.py) inspeciona a raiz do repositório, cataloga arquivos de dependências (`pyproject.toml`, `package.json`, `go.mod`) e define as pilhas ativas.
-2. **Passo 2 — Inventário de Skills e Agentes:** Mapeia recursivamente todas as subpastas contendo `SKILL.md` e cataloga classes e funções construtoras de agentes.
-3. **Passo 3 — Inspeção de Servidores e Contratos:** Examina manipuladores de transporte JSON-RPC para MCP e endpoints de Cartões A2A, verificando vazamentos de streams e rigidez de esquemas.
-4. **Passo 4 — Diagnóstico de Gaps e Emissão de Alertas:** Classifica as inconformidades em **CRÍTICO**, **ALTO** e **MÉDIO**.
-5. **Passo 5 — Serialização com Metadados e Persistência em Memória:** Compila o relatório técnico completo e persiste o snapshot estruturado em `memories/audit_report.json`.
+1. **Passo 0 — Ancoragem Pre-Flight:** Consulte [`https://aistudio.google.com/llms.txt`](https://aistudio.google.com/llms.txt), [`https://aistudio.google.com/llms-full.txt`](https://aistudio.google.com/llms-full.txt), [`references/protocol_matrix.md`](references/protocol_matrix.md) e [`references/audit-websocket-jsonrpc.md`](references/audit-websocket-jsonrpc.md).
+2. **Passo 1 — Varredura da Raiz e Detecção Poliglota:** O script [`scripts/agent_server_auditor.py`](scripts/agent_server_auditor.py) inspeciona a raiz do repositório, cataloga arquivos de dependências (`pyproject.toml`, `package.json`, `go.mod`) e define as pilhas ativas.
+3. **Passo 2 — Inventário de Skills e Agentes:** Mapeia recursivamente todas as subpastas contendo `SKILL.md` e cataloga classes e funções construtoras de agentes.
+4. **Passo 3 — Inspeção de Servidores e Contratos:** Examina manipuladores de transporte JSON-RPC/WebSockets para MCP e endpoints de Cartões A2A, verificando vazamentos de streams e rigidez de esquemas.
+5. **Passo 4 — Diagnóstico de Gaps e Emissão de Alertas:** Classifica as inconformidades em **CRÍTICO**, **ALTO** e **MÉDIO**.
+6. **Passo 5 — Serialização com Metadados e Persistência em Memória:** Compila o relatório técnico completo e persiste o snapshot estruturado em `memories/audit_report.json`.
 
 ```powershell
 # 1. Auditar um repositório e exibir o relatório JSON
@@ -163,7 +169,9 @@ projeto-agentico-raiz/
 │       ├── scripts/
 │       │   └── agent_server_auditor.py # Motor estático poliglota (Go, TS, Py, MCP, A2A)
 │       ├── references/
-│       │   └── protocol_matrix.md     # Rubricas de protocolos MCP 2026-07-28 e A2A v1.0
+│       │   ├── protocol_matrix.md     # Rubricas de protocolos MCP 2026-07-28 e A2A v1.0
+│       │   ├── audit-websocket-jsonrpc.md # Sub-skill de WebSockets (ws/wss) e JSON-RPC 2.0
+│       │   └── audit_report_schema.md # Schema do relatório persistido em memória
 │       └── evals/
 │           └── evals.json             # Baterias de teste automatizadas
 ├── mcp_servers/                       # Servidores de ferramentas (Model Context Protocol)
@@ -178,93 +186,20 @@ projeto-agentico-raiz/
 
 ## 6. Saídas, Entregáveis e Esquema Persistido em Memória
 
-A saída gerada e gravada em `memories/audit_report.json` segue rigorosamente este contrato de dados:
-
-```json
-{
-  "timestamp": "2026-10-26T10:15:00Z",
-  "audit_version": "1.0.0",
-  "target_root": "/workspace/meu-projeto",
-  "summary": {
-    "compliance_score": 88.5,
-    "status": "CONFORME_COM_RESSALVAS",
-    "detected_languages": ["Python", "TypeScript", "Go"],
-    "total_agents": 3,
-    "total_skills": 2,
-    "total_mcp_servers": 1,
-    "total_a2a_cards": 1
-  },
-  "binary_hygiene": {
-    "has_dedicated_bin_dir": true,
-    "compiled_artifacts_count": 0,
-    "status": "APPROVED"
-  },
-  "audit_details": {
-    "agents": [
-      {
-        "name": "orchestrator",
-        "file": "agents/orchestrator.py",
-        "language": "Python",
-        "framework": "Google ADK 2.x",
-        "reasoning_pattern": "ReAct (Reasoning + Acting)",
-        "has_max_steps": true,
-        "has_stop_condition": true,
-        "type_safety": true,
-        "missing_elements": []
-      }
-    ],
-    "skills": [
-      {
-        "name": "agent-server-auditor",
-        "path": "skills/agent-server-auditor",
-        "has_frontmatter": true,
-        "has_scripts": true,
-        "has_references": true,
-        "has_evals": true,
-        "missing_elements": []
-      }
-    ],
-    "mcp_servers": [
-      {
-        "name": "db_connector",
-        "file": "mcp_servers/db_connector/server.py",
-        "transport": "STDIO",
-        "stdout_hygiene": "CLEAN",
-        "strict_contracts": true,
-        "missing_elements": []
-      }
-    ],
-    "a2a_nodes": [
-      {
-        "card_path": ".well-known/agent-card.json",
-        "name": "finance-analyst",
-        "has_supported_interfaces": true,
-        "has_skills_catalog": true,
-        "has_jws_signatures": true,
-        "missing_elements": []
-      }
-    ]
-  },
-  "gap_analysis": {
-    "critical_missing_structures": [],
-    "warnings": [
-      "Subagente 'intent_diagnostician.py' não declara timeout explícito para chamadas de ferramentas."
-    ]
-  }
-}
-```
+A saída gerada e gravada em `memories/audit_report.json` segue rigorosamente o contrato de dados documentado em [`references/audit_report_schema.md`](references/audit_report_schema.md) (`timestamp`, `audit_version`, `summary.compliance_score`, `binary_hygiene`, `audit_details` por `agents`, `skills`, `mcp_servers` e `a2a_nodes`, além de `gap_analysis`).
 
 ---
 
 ## 7. Limites, Exceções, Guardrails e Quality Gates (Quando NÃO Usar)
 
-### ❌ Exclusões e Quando NÃO Usar
+### Exclusões e Quando NÃO Usar
 - **Não executar testes dinâmicos invasivos:** Não executa chamadas externas descontroladas ou comandos de rede que causem mutações sem aprovação prévia.
 - **Não usar para substituir suítes de testes unitários sob o padrão AAA:** Para auditar falsificabilidade de testes (`pytest`, `vitest`, `testing.T`) e *Green Build Illusion*, delegue para `test-quality-auditor`.
 - **Não usar para auditoria de contraste visual, DOM ou CSS frontend:** Para auditoria visual de interfaces web, delegue para `frontend-testing-auditor` ou `frontend-ui-ux-auditor`.
 
-### 🛡️ Critérios de Aceite e Quality Gates
-1. **Gate de Segurança de Protocolo (`AUD-MCP-01`):** Servidores MCP STDIO que utilizem `print()`, `console.log()` ou `fmt.Println()` no canal de dados `stdout` são automaticamente reprovados (`REJECTED`).
-2. **Gate de Contratos de Dados (`AUD-CNT-01`):** Nenhuma ferramenta de agente deve aceitar parâmetros arbitrários sem esquema tipado (`extra="forbid"`, `.strict()` ou `additionalProperties: false`).
-3. **Gate de Resiliência de Loop (`AUD-AGT-01`):** Todo agente baseado em ReAct ou Grafo de Estados deve possuir limite superior de passos (`max_steps`, `max_retries`, `recursion_limit` ou equivalente) configurado.
-4. **Gate de Transparência e Memória (`AUD-MEM-01`):** O relatório final deve ser emitido acompanhado do snapshot JSON salvo no armazenamento de memória (`memories/audit_report.json`) com carimbo temporal UTC.
+### Critérios de Aceite e Quality Gates
+1. **Gate Pre-Flight Anti-Alucinação (`AUD-PRE-01`):** Nenhuma integração Gemini API, Live API ou WebSocket/JSON-RPC deve ser auditada às cegas sem ancoragem em `https://aistudio.google.com/llms.txt`, `https://aistudio.google.com/llms-full.txt` e [`references/audit-websocket-jsonrpc.md`](references/audit-websocket-jsonrpc.md).
+2. **Gate de Segurança de Protocolo (`AUD-MCP-01`):** Servidores MCP STDIO que utilizem `print()`, `console.log()` ou `fmt.Println()` no canal de dados `stdout` são automaticamente reprovados (`REJECTED`).
+3. **Gate de Contratos de Dados & JSON-RPC 2.0 (`AUD-CNT-01`):** Nenhuma ferramenta de agente ou endpoint JSON-RPC deve aceitar parâmetros arbitrários sem esquema tipado (`extra="forbid"`, `.strict()`, `DisallowUnknownFields()`, `additionalProperties: false`) ou retornar `result` e `error` simultaneamente.
+4. **Gate de Resiliência de Loop (`AUD-AGT-01`):** Todo agente baseado em ReAct ou Grafo de Estados deve possuir limite superior de passos (`max_steps`, `max_retries`, `recursion_limit` ou equivalente) configurado.
+5. **Gate de Transparência e Memória (`AUD-MEM-01`):** O relatório final deve ser emitido acompanhado do snapshot JSON salvo no armazenamento de memória (`memories/audit_report.json`) com carimbo temporal UTC.

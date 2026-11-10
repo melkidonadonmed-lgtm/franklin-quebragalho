@@ -98,33 +98,35 @@ Este documento estabelece o padrão de auditoria em **7 Módulos Sequenciais** e
 ## 6. Correção Cirúrgica Antes vs. Depois (Go)
 
 ### ❌ ANTES (Nível 1 — Nota 0/100: `SILENCED_ERROR_IN_TEST` + `WEAK_NIL_ONLY_ASSERT`)
+
 ```go
 func TestAnalyzeIssueSilenced(t *testing.T) {
-	store := domain.NewDefaultStore()
-	triage, _ := store.AnalyzeIssue("ISS-101")
-	if triage == nil {
-		t.Fatal("expected non-nil triage")
-	}
+ store := domain.NewDefaultStore()
+ triage, _ := store.AnalyzeIssue("ISS-101")
+ if triage == nil {
+  t.Fatal("expected non-nil triage")
+ }
 }
 ```
 
 ### ✅ DEPOIS (Nível 4 — Nota 100/100: Determinístico & Resiliente)
+
 ```go
 func TestStoreAnalyzeIssueAndSLABreach(t *testing.T) {
-	store := domain.NewDefaultStore()
+ store := domain.NewDefaultStore()
 
-	triage, err := store.AnalyzeIssue("ISS-101")
-	if err != nil {
-		t.Fatalf("unexpected error analyzing ISS-101: %v", err)
-	}
-	if !triage.SLABreached || !triage.EscalationRequired || triage.ImpactScore < 90 {
-		t.Errorf("expected P0 SLA breach with score >= 90, got %+v", triage)
-	}
+ triage, err := store.AnalyzeIssue("ISS-101")
+ if err != nil {
+  t.Fatalf("unexpected error analyzing ISS-101: %v", err)
+ }
+ if !triage.SLABreached || !triage.EscalationRequired || triage.ImpactScore < 90 {
+  t.Errorf("expected P0 SLA breach with score >= 90, got %+v", triage)
+ }
 
-	_, err = store.AnalyzeIssue("ISS-999")
-	if !errors.Is(err, domain.ErrIssueNotFound) {
-		t.Fatalf("expected ErrIssueNotFound for unknown ID, got %v", err)
-	}
+ _, err = store.AnalyzeIssue("ISS-999")
+ if !errors.Is(err, domain.ErrIssueNotFound) {
+  t.Fatalf("expected ErrIssueNotFound for unknown ID, got %v", err)
+ }
 }
 ```
 

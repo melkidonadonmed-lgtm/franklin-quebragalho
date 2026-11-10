@@ -1,6 +1,6 @@
-# Matriz de Referência: Acessibilidade WCAG 2.1 AA, FSM e Tokens (`frontend-testing-auditor`)
+# Matriz de Referência: Acessibilidade WCAG 2.1 AA, Tokens em 3 Camadas (`OKLCH`), Física da Luz, Nitidez GPU e Estados Real-State (`frontend-testing-auditor` v5.0.0)
 
-Documento de referência técnica para inspeção determinística via `scripts/audit_tactile_ui.py` e suítes `jest-axe` / `Playwright`.
+Documento de referência técnica para inspeção determinística via `scripts/audit_tactile_ui.py` e suítes `jest-axe` / `Playwright` alinhado aos **9 Eixos da SSOT**.
 
 ---
 
@@ -10,7 +10,7 @@ $$\text{Score} = (0.35 \cdot S_{\text{A11y}}) + (0.30 \cdot S_{\text{FSM}}) + (0
 
 | Pilar | Código | Peso | Limiar Mínimo | Indicadores Verificados |
 | :--- | :---: | :---: | :---: | :--- |
-| **Acessibilidade & Tabular** | `AUDIT-A11Y-01/02` | `35%` | `85.0` | Contraste $\ge 4.5:1$ ($\ge 7.0:1$ títulos), `:focus-visible`, `tabular-nums`, `prefers-reduced-motion`. |
-| **Máquina de Estados (FSM)** | `AUDIT-STATE-01/02` | `30%` | `85.0` | Atributos `data-state` (`idle`, `loading`, `error`, `empty`, `success`), `aria-busy`, `role="status"`, `role="alert"`. |
-| **Tokens Semânticos & Camadas** | `AUDIT-VIS-01` | `20%` | `85.0` | Família `--bg-canvas` / `--bg-surface` / `--ink-primary`, elevação `--shadow-sculpted`, zero componentes órfãos. |
-| **Segurança Anti-XSS** | `AUDIT-SEC-01` | `15%` | `100.0` | Zero `eval()`, zero `dangerouslySetInnerHTML` sem `DOMPurify.sanitize()`. |
+| **Nitidez GPU, Nav 3 Camadas, Acessibilidade & Tabular** | `AUDIT-A11Y-01/02` | `35%` | `85.0` | Contraste WCAG AA $\ge 4.5:1$, `antialiased` + `font-synthesis: none`, zero `scale()` fracionário em textos, `:focus-visible`, Breadcrumbs (`<ol role="list">` + `aria-current="page"`), Ordem DOM = Visual, `tabular-nums`, `prefers-reduced-motion`. |
+| **Engenharia Real-State & Estados (FSM)** | `AUDIT-STATE-01/02` | `30%` | `85.0` | Atributos executáveis `data-state` (`idle`, `loading`, `error`, `empty`, `pressed`), `data-variant` (`elevated`, `outlined`, `subtle`), `aria-busy`, `role="status"`, `role="alert"`, zero comment-gaming e zero placebos. |
+| **Tokens 3 Camadas (`OKLCH`) & Sombras 3 Níveis** | `AUDIT-VIS-01` | `20%` | `85.0` | Famílias `--bg-canvas`/`--bg-surface-1`/`--text-primary` ou `--surface-canvas`/`--surface-card`/`--ink-primary` (`oklch()`, `light-dark()`), luz zenital (`inset 0 1px 0 0`), sombras multi-camadas (`--shadow-elevation-1/2/3` ou `--elevation-1/2/3`), zero órfãos, zero emojis. |
+| **Segurança Anti-XSS** | `AUDIT-SEC-01` | `15%` | `100.0` | Zero `eval()`, zero `dangerouslySetInnerHTML` sem `DOMPurify.sanitize()` (exceto script estático anti-FOUC de `data-theme`). |

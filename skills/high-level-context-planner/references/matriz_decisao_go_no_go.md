@@ -7,6 +7,7 @@ Este documento estabelece as diretrizes para a formulação de portões de quali
 ## 1. Princípio da Falsificabilidade em Portões de Qualidade
 
 Critérios de aceite não podem se basear em avaliações subjetivas ("verificar se ficou bom", "testar funcionamento geral"). Devem ser expressos em asserções estritamente falsificáveis:
+
 - Códigos de saída de terminal (`$LASTEXITCODE -eq 0`).
 - Existência de caminhos ou arquivos no disco (`Test-Path`).
 - Presença de campos obrigatórios em payloads ou schemas JSON.

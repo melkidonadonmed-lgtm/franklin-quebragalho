@@ -1,36 +1,34 @@
 ---
 name: organizador-fluxo-arvore-arquivos
-description: >-
-  Transforma ideias brutas e requisitos de apps em fluxos visuais (Mermaid), árvores de diretórios comentadas e planos de execução diretos com histórico de versões em Markdown (.md) ou PDF. Use para mapear fluxos e estrutura de pastas; não use para auditar segurança AST de código.
+description: "Transforma ideias brutas e requisitos de apps em fluxos visuais Mermaid e árvores de diretórios comentadas em Markdown ou PDF. Use para mapear fluxos e pastas; não use para auditar segurança AST."
+version: "1.1.0"
+updated_at: "2026-10-04"
+compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "1.1.0"
+  updated_at: "2026-10-04"
   author: "DocMaker & Melki"
   category: "Planejamento Visual e Diagramação de Diretórios"
-  updated_at: "2026-10-04"
-  tags:
-    - "mermaid"
-    - "arvore-arquivos"
-    - "fluxogramas"
-    - "planejamento"
-version: 1.1.0
-updated_at: 2026-10-04
-author: DocMaker & Melki
-category: Planejamento Visual e Diagramação de Diretórios
+  tags: ["mermaid", "arvore-arquivos", "fluxogramas", "planejamento"]
 ---
-
 # 1. NOME DA SKILL
+
 **Organizador de Ideias em Fluxo Lógico, Diagramas Mermaid e Árvore de Arquivos** (`organizador-fluxo-arvore-arquivos`)
 
 # 2. DESCRIÇÃO
+
 Esta skill recebe uma ideia inicial, rascunho de software, especificação de app ou processo de negócio, classifica a ordem das etapas, estrutura o fluxo de execução lógico mais enxuto possível e converte tudo em diagramas visuais intuitivos (usando blocos de sintaxe Mermaid compreensíveis para leigos) e uma árvore hierárquica de arquivos em Markdown. Seu compromisso é não inflar o escopo com funcionalidades complexas desnecessárias, manter o pedido original intacto para fins de auditoria, gerar um histórico comparativo de alterações quando novos incrementos forem submetidos e oferecer ao final a exportação direta em arquivo único Markdown (`.md`) ou PDF diagramado para evitar quebras ao copiar e colar.
 
 # 3. GATILHOS DE ATIVAÇÃO
+
 - Solicitações para transformar rascunhos, apps ou ideias de projeto em diagramas simples.
 - Pedidos de estruturação de árvores de diretórios/arquivos para projetos.
 - Pedidos do tipo: "organize minha ideia de app", "crie um diagrama fácil do meu projeto", "mostre a estrutura de pastas e fluxo do meu sistema".
 - Demandas para exportar arquitetura de fluxo e pastas diretamente em `.md` ou `.pdf`.
 
 # 4. ENTRADAS ESPERADAS
+
 - **Texto da Ideia/Pedido**: Descrição livre do que o usuário quer construir ou organizar.
 - **Histórico Anterior (Opcional)**: Versão previamente entregue pelo agente para comparação quando o usuário colar modificações.
 - **Preferência de Exportação (Opcional)**: Se o usuário já pediu explicitamente arquivo Markdown ou PDF na mensagem.
@@ -102,6 +100,7 @@ flowchart TD
 ```
 
 ### 3. Estrutura e Árvore de Arquivos
+
 ```text
 meu-projeto/
 ├── pasta_principal/         # Descrição funcional da pasta
@@ -111,17 +110,22 @@ meu-projeto/
 ```
 
 ### 4. Modo de Execução Recomendado (Passo a Passo Prático)
+
 - Etapa 1: ...
 - Etapa 2: ...
 
 ### 5. Sugestões Opcionais (Sem alterar escopo original)
+
 - [Sugestão 1: melhoria que não polui o MVP]
 - [Sugestão 2: expansão futura opcional]
 
 ### 6. Opção de Exportação (Arquivo Único / PDF)
+>
 > 💡 *Para evitar quebras de diagramas Mermaid, formatação de tabelas ou caracteres especiais ao copiar e colar:*
+
 - **Arquivo Único Markdown (.md)**: Deseja que eu salve esta arquitetura em um arquivo `.md` no workspace?
-- **Documento PDF Formatado (.pdf)**: Deseja que eu gere uma versão diagramada em PDF profissional via pipeline do workspace (`scripts/md-to-pdf.ps1`)?
+- **Documento PDF Formatado (.pdf)**: Deseja que eu gere uma versão diagramada em PDF profissional via pipeline do workspace (`../conversor-html-pdf/SKILL.md`)?
+
 ```
 
 ---

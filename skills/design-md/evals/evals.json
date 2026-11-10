@@ -1,31 +1,31 @@
 {
   "skill_name": "design-md",
-  "version": "5.0.0",
+  "version": "7.0.0",
   "evals": [
     {
-      "eval_id": "design-md-purpose-driven-tokens",
-      "prompt": "Gere o arquivo DESIGN.md para o meu projeto analisando o propósito (observabilidade e telemetria de baixa latência) e escolha o melhor tema, tipografia, contraste e camadas sem usar paleta fixa repetida.",
+      "eval_id": "design-md-oklch-3-layer-tokens-and-purpose",
+      "prompt": "Gere o arquivo DESIGN.md para o meu projeto analisando o propósito (monitoramento e telemetria de baixa latência em SPA) e definindo tokens em 3 camadas em OKLCH com light-dark() e color-mix(), iluminação zenital, sombras em 3 níveis e arquétipo espacial.",
       "expected_assertions": [
-        "Identifica o propósito do projeto (DevTools / Telemetria) e recomenda atmosfera coerente como Ex Umbris / Terminal IBM ou Cinza Monolítico",
-        "Acopla tipografia IBM Plex Sans e IBM Plex Mono com tabular-nums para dados técnicos",
-        "Define camadas (--bg-canvas, --bg-surface, --bg-elevated, --bg-contrast-card), 4 níveis de tinta e sombra esculpida em 3 camadas com 1px Rim Light",
-        "Aplica isolamento de acento (98/2 ou 60-30-10) com 1 único CTA primário sólido vs .btn-ghost"
+        "Identifica o propósito do projeto, classifica em Nível 2 (SPA Feature-Driven) e seleciona o arquétipo Command Center / Data Grid de Alta Densidade",
+        "Estrutura os Design Tokens em 3 camadas (Primitivos, Semânticos com oklch(), light-dark(), color-mix() e RCS from, e Componente) com elevação progressiva no Dark Mode (L = 0.16 -> 0.22 -> 0.27)",
+        "Especifica iluminação zenital (inset 0 1px 0 0), sombras multi-camadas em 3 níveis (Umbra + Penumbra com spread negativo), drop-shadow() para SVGs e isolation: isolate",
+        "Exige propriedades lógicas (inline-size, padding-inline, margin-block), display: flow-root, escala clamp(), text-wrap: balance/pretty, font-synthesis: none e tabular-nums"
       ]
     },
     {
-      "eval_id": "design-md-atomic-structure",
-      "prompt": "Documente no DESIGN.md a arquitetura de pastas src/ com Design Atômico, espaçamento concêntrico e auditoria de testes FSM.",
+      "eval_id": "design-md-cards-container-queries-and-3-layer-nav",
+      "prompt": "Documente no DESIGN.md a separação entre Macrolayout e Microlayout (@container), as 4 variantes de cards, a arquitetura de navegação em 3 camadas e os estados funcionais reais.",
       "expected_assertions": [
-        "Mapeia src/components/ui, src/components/bento, src/components/layout, src/config, src/styles e src/types",
-        "Inclui fórmula de raios concêntricos e estados finitos FSM (idle, loading, error, pressed)",
-        "Integra frontend-code-architect e frontend-testing-auditor"
+        "Distingue Macrolayout (CSS Grid RAM + @media) de Microlayout (container-type: inline-size + @container) e adaptação PWA (@media (display-mode: standalone))",
+        "Define as 4 variantes de Cards (Elevated, Outlined, Filled/Subtle, Interactive) com curvas cubic-bezier(0.22, 1, 0.36, 1), prefers-reduced-motion e pointer: coarse (>= 44px)",
+        "Especifica as 3 camadas de navegação (Global, Local/In-Page e Estrutural/Breadcrumbs com <ol role='list'> e aria-current='page'), Ordem DOM = Ordem Visual, zero emojis e Engenharia Real-State"
       ]
     }
   ],
   "trigger_eval_queries": {
     "should_trigger": [
-      "Crie o DESIGN.md na raiz do projeto adaptando o estilo ao propósito do produto",
-      "Defina a arquitetura visual, tipografia, espaçamento e tema no DESIGN.md"
+      "Crie o DESIGN.md na raiz do projeto com tokens em 3 camadas OKLCH, sombras multi-camadas e arquétipo espacial",
+      "Defina a arquitetura visual, light-dark(), container queries, 4 variantes de cards e tipografia fluida no DESIGN.md"
     ],
     "near_misses": [
       "Otimize esta query SQL no BigQuery",

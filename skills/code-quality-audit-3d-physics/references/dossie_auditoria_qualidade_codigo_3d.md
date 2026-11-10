@@ -15,6 +15,7 @@ A nota final do projeto é expressa em uma escala de **0 a 100**, calculada pela
 $$S_{\text{norm}} = \sum_{j=1}^{M} w_j \cdot s_j$$
 
 Onde:
+
 * \(M = 5\) é o número de dimensões/módulos de auditoria.
 * \(w_j\) é o peso relativo da dimensão \(j\), com \(\sum w_j = 1.0\) (\(100\%\)).
 * \(s_j \in [0, 100]\) é a pontuação bruta obtida na dimensão \(j\).
@@ -43,7 +44,7 @@ $$s_{\text{Física}} = \sum_{k=1}^{5} w_k \cdot S_k$$
 
 | Sub-dimensão Técnica | Peso Interno (\(w_k\)) | Requisitos e Variáveis Obrigatórias | Equações Formais / Validações |
 | :--- | :--- | :--- | :--- |
-| **1. Integração Temporal & Delta Time** | **25%** | `dt` / `deltaTime`, `accumulator`, `fixedDeltaTime`, `subSteps`. | \(\vec{p}_{t+dt} = \vec{p}_t + \vec{v}_t \cdot dt\)<br>\(\vec{p}_{t+dt} = 2\vec{p}_t - \vec{p}_{t-dt} + \vec{a}_t \cdot dt^2\) |
+| **1. Integração Temporal & Delta Time** | **25%** | `dt` / `deltaTime`, `accumulator`, `fixedDeltaTime`, `subSteps`. | \(\vec{p}_{t+dt} = \vec{p}_t + \vec{v}*t \cdot dt\)<br>\(\vec{p}*{t+dt} = 2\vec{p}*t - \vec{p}*{t-dt} + \vec{a}_t \cdot dt^2\) |
 | **2. Álgebra Vetorial & Rotações 3D** | **25%** | Quaternions (\(q = w + xi + yj + zk\)), Matrizes \(4 \times 4\), `dot()`, `cross()`. | \(\hat{v} = \frac{\vec{v}}{\|\vec{v}\|}\)<br>Vedação contra *Gimbal Lock* |
 | **3. Leis de Conservação & Estabilidade** | **20%** | `mass` (\(m > 0\)), `invMass` (\(1/m\)), `gravity` (\(\vec{g}\)), `drag`, `restitution` (\(e\)). | \(\vec{F} = m\vec{g} - c_{\text{drag}}\vec{v}\)<br>\(J = \frac{-(1+e)(\vec{v}_{\text{rel}} \cdot \hat{n})}{\frac{1}{m_A} + \frac{1}{m_B}}\) |
 | **4. Detecção de Colisão & CCD** | **15%** | Broadphase (AABB / Octree), `collisionNormal`, `penetrationDepth`, `CCD`. | Prevenção de *Tunneling* em corpos rápidos |
@@ -72,6 +73,7 @@ $$s_{\text{Física}} = \sum_{k=1}^{5} w_k \cdot S_k$$
 ```
 
 Principais penalidades aplicadas:
+
 * ❌ **Atualização de Posição sem Delta Time (`MISSING_DELTA_TIME`):** **-100 pontos** no subcritério (Falha Crítica).
 * ❌ **Uso de Ângulos de Euler para acúmulo contínuo de rotação 3D (`EULER_GIMBAL_LOCK`):** **-50 pontos**.
 * ❌ **Normalização de vetor sem checar magnitude zero (`UNCHECKED_NORMALIZE`):** **-40 pontos**.
@@ -115,6 +117,7 @@ A auditoria é realizada de forma paralela e modular por **5 subagentes especial
 ### Detalhamento dos 5 Módulos de Subskills
 
 #### Módulo 1: `static-sanitization-auditor` (Peso: 20%)
+
 * **Função:** Varredura estática AST para detectar código morto, funções duplicadas e alocações de memória no laço 3D.
 * **Erros Mapeados:**
   * `ALLOC_IN_LOOP` (-30 pts): Instanciação de objetos (`new Vector3()`, `Matrix4()`) dentro do laço `update`/`render`.
@@ -123,6 +126,7 @@ A auditoria é realizada de forma paralela e modular por **5 subagentes especial
 * **Fórmula da Nota:** \(s_1 = \max(0, 100 - \sum \text{Penalidades})\)
 
 #### Módulo 2: `architecture-hardcoded-auditor` (Peso: 15%)
+
 * **Função:** Avaliar o desacoplamento entre regras de física e renderização, além de caçar números mágicos.
 * **Erros Mapeados:**
   * `PHYSICS_RENDER_COUPLING` (-35 pts): Código de física manipulando elementos do DOM/Canvas diretamente.
@@ -131,6 +135,7 @@ A auditoria é realizada de forma paralela e modular por **5 subagentes especial
 * **Fórmula da Nota:** \(s_2 = \max(0, 100 - \sum \text{Penalidades})\)
 
 #### Módulo 3: `physics-3d-math-auditor` (Peso: 25%)
+
 * **Função:** Auditar equações físicas, independência de framerate, Quaternions e imunidade a erros numéricos.
 * **Erros Mapeados:**
   * `MISSING_DELTA_TIME` (-40 pts): Incrementos de posição sem multiplicação por `dt`.
@@ -140,6 +145,7 @@ A auditoria é realizada de forma paralela e modular por **5 subagentes especial
 * **Fórmula da Nota:** \(s_3 = \max(0, 100 - \sum \text{Penalidades})\)
 
 #### Módulo 4: `deterministic-tests-auditor` (Peso: 20%)
+
 * **Função:** Executar a suíte de testes dinâmicos e medir a taxa de aprovação funcional e a métrica \(Pass@k\).
 * **Baterias de Testes Executadas:**
   1. Independência de Framerate (60Hz vs 120Hz).
@@ -150,6 +156,7 @@ A auditoria é realizada de forma paralela e modular por **5 subagentes especial
 * **Fórmula da Nota:** \(s_4 = \left( \frac{\text{Testes Aprovados}}{\text{Total de Testes Executados}} \right) \times 100\)
 
 #### Módulo 5 (Observador): `state-checker-observer` (Peso: 20%)
+
 * **Função:** Nó central de observabilidade. Realiza validação cruzada para eliminar falsos positivos, verifica cobertura de arquivos (100%) e consolida o Escore Normalizado Final (\(S_{\text{norm}}\)).
 * **Algorithmic Flow:**
   1. Coleta saídas dos Subagentes 1 a 4.
@@ -163,12 +170,15 @@ A auditoria é realizada de forma paralela e modular por **5 subagentes especial
 O ecossistema de auditoria conta com 3 ferramentas prontas e funcionais integradas à skill:
 
 ### 1. Analisador AST Python (`static_ast_parser.py`)
+
 Utiliza o módulo nativo `ast` do Python para inspecionar a árvore sintática de arquivos `.py` sem executá-los, identificando alocações em laço, falta de `dt`, números mágicos, comparações estritas de float e funções duplicadas/mortas.
 
 ### 2. Analisador AST JavaScript / TypeScript (`js_ts_ast_parser.js`)
+
 Analisador estático desenvolvido em Node.js focado em ecossistemas WebGL, Three.js e Babylon.js. Examina arquivos `.js` e `.ts` em busca de instâncias de `THREE.Vector3` ou `THREE.Matrix4` criadas no laço de animação (`requestAnimationFrame`), falta de `dt` e normalizações inseguras.
 
 ### 3. Suíte de Testes Determinísticos 3D (`physics_test_runner.py`)
+
 Executa simulações dinâmicas de corpos rígidos em tempo real, testando invariantes físicos como independência de framerate, conservação de energia mecânica, imunidade a `NaN`, retenção de colisão e reprodutibilidade estrita de estado (\(Pass@k\)).
 
 ---
@@ -199,6 +209,7 @@ Todo problema identificado pela Skill deve ser apresentado ao usuário seguindo 
 ## 6. Exemplos de Diagnósticos Resolvidos
 
 ### Exemplo 1: Alocação de Memória no Laço 3D
+
 ```markdown
 ### 🚨 [ERR-001] — Alocação de Objeto 3D no Laço de Animação
 * **Dimensão Atingida:** Sanitização Estática & Memory Cleanup
@@ -219,10 +230,13 @@ function animate(dt: number) {
   mesh.position.copy(TEMP_VECTOR);
 }
 ```
+
 * **Por que é a melhor forma:** Reduz a alocação de memória no laço para 0 bytes, eliminando engasgos (*stuttering*) causados pelas pausas do Garbage Collector.
 
 #### 3. Resultado Esperado
+
 * **Taxa de Alocação:** Reduzida de 15 MB/s para 0 B/s durante a animação.
+
 ```
 
 ### Exemplo 2: Atualização Física Sem Delta Time
@@ -241,10 +255,13 @@ def update(self, dt: float):
     # Posição escalada proporcionalmente ao tempo real decorrido
     self.position += self.velocity * dt
 ```
+
 * **Por que é a melhor forma:** Garante que a partícula percorra a mesma distância física no mesmo intervalo de tempo real em qualquer dispositivo.
 
 #### 3. Resultado Esperado
+
 * **Independência de FPS:** Variação de posição final menor que 0.01m entre 60Hz e 120Hz no teste determinístico.
+
 ```
 
 ---
@@ -263,3 +280,5 @@ def update(self, dt: float):
 - 🧪 **Testes Determinísticos:** 100.0 / 100 (Peso: 20%) — 5/5 testes aprovados.
 - 👁️ **Qualidade & Observabilidade:** 80.0 / 100 (Peso: 20%) — Validação cruzada concluída sem alucinações.
 ```
+
+`

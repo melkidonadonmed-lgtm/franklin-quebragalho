@@ -48,10 +48,12 @@ class MCPServerSpec(BaseModel):
 
 
 class DeclarativeAgentSpec(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     name: str
     description: str = ""
+    goal: str = ""
     version: str = "1.0.0"
-    model: str = "gemini-2.5-pro"
+    model: str = "gemini-3.8-flash"
     temperature: float = 0.1
     role: str = "Especialista Autônomo"
     parent_persona: str = "UI-Architect"
@@ -59,6 +61,11 @@ class DeclarativeAgentSpec(BaseModel):
     workspace: str = "inherit"
     enable_write_tools: bool = True
     enable_mcp_tools: bool = True
+    enable_subagent_tools: bool = False
+    subagent: bool = True
+    mainAgent: bool = False
+    commandExecutionPolicy: str = "auto"
+    tools: List[str] = Field(default_factory=list)
     covered_modules: List[str] = Field(default_factory=list)
     system_prompt: str = "Atue com rigor técnico, valide evidências no disco e mantenha qualidade linear alta."
     guardrails: AgentGuardrailsSpec = Field(default_factory=AgentGuardrailsSpec)
@@ -66,9 +73,9 @@ class DeclarativeAgentSpec(BaseModel):
         default_factory=lambda: [
             MCPServerSpec(name="franklin-skills", type="workspace", scope="read_only"),
             MCPServerSpec(
-                name="gemini-api-docs",
+                name="google-developer-knowledge",
                 type="remote",
-                command="https://gemini-api-docs-mcp.dev",
+                command="https://developerknowledge.googleapis.com/mcp",
                 scope="read_only",
             ),
         ]
@@ -137,6 +144,25 @@ def _parse_scalar(val: str) -> Any:
         return v
 
 
+def _consume_yaml_dict_item(sub_lines: List[str], start_j: int, sindent: int, after_dash: str) -> tuple[Dict[str, Any], int]:
+    """Extrai um item de lista YAML composto por pares chave: valor."""
+    item_dict: Dict[str, Any] = {}
+    ik, iv = after_dash.split(":", 1)
+    item_dict[ik.strip()] = _parse_scalar(iv)
+    j = start_j + 1
+    while j < len(sub_lines):
+        next_line = sub_lines[j]
+        next_strip = next_line.strip()
+        next_indent = len(next_line) - len(next_line.lstrip(" "))
+        if next_strip.startswith("- ") and next_indent <= sindent:
+            break
+        if ":" in next_strip:
+            nk, nv = next_strip.split(":", 1)
+            item_dict[nk.strip()] = _parse_scalar(nv)
+        j += 1
+    return item_dict, j
+
+
 def _parse_yaml_list(sub_lines: List[str]) -> List[Any]:
     """Converte uma lista de linhas YAML começando com '- ' em lista Python."""
     items: List[Any] = []
@@ -144,31 +170,47 @@ def _parse_yaml_list(sub_lines: List[str]) -> List[Any]:
     while j < len(sub_lines):
         sline = sub_lines[j]
         sstrip = sline.strip()
+        if not sstrip.startswith("- "):
+            j += 1
+            continue
         sindent = len(sline) - len(sline.lstrip(" "))
-        if sstrip.startswith("- "):
-            after_dash = sstrip[2:].strip()
-            if ":" in after_dash and not (after_dash.startswith('"') or after_dash.startswith("'")):
-                item_dict: Dict[str, Any] = {}
-                ik, iv = after_dash.split(":", 1)
-                item_dict[ik.strip()] = _parse_scalar(iv)
-                j += 1
-                while j < len(sub_lines):
-                    next_line = sub_lines[j]
-                    next_strip = next_line.strip()
-                    next_indent = len(next_line) - len(next_line.lstrip(" "))
-                    if next_strip.startswith("- ") and next_indent <= sindent:
-                        break
-                    if ":" in next_strip:
-                        nk, nv = next_strip.split(":", 1)
-                        item_dict[nk.strip()] = _parse_scalar(nv)
-                    j += 1
-                items.append(item_dict)
-            else:
-                items.append(_parse_scalar(after_dash))
-                j += 1
+        after_dash = sstrip[2:].strip()
+        is_unquoted_kv = ":" in after_dash and not (after_dash.startswith('"') or after_dash.startswith("'"))
+        if is_unquoted_kv:
+            item_dict, j = _consume_yaml_dict_item(sub_lines, j, sindent, after_dash)
+            items.append(item_dict)
         else:
+            items.append(_parse_scalar(after_dash))
             j += 1
     return items
+
+
+def _collect_indented_block(lines: List[str], start_i: int, indent: int) -> tuple[List[str], int]:
+    """Coleta linhas consecutivas cuja indentação seja maior que indent."""
+    collected: List[str] = []
+    i = start_i
+    while i < len(lines):
+        sub = lines[i]
+        sub_strip = sub.strip()
+        if sub_strip and (len(sub) - len(sub.lstrip(" "))) <= indent:
+            break
+        collected.append(sub)
+        i += 1
+    return collected, i
+
+
+def _resolve_block_value(val_str: str, block_raw: List[str]) -> Any:
+    """Resolve valor de bloco YAML multiline ('|', '>') ou sub-bloco vazio."""
+    if val_str in (">-", ">", "|", "|-"):
+        out_lines = [s.strip() if s.strip() else "" for s in block_raw if s.strip() or val_str.startswith("|")]
+        sep = " " if val_str.startswith(">") else "\n"
+        return sep.join(out_lines).strip()
+    non_empty = [s for s in block_raw if s.strip()]
+    if not non_empty:
+        return None
+    if non_empty[0].strip().startswith("- "):
+        return _parse_yaml_list(non_empty)
+    return _parse_yaml_mapping(non_empty)
 
 
 def _parse_yaml_mapping(lines: List[str]) -> Dict[str, Any]:
@@ -185,37 +227,9 @@ def _parse_yaml_mapping(lines: List[str]) -> Dict[str, Any]:
         key_part, val_part = stripped.split(":", 1)
         key, val_str = key_part.strip(), val_part.strip()
         i += 1
-
-        if val_str in (">-", ">", "|", "|-"):
-            block_lines: List[str] = []
-            while i < n:
-                sub = lines[i]
-                sub_strip = sub.strip()
-                if sub_strip and (len(sub) - len(sub.lstrip(" "))) <= indent:
-                    break
-                if sub_strip:
-                    block_lines.append(sub_strip)
-                elif val_str.startswith("|"):
-                    block_lines.append("")
-                i += 1
-            sep = " " if val_str.startswith(">") else "\n"
-            result[key] = sep.join(block_lines).strip()
-        elif val_str == "":
-            sub_lines: List[str] = []
-            while i < n:
-                sub = lines[i]
-                sub_strip = sub.strip()
-                if sub_strip and (len(sub) - len(sub.lstrip(" "))) <= indent:
-                    break
-                if sub_strip:
-                    sub_lines.append(sub)
-                i += 1
-            if not sub_lines:
-                result[key] = None
-            elif sub_lines[0].strip().startswith("- "):
-                result[key] = _parse_yaml_list(sub_lines)
-            else:
-                result[key] = _parse_yaml_mapping(sub_lines)
+        if val_str in (">-", ">", "|", "|-", ""):
+            block_raw, i = _collect_indented_block(lines, i, indent)
+            result[key] = _resolve_block_value(val_str, block_raw)
         else:
             result[key] = _parse_scalar(val_str)
     return result
@@ -240,48 +254,37 @@ def _parse_yaml_fallback(yaml_text: str) -> Any:
     return _parse_yaml_mapping(raw_lines)
 
 
-def load_agent_spec(yaml_path_or_str: str, verbose: bool = True) -> Dict[str, Any]:
-    """
-    Carrega um manifesto declarativo de agente (de um arquivo .yaml, .md com frontmatter ou string YAML)
-    aplicando Zero-Config Defaults via Pydantic para que você nunca precise lembrar
-    de todos os campos.
-    """
-    candidate = Path(yaml_path_or_str)
-    if candidate.exists() and candidate.is_file():
-        raw_content = candidate.read_text(encoding="utf-8")
+def _normalize_agent_dict(parsed: Any, markdown_body: str) -> Dict[str, Any]:
+    """Extrai e normaliza o dicionário de configuração do agente a partir do YAML parseado."""
+    if not isinstance(parsed, dict):
+        agent_dict: Dict[str, Any] = {}
     else:
-        raw_content = yaml_path_or_str
-
-    yaml_text, markdown_body = _extract_yaml_and_body(raw_content)
-
-    if yaml is not None:
-        parsed = yaml.safe_load(yaml_text)
-    else:
-        parsed = _parse_yaml_fallback(yaml_text)
-
-    if isinstance(parsed, dict):
         raw_agent = parsed.get("agent") if "agent" in parsed else parsed
         if raw_agent is None:
             raise ValueError("Bloco 'agent' no manifesto YAML não pode ser nulo (None).")
         if not isinstance(raw_agent, dict):
             raise ValueError("Manifesto YAML inválido: o bloco de configuração deve ser um mapeamento (dict).")
-        agent_dict: Dict[str, Any] = dict(raw_agent)
-    else:
-        agent_dict = {}
+        agent_dict = dict(raw_agent)
 
     if markdown_body and "system_prompt" not in agent_dict:
         agent_dict["system_prompt"] = markdown_body
 
-    # Normalizar mcp_servers caso o usuário passe apenas strings (ex: ["franklin-skills"])
-    if "mcp_servers" in agent_dict and isinstance(agent_dict["mcp_servers"], list):
-        norm_servers = []
-        for s in agent_dict["mcp_servers"]:
-            if isinstance(s, str):
-                norm_servers.append({"name": s})
-            elif isinstance(s, dict):
-                norm_servers.append(s)
-        agent_dict["mcp_servers"] = norm_servers
+    raw_servers = agent_dict.get("mcp_servers")
+    if isinstance(raw_servers, list):
+        agent_dict["mcp_servers"] = [{"name": s} if isinstance(s, str) else s for s in raw_servers if isinstance(s, (str, dict))]
+    return agent_dict
 
+
+def load_agent_spec(yaml_path_or_str: str, verbose: bool = True) -> Dict[str, Any]:
+    """
+    Carrega um manifesto declarativo de agente (de um arquivo .yaml, .md com frontmatter ou string YAML)
+    aplicando Zero-Config Defaults via Pydantic.
+    """
+    candidate = Path(yaml_path_or_str)
+    raw_content = candidate.read_text(encoding="utf-8") if (candidate.exists() and candidate.is_file()) else yaml_path_or_str
+    yaml_text, markdown_body = _extract_yaml_and_body(raw_content)
+    parsed = yaml.safe_load(yaml_text) if yaml is not None else _parse_yaml_fallback(yaml_text)
+    agent_dict = _normalize_agent_dict(parsed, markdown_body)
     validated_spec = DeclarativeAgentSpec(**agent_dict)
     spec_data = validated_spec.model_dump()
 
@@ -299,7 +302,7 @@ if __name__ == "__main__":
 agent:
   name: "state-checker-observer"
   version: "1.1.0"
-  model: "gemini-2.5-pro"
+  model: "gemini-3.8-flash"
   temperature: 0.1
   system_prompt: |
     Você é o Subagente Observador de Estado e Validador de Qualidade (State Checker & Audit Observer).

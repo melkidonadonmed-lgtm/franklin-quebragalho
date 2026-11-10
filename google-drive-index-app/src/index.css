@@ -1,10 +1,50 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../tailwind.config.js";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-slate-850: oklch(0.235 0.038 258.5);
+  --color-slate-900: oklch(0.208 0.042 265.755);
+  --color-slate-950: oklch(0.155 0.028 261.692);
+}
+
+:root {
+  color-scheme: light dark;
+  --bg-canvas: light-dark(oklch(0.984 0.003 247.858), oklch(0.155 0.028 261.692));
+  --surface-canvas: var(--bg-canvas);
+  --surface-sunken: light-dark(oklch(0.955 0.006 255), oklch(0.13 0.025 261));
+  --surface-card: light-dark(oklch(1 0 0), oklch(0.208 0.042 265.755));
+  --bg-surface: var(--surface-card);
+  --text-primary: light-dark(oklch(0.208 0.042 265.755), oklch(0.968 0.007 247.896));
+  --ink-primary: var(--text-primary);
+  --shadow-inset: inset 0 2px 4px 0 oklch(0.08 0.02 255 / 0.45), inset 0 1px 0 0 oklch(0.98 0.005 255 / 0.08);
+  --shadow-elevation-1: 0 1px 2px 0 oklch(0.08 0.02 255 / 0.26), 0 2px 6px -1px oklch(0.08 0.02 255 / 0.20), inset 0 1px 0 0 oklch(0.98 0.005 255 / 0.08);
+  --shadow-elevation-2: 0 2px 5px -1px oklch(0.08 0.02 255 / 0.32), 0 8px 18px -2px oklch(0.08 0.02 255 / 0.28), inset 0 1px 0 0 oklch(0.99 0.002 255 / 0.14);
+  --shadow-elevation-3: 0 6px 12px -2px oklch(0.08 0.02 255 / 0.38), 0 20px 36px -4px oklch(0.08 0.02 255 / 0.46), inset 0 1px 0 0 oklch(0.99 0.002 255 / 0.16);
+}
 
 @layer base {
   body {
     @apply bg-slate-950 text-slate-100 font-sans min-h-screen;
+  }
+
+  :focus-visible {
+    outline: 2px solid oklch(0.623 0.214 259.815);
+    outline-offset: 2px;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

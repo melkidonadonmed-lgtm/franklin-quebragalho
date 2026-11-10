@@ -277,3 +277,45 @@ def test_harness2_recursive_engine_and_library(tmp_path: Path) -> None:
     assert e_out["status"] == "COMPLETED" and e_out["ledger"]["R"] == 4
 
 
+def test_recorded_intent_token_exchange_validator() -> None:
+    """Valida o padrão Recorded Intent Token Exchange (RFC 8693 / FusionAuth 1.70) contra desvio, falsificação e replay."""
+    from shared.harness import IntentBoundTokenValidator
+
+    validador = IntentBoundTokenValidator(secret_key=b"mcp-auth-secret-key-2026", max_age_seconds=300)
+    intent = validador.create_intent_statement(
+        "agente_atendimento_01",
+        "consultar_fatura",
+        "cliente_12345",
+        timestamp=1_700_000_000,
+    )
+
+    # 1. Chamada alinhada dentro do TTL -> autorizado com token efêmero de escopo mínimo
+    res_ok = validador.validate_and_exchange(intent, "consultar_fatura", "cliente_12345", now_ts=1_700_000_120)
+    assert res_ok["permitido"] is True
+    assert res_ok["scope"] == "mcp:tool:consultar_fatura:cliente_12345"
+    assert res_ok["token_efemero"].startswith("mcp_token_autorizado_300s_")
+
+    # 2. Desvio de intenção por Prompt Injection (exfiltrar_chaves em /etc/secrets) -> bloqueado
+    res_hack = validador.validate_and_exchange(intent, "exfiltrar_chaves", "/etc/secrets", now_ts=1_700_000_120)
+    assert res_hack["permitido"] is False
+    assert "Desvio de intenção detectado" in res_hack["motivo"]
+
+    # 3. Replay fora da janela temporal (TTL > 300s) -> bloqueado
+    res_expired = validador.validate_and_exchange(intent, "consultar_fatura", "cliente_12345", now_ts=1_700_000_500)
+    assert res_expired["permitido"] is False
+    assert "expirada" in res_expired["motivo"]
+
+    # 4. Assinatura HMAC adulterada -> bloqueado
+    tampered = json.loads(intent)
+    tampered["sig"] = "0" * 64
+    res_forged = validador.validate_and_exchange(
+        json.dumps(tampered),
+        "consultar_fatura",
+        "cliente_12345",
+        now_ts=1_700_000_120,
+    )
+    assert res_forged["permitido"] is False
+    assert "forjada" in res_forged["motivo"]
+
+
+
