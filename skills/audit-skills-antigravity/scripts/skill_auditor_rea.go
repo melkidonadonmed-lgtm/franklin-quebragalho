@@ -14,6 +14,7 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"sync"
 )
 
 var (
@@ -69,13 +70,49 @@ type SkillAuditReport struct {
 	ThirdPartySource    string              `json:"third_party_source,omitempty"`
 }
 
-// thirdPartySource identifica skills gerenciadas por instaladores externos (npx skills, rea-agents, autor externo ou
-// LICENSE de fornecedor). Elas são somente leitura para a auditoria: reescrevê-las (incidente de 2026-11-09) gerou
-// drift, `license` removida e links para references/extended_playbook.md inexistente. Retorna "" para skills próprias.
-func thirdPartySource(skillDir string, metadata map[string]any, license, homeDir, npmRoot string) string {
+// installerRoots aponta para os registros dos instaladores externos de skills (substituíveis nos testes).
+type installerRoots struct {
+	Home               string // ~/.agents/.skill-lock.json (npx skills)
+	NpmRoot            string // <npm>/rea-agents/skills
+	ClaudeMarketplaces string // ~/.claude/plugins/marketplaces/*/plugins/*/skills
+	OrcaChunks         string // bundle do Orca com os stubs `{name:`x`,text:`...`,releasedDigests:[...]}`
+}
+
+var (
+	orcaSkillRe    = regexp.MustCompile("\\{name:`([a-z0-9-]+)`,text:`")
+	orcaSkillsMu   sync.Mutex
+	orcaSkillCache = map[string]map[string]bool{}
+)
+
+// orcaBundledSkills lê uma vez por diretório os nomes de skills que o Orca empacota e instala.
+func orcaBundledSkills(chunksDir string) map[string]bool {
+	orcaSkillsMu.Lock()
+	defer orcaSkillsMu.Unlock()
+	if names, ok := orcaSkillCache[chunksDir]; ok {
+		return names
+	}
+	names := map[string]bool{}
+	files, _ := filepath.Glob(filepath.Join(chunksDir, "*.js"))
+	for _, f := range files {
+		raw, err := os.ReadFile(f)
+		if err != nil || !bytes.Contains(raw, []byte("releasedDigests")) {
+			continue
+		}
+		for _, m := range orcaSkillRe.FindAllSubmatch(raw, -1) {
+			names[string(m[1])] = true
+		}
+	}
+	orcaSkillCache[chunksDir] = names
+	return names
+}
+
+// thirdPartySource identifica skills gerenciadas por instaladores externos (npx skills, rea-agents, plugin do Claude,
+// Orca, autor externo ou LICENSE de fornecedor). Elas são somente leitura para a auditoria: reescrevê-las (incidente de
+// 2026-11-09) gerou drift, `license` removida e links para references/extended_playbook.md inexistente. "" = própria.
+func thirdPartySource(skillDir string, metadata map[string]any, license string, roots installerRoots) string {
 	name := filepath.Base(skillDir)
-	if homeDir != "" {
-		if raw, err := os.ReadFile(filepath.Join(homeDir, ".agents", ".skill-lock.json")); err == nil {
+	if roots.Home != "" {
+		if raw, err := os.ReadFile(filepath.Join(roots.Home, ".agents", ".skill-lock.json")); err == nil {
 			var lock struct {
 				Skills map[string]struct {
 					Source string `json:"source"`
@@ -88,8 +125,18 @@ func thirdPartySource(skillDir string, metadata map[string]any, license, homeDir
 			}
 		}
 	}
-	if npmRoot != "" && fileExists(filepath.Join(npmRoot, "rea-agents", "skills", name, "SKILL.md")) {
+	if roots.NpmRoot != "" && fileExists(filepath.Join(roots.NpmRoot, "rea-agents", "skills", name, "SKILL.md")) {
 		return "rea-agents"
+	}
+	if roots.ClaudeMarketplaces != "" {
+		pattern := filepath.Join(roots.ClaudeMarketplaces, "*", "plugins", "*", "skills", name, "SKILL.md")
+		if matches, _ := filepath.Glob(pattern); len(matches) > 0 {
+			plugin := filepath.Base(filepath.Dir(filepath.Dir(filepath.Dir(matches[0]))))
+			return "plugin Claude (" + plugin + ")"
+		}
+	}
+	if roots.OrcaChunks != "" && orcaBundledSkills(roots.OrcaChunks)[name] {
+		return "Orca (orca skills install)"
 	}
 	author, _ := metadata["author"].(string)
 	own := strings.Contains(strings.ToLower(author), "melki")
@@ -103,13 +150,19 @@ func thirdPartySource(skillDir string, metadata map[string]any, license, homeDir
 	return ""
 }
 
-func defaultSkillOwnershipRoots() (string, string) {
+func defaultInstallerRoots() installerRoots {
 	home, _ := os.UserHomeDir()
-	npmRoot := ""
-	if appData := os.Getenv("APPDATA"); appData != "" {
-		npmRoot = filepath.Join(appData, "npm", "node_modules")
+	roots := installerRoots{Home: home}
+	if home != "" {
+		roots.ClaudeMarketplaces = filepath.Join(home, ".claude", "plugins", "marketplaces")
 	}
-	return home, npmRoot
+	if appData := os.Getenv("APPDATA"); appData != "" {
+		roots.NpmRoot = filepath.Join(appData, "npm", "node_modules")
+	}
+	if localAppData := os.Getenv("LOCALAPPDATA"); localAppData != "" {
+		roots.OrcaChunks = filepath.Join(localAppData, "Programs", "orca", "resources", "app.asar.unpacked", "out", "main", "chunks")
+	}
+	return roots
 }
 
 func parseInlineList(val string) []string {
@@ -417,8 +470,7 @@ func AuditSkill(skillDir, scopeLabel string) (*SkillAuditReport, error) {
 	if report.Version == "" {
 		report.Version = "1.0.0"
 	}
-	home, npmRoot := defaultSkillOwnershipRoots()
-	if src := thirdPartySource(skillDir, fm.Metadata, fm.License, home, npmRoot); src != "" {
+	if src := thirdPartySource(skillDir, fm.Metadata, fm.License, defaultInstallerRoots()); src != "" {
 		report.ThirdPartySource = src
 		report.Recommendation = Keep
 		report.Justification = fmt.Sprintf("Skill de terceiro gerenciada por %s: somente leitura. Não editar frontmatter nem corpo; atualizar pelo instalador.", src)

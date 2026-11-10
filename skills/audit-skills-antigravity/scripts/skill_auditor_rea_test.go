@@ -18,9 +18,12 @@ func writeFile(t *testing.T, path, content string) {
 }
 
 func TestThirdPartySourceDetectaInstaladoresEFornecedores(t *testing.T) {
-	home, npm, skills := t.TempDir(), t.TempDir(), t.TempDir()
-	writeFile(t, filepath.Join(home, ".agents", ".skill-lock.json"), `{"version":3,"skills":{"via-lock":{"source":"vercel-labs/skills"}}}`)
-	writeFile(t, filepath.Join(npm, "rea-agents", "skills", "via-rea", "SKILL.md"), "---\nname: via-rea\n---\n")
+	roots := tempRoots(t)
+	skills := t.TempDir()
+	writeFile(t, filepath.Join(roots.Home, ".agents", ".skill-lock.json"), `{"version":3,"skills":{"via-lock":{"source":"vercel-labs/skills"}}}`)
+	writeFile(t, filepath.Join(roots.NpmRoot, "rea-agents", "skills", "via-rea", "SKILL.md"), "---\nname: via-rea\n---\n")
+	writeFile(t, filepath.Join(roots.ClaudeMarketplaces, "claude-plugins-official", "plugins", "mcp-server-dev", "skills", "via-plugin", "SKILL.md"), "---\nname: via-plugin\n---\n")
+	writeFile(t, filepath.Join(roots.OrcaChunks, "service-abc.js"), "x=[{name:`via-orca`,text:`---\\nname: via-orca\\n---`,releasedDigests:[`00`]}]")
 	writeFile(t, filepath.Join(skills, "via-licenca", "LICENSE.txt"), "Apache-2.0")
 
 	cases := map[string]struct {
@@ -30,11 +33,13 @@ func TestThirdPartySourceDetectaInstaladoresEFornecedores(t *testing.T) {
 	}{
 		"lock":    {filepath.Join(skills, "via-lock"), nil, "npx skills (vercel-labs/skills)"},
 		"rea":     {filepath.Join(skills, "via-rea"), nil, "rea-agents"},
+		"plugin":  {filepath.Join(skills, "via-plugin"), nil, "plugin Claude (mcp-server-dev)"},
+		"orca":    {filepath.Join(skills, "via-orca"), nil, "Orca (orca skills install)"},
 		"autor":   {filepath.Join(skills, "android-cli"), map[string]any{"author": "Google LLC"}, "autor externo (Google LLC)"},
 		"licença": {filepath.Join(skills, "via-licenca"), nil, "licença de terceiro"},
 	}
 	for name, c := range cases {
-		if got := thirdPartySource(c.dir, c.metadata, "", home, npm); got != c.want {
+		if got := thirdPartySource(c.dir, c.metadata, "", roots); got != c.want {
 			t.Errorf("%s: got %q, want %q", name, got, c.want)
 		}
 	}
@@ -42,19 +47,30 @@ func TestThirdPartySourceDetectaInstaladoresEFornecedores(t *testing.T) {
 
 // Adversarial: a isenção não pode engolir skills próprias, mesmo com LICENSE ou sem metadados.
 func TestThirdPartySourceNaoIsentaSkillsProprias(t *testing.T) {
-	home, npm, skills := t.TempDir(), t.TempDir(), t.TempDir()
+	roots := tempRoots(t)
+	skills := t.TempDir()
 	propriaComLicenca := filepath.Join(skills, "obsidian-vault")
 	writeFile(t, filepath.Join(propriaComLicenca, "LICENSE.txt"), "MIT")
-	if got := thirdPartySource(propriaComLicenca, map[string]any{"author": "Melki Donadon"}, "MIT", home, npm); got != "" {
+	if got := thirdPartySource(propriaComLicenca, map[string]any{"author": "Melki Donadon"}, "MIT", roots); got != "" {
 		t.Errorf("skill própria com LICENSE marcada como terceiro: %q", got)
 	}
-	if got := thirdPartySource(filepath.Join(skills, "sem-metadados"), nil, "", home, npm); got != "" {
+	if got := thirdPartySource(filepath.Join(skills, "sem-metadados"), nil, "", roots); got != "" {
 		t.Errorf("skill sem autor nem licença marcada como terceiro: %q", got)
 	}
-	writeFile(t, filepath.Join(home, ".agents", ".skill-lock.json"), `{corrompido`)
-	if got := thirdPartySource(filepath.Join(skills, "qualquer"), nil, "", home, npm); got != "" {
+	writeFile(t, filepath.Join(roots.Home, ".agents", ".skill-lock.json"), `{corrompido`)
+	if got := thirdPartySource(filepath.Join(skills, "qualquer"), nil, "", roots); got != "" {
 		t.Errorf("lock corrompido não pode isentar: %q", got)
 	}
+	// Um .js do Orca sem releasedDigests (não é o registro de stubs) não pode isentar nomes.
+	writeFile(t, filepath.Join(roots.OrcaChunks, "outro.js"), "y={name:`agent-0meia`,text:`x`}")
+	if got := thirdPartySource(filepath.Join(skills, "agent-0meia"), nil, "", roots); got != "" {
+		t.Errorf("chunk do Orca sem releasedDigests não pode isentar: %q", got)
+	}
+}
+
+func tempRoots(t *testing.T) installerRoots {
+	t.Helper()
+	return installerRoots{Home: t.TempDir(), NpmRoot: t.TempDir(), ClaudeMarketplaces: t.TempDir(), OrcaChunks: t.TempDir()}
 }
 
 func TestAuditSkillTerceiroFicaSomenteLeitura(t *testing.T) {
