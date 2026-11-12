@@ -1,146 +1,70 @@
 ---
 name: curadoria-obsidian-vault
 description: "Audita e higieniza o cofre do Obsidian validando frontmatter YAML, links bidirecionais Wikilinks e sincronia com MemPalace wing notes. Use para curadoria do vault; não use para Google Drive."
-version: "1.2.0"
-updated_at: "2026-10-19"
-compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
-allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
+version: "1.3.0"
+updated_at: "2026-11-12"
+compatibility: "Windows 11, Python 3.12+, pwsh 7+, MemPalace MCP"
+allowed-tools: ["read_file", "write_file", "edit_file", "run_command", "call_mcp_tool"]
 metadata:
-  version: "1.2.0"
-  updated_at: "2026-10-19"
+  version: "1.3.0"
+  updated_at: "2026-11-12"
   author: "VaultMaster & Melki"
   category: "Gestão de Conhecimento e PKM"
   tags: ["obsidian", "wikilinks", "frontmatter", "mempalace", "hybrid-search", "anexos-orfaos"]
 ---
-# 1. NOME DA SKILL
+# Curadoria e Governança do Obsidian Vault (`curadoria-obsidian-vault`)
 
-`curadoria-obsidian-vault` (Auditoria Estrutural, Higienização de Metadados, Paridade de Projetos e Integridade de Links no Cofre Obsidian `C:\Users\melki\dev\notes\`).
+## 1. Propósito e Gatilhos de Ativação (Quando Usar)
 
----
-
-## 2. GATILHOS DE ATIVAÇÃO (QUANDO USAR)
-
-Ative e execute esta skill sempre que:
-
-- O usuário solicitar: "audite a integridade do meu Obsidian", "verifique links quebrados no cofre", "limpe anexos órfãos em dev/notes", "padronize as tags e frontmatter das notas", "confira a paridade entre projetos e notas".
-- Notas soltas acumularem-se na pasta `Inbox/` ou na raiz de `C:\Users\melki\dev\notes\`.
-- Houver suspeita de imagens ou PDFs sem referência cruzada nas notas do cofre.
-- Complementarmente à skill global `obsidian-vault` (que gerencia leitura/escrita cotidiana por módulos), quando o foco for auditoria determinística de saúde do cofre.
+- Auditar a integridade estrutural de `C:\Users\melki\dev\notes\`: `[[Wikilinks]]` quebrados, frontmatter YAML ausente, notas monolíticas (`> 25 KB`), pressão em `Inbox/` e anexos órfãos.
+- Conferir paridade entre repositórios locais (`dev\repos\`) e notas de projeto (`notes\Projetos\Ativos\`) e sincronizar com MemPalace (`wing: notes`).
 
 ### Quando NÃO Usar
 
-- Para consulta rápida de notas médicas, registro de decisões ou leitura modular cotidiana do cofre (utilize a skill `obsidian-vault`).
-- Para manipulação de instaladores ou faxina em Downloads/Desktop do Windows (utilize `manutencao-disco-windows`).
-- Para modificação da pasta interna de configuração do Obsidian (`.obsidian/`).
-- Para exclusão definitiva de notas ou ideias anotadas.
+- Leitura/escrita rápida cotidiana de uma nota específica (use `obsidian-vault`).
+- Higienização de `Downloads`/`Desktop`/`dev` (use `manutencao-disco-windows`) ou Google Drive (`gdrive-auditoria-limpeza`).
 
 ---
 
-## 3. ENTRADAS ESPERADAS E PRÉ-REQUISITOS
+## 2. Entradas Esperadas e Pré-requisitos
 
-- `vault_path` (opcional): Caminho do cofre do Obsidian (padrão canônico desta máquina: `C:\Users\melki\dev\notes\`).
-- `audit_type` (opcional): `completa`, `anexos_orfaos`, `links_quebrados`, `frontmatter`, `projetos_repos`. Padrão: `completa`.
-- `orphan_quarantine_folder` (opcional): Subpasta para onde mover anexos não referenciados (padrão: `Arquivo/_anexos_orfaos`).
-- **Pré-requisito**: Acesso local a `C:\Users\melki\dev\notes\` e CLI `mempalace` disponível no ambiente.
-
----
-
-## 4. DIRETRIZES DE INTEGRIDADE DO CONHECIMENTO (PKM + MEMPALACE)
-
-A curadoria de `C:\Users\melki\dev\notes\` obedece aos seguintes pilares:
-
-### 4.1. Preservação Absoluta de Conteúdo Intelectual e Sigilo
-
-- NUNCA apagar uma nota que contenha conteúdo autoral; notas históricas recebem `type: historico` ou seguem para `Arquivo/`.
-- NUNCA permitir senhas, tokens de API ou dados identificáveis de pacientes (PII/PHI) nas notas do cofre.
-
-### 4.2. Estrutura Canônica de Pastas do Cofre (Nomes Simples Sem Números/Emojis)
-
-```text
-C:\Users\melki\dev\notes\
-├── Inbox/             # Capturas rápidas e ideias brutas a triar
-├── Diário/            # Notas diárias e registros cronológicos
-├── Medicina/          # Condutas clínicas, resumos, protocolos e plantões
-├── Pessoal/           # Gestão pessoal, finanças e rotinas TDAH
-├── Projetos/          # Ativos/ (espelha dev\repos\<Projeto>) e Fora da Máquina/
-├── Interesses/        # Estudos de IA, MCP, automações e leituras
-├── Modelos/           # Templates padronizados (ex: Template - Projeto Dev.md)
-├── Arquivo/           # Notas históricas e anexos em quarentena
-└── Memória/           # Decisões.md, Ambiente Dev (PC atual).md, Preferências
-```
-
-### 4.3. Padronização de Frontmatter YAML
-
-Toda nota estruturada deve possuir metadados válidos em UTF-8 sem BOM:
-
-```yaml
----
-title: Nome da Nota
-date: YYYY-MM-DD
-tags:
-  - categoria/subcategoria
----
-```
-
-Para notas em `Projetos/Ativos/<Projeto>.md`, exigir também `type: projeto`, `status`, `repo: repos/<Projeto>`, `github` e `stack`.
-
-### 4.4. Integridade de Links Bidirecionais, Paridade de Projetos e MemPalace
-
-- Varredura de `[[Wikilinks]]` apontando para notas inexistentes.
-- Conferência de paridade `dev\repos\` ↔ `notes\Projetos\Ativos\` via `pwsh C:\Users\melki\dev\tools\check-vault-projects.ps1`.
-- Reindexação semântica ao concluir alterações: `mempalace mine "C:\Users\melki\dev\notes"`.
+- `vault_path` (opcional): Padrão `C:\Users\melki\dev\notes\`, conforme topologia em [`references/estrutura_vault_padrao.json`](references/estrutura_vault_padrao.json).
+- `audit_type` (opcional): `completa` (padrão), `anexos_orfaos`, `links_quebrados`, `frontmatter`, `projetos_repos`.
+- `orphan_quarantine_folder` (opcional): Padrão `Arquivo/_anexos_orfaos`.
+- **Pré-requisito**: Acesso a `C:\Users\melki\dev\notes\` e índice unificado MemPalace (`~/.config/mempalace`).
 
 ---
 
-## 5. PROCESSO PASSO A PASSO (EXECUÇÃO DE CURADORIA)
+## 3. Fluxo de Execução (Passo a Passo)
 
-### Passo 1: Varredura Determinística (`vault_hygiene_scanner.py`) e Paridade de Projetos
+1. **Varredura Determinística e Paridade de Projetos**:
 
-Disparar o scanner determinístico reconstruído do `obsidian-mind` (detecta *Active Drift*, *Open Loops* $\ge 14$ dias, notas monolíticas $>25\text{KB}$, pressão em `Inbox/`, `[[Wikilinks]]` quebrados, guarda *Never-Expose* Case-Insensitive Windows e gera `report_key` SHA-256 anti-nagging):
+   ```powershell
+   $env:PYTHONUTF8 = "1"
+   uv run python skills/curadoria-obsidian-vault/scripts/vault_hygiene_scanner.py --json
+   pwsh "C:\Users\melki\dev\tools\check-vault-projects.ps1"
+   ```
 
-```powershell
-uv run python skills/curadoria-obsidian-vault/scripts/vault_hygiene_scanner.py --json
-pwsh "C:\Users\melki\dev\tools\check-vault-projects.ps1"
-```
-
-### Passo 2: Detecção de Anexos Órfãos
-
-1. Coletar arquivos de mídia/PDF dentro do cofre.
-2. Verificar ocorrência do nome de cada anexo em `![[arquivo]]` ou `![](arquivo)` nas notas `.md`.
-3. Anexos sem correspondência são listados como órfãos para realocação segura em `Arquivo/_anexos_orfaos/`.
-
-### Passo 3: Auditoria de Links, Frontmatter e Monólitos (>25KB)
-
-Identificar notas sem cabeçalho YAML (`title`, `date`, `tags`), `[[Wikilinks]]` órfãos e notas monolíticas que pedem *split* (nunca *trim*).
-
-### Passo 4: Relatório, Realocação Segura, Índice Seccional Híbrido e Sincronização MemPalace
-
-Apresentar o diagnóstico determinístico (`[PASS]` / `[FAIL]`) com `report_key` canônico, aplicar correções aprovadas, atualizar o índice incremental de seções (`vault_palace_search.py`) e executar `mempalace mine`:
-
-```powershell
-uv run python skills/curadoria-obsidian-vault/scripts/vault_palace_search.py --query "preferencias" --room memoria --rebuild
-mempalace mine "C:\Users\melki\dev\notes"
-```
+2. **Auditoria de Frontmatter, Links e Anexos Órfãos**:
+   - Exigir `title`, `date: YYYY-MM-DD` e `tags` em notas estruturadas (e `type: projeto`, `status`, `repo`, `github`, `stack` em `Projetos/Ativos/`).
+   - Identificar anexos sem referência `![[...]]` ou `![](...)` em todo o cofre e propor quarentena em `Arquivo/_anexos_orfaos/` (Dry-Run).
+   - Aplicar regras de invalidação temporal (`status: arquivado` / *split* `< 25 KB`) conforme [`references/protocolo_governanca_memoria_2026.md`](references/protocolo_governanca_memoria_2026.md).
+3. **Reindexação Seccional, Grafo SQLite e MemPalace (Sem Lock Concorrente)**:
+   - Atualizar índice seccional (`scripts/vault_palace_search.py --rebuild`) e grafo (`scripts/vault_kg_hydrator.py`).
+   - Quando o servidor MCP `mempalace` estiver ativo na sessão, acionar `mempalace_sync` / `mempalace_mine` via `call_mcp_tool` (`wing="notes"`) em vez de subprocesso concorrente.
 
 ---
 
-## 6. SAÍDAS E ENTREGÁVEIS (MODELO DE SAÍDA)
+## 4. Saídas e Entregáveis
 
-A resposta final da skill entrega:
-
-1. **Quadro de Saúde do Cofre (`C:\Users\melki\dev\notes\`):**
-   - Total de notas ativas por sala (`Inbox`, `Projetos`, `Memória`, `Medicina`, etc.) e status de `check-vault-projects.ps1`.
-2. **Relatório de Anexos Órfãos e Links Quebrados:**
-   - Lista de arquivos sem vínculos e `[[Wikilinks]]` pendentes de resolução.
-3. **Resumo de Triagem de `Inbox/`:**
-   - Sugestão de encaminhamento de notas brutas para as salas canônicas.
-4. **Status de Sincronização MemPalace:**
-   - Resultado da execução de `mempalace mine "C:\Users\melki\dev\notes"`.
+1. Quadro de saúde por sala (`Inbox`, `Projetos`, `Memória`, `Medicina`, `Arquivo`) e status `[PASS]` / `[FAIL]` segundo [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md).
+2. Lista de `[[Wikilinks]]` quebrados, notas sem YAML e anexos órfãos candidatos a quarentena.
+3. Status de paridade `check-vault-projects.ps1` e sincronização MemPalace (`wing: notes`).
 
 ---
 
-## 7. EXCEÇÕES E LIMITES (QUANDO NÃO USAR)
+## 5. Guardrails e Limites
 
-- NUNCA modificar arquivos da pasta `.obsidian/` (configurações de plugins, temas ou workspaces).
-- NUNCA deletar notas ou anexos permanentemente; mover anexos órfãos para `Arquivo/_anexos_orfaos/`.
-- Não alterar nomes de notas sem atualizar simultaneamente os `[[Wikilinks]]` correspondentes.
+- **Proibido** modificar `.obsidian/` ou `.trash/`.
+- **Proibido** apagar ou truncar notas autorais; arquivar em `Arquivo/` após aprovação HITL e nunca persistir PII/PHI ou segredos de API.
+- **Proibido** renomear notas sem atualizar simultaneamente os `[[Wikilinks]]` bidirecionais.

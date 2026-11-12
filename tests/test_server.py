@@ -443,7 +443,8 @@ def test_frontend_skills_and_ui_subagents_integration() -> None:
         parsed_spec = module.load_agent_spec(str(server.ROOT_DIR / "agents" / agent_md), verbose=False)
         assert parsed_spec["name"] == agent_md.removesuffix(".md")
         assert parsed_spec["version"] in ("1.1.0", "1.2.0", "3.0.0", "3.1.0", "4.0.0")
-        assert parsed_spec["enable_write_tools"] is True
+        expected_write = agent_md != "ui-deterministic-observer.md"
+        assert parsed_spec["enable_write_tools"] is expected_write
         assert parsed_spec["enable_mcp_tools"] is True
         assert len(parsed_spec["description"]) > 20
         assert len(parsed_spec["system_prompt"]) > 100

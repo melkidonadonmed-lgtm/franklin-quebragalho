@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-10T05:44:08Z",
+  "timestamp": "2026-11-12T18:51:17Z",
   "audit_version": "1.0.0",
   "target_root": "C:/Users/melki/dev/repos/franklin-quebragalho",
   "summary": {
@@ -10,7 +10,7 @@
       "TypeScript",
       "Go"
     ],
-    "total_agents": 13,
+    "total_agents": 20,
     "total_skills": 29,
     "total_mcp_servers": 2,
     "total_a2a_cards": 2
@@ -22,6 +22,83 @@
   },
   "audit_details": {
     "agents": [
+      {
+        "name": "dev-workspace-publisher",
+        "file": ".agents/agents/dev-workspace-publisher.md",
+        "language": "Markdown",
+        "framework": "Antigravity Declarative Subagent",
+        "reasoning_pattern": "Wave / Subagent Contract",
+        "has_max_steps": true,
+        "has_stop_condition": true,
+        "type_safety": true,
+        "missing_elements": []
+      },
+      {
+        "name": "intent-hitl-mediator",
+        "file": ".agents/agents/intent-hitl-mediator.md",
+        "language": "Markdown",
+        "framework": "Antigravity Declarative Subagent",
+        "reasoning_pattern": "Wave / Subagent Contract",
+        "has_max_steps": true,
+        "has_stop_condition": true,
+        "type_safety": true,
+        "missing_elements": []
+      },
+      {
+        "name": "review-squad",
+        "file": ".agents/agents/review-squad.md",
+        "language": "Markdown",
+        "framework": "Antigravity Declarative Subagent",
+        "reasoning_pattern": "Wave / Subagent Contract",
+        "has_max_steps": true,
+        "has_stop_condition": true,
+        "type_safety": true,
+        "missing_elements": []
+      },
+      {
+        "name": "ui-controls-data",
+        "file": ".agents/agents/ui-controls-data.md",
+        "language": "Markdown",
+        "framework": "Antigravity Declarative Subagent",
+        "reasoning_pattern": "Wave / Subagent Contract",
+        "has_max_steps": true,
+        "has_stop_condition": true,
+        "type_safety": true,
+        "missing_elements": []
+      },
+      {
+        "name": "ui-deterministic-observer",
+        "file": ".agents/agents/ui-deterministic-observer.md",
+        "language": "Markdown",
+        "framework": "Antigravity Declarative Subagent",
+        "reasoning_pattern": "Wave / Subagent Contract",
+        "has_max_steps": true,
+        "has_stop_condition": true,
+        "type_safety": true,
+        "missing_elements": []
+      },
+      {
+        "name": "ui-motion-interaction",
+        "file": ".agents/agents/ui-motion-interaction.md",
+        "language": "Markdown",
+        "framework": "Antigravity Declarative Subagent",
+        "reasoning_pattern": "Wave / Subagent Contract",
+        "has_max_steps": true,
+        "has_stop_condition": true,
+        "type_safety": true,
+        "missing_elements": []
+      },
+      {
+        "name": "ui-shell-navigator",
+        "file": ".agents/agents/ui-shell-navigator.md",
+        "language": "Markdown",
+        "framework": "Antigravity Declarative Subagent",
+        "reasoning_pattern": "Wave / Subagent Contract",
+        "has_max_steps": true,
+        "has_stop_condition": true,
+        "type_safety": true,
+        "missing_elements": []
+      },
       {
         "name": "adk-go-operator",
         "file": "agents/adk-go-operator.md",
@@ -163,7 +240,9 @@
         "has_max_steps": true,
         "has_stop_condition": true,
         "type_safety": true,
-        "missing_elements": []
+        "missing_elements": [
+          "real_function (NotImplementedError detectado)"
+        ]
       }
     ],
     "skills": [

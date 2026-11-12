@@ -2,12 +2,12 @@
 name: frontend-code-architect
 description: "Implementa e refatora interfaces web React Next.js Tailwind consumindo o contrato DESIGN.md com estados finitos FSM, OKLCH e @container. Use para construir UI; não use só para criar o DESIGN.md."
 version: "7.0.0"
-updated_at: "2026-10-27"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
-allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
+allowed-tools: ["read_file", "write_file", "edit_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "7.0.0"
-  updated_at: "2026-10-27"
+  updated_at: "2026-11-12"
   author: "UI-Architect & Melki"
   category: "Frontend Engineering, OKLCH Design System, Container Queries, 3-Tier Project Architecture & Real-State"
   tags: ["frontend-architect", "oklch", "container-queries", "logical-properties", "feature-driven-spa", "app-router-pwa", "real-state-engineering"]
@@ -16,7 +16,7 @@ metadata:
 
 ## 1. Objetivo, Gatilhos e Quando Usar
 
-Esta Skill governa a implementação e refatoração de interfaces web seguindo os **9 Eixos + Matriz de Decisão** da Fonte Única de Verdade (SSOT) em [`Preferências de Trabalho com Agentes.md`](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md), [`../design-md/SKILL.md`](../design-md/SKILL.md) e [`references/tactile_elevation_and_shadows.md`](references/tactile_elevation_and_shadows.md).
+Esta Skill governa a implementação e refatoração de interfaces web seguindo os **9 Eixos + Matriz de Decisão** da Fonte Única de Verdade (SSOT) em [`../../rules/diretrizes-frontend-9-eixos.md`](../../rules/diretrizes-frontend-9-eixos.md), [`../design-md/SKILL.md`](../design-md/SKILL.md) e [`references/tactile_elevation_and_shadows.md`](references/tactile_elevation_and_shadows.md).
 
 ### Quando NÃO Usar (Exceções, Limites e Guardrails)
 
@@ -96,5 +96,5 @@ Preserve integralmente qualquer referência enviada pelo usuário, escolha nomes
 
 ## 4. Saídas, Entregáveis e Orquestração (`Topologia 3+1`)
 
-- **Entregáveis:** Projeto estruturado em Nível 1 (`@layer`/standalone), Nível 2 (SPA Feature-Driven) ou Nível 3 (Fullstack App Router/PWA) com tokens OKLCH em 3 camadas, `@container`, 4 variantes de cards, navegação em 3 camadas e estado real executável (`<= 300 linhas`/chamada).
+- **Entregáveis ([`rules/criterios_auditoria.md`](rules/criterios_auditoria.md)):** Projeto estruturado em Nível 1 (`@layer`/standalone), Nível 2 (SPA Feature-Driven) ou Nível 3 (Fullstack App Router/PWA) com tokens OKLCH em 3 camadas, `@container`, 4 variantes contextuais de cards, navegação contextual e estado real executável (`<= 300 linhas`/chamada).
 - **Persona Coordenadora:** `UI-Architect` (`ui-shell-navigator` $\to$ `ui-controls-data` + `ui-motion-interaction` $\to$ `ui-deterministic-observer`).

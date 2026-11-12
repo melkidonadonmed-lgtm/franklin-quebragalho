@@ -2,12 +2,12 @@
 name: design-md
 description: "Cria ou atualiza o contrato DESIGN.md na raiz do projeto definindo tokens semânticos OKLCH, escala tipográfica modular, espaçamento e camadas. Use para criar o DESIGN.md; não use para projetos sem UI."
 version: "8.2.0"
-updated_at: "2026-10-31"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
-allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
+allowed-tools: ["read_file", "write_file", "edit_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "8.2.0"
-  updated_at: "2026-10-31"
+  updated_at: "2026-11-12"
   author: "UI-Architect & Melki"
   category: "Guia de Princípios de Design System Frontend (OKLCH), Física Óptica de Sombras e Arquitetura Espacial"
   tags: ["design-md", "frontend-design-md", "principios-de-design", "oklch", "sombras-multi-camadas", "container-queries", "starting-style", "aom-acessibilidade"]
@@ -17,7 +17,7 @@ metadata:
 Esta skill atua como um **guia de princípios de engenharia visual, psicologia perceptual e arquitetura espacial** para sintetizar o contrato **`DESIGN.md`** (ou `design.md`) sob medida para a realidade de cada projeto, consultando como base:
 
 - Referência de Composição e Física Óptica: [`references/design_system_composition_reference.md`](references/design_system_composition_reference.md)
-- Fonte Única de Verdade (SSOT): [`Preferências de Trabalho com Agentes.md`](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md).
+- Regras Canônicas dos 9 Eixos (SSOT): [`../../rules/diretrizes-frontend-9-eixos.md`](../../rules/diretrizes-frontend-9-eixos.md) e [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md).
 
 > **Regra de Ouro (Proibição de Copia-e-Cola de Componentes):** O `DESIGN.md` **NÃO é um despejo de componentes prontos** nem uma colagem cega de árvores Next.js, grafos React Flow ou carrosséis em projetos que não usam esses recursos. Ele é um **guia de princípios e decisões arquiteturais** derivado do propósito real do produto, do seu público-alvo e da sua stack (HTML/CSS puro, Go Server-Driven UI, SPA ou Fullstack).
 
@@ -33,7 +33,7 @@ Esta skill atua como um **guia de princípios de engenharia visual, psicologia p
 ### Quando NÃO Usar (Limites e Exceções)
 
 - Para projetos puramente backend/CLI sem interface gráfica.
-- Para documentar arquitetura de nuvem/backend (`SPEC.md` / [`backend-architecture-skill`](file:///c:/Users/melki/dev/repos/adk-tests/.agents/skills/backend-architecture-skill/SKILL.md)), mapa de contexto do ecossistema (`CONTEXT.md`) ou regras operacionais (`AGENTS.md`).
+- Para documentar arquitetura de nuvem/backend (`SPEC.md` / [`../arquiteto-conteudo-solucoes/SKILL.md`](../arquiteto-conteudo-solucoes/SKILL.md)), mapa de contexto do ecossistema (`CONTEXT.md`) ou regras operacionais (`AGENTS.md`).
 - **Nunca copie componentes ou adendos fora do escopo do projeto** (ex.: não inclua regras de Canvas Infinito se o projeto for um sistema clínico editorial ou uma landing page).
 
 ---

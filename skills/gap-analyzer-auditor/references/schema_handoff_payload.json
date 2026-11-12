@@ -26,7 +26,7 @@
           },
           "action": {
             "type": "string",
-            "enum": ["REFATORAR", "INSERIR_GUARDRAIL", "REMOVER_DEPENDENCIA", "ADICIONAR_RETRY", "BLOQUEIO_HITL"]
+            "enum": ["REFATORAR", "INSERIR_GUARDRAIL", "REMOVER_DEPENDENCIA", "ADICIONAR_RETRY", "BLOQUEIO_HITL", "APPEND_CONVERGENCE_TASKS"]
           },
           "patch_instructions": {
             "type": "string"

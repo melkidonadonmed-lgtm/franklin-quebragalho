@@ -15,11 +15,11 @@
   {
     "eval_id": "TC-02-MODO-B-REFINAMENTO-ESTRUTURADO",
     "category": "should-trigger",
-    "description": "Valida se o agente limita a no maximo 2 perguntas quando o pedido for vago",
+    "description": "Valida se o agente limita entre 1 e 3 perguntas estrategicas quando o pedido for vago",
     "input": "Quero automatizar as coisas no meu computador, me ajude a pensar por onde comecar.",
     "expected_behavior": {
       "modo_declarado": "MODO B — REFINAMENTO COLABORATIVO",
-      "max_perguntas": 2,
+      "max_perguntas": 3,
       "propos_versao_preliminar": true,
       "status_esperado": "[PASS]"
     }
@@ -55,7 +55,7 @@
     "input": "Audite e desacople o arquivo SKILL.md desta skill que passou de 600 linhas.",
     "expected_behavior": {
       "aciona_arquiteto_conteudo": false,
-      "delega_para": "skill-auditor-refatorador-skills"
+      "delega_para": "audit-skills-antigravity"
     }
   }
 ]

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "ContextTransitionEnvelopeSchema",
+  "title": "ContextTransitionPayload",
   "description": "Contrato estruturado v3.0.0 de transição de contexto isolado (Context Fork) entre ondas e nós no skill-orquestrador-planos-encadeados",
   "type": "object",
   "required": [

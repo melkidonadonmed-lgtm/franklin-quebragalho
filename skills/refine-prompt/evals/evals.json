@@ -73,7 +73,7 @@
     "input": "Crie a pasta física de uma nova skill chamada 'validador-xml' com scripts/, rules/ e evals/evals.json no repositório.",
     "expected_behavior": {
       "aciona_refine_prompt": false,
-      "delega_para": "evoluir-skills",
+      "delega_para": "audit-skills-antigravity",
       "status_esperado": "[PASS]"
     }
   },

@@ -2,12 +2,12 @@
 name: skill-orquestrador-planos-encadeados
 description: "Orquestrador executivo de planos encadeados DAG mapeando dependências entre skills especialistas e executando ondas sequenciais com Context Fork. Use para orquestrar planos DAG; não use para turno único."
 version: "3.0.0"
-updated_at: "2026-10-26"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "3.0.0"
-  updated_at: "2026-10-26"
+  updated_at: "2026-11-12"
   author: "LoopPlanner & Melki"
   category: "Orquestração DAG, Compilação de Ondas, Context Fork & Transição de Estado"
   tags: ["orquestrador", "planos-encadeados", "dag", "kahn", "context-fork", "multiagente"]
@@ -17,7 +17,7 @@ metadata:
 
 ## 1. Objetivo, Papel na Arquitetura e Quando Usar (Gatilhos)
 
-Enquanto o `high-level-context-planner` (`intent-cognitive-planner`) diagnostica a intenção e projeta o grafo cognitivo não-linear, esta skill atua como o **Motor Executivo de Compilação Topológica (Kahn), Isolamento de Contexto (*Context Fork*) e Roteamento de Estado** entre skills e subagentes.
+Enquanto o `high-level-context-planner` diagnostica a intenção e projeta o grafo cognitivo não-linear, esta skill atua como o **Motor Executivo de Compilação Topológica (Kahn), Isolamento de Contexto (*Context Fork*) e Roteamento de Estado** entre skills e subagentes.
 
 Sua função real e determinística é:
 
@@ -43,7 +43,7 @@ Sua função real e determinística é:
 ## 2. Entradas e Parâmetros Esperados
 
 - **`structured_plan` / `grafo_execucao`** (obrigatório): Plano em formato `CognitiveAdaptivePlan` (`grafo_execucao`), `DAGExecutionPlan` (`tasks`) ou fases numeradas (`phases`).
-- **`execution_mode`** (opcional): `native_subagents` (`invoke_subagent` em ondas), `epic_volta_dag` (`franklin_execute_dag`) ou `step_by_step`.
+- **`execution_mode`** (opcional): `native_subagents` (`invoke_subagent` em ondas), `franklin_dag` (`franklin_execute_dag`) ou `step_by_step`.
 - **`max_retries`** (opcional): Limite de tentativas de auto-correção por nó antes de desviar para `ramo_fallback` ou acionar `gap-analyzer-auditor` (padrão: `1`).
 
 ---
@@ -52,54 +52,32 @@ Sua função real e determinística é:
 
 ```mermaid
 flowchart TD
-    A["Entrada: Grafo de Execução (JSON) ou Plano Multifásico"] --> B["Estágio 1: Compilação Topológica de Kahn<br>(scripts/dag_chain_validator.py)"]
-    B -->|Ciclo ou Colisão de Arquivo| B1["[FAIL] Bloqueio Imediato na Fase 0"]
-    B -->|Grafo Válido| C["Estágio 2: Agrupamento em Ondas Paralelas<br>(Wave 0 -> Wave 1 [Fan-Out] -> Wave 2 [Fan-In])"]
-    C --> D["Estágio 3: Montagem do Envelope Context Fork<br>(<= 5 regras ativas, zero histórico bruto, isolated_state_key)"]
+    A["Entrada: Grafo de Execução (JSON) ou Plano Multifásico"] --> B["Estágio 1: Compilação Topológica de Kahn (scripts/dag_chain_validator.py)"]
+    B -->|Ciclo, Lacuna ou Colisão| B1["[FAIL] Bloqueio Imediato na Fase 0"]
+    B -->|Grafo Válido| C["Estágio 2: Agrupamento em Ondas Paralelas (Wave 0 -> Wave 1 -> Wave 2)"]
+    C --> D["Estágio 3: Montagem do Envelope Context Fork (<= 5 regras, isolated_state_key)"]
     D --> E{"Estágio 4: Despacho e Avaliação do Nó"}
-    E -->|Go (Critério Aprovado)| F["Estágio 5: Verificação Read-After-Write<br>& Avanço para a Próxima Onda"]
-    E -->|No-Go Recuperável| G["Acionar ramo_fallback Não-Linear<br>ou 1 Ciclo Self-Refine"]
-    E -->|Risco Destrutivo| H["[BLOCKED_HITL] Suspender no Harness<br>(franklin_harness_checkpoint)"]
+    E -->|Go (Critério Aprovado)| F["Estágio 5: Verificação Read-After-Write e Avanço"]
+    E -->|No-Go Recuperável| G["Acionar ramo_fallback Não-Linear ou 1 Ciclo Self-Refine"]
+    E -->|Risco Destrutivo| H["[BLOCKED_HITL] Suspender no Harness (franklin_harness_checkpoint)"]
 ```
 
-### Estágio 1: Validação Topológica (Kahn) e Detecção de Colisão de Escrita
+### Estágio 1: Validação Topológica (Kahn), Gestão de Ambiguidade e Colisão de Escrita
 
-1. Antes de iniciar qualquer execução, valide o grafo usando `scripts/dag_chain_validator.py`:
+1. Antes de iniciar qualquer execução, valide o grafo na Fase 0 usando `scripts/dag_chain_validator.py`:
+   - **Gestão de Ambiguidade (`[LACUNA]` Zero no Disparo):** Planos contendo marcadores `[LACUNA]` em aberto ou ambiguidade não esclarecida retornam ao `high-level-context-planner` / usuário para clarificação antes de compilar ondas.
    - **Detecção de Ciclos (DAG):** Calcula o grau de entrada (`in_degree`) de cada nó. Se `visited_nodes < total_nodes`, aborta com `[FAIL: CYCLE_DETECTED]`.
    - **Guarda Anti-Colisão de Arquivos (`target_files`):** Verifica se dois nós alocados na mesma onda paralela (`Wave K`) declaram interseção em `target_files`. Se houver colisão, serializa os nós em ondas distintas ou bloqueia com `[FAIL: PARALLEL_FILE_COLLISION]`.
    - **Validação de Catálogo:** Confirma que todas as `responsible_skill` / `target_skill` existem no catálogo do workspace.
 
 ### Estágio 2: Isolamento de Contexto (*Context Fork*) e Envelope de Transição
 
-Para evitar degradação de atenção (*context rot*) e respeitar a Parede de Complexidade ($\le 5$ regras por nó), o orquestrador **nunca repassa o histórico bruto da conversa** para os subagentes. Ele instancia o contrato `references/schema_transicao_contexto.json`:
-
-```json
-{
-  "phase_id": "step_01_exploracao_react",
-  "wave_index": 1,
-  "sequence_index": 1,
-  "target_skill": "auditoria-projetos-sistema",
-  "cognitive_pattern": "ReAct",
-  "isolated_state_key": "wave1_audit_result",
-  "input_payload": {
-    "target_dir": "c:/Users/melki/dev/repos/franklin-quebragalho"
-  },
-  "active_rules": [
-    "Intercalar Thought -> Tool Call -> Observation",
-    "Isolar estado sem histórico bruto",
-    "Capturar evidências verificáveis ([FATO] vs [LACUNA])"
-  ],
-  "expected_outputs": ["relatorio_evidencias_json"],
-  "acceptance_criteria": ["[PASS] Evidências coletadas sem overflow"],
-  "fallback_branch": "step_01_alternative_source",
-  "status": "IN_PROGRESS"
-}
-```
+Para evitar degradação de atenção (*context rot*) e respeitar a Parede de Complexidade ($\le 5$ regras por nó), o orquestrador **nunca repassa o histórico bruto da conversa** para os subagentes. Ele instancia o contrato `ContextTransitionPayload` formalizado em [`references/schema_transicao_contexto.json`](references/schema_transicao_contexto.json) (`phase_id`, `wave_index`, `sequence_index`, `target_skill`, `cognitive_pattern`, `isolated_state_key`, `input_payload`, `active_rules <= 5`, `target_files`, `expected_outputs`, `acceptance_criteria`, `fallback_branch` e `status`).
 
 ### Estágio 3: Despacho Paralelo (*Fan-Out*) e Consolidação (*Fan-In*)
 
 - **Modo Subagentes Nativos (`invoke_subagent`)**: Dispara todos os nós da mesma onda (`Wave K`) em paralelo, gravando o retorno de cada subagente em sua respectiva chave isolada (`isolated_state_key`) para impedir sobrescrita concorrente.
-- **Modo Motor DAG (`franklin_execute_dag`)**: Despacha o plano JSON para o motor assíncrono do `epic-volta` com controle de `run_id`, `--resume` e `idempotency_key`.
+- **Modo Motor DAG (`franklin_execute_dag`)**: Despacha o plano JSON para o orquestrador determinístico (`shared/execution_orchestrator.py`) com controle de `run_id`, `--resume` e `idempotency_key`.
 
 ### Estágio 4: Roteamento Não-Linear (`fallback_branch`), Retry e Portão HITL
 
@@ -135,6 +113,8 @@ Toda execução ou compilação emitida por esta skill entrega:
 ---
 
 ## 6. Exceções, Limites e Restrições Negativas (Guardrails)
+
+Valide cada onda contra [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md):
 
 - ❌ **Proibição de Injetar Histórico Bruto (*Context Rot*)**: Nenhum envelope `ContextTransitionPayload` pode repassar a transcrição inteira da sessão; envie apenas `input_payload` + `active_rules` ($\le 5$).
 - ❌ **Proibição de Executar Grafo com Ciclo ou Colisão de Arquivo**: Se `dag_chain_validator.py` acusar ciclo (`CYCLE_DETECTED`) ou disputa de escrita no mesmo arquivo na mesma onda (`PARALLEL_FILE_COLLISION`), o disparo é bloqueado na Fase 0.

@@ -1,6 +1,6 @@
 # CRITÉRIOS DE AUDITORIA E REJEIÇÃO DETERMINÍSTICA (`high-level-context-planner` v3.0.0)
 
-Este documento estabelece as regras de conformidade e critérios de corte falsificáveis para validação dos planos emitidos pela skill `high-level-context-planner` (`intent-cognitive-planner`). Toda verificação emite obrigatoriamente um dos três marcadores padronizados:
+Este documento estabelece as regras de conformidade e critérios de corte falsificáveis para validação dos planos emitidos pela skill `high-level-context-planner`. Toda verificação emite obrigatoriamente um dos três marcadores padronizados:
 
 - `[PASS]`: Requisito comprovado e verificado contra âncoras documentais e schemas reais.
 - `[FAIL]`: Requisito violado com motivo específico demonstrado.

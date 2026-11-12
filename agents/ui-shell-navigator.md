@@ -12,12 +12,6 @@ covered_modules:
   - "M1_foundations_purpose_tokens"
   - "M2_layout_bento_navigation"
 description: "Subagente da Onda 1 (Topologia 3+1 UI-Architect): propósito/complexidade, Box Model lógico, tokens OKLCH 3 camadas, 6 Arquétipos + @container e navegação."
-tools:
-  - read_file
-  - write_file
-  - edit_file
-  - run_command
-  - call_mcp_tool
 ---
 
 # Agente Especialista: `ui-shell-navigator` (Onda 1 — Propósito, Nível de Complexidade, Box Lógico, Tokens OKLCH, 6 Arquétipos + `@container` & Navegação em 3 Camadas)

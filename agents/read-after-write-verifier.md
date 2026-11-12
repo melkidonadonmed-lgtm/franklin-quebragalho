@@ -3,7 +3,7 @@ name: read-after-write-verifier
 version: "1.0.0"
 wave: 3
 parent_persona: LoopPlanner
-enable_write_tools: true
+enable_write_tools: false
 enable_mcp_tools: true
 subagent: true
 mainAgent: false
@@ -13,10 +13,6 @@ covered_modules:
   - "M5_read_after_write_verification"
   - "M6_visual_and_dom_grounding"
 description: "Gatekeeper de Onda Final (Read-After-Write e Fan-In): consolida saídas paralelas de subagentes e verifica estado real pós-mutação no disco/DOM."
-tools:
-  - read_file
-  - run_command
-  - call_mcp_tool
 ---
 
 # Agente Intermediário: `read-after-write-verifier` (Validação Pós-Escrita & Fan-In)

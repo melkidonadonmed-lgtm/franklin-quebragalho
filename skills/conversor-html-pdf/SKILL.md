@@ -1,145 +1,64 @@
 ---
 name: conversor-html-pdf
 description: "Converte documentos Markdown e HTML para arquivos PDF profissionais via Microsoft Edge ou Chrome headless com CSS de impressão. Use para exportar relatórios em PDF; não use para redigir do zero."
-version: "1.0.0"
-updated_at: "2026-10-04"
-compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
-allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
+version: "1.2.0"
+updated_at: "2026-11-12"
+compatibility: "Windows 11, pwsh 7+, Microsoft Edge ou Chrome Headless"
+allowed-tools: ["read_file", "write_file", "run_command"]
 metadata:
-  version: "1.0.0"
-  updated_at: "2026-10-04"
+  version: "1.2.0"
+  updated_at: "2026-11-12"
   author: "DocMaker & Melki"
   category: "Publicação e Conversão de Documentos"
   tags: ["pdf", "headless-browser", "css-print", "conversao"]
 ---
-# 1. NOME DA SKILL
+# Pipeline de Conversão Markdown/HTML para PDF (`conversor-html-pdf`)
 
-`conversor-html-pdf` (Pipeline Determinístico de Conversão Markdown/HTML para PDF via Browser Headless).
+## 1. Propósito e Gatilhos de Ativação (Quando Usar)
 
----
-
-## 2. GATILHOS DE ATIVAÇÃO (QUANDO USAR)
-
-Ative e execute esta skill sempre que:
-
-- O usuário solicitar: "converta este markdown para PDF", "gere um PDF profissional deste relatório", "imprima este documento sem quebras feias", "exporte esta documentação para PDF".
-- Após a redação de um documento por `redator-tecnico-markdown` quando for solicitada a versão final para compartilhamento ou impressão.
-- Para gerar PDFs com CSS de impressão profissional (`@page`, cabeçalhos limpos, tabelas zebradas e blocos de código protegidos contra quebra de página).
-- Quando for necessário transformar arquivos HTML estáticos ou relatórios de auditoria em documentos PDF portáveis.
+- Converter relatórios Markdown (`.md`) ou páginas HTML (`.html`) em PDF A4 pronto para compartilhamento ou impressão.
+- Etapa final após redação por `redator-tecnico-markdown` ou diagramação por `organizador-fluxo-arvore-arquivos`.
 
 ### Quando NÃO Usar
 
-- Para redigir o conteúdo técnico ou estruturar as seções do documento (utilize `redator-tecnico-markdown`).
-- Para diagramação de materiais gráficos complexos de publicidade ou diagramas editoriais com sangria personalizada (InDesign).
-- Quando o usuário quiser apenas a nota no Obsidian Vault em formato `.md`.
+- Para redigir conteúdo técnico do zero (use `redator-tecnico-markdown`).
+- Para editoração gráfica com sangria industrial ou notas que permanecerão apenas no Obsidian Vault (`.md`).
 
 ---
 
-## 3. ENTRADAS ESPERADAS E PRÉ-REQUISITOS
+## 2. Entradas Esperadas e Pré-requisitos
 
-- `input_file_path` (obrigatório): Caminho absoluto do arquivo fonte Markdown (`.md`) ou HTML (`.html`).
-- `output_pdf_path` (opcional): Caminho de destino do arquivo `.pdf` (padrão: mesmo diretório e nome do arquivo de entrada com extensão `.pdf`).
-- `theme` (opcional): Estilo visual de impressão (`light_executive`, `dark_mineral`, `polar_sand`). Padrão: `light_executive` (otimizado para impressão com fundo branco e acentos ardósia).
-- `page_orientation` (opcional): `portrait` (retrato) ou `landscape` (paisagem). Padrão: `portrait`.
-- **Pré-requisito**: Microsoft Edge (`msedge.exe`) ou Google Chrome (`chrome.exe`) instalado no Windows 11.
-
----
-
-## 4. DIRETRIZES DE ESTILIZAÇÃO E CSS DE IMPRESSÃO (PRINT SHIELDING)
-
-A conversão emprega regras estritas de CSS `@media print` para eliminar problemas comuns de diagramação:
-
-### 4.1. Prevenção de Quebras de Página Inadequadas
-
-- **Blocos Indivisíveis:** Tabelas, blocos de código (`pre code`), cartões e caixas de alerta devem incluir obrigatoriamente:
-
-  ```css
-  page-break-inside: avoid;
-  break-inside: avoid;
-  ```
-
-- **Títulos Órfãos:** Títulos (`h1`, `h2`, `h3`) devem forçar conexão com o elemento seguinte:
-
-  ```css
-  page-break-after: avoid;
-  break-after: avoid;
-  ```
-
-### 4.2. Margens e Dimensões Canônicas da Página
-
-```css
-@page {
-  size: A4 portrait;
-  margin: 18mm 20mm 20mm 20mm;
-}
-```
-
-### 4.3. Tipografia e Cores de Impressão
-
-- Fonte principal: **Inter**, **Segoe UI** ou **Helvetica Neue** com `line-height: 1.55`.
-- Código monoespaçado: **JetBrains Mono**, **Consolas** com fundo cinza suave (`#F3F4F6`) e borda tênue (`#E5E7EB`).
-- Ausência de fundos escuros pesados no tema `light_executive` para economizar tinta e manter legibilidade perfeita no papel.
+- `input_file_path` (obrigatório): Caminho absoluto do arquivo `.md` ou `.html`.
+- `output_pdf_path` (opcional): Caminho do `.pdf` de saída (padrão: mesmo diretório e nome base).
+- `page_orientation` (opcional): `portrait` (padrão) ou `landscape` (recomendado para tabelas `> 8` colunas).
+- **Pré-requisito**: Microsoft Edge (`msedge.exe`) ou Google Chrome (`chrome.exe`) local no Windows 11.
 
 ---
 
-## 5. PROCESSO PASSO A PASSO (EXECUÇÃO DE CONVERSÃO)
+## 3. Fluxo de Execução (Passo a Passo)
 
-### Passo 1: Inspeção do Arquivo de Entrada
+1. **Inspeção da Entrada**: Confirmar existência com `Test-Path -LiteralPath $inputFilePath`.
+2. **Envelope HTML + Print Shielding**: Se a entrada for `.md`, aplicar a folha [`references/print_theme.css`](references/print_theme.css) (`@page { size: A4; margin: 18mm 20mm 20mm 20mm; }`, `break-inside: avoid` em `table`, `pre`, `blockquote` e `break-after: avoid` em `h1..h6`) ou acionar [`../../scripts/md-to-pdf.ps1`](../../scripts/md-to-pdf.ps1).
+3. **Renderização Headless Local**:
 
-Verificar a existência e o tipo do arquivo alvo:
+   ```powershell
+   $edgePath = @("C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe", "C:\Program Files\Microsoft\Edge\Application\msedge.exe") | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+   & $edgePath --headless --disable-gpu --run-all-compositor-stages-before-draw --print-to-pdf="$outputPdfPath" "$tempHtmlPath"
+   ```
 
-```powershell
-Test-Path -Path $inputFilePath
-```
-
-### Passo 2: Conversão de Markdown para HTML com Template de Impressão
-
-Se a entrada for `.md`, envolver o conteúdo no envelope HTML canônico com os estilos de impressão calibrados contidos em `references/print_theme.css`.
-
-### Passo 3: Disparo do Browser Headless Nativo
-
-Localizar o binário do Microsoft Edge no Windows 11 e executar a conversão:
-
-```powershell
-$edgePath = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
-if (!(Test-Path $edgePath)) {
-    $edgePath = "C:\Program Files\Microsoft\Edge\Application\msedge.exe"
-}
-
-# Execução nativa headless com espera de renderização
-& $edgePath --headless --disable-gpu --run-all-compositor-stages-before-draw --print-to-pdf="$outputPdfPath" "$tempHtmlPath"
-```
-
-### Passo 4: Validação Determinística do PDF Gerado
-
-Conferir se o arquivo PDF de saída existe e possui tamanho superior a 0 bytes:
-
-```powershell
-$pdfItem = Get-Item -Path $outputPdfPath
-if ($pdfItem.Length -gt 0) {
-    Write-Output "[PASS] PDF gerado com sucesso ($([math]::Round($pdfItem.Length / 1KB, 2)) KB)"
-} else {
-    throw "[FAIL] O arquivo PDF gerado está vazio (0 bytes)."
-}
-```
+4. **Validação Física (`Read-After-Write`)**: Verificar `(Get-Item -LiteralPath $outputPdfPath).Length -gt 0` e remover apenas o HTML temporário, preservando o arquivo fonte original.
 
 ---
 
-## 6. SAÍDAS E ENTREGÁVEIS (MODELO DE SAÍDA)
+## 4. Saídas e Entregáveis
 
-A resposta final da skill entrega:
-
-1. **Confirmação de Geração do PDF:**
-   - Tamanho final em KB, total estimado de páginas e tema aplicado.
-2. **Status Determinístico de Validação:**
-   - Marcador `[PASS]` comprovando exit code 0 e integridade do arquivo.
-3. **Link Direto Local:**
-   - Link clicável com esquema `file:///` para abertura imediata no leitor de PDF do Windows.
+1. Status determinístico (`[PASS]` / `[FAIL]`) conforme [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md).
+2. Tamanho final em KB e orientação aplicada (`portrait` / `landscape`).
+3. Links clicáveis `file:///` para o PDF gerado e o fonte preservado.
 
 ---
 
-## 7. EXCEÇÕES E LIMITES (QUANDO NÃO USAR)
+## 5. Guardrails e Limites
 
-- NUNCA depender de ferramentas de terceiros pesadas não instaladas (Pandoc, wkhtmltopdf) quando o Edge/Chrome headless do Windows resolve com máxima fidelidade.
-- Se o arquivo de entrada contiver tabelas extremamente largas com muitas colunas (> 8 colunas), a skill DEVE sugerir a orientação `landscape` para evitar compressão horizontal.
-- Proibido excluir o arquivo `.md` original durante o processo de conversão.
+- Proibido enviar documentos locais para APIs externas de conversão PDF ou exigir Pandoc/wkhtmltopdf quando o browser headless local estiver disponível.
+- Proibido excluir ou sobrescrever o arquivo `.md`/`.html` de entrada.

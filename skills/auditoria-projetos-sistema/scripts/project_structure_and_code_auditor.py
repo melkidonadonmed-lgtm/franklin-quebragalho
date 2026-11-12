@@ -305,7 +305,7 @@ def run_self_test() -> int:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         (root / ".gitignore").write_text(".env\n.venv/\nnode_modules/\n", encoding="utf-8")
-        (root / ".env.example").write_text("GEMINI_MODEL=gemini-2.5-pro\n", encoding="utf-8")
+        (root / ".env.example").write_text("GEMINI_MODEL=gemini-3.8-flash\n", encoding="utf-8")
         (root / "README.md").write_text(
             "# Projeto Teste\nMódulo real em `shared/core.py` e fantasma em `shared/ghost.py`.\n",
             encoding="utf-8",

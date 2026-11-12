@@ -28,15 +28,15 @@ Toda interação opera sob tripartição estrita:
 
 ---
 
-## 2. Conformidade com OWASP LLM Top 10 (2025/2026)
+## 2. Conformidade com OWASP LLM Top 10 (2026)
 
-| Código | Vetor de Ameaça | Mecanismo de Mitigação no REFINE-PROMPT v3.0 |
+| Código | Vetor de Ameaça | Mecanismo de Mitigação no REFINE-PROMPT v3.3 |
 | :--- | :--- | :--- |
-| **LLM01:2025** | Injeção de Prompt (Direta e Indireta) | Delimitação rígida em tags XML; tratamento da entrada exclusivamente como dado passivo (`dado sob análise`), neutralizando tentativas de fuga de contexto ("ignore as instruções anteriores"). |
-| **LLM02:2025** | Divulgação de Informações Sensíveis | Mascaramento de chaves de API, credenciais e dados pessoais (PII) nos canais de saída; proibição de eco de variáveis de ambiente. |
-| **LLM04:2025** | Negação de Serviço do Modelo (DoS) | Controle estrito de orçamento de tokens, limites de recursão (`max_iterations`), limitação no Módulo 3 para no máximo 3 perguntas cirúrgicas e compressão semântica de contexto. |
-| **LLM06:2025** | Agência Excessiva (*Excessive Agency*) | Exigência mandatória de aprovação humana (*Human-in-the-Loop* - HITL) para mutações no mundo real (exclusão de arquivos, DROP em bancos, chamadas de pagamento). |
-| **LLM08:2025** | Dependência Excessiva (*Overreliance*) | Triagem de factibilidade com base na data fixa (03/10/2026) e emissão de `[VEREDITO: INVIÁVEL/FALHO/SUBÓTIMO]` com justificativa e alternativa superior. |
+| **LLM01:2026** | Injeção de Prompt (Direta e Indireta) | Delimitação rígida em tags XML; tratamento da entrada exclusivamente como dado passivo (`dado sob análise`), neutralizando tentativas de fuga de contexto ("ignore as instruções anteriores"). |
+| **LLM02:2026** | Divulgação de Informações Sensíveis | Mascaramento de chaves de API, credenciais e dados pessoais (PII) nos canais de saída; proibição de eco de variáveis de ambiente. |
+| **LLM04:2026** | Negação de Serviço do Modelo (DoS) | Controle estrito de orçamento de tokens, limites de recursão (`max_iterations`), limitação no Módulo 3 para no máximo 3 perguntas cirúrgicas e compressão semântica de contexto. |
+| **LLM06:2026** | Agência Excessiva (*Excessive Agency*) | Exigência mandatória de aprovação humana (*Human-in-the-Loop* - HITL) para mutações no mundo real (exclusão de arquivos, DROP em bancos, chamadas de pagamento). |
+| **LLM08:2026** | Dependência Excessiva (*Overreliance*) | Triagem de factibilidade com base na baseline normativa (Novembro de 2026) e emissão de `[VEREDITO: INVIÁVEL/FALHO/SUBÓTIMO]` com justificativa e alternativa superior. |
 
 ---
 
@@ -60,7 +60,7 @@ Para garantir rastreabilidade e segurança em runtime:
 
 ---
 
-## 5. Isolamento de Kernel e Infraestrutura Segura
+## 5. Isolamento de Execução e Integridade de Estado
 
-- **Kernel Sandboxing (gVisor)**: Runtimes de execução de código operam em containers com sandbox gVisor (`runsc`), aplicando *zero egress* por padrão (bloqueio total de tráfego de rede não autenticado).
-- **Assinaturas Criptográficas**: Qualquer mutação persistente de artefatos em produção deve ser auditada e assinada criptograficamente via Cloud KMS ou HSM.
+- **Menor Privilégio em Ferramentas**: Restringir `allowed-tools` ao conjunto mínimo necessário para cada agente/skill e bloquear escrita fora do workspace autorizado.
+- **Integridade Criptográfica e HITL**: Mutações críticas exigem checkpoint HITL explícito (`CheckpointStore`) e payloads entre agentes remotos utilizam assinatura JWS verificável (RFC 7515).

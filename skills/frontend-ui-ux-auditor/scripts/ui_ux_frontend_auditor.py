@@ -263,16 +263,15 @@ def audit_dom_and_navigation(source: str, parser: DOMStructureParser, recs: List
 def audit_light_and_motion(
     source: str, recs: List[str]
 ) -> Tuple[float, bool, bool, float, bool, bool]:
-    """Audita física da luz (135° / chanfro especular), sombras multifásicas táteis, zero-reflow GPU e prefers-reduced-motion."""
+    """Audita luz zenital (90°–120° / chanfro especular), sombras em camadas, zero-reflow GPU e prefers-reduced-motion."""
     low = source.lower()
-    has_light_135 = bool(
-        re.search(r"border-top\s*:\s*1px\s+solid\s+rgba\(\s*255\s*,\s*255\s*,\s*255", low)
+    has_zenithal_light = bool(
+        re.search(r"border-top\s*:\s*1px\s+solid\s+(?:rgba\(\s*255\s*,\s*255\s*,\s*255|oklch\(\s*1\s+0\s+0)", low)
         or re.search(r"inset\s+0(?:px)?\s+1px\s+0(?:px)?(?:\s+0(?:px)?)?\s+(?:rgba\(\s*255\s*,\s*255\s*,\s*255|oklch\(\s*1\s+0\s+0|light-dark\()", low)
         or "--specular-rim" in low
         or "--catch-light" in low
         or "--shadow-inset" in low
         or ("border-t" in low and "white/" in low)
-        or "135deg" in low
     )
     shadows = [m.group(1) for m in BOX_SHADOW_RE.finditer(source)]
     has_layered_shadow = (
@@ -301,14 +300,14 @@ def audit_light_and_motion(
             )
         )
     )
-    light_score = (55.0 if has_light_135 else 20.0) + (45.0 if has_layered_shadow else 15.0)
-    if not has_light_135:
+    light_score = (55.0 if has_zenithal_light else 20.0) + (45.0 if has_layered_shadow else 15.0)
+    if not has_zenithal_light:
         recs.append(
-            "Adicionar chanfro especular (--specular-rim: inset 0 1px 0 0 rgba(255,255,255,0.75)) ou borda superior reflexiva 135°."
+            "Adicionar chanfro especular zenital 90°–120° (--catch-light: inset 0 1px 0 0 oklch(1 0 0 / 0.12..0.85))."
         )
     if not has_layered_shadow:
         recs.append(
-            "Empregar sombras de elevação em camadas (Oclusão de Contato + Key Light via --elevation-low/medium/high/pressed ou tactile-*)."
+            "Empregar sombras em 3 níveis (Umbra + Penumbra com spread negativo via --shadow-elevation-1..3)."
         )
 
     reflow_hits = [m.group(1) for m in REFLOW_TRANSITION_RE.finditer(source)]
@@ -321,7 +320,7 @@ def audit_light_and_motion(
     if not has_reduced_motion:
         motion_score -= 25.0
         recs.append("Incluir suporte a '@media (prefers-reduced-motion: reduce)' ou 'motion-reduce:transition-none' para acessibilidade motora.")
-    return round(light_score, 1), has_light_135, has_layered_shadow, max(0.0, round(motion_score, 1)), zero_reflow, has_reduced_motion
+    return round(light_score, 1), has_zenithal_light, has_layered_shadow, max(0.0, round(motion_score, 1)), zero_reflow, has_reduced_motion
 
 
 def evaluate_source(source: str, target_name: str = "Componente") -> UIUXAuditReport:
@@ -373,7 +372,7 @@ def format_cli_report(report: UIUXAuditReport) -> str:
         f"Tags Totais: {report.total_tags} | Profundidade DOM: {report.max_dom_depth} | Divsoup Ratio: {report.divsoup_ratio}",
         f"Ícones Identificados: {report.icons_count} | Tamanho Padrão (1:1): {report.standard_icon_sizes}",
         f"Escala de Tokens (8px): {report.token_adherence_pct}% de aderência",
-        f"Física de Luz 135° Presente: {report.light_physics_135} | Sombras de Elevação: {report.elevation_shadows}",
+        f"Luz Zenital (90°–120°) Presente: {report.light_physics_135} | Sombras de Elevação: {report.elevation_shadows}",
         f"Transições Zero-Reflow (GPU): {report.zero_reflow_motion} | Reduced Motion: {report.reduced_motion_support}",
     ]
     if report.recommendations:

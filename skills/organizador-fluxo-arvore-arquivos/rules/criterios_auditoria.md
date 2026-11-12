@@ -39,7 +39,7 @@ Para evitar validações vazias e saídas truncadas, cada entrega gerada por est
 ### Regra 5: Disponibilização da Opção de Exportação Direta (MD/PDF)
 
 - **Critério**: A seção `### 6. Opção de Exportação (Arquivo Único / PDF)` está presente ao final da resposta?
-- **Teste**: Verificar se a oferta de salvar em arquivo único `.md` ou gerar `.pdf` via `scripts/md-to-pdf.ps1` foi apresentada ou executada.
+- **Teste**: Verificar se a oferta de salvar em arquivo único `.md` ou gerar `.pdf` via `../../scripts/md-to-pdf.ps1` (`conversor-html-pdf`) foi apresentada ou executada.
 - **Resultado**:
   - Se a opção ou o link gerado estiver presente -> `[PASS]`
   - Se omitida a opção de exportação -> `[FAIL: Opção de exportação ausente]`

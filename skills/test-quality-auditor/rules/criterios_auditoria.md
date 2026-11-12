@@ -1,4 +1,4 @@
-# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REJEIÇÃO (`test-quality-auditor` v1.2.0)
+# CRITÉRIOS DETERMINÍSTICOS DE AUDITORIA E REJEIÇÃO (`test-quality-auditor` v1.3.0)
 
 Toda auditoria executada por esta skill deve emitir marcadores determinísticos baseados em evidências reais extraídas da Árvore Sintática Abstrata (AST), dos analisadores estruturais multi-domínio (Python, TypeScript/JS, Go, Protocolo MCP e Harness) e da execução da suíte de testes:
 

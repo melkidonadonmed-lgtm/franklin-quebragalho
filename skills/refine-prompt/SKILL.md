@@ -2,12 +2,12 @@
 name: refine-prompt
 description: "Audita factibilidade FATO INFERÊNCIA LACUNA em auditoria epistêmica isolada, modula entropia socrática e refina prompt sob Zero-Trust XML OWASP LLM 2026. Use para refinar prompts; não use para manutenção de arquivos locais."
 version: "3.3.0"
-updated_at: "2026-10-27"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "3.3.0"
-  updated_at: "2026-10-27"
+  updated_at: "2026-11-12"
   author: "Melki"
   category: "Engenharia de Prompts, Auditoria Epistêmica, Modulação de Entropia e Segurança Zero-Trust"
   tags: ["refine-prompt", "zero-trust", "epistemica", "baixa-entropia", "fluidez-cognitiva", "owasp-llm"]
@@ -19,8 +19,8 @@ metadata:
 - **Identificador de Ativo**: `SKILL_REFINE_PROMPT_V3_MASTER` (`v3.3.0`)
 - **Papel Canônico Único (SSOT)**: Auditoria de factibilidade técnica/científica (`[VEREDITO: INVIÁVEL/FALHO/SUBÓTIMO]`), classificação epistêmica estrita (`[FATO]`, `[INFERÊNCIA]`, `[LACUNA]`), **modulação de entropia** (*Determinismo na Borda vs. Fluidez Cognitiva no Centro* e contratos de **Baixa Entropia**), blindagem Zero-Trust (`<untrusted_user_input>`) e emissão nos 3 Módulos Operacionais.
 - **Eliminação de Redundâncias**:
-  - Para **triagem rápida de nível de complexidade (Níveis 1/2/3: `RTF`, `CARE`, `CLAREZA`, `TASS`)** como sub-etapa de criação de skill, o pipeline usa `expansao-contexto-adaptativa`.
-  - Quando o prompt refinado envolver **Frontend/UI ou qualquer um dos 7 Módulos de Domínio (`M1`..`M7`)**, carregue sob demanda a SSOT em [`../arquiteto-conteudo-solucoes/references/diretrizes_especializadas.md`](../arquiteto-conteudo-solucoes/references/diretrizes_especializadas.md) e [`../design-md/SKILL.md`](../design-md/SKILL.md) (sem duplicar tabelas de cores no corpo desta skill).
+  - Para arquitetura de soluções completas, roadmaps `CoT`/`ToT` e templates enterprise (`RTF`, `CLAREZA`, `TASS`), integre com [`../arquiteto-conteudo-solucoes/SKILL.md`](../arquiteto-conteudo-solucoes/SKILL.md).
+  - Quando o prompt refinado envolver **Frontend/UI ou qualquer um dos 7 Módulos de Domínio (`M1`..`M7`)**, carregue sob demanda [`../arquiteto-conteudo-solucoes/references/diretrizes_especializadas.md`](../arquiteto-conteudo-solucoes/references/diretrizes_especializadas.md) e [`../design-md/SKILL.md`](../design-md/SKILL.md) (sem duplicar regras de CSS/UI no corpo desta skill).
 
 ---
 
@@ -36,7 +36,7 @@ metadata:
 ### Quando NÃO Usar
 
 - Para consultas triviais ou comandos diretos de manutenção de arquivos no Windows/Drive (`manutencao-disco-windows`, `gdrive-auditoria-limpeza`).
-- Para scaffolding físico e validação de pacotes de skills no repositório (use `evoluir-skills`).
+- Para auditoria estrutural/cognitiva do catálogo de skills ou organização física de repositórios (use `audit-skills-antigravity` ou `organizador-projetos-ideias`).
 
 ---
 
@@ -78,7 +78,7 @@ metadata:
 
 ### Passo 1: Higienização Zero-Trust e Auditoria de Factibilidade
 
-- Consulte [`references/diretrizes_zero_trust_owasp.md`](references/diretrizes_zero_trust_owasp.md) para mitigar `LLM01:2025` (Prompt Injection), `LLM02` (PII/Secrets) e `LLM06` (Excessive Agency), isolando prefixos estáticos no topo para *Prompt Caching* e aplicando *Sandwiching* contra *Lost in the Middle* (Liu et al.).
+- Consulte [`references/diretrizes_zero_trust_owasp.md`](references/diretrizes_zero_trust_owasp.md) para mitigar `LLM01:2026` (Prompt Injection), `LLM02` (PII/Secrets) e `LLM06` (Excessive Agency), isolando prefixos estáticos no topo para *Prompt Caching* e aplicando *Sandwiching* contra *Lost in the Middle* (Liu et al.).
 - Se a proposta violar limites físicos/matemáticos, exigir *Self-Refine* silencioso sem buffer autorregressivo ou expor falha crítica, emita imediatamente:
   `[VEREDITO: INVIÁVEL/FALHO/SUBÓTIMO]` + **Causa Raiz** + **Alternativa Recomendada**.
 
@@ -105,7 +105,7 @@ metadata:
 - **Prevenção de *Self-Refine* Cego Autorregressivo**: Nunca instrua um modelo sem *Thinking tokens* nativos a "revisar tudo silenciosamente antes de responder" em turno único sem fornecer um campo preliminar de rascunho/auditoria (ex.: `"_pre_flight_check"` gerado **antes** do campo final no schema JSON).
 - **Parede de Complexidade (*Prompt Complexity Wall*)**: Nunca empilhe mais de 10–15 restrições negativas soltas num mesmo prompt; agrupe em contratos estruturados ou delegue a sub-skills.
 - **Zero Fragmentação no Módulo 2 e Teto de 3 Perguntas no Módulo 3**: Nunca quebre o artefato plug-and-play em múltiplos blocos desconexos nem faça perguntas abertas sem alternativas A/B com *trade-offs*.
-- **Conformidade Visual Sob Demanda (`Módulo 3 UI`)**: Quando o artefato envolver interfaces, aplique a física da luz zenital, sombras multi-camadas em 3 níveis, nitidez anti-borrão e os 6 Arquétipos Espaciais descritos em [`../design-md/SKILL.md`](../design-md/SKILL.md).
+- **Delegação de Domínio UI**: Quando o prompt refinado especificar interfaces visuais, referencie o contrato [`../design-md/SKILL.md`](../design-md/SKILL.md) em vez de embutir tokens CSS fixos no prompt.
 
 ---
 

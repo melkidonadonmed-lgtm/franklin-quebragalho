@@ -68,13 +68,13 @@ Este documento estabelece as regras falsificáveis para validação e auditoria 
 
 ---
 
-### Regra 7: Aderência à Física Visual e Arquitetura por Propósito (`DESIGN.md` v6.0 — Artefatos Visuais)
+### Regra 7: Delegação Limpa de Domínio (Zero Contaminação de Regras CSS/UI)
 
-- **Critério**: O entregável envolve interface, dashboards, relatórios ou estilos visuais?
-- **Teste**: Identidade própria guiada pelo propósito do projeto (sem reutilizar layouts pré-moldados nem cores neon), tokens `--surface-canvas/sunken/card/elevated/glass`, iluminação zenital (90°–120° com `inset 0 1px 0 0`), sombras multi-camadas em 3 níveis, destaque acromático, travas `antialiased` + `font-synthesis: none` + `tabular-nums`, zero `scale()` fracionário em texto, escolha entre os 6 Arquétipos Espaciais e Engenharia Real-State?
+- **Critério**: Quando o prompt refinado envolve interface ou domínio especializado, referencia a SSOT correspondente (`../design-md/SKILL.md` ou `../arquiteto-conteudo-solucoes/SKILL.md`) sem despejar CSS genérico fora de escopo?
+- **Teste**: Ausência de boilerplate visual irrelevante em prompts de backend, dados ou engenharia de sistemas.
 - **Resultado**:
-  - Se atender integralmente à arquitetura visual e física da luz guiada por propósito -> `[PASS]`
-  - Se aplicar layout pré-moldado sem contexto ou violar contraste/nitidez/camadas -> `[FAIL: Inconformidade com as diretrizes canônicas de interface (SSOT)]`
+  - Se respeitar a fronteira de domínio -> `[PASS]`
+  - Se contaminar prompts não-UI com tokens visuais ou omitir contrato de domínio quando exigido -> `[FAIL: Quebra de fronteira de domínio]`
 
 ---
 

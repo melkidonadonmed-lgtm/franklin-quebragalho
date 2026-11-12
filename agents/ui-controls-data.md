@@ -12,12 +12,6 @@ covered_modules:
   - "M3_semantic_controls_contrast"
   - "M4_data_tabular_fsm"
 description: "Subagente da Onda 2A (Topologia 3+1 UI-Architect): luz zenital (90-120°), 3 níveis de sombra, 4 variantes de cards, tipografia tabular-nums e Real-State."
-tools:
-  - read_file
-  - write_file
-  - edit_file
-  - run_command
-  - call_mcp_tool
 ---
 
 # Agente Especialista: `ui-controls-data` (Onda 2A — Luz Zenital, 3 Tipos/Níveis de Sombra, 4 Variantes de Cards, Tipografia Fluida & Real-State)

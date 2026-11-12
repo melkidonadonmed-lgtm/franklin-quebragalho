@@ -2,21 +2,21 @@
 name: high-level-context-planner
 description: "Planejador de contexto de alto nível decompondo metas em fases numeradas com Fase 0, tasks paralelizáveis e Complexity Tracking. Use para planejar épicos complexos; não use para comando único."
 version: "3.0.0"
-updated_at: "2026-10-26"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "3.0.0"
-  updated_at: "2026-10-26"
+  updated_at: "2026-11-12"
   author: "LoopPlanner & Melki"
   category: "Análise de Intenção, Planejamento Cognitivo Não-Linear & Engenharia de Contexto"
-  tags: []
+  tags: ["planejamento", "dag", "cot-tot", "react", "complexity-wall", "convergencia"]
 ---
-# SKILL: Motor Cognitivo de Intenção, Frameworks e Planejamento Não-Linear (`high-level-context-planner` / `intent-cognitive-planner` v3.0.0)
+# SKILL: Motor Cognitivo de Intenção, Frameworks e Planejamento Não-Linear (`high-level-context-planner` v3.0.0)
 
 ## 1. Objetivo, Missão Arquitetural e Quando Usar (Gatilhos)
 
-Esta Skill atua como o **motor cognitivo de diagnóstico de intenção, seleção de frameworks, blindagem contra a Parede de Complexidade e planejamento adaptativo em grafo (DAG)**. Ela unifica o planejamento estratégico Spec-Driven (`Fase 0`, tasks paralelizáveis `[ID] [P?] [US#]` e Convergência *Append-Only*) com o motor **`intent-cognitive-planner`**, erradicando dois problemas críticos de agentes tradicionais:
+Esta Skill atua como o **motor cognitivo de diagnóstico de intenção, seleção de frameworks, blindagem contra a Parede de Complexidade e planejamento adaptativo em grafo (DAG)**. Ela unifica o planejamento estratégico Spec-Driven (`Fase 0`, tasks paralelizáveis `[ID] [P?] [US#]` e Convergência *Append-Only*), erradicando dois problemas críticos de agentes tradicionais:
 
 1. **O Planejamento Linear Rígido ($A \rightarrow B \rightarrow C \rightarrow D$):** A suposição ingênua de que tarefas complexas seguem uma linha reta sem observação empírica de ferramentas externas (`ReAct`), sem exploração de hipóteses concorrentes (`Tree of Thoughts`) e sem crítica reflexiva pré-entrega (`Self-Refine`).
 2. **A Parede de Complexidade de Prompts (*Prompt Complexity Wall*):** A degradação exponencial da acurácia do LLM quando um prompt ou nó de execução acumula mais de 5 a 10 regras simultâneas (fazendo a aderência colapsar para $< 15\%$).
@@ -103,13 +103,13 @@ Para manter a confiabilidade de execução $\ge 90\%$ em cada etapa do plano, ap
   - `[ID]`: Identificador sequencial imutável (`T001`, `T002`...).
   - `[P]`: Task paralelizável que **edita arquivo distinto** sem conflito de escrita na mesma onda.
   - `[US#]`: Requisito ou fatia associada (`[US0]`, `[MVP]`, `[CONV]`).
-- **Convergência *Append-Only* (`/speckit-converge`)**: Ao consumir um `handoff_payload` do `gap-analyzer-auditor`, **NUNCA apague, renumere ou reescreva tasks já concluídas (`[x] T001`)**. Anexe uma nova seção `## Fase N: Convergência & Mitigação` com tasks `- [ ] T0XX [P] [CONV] caminho/exato.py`.
+- **Convergência *Append-Only* (`/speckit-converge`)**: Ao consumir um `handoff_payload` do `gap-analyzer-auditor` conforme [`references/protocolo_consumo_handoff.md`](references/protocolo_consumo_handoff.md), **NUNCA apague, renumere ou reescreva tasks já concluídas (`[x] T001`)**. Anexe uma nova seção `## Fase N: Convergência & Mitigação` com tasks `- [ ] T0XX [P] [CONV] caminho/exato.py`.
 
 ---
 
 ## 4. Automação Determinística (`scripts/cognitive_plan_builder.py`)
 
-Execute o motor determinístico da skill para diagnosticar intenções, validar o teto de $\le 5$ regras por nó (auto-subdividindo nós sobrecarregados) e exportar o grafo para o motor DAG do `epic-volta`:
+Execute o motor determinístico da skill para diagnosticar intenções, validar o teto de $\le 5$ regras por nó (auto-subdividindo nós sobrecarregados) e exportar o grafo para o motor `franklin_execute_dag`:
 
 ```powershell
 # Auto-teste determinístico das regras cognitivas, Pydantic v2 e Complexity Wall Shield
@@ -118,7 +118,7 @@ uv run python skills/high-level-context-planner/scripts/cognitive_plan_builder.p
 # Gerar plano cognitivo não-linear JSON a partir de uma intenção
 uv run python skills/high-level-context-planner/scripts/cognitive_plan_builder.py --intent "Refatorar módulo de autenticação OAuth2 e criar suíte de testes unitários" --framework CLAREZA
 
-# Validar um plano JSON existente e converter para DAGExecutionPlan (Epic-Volta)
+# Validar um plano JSON existente e converter para DAGExecutionPlan (franklin_execute_dag)
 uv run python skills/high-level-context-planner/scripts/cognitive_plan_builder.py --validate-file caminho/plano.json --export-dag caminho/dag_plan.json
 ```
 
@@ -145,7 +145,7 @@ Acompanhe o grafo com:
 
 ## 6. Protocolo de Revisão Silenciosa (`Self-Refine`) e Guardrails (Restrições)
 
-Antes de emitir o plano final, valide silenciosamente:
+Antes de emitir o plano final, valide silenciosamente contra [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md):
 
 - ❌ **Proibição de Planejamento Linear Cego em Tarefas com Incerteza**: Se uma etapa depende da leitura do disco, rede ou testes, use o padrão **`ReAct`** ou **`ToT`** e declare um `ramo_fallback` explícito.
 - ❌ **Proibição de Violar a Parede de Complexidade (`> 5` regras/nó)**: Nenhum nó do `grafo_execucao` pode ter `regras_ativas_count > 5`. Subdivida nós complexos.

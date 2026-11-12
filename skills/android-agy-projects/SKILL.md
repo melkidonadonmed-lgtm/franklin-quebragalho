@@ -2,21 +2,21 @@
 name: android-agy-projects
 description: "Arquitetura, MVP e auditoria Android (Kotlin 2.4+, AGP 9 Built-in Kotlin, KSP2, Jetpack Compose, Navigation 3, R8, ANR e memory leaks). Use para criar ou auditar apps Android/Gradle; não use para iOS."
 version: "2.1.0"
-updated_at: "2026-04-19"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "2.1.0"
-  updated_at: "2026-04-19"
+  updated_at: "2026-11-12"
   author: "melki-agent-os"
   category: "Android Architecture, Performance Audit & Dependency Lifecycle"
-  tags: []
+  tags: ["android", "agp-9", "kotlin-k2", "ksp2", "jetpack-compose", "navigation-3", "r8"]
 ---
 # Skill: android-agy-projects — Engenharia e Auditoria Agêntica de Apps Android (Padrão 2026)
 
 ## 1. Identidade, Missão Operacional e Quando Usar (Gatilhos)
 
-A skill **`android-agy-projects`** atua como **Arquiteto de Software Android Sênior e Auditor Agêntico de Performance**, operando de forma autônoma ou como módulo especialista acoplado ao **`antigravity-project-auditor`** quando o repositório alvo é Android (`build.gradle.kts`, `gradle/libs.versions.toml`, `AndroidManifest.xml`).
+A skill **`android-agy-projects`** atua como **Arquiteto de Software Android Sênior e Auditor Agêntico de Performance**, operando de forma autônoma ou como módulo especialista acoplado ao **`auditoria-projetos-sistema`** quando o repositório alvo é Android (`build.gradle.kts`, `gradle/libs.versions.toml`, `AndroidManifest.xml`).
 
 ### Gatilhos de Ativação (Quando Usar)
 
@@ -81,64 +81,8 @@ O agente **NUNCA deve confiar apenas em memória estática de versões**. Antes 
    - **Arquitetura, DI e Dados:** UDF (Unidirectional Data Flow) com `ViewModel` expondo `StateFlow` imutável coletado via `collectAsStateWithLifecycle()`, **Hilt `2.60.1`** (`androidx.hilt = "1.4.0"`), **Room `2.8.5`** (ou **`androidx.room3` `3.0.3`** para KMP 100% KSP/Coroutines) e **Retrofit `3.0.0`** (OkHttp Kotlin nativo + `converter-kotlinx-serialization`) ou **Ktor `3.1.x`**.
    - **Níveis de SDK:** `compileSdk = 36` (Android 16 *Baklava*; ou `37` preview no AGP 9.5+), `targetSdk = 36` (exigência Google Play 2026) e `minSdk = 24` (ou `26+`).
 
-2. **Catálogo Canônico (`gradle/libs.versions.toml` — Padrão AGP 9.x Built-in Kotlin):**
-   *(Para projetos ainda em AGP 8.13 LTS, consulte o template de transição em [references/android_2026_versions_and_agp9_matrix.md](references/android_2026_versions_and_agp9_matrix.md)).*
-
-```toml
-[versions]
-agp = "9.3.0"
-kotlin = "2.4.21"
-ksp = "2.3.12"
-coreKtx = "1.16.0"
-lifecycle = "2.9.0"
-activityCompose = "1.10.1"
-composeBom = "2026.09.00"
-nav3 = "1.2.0"
-adaptiveNav3 = "1.3.0"
-hilt = "2.60.1"
-androidxHilt = "1.4.0"
-retrofit = "3.0.0"
-room = "2.8.5"
-kotlinxSerialization = "1.8.1"
-coroutines = "1.10.1"
-coil3 = "3.1.0"
-
-[libraries]
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
-androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
-androidx-lifecycle-viewmodel-nav3 = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "lifecycle" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
-androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "nav3" }
-androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "nav3" }
-androidx-material3-adaptive-nav3 = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "adaptiveNav3" }
-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
-androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHilt" }
-retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-kotlin-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
-kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
-coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil3" }
-
-[plugins]
-# No AGP 9.0+, Built-in Kotlin já está ativo em com.android.application/library (não aplicar kotlin-android)
-android-application = { id = "com.android.application", version.ref = "agp" }
-android-library = { id = "com.android.library", version.ref = "agp" }
-android-kmp-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-```
+2. **Catálogo Canônico (`gradle/libs.versions.toml` — Padrão AGP 9.x Built-in Kotlin & AGP 8.13 LTS):**
+   Carregue o template completo de `gradle/libs.versions.toml` (`agp = "9.3.0"`, `kotlin = "2.4.21"`, `ksp = "2.3.12"`, `composeBom = "2026.09.00"`, `nav3 = "1.2.0"`, `hilt = "2.60.1"`, `room = "2.8.5"`, `retrofit = "3.0.0"`, `coil3 = "3.1.0"` — sem `kotlin-android` no AGP 9.0+) diretamente em [`references/android_2026_versions_and_agp9_matrix.md`](references/android_2026_versions_and_agp9_matrix.md).
 
 ---
 
@@ -204,7 +148,7 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 1. **Zero Segredos Hardcoded:** Jamais inserir chaves de API, OAuth client secrets ou keystores em código Kotlin, `AndroidManifest.xml` ou `build.gradle.kts` versionado. Exigir `local.properties` + `secrets-gradle-plugin`.
 2. **Proibição de `@Immutable` / `ImmutableList` Cego em Listas:** Sob o *Strong Skipping Mode* (padrão no Kotlin 2.0+), **nunca** adicione `@Immutable`, `@Stable` ou `ImmutableList<T>` a modelos que contenham coleções (`List`, `Set`, `Map`) consumidos por `LazyColumn` de grande porte, pois o `.equals()` $O(N)$ é mais custoso que a igualdade referencial `===` $O(1)$.
 3. **Proibição de `clean` Desnecessário e Flags Banidas no AGP 9:** Nunca recomende rodar `./gradlew clean` para validar sincronização (desperdiça cache incremental) e nunca adicione `android.disallowKotlinSourceSets=false` ou `android.enableR8.fullMode=false`.
-4. **Quando NÃO Usar:** Não utilize esta skill para projetos puramente Web (React/Next.js — use `frontend-code-architect`), servidores backend Go/Python (use `agent-server-auditor`) ou apps exclusivos iOS/Swift. Quando invocada a partir do `antigravity-project-auditor` em modo diagnóstico inicial, respeite o guardrail *Read-Only* até o usuário aprovar o plano.
+4. **Quando NÃO Usar:** Não utilize esta skill para projetos puramente Web (React/Next.js — use `frontend-code-architect`), servidores backend Go/Python (use `agent-server-auditor`) ou apps exclusivos iOS/Swift. Quando invocada a partir do `auditoria-projetos-sistema` em modo diagnóstico inicial, respeite o guardrail *Read-Only* ([`rules/criterios_auditoria.md`](rules/criterios_auditoria.md)) até o usuário aprovar o plano.
 
 ### Rubrica de Aceite (Self-Refine — Mínimo 85/100 Pontos)
 

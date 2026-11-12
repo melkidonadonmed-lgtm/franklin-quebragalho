@@ -29,41 +29,21 @@ CONFIG_PLUGIN_ROOT = GEMINI_ROOT / "config" / "plugins" / "franklin-skills"
 CONFIG_SKILLS_ROOT = GEMINI_ROOT / "config" / "skills"
 
 GLOBAL_CORE_FRANKLIN_SKILLS: tuple[str, ...] = (
-    "auditoria-projetos-sistema",
-    "audit-skills-antigravity",
-    "code-acceptability-auditor",
-    "test-quality-auditor",
-    "gap-analyzer-auditor",
-    "organizador-projetos-ideias",
+    "auditoria-projetos-sistema", "audit-skills-antigravity", "code-acceptability-auditor",
+    "test-quality-auditor", "gap-analyzer-auditor", "organizador-projetos-ideias",
 )
-
 GLOBAL_CORE_USER_SKILLS: tuple[str, ...] = (
-    "adk-go-mcp-router",
-    "agent-0meia",
-    "agent-browser",
-    "find-skills",
-    "obsidian-vault",
-    "reverse-engineer-anything",
-    "review-squad",
+    "adk-go-mcp-router", "agent-0meia", "agent-browser", "find-skills",
+    "obsidian-vault", "reverse-engineer-anything", "review-squad",
 )
-
 GLOBAL_CORE_SUBAGENTS: tuple[str, ...] = (
-    "adk-go-operator.md",
-    "read-after-write-verifier.md",
-    "vault-memory-retriever.md",
+    "adk-go-operator.md", "read-after-write-verifier.md", "vault-memory-retriever.md",
 )
-
 UI_SUBAGENTS: tuple[str, ...] = (
-    "ui-shell-navigator.md",
-    "ui-controls-data.md",
-    "ui-motion-interaction.md",
-    "ui-deterministic-observer.md",
+    "ui-shell-navigator.md", "ui-controls-data.md", "ui-motion-interaction.md", "ui-deterministic-observer.md",
 )
-
 GOV_SUBAGENTS: tuple[str, ...] = (
-    "review-squad.md",
-    "intent-hitl-mediator.md",
-    "dev-workspace-publisher.md",
+    "review-squad.md", "intent-hitl-mediator.md", "dev-workspace-publisher.md",
 )
 
 
@@ -146,7 +126,7 @@ def _prepare_and_clean_dirs() -> None:
         + list((GEMINI_ROOT / "config").glob("*.rea.backup*"))
         + (list(CONFIG_SKILLS_ROOT.rglob("*.rea.backup*")) if CONFIG_SKILLS_ROOT.exists() else [])
     )
-    adk_bin = REPOS_ROOT / "adk-tests" / "bin"
+    adk_bin = REPOS_ROOT / "adk-go-mcp" / "bin"
     if adk_bin.exists():
         stale_patterns.extend(list(adk_bin.glob("*.exe.old")))
         stale_patterns.extend(list(adk_bin.glob("*.old.exe")))
@@ -313,7 +293,7 @@ def _sync_local_triad_and_plugin_assets() -> None:
             continue
         src_f = repo_dir / "AGENTS.md"
         dst_f = repo_dir / ".agents" / "AGENTS.md"
-        if src_f.exists() and (not dst_f.exists() or repo_dir.name in ("franklin-quebragalho", "adk-tests")):
+        if src_f.exists() and (not dst_f.exists() or repo_dir.name in ("franklin-quebragalho", "adk-go-mcp", "adk-py-agents", "adk-ts-agent")):
             dst_f.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src_f, dst_f)
         _mirror_context_to_root(repo_dir)
@@ -393,19 +373,15 @@ def _format_antigravity_agent_markdown(item: Path) -> str:
     _, body = _extract_yaml_and_body(raw)
     spec = load_agent_spec(str(item), verbose=False)
     desc_escaped = json.dumps(spec["description"], ensure_ascii=False)
-    tools_list = spec.get("tools") or ["read_file", "call_mcp_tool"]
-    tools_yaml = "\n".join(f"  - {t}" for t in tools_list)
+    tools_list = [t for t in (spec.get("tools") or []) if t != "call_mcp_tool"]
+    tools_block = f"tools:\n" + "\n".join(f"  - {t}" for t in tools_list) + "\n" if tools_list else ""
     return (
-        f"---\n"
-        f"name: {spec['name']}\n"
-        f"description: {desc_escaped}\n"
-        f"subagent: true\n"
-        f"mainAgent: false\n"
+        f"---\nname: {spec['name']}\ndescription: {desc_escaped}\nsubagent: true\nmainAgent: false\n"
+        f"enable_write_tools: {str(bool(spec.get('enable_write_tools', True))).lower()}\n"
+        f"enable_mcp_tools: {str(bool(spec.get('enable_mcp_tools', True))).lower()}\n"
+        f"enable_subagent_tools: {str(bool(spec.get('enable_subagent_tools', False))).lower()}\n"
         f"commandExecutionPolicy: {spec.get('commandExecutionPolicy', 'auto')}\n"
-        f"tools:\n"
-        f"{tools_yaml}\n"
-        f"---\n\n"
-        f"{body}\n"
+        f"{tools_block}---\n\n{body}\n"
     )
 
 
@@ -453,7 +429,7 @@ def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
     ui_u = ["vercel-react-best-practices", "web-design-guidelines", "ai-sdk", "live-api-function-auditor"]
     mcp_f = ["agent-server-auditor", "audit-skills-antigravity", "high-level-context-planner", "skill-orquestrador-planos-encadeados", "refine-prompt", "context-sentinel"]
     mcp_u = ["api-auditor", "build-mcp-server", "build-mcp-app", "build-mcpb", "mcp-use-app-builder", "live-api-function-auditor"]
-    adk_local_skills = ["adk-go-mcp-router", "agent-0meia", "backend-architecture-skill", "backfront-stress", "code-analysis-causal-review-team", "code-quality-validation", "context-architecture-skill", "estante", "gatekeeper-eval", "temperea", "weather-skill"]
+    adk_local_skills = ["backend-architecture-skill", "backfront-stress", "code-quality-validation", "context-architecture-skill", "estante", "gatekeeper-eval", "temperea"]
     ui_profile = {"franklin_skills": ui_f, "user_skills": ui_u, "subagents": UI_SUBAGENTS}
     mcp_profile = {"franklin_skills": mcp_f, "user_skills": mcp_u, "subagents": GOV_SUBAGENTS}
     all_franklin = sorted(p.name for p in (ROOT_DIR / "skills").iterdir() if p.is_dir() and (p / "SKILL.md").exists())
@@ -488,17 +464,30 @@ def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
             "plugin_skills": [("android-cli-plugin", ["compose-preview", "device-hub"])],
             "subagents": (*UI_SUBAGENTS, "review-squad.md"),
         },
-        "adk-tests": {
+        "adk-go-mcp": {
             "franklin_skills": [*mcp_f, "design-md", "frontend-code-architect", "frontend-testing-auditor", "frontend-ui-ux-auditor"],
-            "user_skills": [*mcp_u, "google-agents-cli-adk-code", "google-agents-cli-deploy", "google-agents-cli-eval", "google-agents-cli-observability", "google-agents-cli-publish", "google-agents-cli-scaffold", "google-agents-cli-workflow"],
+            "user_skills": [*mcp_u, "adk-go-mcp-router", "agent-0meia", "code-analysis-causal-review-team", "google-agents-cli-adk-code", "google-agents-cli-deploy", "google-agents-cli-eval", "google-agents-cli-observability", "google-agents-cli-publish", "google-agents-cli-scaffold", "google-agents-cli-workflow"],
             "plugin_skills": [("data-agent-kit-plugin", ["bigquery-ai-ml", "bigquery-observability", "bigquery-optimization", "bigquery-troubleshooting", "building-data-apps", "enforcing-resource-attribution"])],
-            "local_skills": [("go_agent/skills", adk_local_skills)],
+            "local_skills": [("skills", adk_local_skills)],
             "subagents": (*UI_SUBAGENTS, *GOV_SUBAGENTS, *GLOBAL_CORE_SUBAGENTS),
+        },
+        "adk-py-agents": {
+            "franklin_skills": [*mcp_f, "design-interface-medica-minimalista", "design-md", "frontend-testing-auditor"],
+            "user_skills": [*mcp_u, "adk-go-mcp-router", "agent-0meia", "google-agents-cli-adk-code", "google-agents-cli-deploy", "google-agents-cli-eval", "google-agents-cli-observability", "google-agents-cli-workflow"],
+            "plugin_skills": [("data-agent-kit-plugin", ["bigquery-ai-ml", "bigquery-observability", "building-data-apps", "enforcing-resource-attribution"])],
+            "local_skills": [("skills", ["weather-skill"])],
+            "subagents": (*UI_SUBAGENTS, *GOV_SUBAGENTS, *GLOBAL_CORE_SUBAGENTS),
+        },
+        "adk-ts-agent": {
+            "franklin_skills": mcp_f,
+            "user_skills": [*mcp_u, "adk-go-mcp-router", "agent-0meia", "google-agents-cli-adk-code", "google-agents-cli-eval"],
+            "local_skills": [("skills", ["weather-skill"])],
+            "subagents": (*GOV_SUBAGENTS, *GLOBAL_CORE_SUBAGENTS),
         },
         "franklin-quebragalho": {
             "franklin_skills": all_franklin,
-            "user_skills": ["agent-skill-evaluator", "skill-repair", "build-mcp-server", "api-auditor", "live-api-function-auditor"],
-            "local_skills": [("../adk-tests/go_agent/skills", adk_local_skills)],
+            "user_skills": ["agent-skill-evaluator", "skill-repair", "build-mcp-server", "api-auditor", "live-api-function-auditor", "adk-go-mcp-router", "agent-0meia", "code-analysis-causal-review-team"],
+            "local_skills": [("../adk-go-mcp/skills", adk_local_skills)],
             "subagents": (*UI_SUBAGENTS, *GOV_SUBAGENTS),
         },
         "workspace-mcp": {"franklin_skills": [*mcp_f, "gdrive-auditoria-limpeza", "gdrive-taxonomia-organizacao"], "user_skills": mcp_u, "subagents": GOV_SUBAGENTS},

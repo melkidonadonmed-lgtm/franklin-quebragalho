@@ -1,136 +1,109 @@
 ---
 name: organizador-fluxo-arvore-arquivos
 description: "Transforma ideias brutas e requisitos de apps em fluxos visuais Mermaid e árvores de diretórios comentadas em Markdown ou PDF. Use para mapear fluxos e pastas; não use para auditar segurança AST."
-version: "1.1.0"
-updated_at: "2026-10-04"
-compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
-allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
+version: "1.2.0"
+updated_at: "2026-11-12"
+compatibility: "Antigravity 2.0, Markdown GFM, Mermaid, Edge Headless"
+allowed-tools: ["read_file", "write_file", "edit_file", "run_command"]
 metadata:
-  version: "1.1.0"
-  updated_at: "2026-10-04"
+  version: "1.2.0"
+  updated_at: "2026-11-12"
   author: "DocMaker & Melki"
   category: "Planejamento Visual e Diagramação de Diretórios"
   tags: ["mermaid", "arvore-arquivos", "fluxogramas", "planejamento"]
 ---
-# 1. NOME DA SKILL
+# Organizador de Ideias em Fluxo Mermaid e Árvore de Arquivos (`organizador-fluxo-arvore-arquivos`)
 
-**Organizador de Ideias em Fluxo Lógico, Diagramas Mermaid e Árvore de Arquivos** (`organizador-fluxo-arvore-arquivos`)
+## 1. Propósito e Gatilhos de Ativação (Quando Usar)
 
-# 2. DESCRIÇÃO
+- Converter rascunhos de apps, ideias ou fluxos operacionais em diagramas `mermaid` (`flowchart TD`/`LR`) e árvores de diretórios comentadas.
+- Gerar histórico incremental de versões e exportar a arquitetura diretamente em `.md` ou `.pdf`.
 
-Esta skill recebe uma ideia inicial, rascunho de software, especificação de app ou processo de negócio, classifica a ordem das etapas, estrutura o fluxo de execução lógico mais enxuto possível e converte tudo em diagramas visuais intuitivos (usando blocos de sintaxe Mermaid compreensíveis para leigos) e uma árvore hierárquica de arquivos em Markdown. Seu compromisso é não inflar o escopo com funcionalidades complexas desnecessárias, manter o pedido original intacto para fins de auditoria, gerar um histórico comparativo de alterações quando novos incrementos forem submetidos e oferecer ao final a exportação direta em arquivo único Markdown (`.md`) ou PDF diagramado para evitar quebras ao copiar e colar.
+### Quando NÃO Usar
 
-# 3. GATILHOS DE ATIVAÇÃO
-
-- Solicitações para transformar rascunhos, apps ou ideias de projeto em diagramas simples.
-- Pedidos de estruturação de árvores de diretórios/arquivos para projetos.
-- Pedidos do tipo: "organize minha ideia de app", "crie um diagrama fácil do meu projeto", "mostre a estrutura de pastas e fluxo do meu sistema".
-- Demandas para exportar arquitetura de fluxo e pastas diretamente em `.md` ou `.pdf`.
-
-# 4. ENTRADAS ESPERADAS
-
-- **Texto da Ideia/Pedido**: Descrição livre do que o usuário quer construir ou organizar.
-- **Histórico Anterior (Opcional)**: Versão previamente entregue pelo agente para comparação quando o usuário colar modificações.
-- **Preferência de Exportação (Opcional)**: Se o usuário já pediu explicitamente arquivo Markdown ou PDF na mensagem.
-
-# 5. PROCESSAMENTO (PASSO A PASSO INTERNO)
-
-1. **Captura Fiel do Pedido**:
-   - Salvar o texto exato fornecido pelo usuário no campo `Pedido original`. É expressamente proibido reescrever ou alterar o texto original do usuário nesta seção.
-
-2. **Detecção de Estado e Comparação de Versões**:
-   - Se for o primeiro envio: definir Versão como `1.0.0` e inicializar o histórico marcando a concepção inicial.
-   - Se o usuário colar um output anterior com modificações: identificar as diferenças, registrar o delta na seção de `Histórico de Implementação` e incrementar o versionamento semântico.
-
-3. **Curadoria do Escopo (Regra Anti-Inchaço)**:
-   - Identificar apenas os componentes estritamente vitais para que a ideia funcione (MVP).
-   - Qualquer funcionalidade extra, melhoria de segurança ou refinamento deve ser segregada obrigatoriamente sob o título `Sugestões Opcionais de Melhoria`, sem misturar com o fluxo central.
-
-4. **Elaboração do Fluxo Lógico e Visual**:
-   - Desenhar um diagrama linear ou condicional simples em sintaxe `mermaid` (usando `flowchart TD` ou `flowchart LR`), seguindo as regras de blindagem de rótulos entre aspas de [`references/padroes_mermaid_e_arvore.md`](references/padroes_mermaid_e_arvore.md).
-   - Restrição visual: Não usar jargões técnicos herméticos; os nós devem descrever ações claras (ex: `A["Usuário faz Login"] --> B["Painel Principal"]`).
-
-5. **Construção da Árvore de Arquivos**:
-   - Mapear as pastas e arquivos mínimos necessários em formato ASCII tree (conforme [`references/padroes_mermaid_e_arvore.md`](references/padroes_mermaid_e_arvore.md)), acompanhados de comentários explicativos em cada linha sobre o papel do arquivo.
-
-6. **Montagem da Saída Estruturada**:
-   - Preencher estritamente os metadados e o template padronizado solicitado pelo usuário.
-
-7. **Opção de Exportação Direta (Prevenção de Quebras de Formatação)**:
-   - Ao final da entrega, disponibilizar a opção clara de criar a solução em **arquivo único Markdown (.md)** ou **PDF formatado (.pdf)**, prevenindo que o diagrama Mermaid ou caracteres da árvore quebrem ao serem copiados para outros aplicativos.
-   - Se o usuário já solicitou exportação no prompt inicial, gerar o arquivo imediatamente no workspace e retornar o link com o esquema `file:///`.
+- Para auditar segurança estática AST de código existente (use `code-acceptability-auditor` ou `auditoria-projetos-sistema`).
+- Para implementar código completo de produção (foco restrito a fluxo lógico, etapas e estrutura de pastas).
 
 ---
 
-# 6. SAÍDAS (FORMATO E CONTEÚDO)
+## 2. Entradas Esperadas e Pré-requisitos
 
-Toda resposta gerada sob esta skill DEVE seguir rigorosamente o template abaixo:
+- `idea_text` (obrigatório): Texto bruto do pedido ou especificação do usuário.
+- `previous_output` (opcional): Versão anterior para cálculo de delta no histórico semântico.
+- `export_format` (opcional): `chat` (padrão), `md` ou `pdf`.
 
-```text
-arquivo : [Nome do arquivo sugerido, ex: arquitetura_app_v1.md]
-nome: [Nome da Solução / Projeto]
-função : [Objetivo principal da solução em 1 frase]
-versão: [X.Y.Z]
-data: [AAAA-MM-DD]
+---
+
+## 3. Processo Passo a Passo (Fases, Coerência Lógica e Fase 0)
+
+1. **Fase 0 — Gestão de Ambiguidade e Captura Literal**:
+   - Preservar o texto exato do usuário em `Pedido original` (proibido resumir ou reescrever).
+   - Se faltarem premissas essenciais, registrar `[LACUNA]` explícita e formular no máximo 1–2 perguntas objetivas (HITL) sem inventar escopo.
+2. **Divisão em Fases, Dependências e Escopo MVP**:
+   - Ordenar o fluxo em etapas sequenciais com coerência lógica e dependências explícitas entre entrada, processamento e saída.
+   - Isolar apenas os módulos vitais ao MVP; segregar extras em `Sugestões Opcionais`.
+3. **Diagramação Mermaid e Árvore Comentada**:
+   - Aplicar aspas duplas em rótulos com caracteres especiais e comentar cada arquivo/pasta da árvore conforme [`references/padroes_mermaid_e_arvore.md`](references/padroes_mermaid_e_arvore.md).
+4. **Exportação Direta (`.md` ou `.pdf`)**:
+   - Salvar em `.md` com `write_file` ou exportar `.pdf` delegando a [`../conversor-html-pdf/SKILL.md`](../conversor-html-pdf/SKILL.md) (`../../scripts/md-to-pdf.ps1`) quando solicitado.
+
+---
+
+## 4. Saídas e Entregáveis (Template Estruturado)
+
+Validar cada entrega contra [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md):
+
+````text
+arquivo: [ex: arquitetura_app_v1.md]
+nome: [Nome da Solução]
+função: [Objetivo principal em 1 frase]
+versão: [X.Y.Z] | data: [YYYY-MM-DD]
 
 ============================================================
-Pedido original :
+Pedido original:
 "[Texto literal fornecido pelo usuário]"
 ============================================================
 
-fluxo de organização:
-1. [Passo Lógico 1 - Entrada]
-2. [Passo Lógico 2 - Processamento/Decisão]
-3. [Passo Lógico 3 - Saída/Entrega]
+fluxo de organização (etapas e dependências):
+1. [Fase 0 / Entrada]
+2. [Processamento / Decisão]
+3. [Saída / Entregável]
 
-saída estruturada :
-
-### 1. Histórico de Implementação / Alterações
-- v1.0.0 ([DATA]): Estruturação inicial da ideia fornecida.
-- [Se houver iterações posteriores: documentar alterações comparativas aqui]
+### 1. Histórico de Alterações
+- v1.0.0 ([YYYY-MM-DD]): Estruturação inicial.
 
 ### 2. Diagrama de Fluxo Visual (Mermaid)
 ```mermaid
 flowchart TD
-    %% Diagrama simples e acessível
-    A[Início / Entrada do Usuário] --> B[Ação Principal]
-    B --> C{Decisão Simples}
-    C -->|Sim| D[Resultado Sucesso]
-    C -->|Não| E[Ajuste / Retorno]
+    A["Início / Entrada"] --> B["Processamento Principal"]
+    B --> C{"Validação"}
+    C -->|Sim| D["Entrega"]
+    C -->|Não| E["Ajuste"]
 ```
 
 ### 3. Estrutura e Árvore de Arquivos
-
 ```text
 meu-projeto/
-├── pasta_principal/         # Descrição funcional da pasta
-│   ├── modulo_base.ext      # Responsabilidade direta do arquivo
-│   └── configuracao.ext     # Parâmetros e chaves locais
-└── README.md                # Documentação e guia rápido de execução
+├── src/                # Módulos principais do MVP
+│   └── main.py         # Ponto de entrada e orquestração
+├── tests/              # Testes automatizados
+└── README.md           # Guia rápido de execução
 ```
 
-### 4. Modo de Execução Recomendado (Passo a Passo Prático)
-
+### 4. Modo de Execução Recomendado
 - Etapa 1: ...
 - Etapa 2: ...
 
-### 5. Sugestões Opcionais (Sem alterar escopo original)
+### 5. Sugestões Opcionais (Fora do MVP)
+- [Melhoria opcional desacoplada]
 
-- [Sugestão 1: melhoria que não polui o MVP]
-- [Sugestão 2: expansão futura opcional]
-
-### 6. Opção de Exportação (Arquivo Único / PDF)
->
-> 💡 *Para evitar quebras de diagramas Mermaid, formatação de tabelas ou caracteres especiais ao copiar e colar:*
-
-- **Arquivo Único Markdown (.md)**: Deseja que eu salve esta arquitetura em um arquivo `.md` no workspace?
-- **Documento PDF Formatado (.pdf)**: Deseja que eu gere uma versão diagramada em PDF profissional via pipeline do workspace (`../conversor-html-pdf/SKILL.md`)?
-
-```
+### 6. Opção de Exportação (.md / .pdf)
+- Deseja salvar em arquivo `.md` no workspace ou exportar em `.pdf` via `conversor-html-pdf`?
+````
 
 ---
 
-# 7. EXCEÇÕES E LIMITES
-- Esta skill **NÃO** gera código de aplicação de dezenas de linhas; seu foco é arquitetura, taxonomia, árvore, fluxo operacional e preservação de layout.
-- Esta skill **NÃO** inventa recursos que modifiquem a proposta central do usuário.
-- Se a solicitação original for ambígua a ponto de impedir um fluxo lógico (ex: apenas uma palavra desconexa), ela preencherá a estrutura base com alertas claros em vez de supor funcionalidades complexas.
+## 5. Guardrails de Segurança e Limites
+
+- **Escopo Fechado (Anti-Bloat)**: Proibido alterar o `Pedido original` ou inflar o MVP com serviços não pedidos.
+- **Zero Segredos & HITL**: Usar apenas `.env.example` nas árvores propostas e pedir confirmação humana antes de sobrescrever arquivos existentes no workspace.

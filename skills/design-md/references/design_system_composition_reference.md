@@ -1,6 +1,6 @@
 # Referência Mestre de Arquitetura, Design System em 3 Camadas (`OKLCH`), Física Óptica e Modelos por Complexidade (`v7.0.0`)
 
-Esta referência consolida os **9 Eixos + Matriz de Decisão** da Fonte Única de Verdade (SSOT) em [`Preferências de Trabalho com Agentes.md`](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md) para consulta direta das skills `design-md`, `frontend-code-architect`, `frontend-ui-ux-auditor`, `frontend-testing-auditor` e `nav-x-func`.
+Esta referência consolida os **9 Eixos + Matriz de Decisão** da Fonte Única de Verdade (SSOT) em [`../../rules/diretrizes-frontend-9-eixos.md`](../../rules/diretrizes-frontend-9-eixos.md) para consulta direta das skills `design-md`, `frontend-code-architect`, `frontend-ui-ux-auditor`, `frontend-testing-auditor` e `auditoria-projetos-sistema`.
 
 ---
 
@@ -190,14 +190,14 @@ p, li {
 - [ ] **Box Model Lógico e BFC:** Usa `inline-size`, `padding-inline`, `margin-block`, `display: flow-root` e `gap` no pai?
 - [ ] **Tokens em 3 Camadas OKLCH:** Primitivos, Semânticos (`light-dark()`, `color-mix()`, RCS `from`) e Componente definidos com Dark Mode em elevação progressiva ($L = 0.16 \to 0.22 \to 0.27$)?
 - [ ] **Sombras e Nitidez GPU:** Umbra + Penumbra + Catch-Light ativos, `antialiased` + `font-synthesis: none`, `text-wrap: balance/pretty`, `tabular-nums` e zero `scale()` fracionário em textos?
-- [ ] **Navegação em 3 Camadas e Real-State:** Global + Local + Breadcrumbs (`<ol role="list">` + `aria-current="page"`), Ordem DOM = Ordem Visual e 100% dos controles com lógica funcional real?
+- [ ] **Navegação Contextual e Real-State:** Global + Local (quando aplicável) + Breadcrumbs (`<ol role="list">` + `aria-current="page"` apenas em hierarquias $\ge 3$ níveis), Ordem DOM = Ordem Visual e 100% dos controles com lógica funcional real?
 
 ---
 
-## 4. Exemplos Canônicos de Interfaces Complexas, Grafos em Tempo Real e App Router 15+
+## 4. Referências Internas para Interfaces Complexas, Grafos em Tempo Real e App Router 15+
 
-- **Parte 1 (Eixos 1 e 2 — Regra LVHA, `pointer: fine/coarse`, Lei de Fitts $48\times 48\text{px}$, Validação `:valid/:invalid/:indeterminate`, `overscroll-behavior-y: contain`, e Dashboard Analítico `index.html` + `style.css` com `@container analyticsCard` e `resize: horizontal`):** [`Guia de Arquitetura para Interfaces Frontend Complexas (Macro-Micro, OKLCH e Acessibilidade).md`](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Guia%20de%20Arquitetura%20para%20Interfaces%20Frontend%20Complexas%20(Macro-Micro,%20OKLCH%20e%20Acessibilidade).md).
-- **Parte 2 (Eixos 3 e 4 — Grafo `@xyflow/react` + `server/watcher.ts` com `ws`/`chokidar`, `CustomFileNode.tsx`, `FileMapInteractive.tsx`, Batch 150ms em Go, e Roteamento Dinâmico Next.js 15+ App Router `params: Promise<...>` vs `searchParams`):** [`Padrão de Grafo Interativo e Ações em Tempo Real (Batch 150ms + Web Worker + LOD).md`](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Padr%C3%A3o%20de%20Grafo%20Interativo%20e%20A%C3%A7%C3%B5es%20em%20Tempo%20Real%20(Batch%20150ms%20+%20Web%20Worker%20+%20LOD).md).
+- **Macro-Micro, OKLCH e Acessibilidade AOM:** [`../../../rules/diretrizes-frontend-9-eixos.md`](../../../rules/diretrizes-frontend-9-eixos.md).
+- **Grafos Interativos (`@xyflow/react`), Chokidar/WS e Next.js 15+ Async Params:** [`../../complex-zero/SKILL.md`](../../complex-zero/SKILL.md).
 
 ---
 

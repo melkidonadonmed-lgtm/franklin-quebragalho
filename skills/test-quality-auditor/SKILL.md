@@ -2,12 +2,12 @@
 name: test-quality-auditor
 description: "Auditoria de suítes de testes em 5 módulos (Python, TS, Go, MCP e Harness) detectando Green Build Illusion e falhas AAA. Use para auditar suítes de testes e gerar grading.json; não use para código de produção."
 version: "1.3.0"
-updated_at: "2026-10-27"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "1.3.0"
-  updated_at: "2026-10-27"
+  updated_at: "2026-11-12"
   author: "Melki"
   category: "Auditoria de Qualidade de Testes e Engenharia de Evals"
   tags: ["test-quality", "ast-auditor", "go-testing", "mcp-testing", "harness-testing", "mirrored-evals", "aaa-pattern", "mutation-score", "evals", "grading-json", "benchmark-json"]
@@ -19,7 +19,7 @@ Motor analítico estático e semântico modular (`<300` linhas por módulo) para
 1. **Python (`test_*.py`, `*_test.py`):** Pytest & Unittest via AST ([`scripts/python_ast_auditor.py`](scripts/python_ast_auditor.py) $\leftrightarrow$ [`evals/modules/python_evals.json`](evals/modules/python_evals.json)).
 2. **TypeScript / JavaScript (`*.test.ts`, `*.test.js`):** Node Test Runner, Vitest & Jest ([`scripts/ts_js_auditor.py`](scripts/ts_js_auditor.py) $\leftrightarrow$ [`evals/modules/ts_js_evals.json`](evals/modules/ts_js_evals.json)).
 3. **Go (`*_test.go`):** Pacote `testing` (`testing.T`), *Table-Driven Tests*, goroutines e Google ADK Go v2 ([`scripts/go_test_auditor.py`](scripts/go_test_auditor.py) $\leftrightarrow$ [`evals/modules/go_evals.json`](evals/modules/go_evals.json) e [`references/modulo_qualidade_testes_go.md`](references/modulo_qualidade_testes_go.md)).
-4. **Protocolo MCP, WebSockets & APIs (`JSON-RPC 2.0` / `FastMCP` / `StdioServer` / `McpBridge` / `Gemini API`):** Ciclo de vida `initialize` ➔ `notifications/initialized` ➔ `tools/list` ➔ `tools/call`, códigos `-32601`, decodificação JSON, fronteiras Zero-Trust, ancoragem pre-flight em [`https://aistudio.google.com/llms.txt`](https://aistudio.google.com/llms.txt), [`https://aistudio.google.com/llms-full.txt`](https://aistudio.google.com/llms-full.txt), [`https://aistudio.google.com/docs`](https://aistudio.google.com/docs), [`https://aistudio.google.com/docs/antigravity-agent`](https://aistudio.google.com/docs/antigravity-agent) e [`https://github.com/google-gemini/cookbook`](https://github.com/google-gemini/cookbook), e sub-skill [`../agent-server-auditor/references/audit-websocket-jsonrpc.md`](../agent-server-auditor/references/audit-websocket-jsonrpc.md) ([`scripts/mcp_test_auditor.py`](scripts/mcp_test_auditor.py) $\leftrightarrow$ [`evals/modules/mcp_evals.json`](evals/modules/mcp_evals.json) e [`references/modulo_qualidade_testes_mcp.md`](references/modulo_qualidade_testes_mcp.md)).
+4. **Protocolo MCP, WebSockets & APIs (`JSON-RPC 2.0` / `FastMCP` / `StdioServer` / `McpBridge`):** Ciclo de vida `initialize` ➔ `notifications/initialized` ➔ `tools/list` ➔ `tools/call`, códigos `-32601`, decodificação JSON, fronteiras Zero-Trust e sub-skill [`../agent-server-auditor/references/audit-websocket-jsonrpc.md`](../agent-server-auditor/references/audit-websocket-jsonrpc.md) ([`scripts/mcp_test_auditor.py`](scripts/mcp_test_auditor.py) $\leftrightarrow$ [`evals/modules/mcp_evals.json`](evals/modules/mcp_evals.json) e [`references/modulo_qualidade_testes_mcp.md`](references/modulo_qualidade_testes_mcp.md)).
 5. **Harness de Governança & Evals (`shared/harness.py` / `eval_harness.py`):** Guardas semânticas (`SemanticGuard.sanitize_input` / `SecurityViolationError`), *Policy Gates* HITL (`evaluate_action_risk` / `RiskLevel.CRITICAL`), isolamento e ciclo de vida de `CheckpointStore` (`create` ➔ `get` ➔ `update_status` ➔ `clear`) e validação de delta/evidência em `run_eval_harness` ([`scripts/harness_test_auditor.py`](scripts/harness_test_auditor.py) $\leftrightarrow$ [`evals/modules/harness_evals.json`](evals/modules/harness_evals.json) e [`references/modulo_qualidade_testes_harness.md`](references/modulo_qualidade_testes_harness.md)).
 
 Desmascara a **Falsa Sensação de Segurança (*Green Build Illusion*)**, diagnostica nos **7 Módulos** por que um teste passa com código 0 sem proteger a regra de negócio, classifica cada teste no **Espectro de Qualidade (Níveis 1 a 4)** e executa a validação científica via `evals/evals.json` e espelhos `evals/modules/*_evals.json`.
@@ -42,7 +42,7 @@ Ative esta skill quando o usuário solicitar:
 - **Fronteira na Esteira de Qualidade e Convergência (3 Portões)**:
   1. **Portão 1 — Código de Produção (`code-acceptability-auditor` `v1.1.0`)**: Audita arquivos Python de aplicação/domínio via AST e Pydantic (`12` regras: `SEC001..003`, `SYN001`, `ERR001..003`, `TYP001..002`, `ARCH001..003`, `Score >= 75.0`).
   2. **Portão 2 — Suítes de Testes & Evals (`test-quality-auditor` `v1.3.0` — Esta Skill)**: Audita a eficácia, padrão AAA, falsificabilidade e determinismo de testes (`Python`, `TS/JS`, `Go`, `MCP JSON-RPC` e `Harness`) + telemetria estatística PerfKit (`perfkit_stats.py`: $P_{50}..P_{99.9}$, `stddev` `ddof=1`, `geomean`), exigindo Nível 4 (`81–100 pts`).
-  3. **Portão 3 — RCA & Convergência Spec-to-Code (`gap-analyzer-auditor` `v2.1.0`)**: Quando os Portões 1 ou 2 reprovam um artefato ou ocorrem falhas de runtime/divergências em `SPEC.md`/`tasks.md`, consome as evidências factuais para RCA epistêmico (`[FATO]`, `[INFERÊNCIA]`, `[LACUNA]`) e convergência *append-only* (`/speckit-converge`).
+  3. **Portão 3 — RCA & Convergência Spec-to-Code (`gap-analyzer-auditor` `v2.2.0`)**: Quando os Portões 1 ou 2 reprovam um artefato ou ocorrem falhas de runtime/divergências em `SPEC.md`/`tasks.md`, consome as evidências factuais para RCA epistêmico (`[FATO]`, `[INFERÊNCIA]`, `[LACUNA]`) e convergência *append-only* (`/speckit-converge`).
 - **Não usar** para auditoria matemática exclusiva de motores de Física 3D/WebGL sem relação com suítes de testes ou Evals (use `code-quality-audit-3d-physics`).
 - **Não usar** para compilar binários Go ou fazer deploy de containers no Cloud Run sem auditoria de testes.
 - **Não usar** para auditoria estrutural de pastas do Google Drive ou limpeza de disco Windows (use `gdrive-auditoria-limpeza` ou `manutencao-disco-windows`).
@@ -118,15 +118,7 @@ uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py --run-
 
 ---
 
-## 🎨 Diretrizes de Estilo por Propósito e Arquitetura Visual (`DESIGN.md` & SSOT)
-
-Sempre que esta skill gerar relatórios visuais ou dashboards HTML de qualidade/cobertura, aplique o contrato [`../design-md/SKILL.md`](../design-md/SKILL.md) e [`references/dossie_qualidade_testes_e_evals.md`](references/dossie_qualidade_testes_e_evals.md):
-- **Tokens `--surface-*` e Sombras em 3 Níveis (`AUDIT-VIS-01`):** Luz zenital (`inset 0 1px 0 0`), `font-variant-numeric: tabular-nums` em notas/percentis ($P_{50}..P_{99}$), `antialiased`, `font-synthesis: none`, zero `scale()` fracionário e zero emojis em controles.
-- **Modularidade (`<300` linhas/módulo) e Checklist de Conformidade:** Zero erro silenciado (`except: pass` / `res, _ :=`), falsificabilidade multi-domínio (`Python/TS/Go/MCP/Harness`) e espelhamento `1:1` em `evals/modules/*_evals.json`.
-
----
-
-## 📤 Saídas e Entregáveis (Modelo de Saída)
+## 📤 Saídas e Entregáveis (Modelo de Saída — [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md))
 
 A resposta final da skill deve conter obrigatoriamente:
 1. **Dossiê Executivo nos 7 Módulos (Python, TS/JS, Go, MCP ou Harness):** (1) Diagnóstico da Problemática, (2) Montagem AAA, (3) Análise de Falha Tautológica, (4) Fatores de Persistência, (5) Espectro Geral e Tabela do Dossiê por Teste (Níveis 1 a 4), (6) Correção Cirúrgica Antes vs. Depois e (7) Relatório de Evals Consolidado e por Módulo Espelhado (`grading.json` / `benchmark.json`).

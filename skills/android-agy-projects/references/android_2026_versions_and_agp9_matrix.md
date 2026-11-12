@@ -65,21 +65,39 @@ Referência técnica de Tier 3 para a skill **`android-agy-projects`** (`v2.1.0`
    ```
 
    - **Atenção às Keep Rules no AGP 9.0+ (`android.r8.strictFullModeForKeepRules=true`):** `-keep class A` **não** mantém mais o construtor vazio implicitamente; escreva `-keep class A { <init>(); }` quando a instância for criada por reflexão. Além disso, `getDefaultProguardFile("proguard-android.txt")` é **bloqueado** no AGP 9.0+ (`android.r8.proguardAndroidTxt.disallowed=true`).
-5. **Template de Transição (`gradle/libs.versions.toml` para Projetos Legados em AGP 8.13 LTS):**
-   Caso o projeto ainda não possa subir para o Gradle 9.1+ / AGP 9.x, utilize a última linha 8.x estável:
+5. **Catálogo Canônico (`gradle/libs.versions.toml` — AGP 9.3+ Built-in Kotlin vs. AGP 8.13 LTS):**
 
    ```toml
    [versions]
-   agp = "8.13.0"
-   kotlin = "2.3.20"
-   ksp = "2.3.6"
-   # No AGP 8.13, mantenha o plugin kotlin-android:
+   agp = "9.3.0"
+   kotlin = "2.4.21"
+   ksp = "2.3.12"
+   coreKtx = "1.16.0"
+   lifecycle = "2.9.0"
+   activityCompose = "1.10.1"
+   composeBom = "2026.09.00"
+   nav3 = "1.2.0"
+   adaptiveNav3 = "1.3.0"
+   hilt = "2.60.1"
+   androidxHilt = "1.4.0"
+   retrofit = "3.0.0"
+   room = "2.8.5"
+   kotlinxSerialization = "1.8.1"
+   coroutines = "1.10.1"
+   coil3 = "3.1.0"
+
    [plugins]
+   # No AGP 9.0+, Built-in Kotlin já está ativo em com.android.application/library (não aplicar kotlin-android)
    android-application = { id = "com.android.application", version.ref = "agp" }
-   kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+   android-library = { id = "com.android.library", version.ref = "agp" }
+   android-kmp-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
    kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+   kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
    ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+   hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
    ```
+
+   Caso o projeto ainda esteja em **AGP 8.13 LTS** antes da migração para o Gradle 9.1+, mantenha `agp = "8.13.0"`, `kotlin = "2.3.20"`, `ksp = "2.3.6"` e `kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }`.
 
 ---
 

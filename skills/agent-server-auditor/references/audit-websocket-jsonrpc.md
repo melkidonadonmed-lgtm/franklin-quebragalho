@@ -2,31 +2,21 @@
 name: audit-websocket-jsonrpc
 description: >-
   Sub-skill especialista para auditoria estatica e dinamica de conexoes persistentes WebSockets (ws:// e wss://) e contratos de mensagens JSON-RPC 2.0. Inspeciona ancoragem documental pre-flight (Gemini API llms.txt / llms-full.txt, MCP e A2A), handshakes TLS 1.3, reconexao dinamica (Exponential Backoff + Jitter), integridade de RPC, esquemas Pydantic/Zod e seguranca contra injecoes. Use ao auditar WebSockets, Live API, MCP ou JSON-RPC 2.0; nao use para CSS estatico.
-version: "1.1.0"
-compatibility: Node.js 20+, Python 3.10+, Go 1.22+, Agent Skills Spec 2026, MCP 2026-07-28, A2A v1.0, Gemini 3.8 Live API
+version: "1.2.0"
+updated_at: "2026-11-12"
+compatibility: "Node.js 20+, Python 3.12+, Go 1.24+, Agent Skills Spec 2026, MCP 2026-07-28, A2A v1.0, Gemini 3.8 Live API"
 metadata:
-  author: arq-software-team & melki
-  category: network-protocol-auditing
-  frameworks: "CoT, ReAct, Self-Refine, Three-Tier Progressive Disclosure, Zero-Trust"
-allowed-tools: view_file write_to_file list_dir execute_command rg semantic_search gemini_search_docs gemini_get_doc
+  author: "SkillCraft & Melki"
+  category: "network-protocol-auditing"
+  frameworks: "CoT, ReAct, Self-Refine, Progressive Disclosure, Zero-Trust"
+allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 ---
 
-# Skill / Sub-Skill: `audit-websocket-jsonrpc` — Auditoria de WebSockets & Contratos JSON-RPC 2.0 (`v1.1.0`)
+# Sub-Skill de Referência: `audit-websocket-jsonrpc` — Auditoria de WebSockets & Contratos JSON-RPC 2.0 (`v1.2.0`)
 
-## 0. ANCORAGEM DOCUMENTAL PRE-FLIGHT (PROIBIDO CHEGAR ÀS CEGAS)
+## 0. ANCORAGEM DOCUMENTAL PRE-FLIGHT (CONDICIONAL AO PROTOCOLO)
 
-Antes de auditar, testar ou implementar qualquer endpoint WebSocket (`ws://` / `wss://`), sessão **Gemini Live API** ou barramento **JSON-RPC 2.0** (`MCP` / `A2A`), o agente **NUNCA deve inspecionar às cegas** baseando-se apenas em memória de treinamento:
-
-1. **Referências Canônicas da Gemini API, Antigravity Agent & Cookbook (Obrigatórias):**
-   - **MCP Docs (Preferencial quando ativo):** Consulte `gemini_search_docs` e `gemini_get_doc` para validar schemas, métodos e modelos vigentes (`gemini-4-argon`, `gemini-3.8-flash`, `gemini-3.8-live`, `gemini-3.8-live-extended-thinking`).
-   - **Portal Oficial de Documentação (`docs`):** [`https://aistudio.google.com/docs`](https://aistudio.google.com/docs) — portal central de guias, quickstarts e referências da Gemini API.
-   - **Antigravity Agent Docs:** [`https://aistudio.google.com/docs/antigravity-agent`](https://aistudio.google.com/docs/antigravity-agent) (e [`https://aistudio.google.com/docs/antigravity-agent.md`](https://aistudio.google.com/docs/antigravity-agent.md)) — especificação oficial do agente gerenciado (`antigravity-preview-09-2026`), ambiente sandboxed (`environment="remote"`), ferramentas e configuração de modelos.
-   - **Índice Oficial de Documentação (`llms.txt`):** [`https://aistudio.google.com/llms.txt`](https://aistudio.google.com/llms.txt) — mapa canônico de todas as páginas `.md` (incluindo `https://aistudio.google.com/api-reference/live.md`, `https://aistudio.google.com/docs/live-api.md` e `https://aistudio.google.com/api-reference/interactions.openapi.json`).
-   - **Corpus Completo Pronto para LLM (`llms-full.txt`):** [`https://aistudio.google.com/llms-full.txt`](https://aistudio.google.com/llms-full.txt) — especificação integral da Gemini API e SDKs (`google-genai`, `@google/genai`, `google.golang.org/genai`) em arquivo único.
-   - **Google Gemini Cookbook (GitHub):** [`https://github.com/google-gemini/cookbook`](https://github.com/google-gemini/cookbook) — repositório oficial de receitas executáveis, notebooks e exemplos práticos da Gemini API, Live API e agentes.
-2. **Referências Canônicas de Agentes e Protocolos RPC (`ADK` / `MCP` / `A2A`):**
-   - **Google ADK:** [`https://adk.dev/llms.txt`](https://adk.dev/llms.txt) e [`https://adk.dev/llms-full.txt`](https://adk.dev/llms-full.txt).
-   - **Contratos Locais:** Inspecione `openapi.json`, `agent-card.json` (`/.well-known/agent-card.json`), `tools.json` ou structs/schemas antes de disparar probes de rede.
+Antes de auditar ou implementar endpoints WebSocket (`ws://` / `wss://`), sessões **Gemini Live API** ou barramentos **JSON-RPC 2.0** (`MCP` / `A2A`), valide as especificações vigentes via `gemini_search_docs` / `gemini_get_doc` (modelos `gemini-3.8-flash`, `gemini-3.8-live`) e os índices oficiais consolidados em [`protocol_matrix.md`](protocol_matrix.md), além dos contratos locais (`openapi.json`, `.well-known/agent-card.json`, `tools.json`).
 
 ---
 
@@ -36,7 +26,7 @@ Esta **Sub-Skill Especialista** estabelece o procedimento operacional e os check
 
 ### Objetivos Principais
 
-1. **Inspeção de Handshake & Transporte:** Validar TLS 1.3 em conexões criptografadas, headers de upgrade HTTP, tokens JWT/Ephemeral Tokens em headers de autenticação e mitigação de Man-in-the-Middle (SSL Pinning).
+1. **Inspeção de Handshake & Transporte:** Validar TLS 1.3 (`wss://`), headers de upgrade HTTP, tokens JWT/Ephemeral Tokens em headers de autenticação e validação estrita da cadeia CA / mTLS (sem `rejectUnauthorized: false` ou `InsecureSkipVerify: true`).
 2. **Resiliência de Conexão:** Avaliar lógicas de heartbeat (`ping`/`pong`), reconexão automática com *Exponential Backoff com Jitter* (`SessionResumption` / `GoAway` quando em Live API) e tratamento de desconexões abruptas.
 3. **Validação de Contratos JSON-RPC 2.0:** Auditar parsing de mensagens `request`, `response`, `error` e `notification`, garantindo casamento estrito entre `id` da requisição e `id` da resposta (e ausência de `id` em notificações).
 4. **Qualidade & Performance (QoS):** Medir latência RTT (*Round-Trip Time*), throughput de mensagens por segundo e teto de consumo de memória sob estresse.
@@ -84,7 +74,7 @@ A execução roda em nó efêmero isolado (`ModeTask` / `context: fork`), report
 
 - **Criptografia & Upgrade:** Verificar uso de protocolo seguro (`wss://`) em ambiente de produção. Bloquear transmissões em texto claro sem túnel seguro.
 - **Autenticação Inicial:** Validar envio de credenciais via headers `Authorization: Bearer <token>` ou *Ephemeral Tokens* (`auth_tokens.create` na Gemini Live API) em vez de query parameters permanentes expostos na URL.
-- **SSL/TLS Pinning:** Confirmar presença de verificação de certificado no cliente para barrar interceptação por proxy malicioso.
+- **Validação de Cadeia TLS / mTLS:** Confirmar verificação estrita de certificado contra CAs confiáveis do sistema (ou mTLS em malhas internas), bloqueando `InsecureSkipVerify: true` / `verify=False` e evitando *SSL Pinning* estático em endpoints cloud sujeitos à rotação automática de certificados.
 
 ### Módulo 2: Contratos e Sintaxe JSON-RPC 2.0
 

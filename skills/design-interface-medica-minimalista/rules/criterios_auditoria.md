@@ -17,5 +17,5 @@ Critérios objetivos e falsificáveis (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) para 
 
 ## 3. Delegação Determinística de Cálculos e Engenharia Real-State (`[DISC-OPCOES]` & `AUDIT-STATE-01`)
 
-- **`[PASS]`**: Fórmulas médicas (clearance renal, infusão, correção eletrolítica) são executadas por funções determinísticas tipadas e testadas (ou `agy_deterministic_calc_suite`), inputs validam faixas fisiológicas com alerta semântico `role="alert" aria-live="assertive"`, zero componentes placebo e o projeto atinge `Verdict: PASS` (`Readiness >= 90.0`) no `scripts/audit_tactile_ui.py`.
+- **`[PASS]`**: Fórmulas médicas (clearance renal, infusão, correção eletrolítica) são executadas por funções determinísticas tipadas e testadas (ou `agy_deterministic_calc_suite`), inputs validam faixas fisiológicas com alerta semântico `role="alert" aria-live="assertive"`, zero componentes placebo e o projeto atinge `Verdict: PASS` (`Readiness >= 90.0`) no `../frontend-testing-auditor/scripts/audit_tactile_ui.py`.
 - **`[FAIL: RISCO_CLINICO_OU_SEM_FSM]`**: Cálculo de doses delegado a inferência livre de LLM, controles placebo sem efeito real, ausência de validação de limites fisiológicos ou reprovação no `audit_tactile_ui.py`.

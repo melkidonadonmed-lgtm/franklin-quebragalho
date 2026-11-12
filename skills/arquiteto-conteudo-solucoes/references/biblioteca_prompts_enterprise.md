@@ -1,6 +1,13 @@
 # Biblioteca Canônica de Prompts Enterprise (Engenharia, Design, Testes, APIs & Banco de Dados)
 
-Este documento consolida os **5 Prompts Enterprise** da skill `arquiteto-conteudo-solucoes` (`v2.4.0`), higienizados sem duplicações de seções, com tipagem estrita, critérios de aceite e pontos de parada obrigatórios (*Human-in-the-Loop*).
+Este documento consolida o **Módulo 0 de Engenharia de Prompt (`refine-prompt`)** e os **5 Prompts Enterprise** da skill `arquiteto-conteudo-solucoes` (`v2.5.0`), com tipagem estrita, critérios de aceite e pontos de parada obrigatórios (*Human-in-the-Loop*).
+
+---
+
+## Módulo 0 (Referência Canônica de Prompt): Auditoria Epistêmica, Baixa Entropia & Zero-Trust XML (`refine-prompt`)
+
+- **Referência Direta**: [`../../refine-prompt/SKILL.md`](../../refine-prompt/SKILL.md) (acompanhada de [`../../refine-prompt/references/engenharia_fluidez_e_baixa_entropia.md`](../../refine-prompt/references/engenharia_fluidez_e_baixa_entropia.md) e [`../../refine-prompt/references/diretrizes_zero_trust_owasp.md`](../../refine-prompt/references/diretrizes_zero_trust_owasp.md)).
+- **Quando Acionar como Módulo Base de Prompt**: Antes de cristalizar prompts complexos, ambíguos ou expostos a insumos externos não confiáveis, aplique a separação epistêmica estrita (`[FATO]` vs. `[INFERÊNCIA]` vs. `[LACUNA]`), a modulação socrática de entropia e o encapsulamento XML Zero-Trust (`<system_instructions>` separado de `<untrusted_user_input>` sob OWASP LLM01:2026).
 
 ---
 

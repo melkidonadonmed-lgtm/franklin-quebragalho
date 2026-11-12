@@ -12,12 +12,6 @@ covered_modules:
   - "M5_spring_physics_transitions"
   - "M6_multi_input_reduced_motion"
 description: "Subagente da Onda 2B (Topologia 3+1 UI-Architect): curvas elásticas, feedback tátil sem scale() fracionário, alvos >= 44px, :focus-visible e reduced-motion."
-tools:
-  - read_file
-  - write_file
-  - edit_file
-  - run_command
-  - call_mcp_tool
 ---
 
 # Agente Especialista: `ui-motion-interaction` (Onda 2B — Movimento Físico, Anti-Borrão GPU, PWA, Foco & Multi-Input)

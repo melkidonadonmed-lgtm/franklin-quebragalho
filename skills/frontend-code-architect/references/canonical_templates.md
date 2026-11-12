@@ -153,7 +153,7 @@ html, body {
   button, .btn-action { min-block-size: 44px; min-inline-size: 44px; padding-inline: 1.25rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; transform: none !important; }
+  *, *::before, *::after { animation-duration: 0.01ms; transition-duration: 0.01ms; transform: none; }
 }
 ```
 

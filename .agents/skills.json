@@ -41,23 +41,22 @@
         "skill-repair",
         "build-mcp-server",
         "api-auditor",
-        "live-api-function-auditor"
+        "live-api-function-auditor",
+        "adk-go-mcp-router",
+        "agent-0meia",
+        "code-analysis-causal-review-team"
       ]
     },
     {
-      "path": "C:/Users/melki/dev/repos/adk-tests/go_agent/skills",
+      "path": "C:/Users/melki/dev/repos/adk-go-mcp/skills",
       "include_only": [
-        "adk-go-mcp-router",
-        "agent-0meia",
         "backend-architecture-skill",
         "backfront-stress",
-        "code-analysis-causal-review-team",
         "code-quality-validation",
         "context-architecture-skill",
         "estante",
         "gatekeeper-eval",
-        "temperea",
-        "weather-skill"
+        "temperea"
       ]
     }
   ]

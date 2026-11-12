@@ -2,12 +2,12 @@
 name: design-interface-medica-minimalista
 description: "Arquitetura para interfaces clínicas, prontuários eletrônicos PEP, receituários e laudos A4 .sus-grid e calculadoras médicas. Use para sistemas de saúde; não use para SaaS genérico."
 version: "5.0.0"
-updated_at: "2026-10-27"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
-allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
+allowed-tools: ["read_file", "write_file", "edit_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "5.0.0"
-  updated_at: "2026-10-27"
+  updated_at: "2026-11-12"
   author: "Melki"
   category: "Design System Clínico, MedTech & Impressão Vetorial A4"
   tags: ["medtech-ui", "clinical-design", "prontuario-eletronico", "a4-print", "tabular-nums"]
@@ -43,13 +43,13 @@ Consulte os tokens e templates detalhados em [`references/guia_tokens_clinicos_a
 
 ### 1. Polaridades Clínicas por Ambiente, Tokens em 3 Camadas `OKLCH`, Luz Zenital e Sombras Multi-Camadas (Eixos 3, 4 & 5)
 
-- **Papéis Semânticos de Superfície (`--bg-*` / `--surface-*` e `light-dark()`)**:
-  - **Consultório Diurno & Impressão (`[data-theme="clinical-day"]`)**: `--bg-canvas` / `--surface-canvas: oklch(0.97 0.005 245)` (`#F4F6F8`); `--surface-sunken: oklch(0.95 0.006 245)` (`#ECEFF3`); `--bg-surface-1` / `--surface-card: oklch(1 0 0)` (`#FFFFFF`); `--text-primary` / `--ink-primary: oklch(0.18 0.02 255)` (`#0F172A`, contraste WCAG AAA $\ge 14:1$).
-  - **Plantão Noturno / UTI / Laudos (`[data-theme="clinical-night"]`)**: Elevação progressiva de luminosidade (zero `#000000` puro para prevenir *OLED smearing*): `--bg-canvas` / `--surface-canvas: oklch(0.16 0.015 255)` (`#0B0E14`); `--bg-surface-1` / `--surface-card: oklch(0.21 0.018 255)` (`#121721`); `--bg-surface-2` / `--surface-elevated: oklch(0.26 0.02 255)` (`#181F2C`); `--text-primary` / `--ink-primary: oklch(0.96 0.005 245)` (`#F1F5F9`).
+- **Papéis Semânticos de Superfície (`--surface-*` e `light-dark()`)**:
+  - **Consultório Diurno & Impressão (`[data-theme="clinical-day"]`)**: `--surface-canvas: oklch(0.97 0.005 245)`; `--surface-sunken: oklch(0.95 0.006 245)`; `--surface-card: oklch(1 0 0)`; `--ink-primary: oklch(0.18 0.02 255)` (contraste WCAG AAA $\ge 14:1$).
+  - **Plantão Noturno / UTI / Laudos (`[data-theme="clinical-night"]`)**: Elevação progressiva de luminosidade (zero preto puro para prevenir *OLED smearing*): `--surface-canvas: oklch(0.16 0.015 255)`; `--surface-card: oklch(0.21 0.018 255)`; `--surface-elevated: oklch(0.26 0.02 255)`; `--ink-primary: oklch(0.96 0.005 245)`.
 - **Iluminação Zenital (90°–120°) e Elevação em 3 Níveis**:
-  - Cards clínicos e painéis ativos recebem `Top Catch-Light` (`inset 0 1px 0 0`) e sombras multi-camadas (`--shadow-elevation-1..3` / `--elevation-1..3`). Campos de entrada de sinais vitais e prescrição usam recesso físico (`--surface-sunken` + `--shadow-inset: inset 0 2px 4px 0 oklch(0 0 0 / 0.08)`).
+  - Cards clínicos e painéis ativos recebem `Top Catch-Light` (`inset 0 1px 0 0`) e sombras multi-camadas (`--shadow-elevation-1..3`). Campos de entrada de sinais vitais e prescrição usam recesso físico (`--surface-sunken` + `--shadow-inset: inset 0 2px 4px 0 oklch(0 0 0 / 0.08)`).
 - **Destaque Acromático, 4 Variantes de Cards e Semântica Clínica Contida**:
-  - Ações primárias usam contraste acromático de alto impacto (`#0F172A` no claro / `#F8FAFC` no escuro).
+  - Ações primárias usam contraste acromático de alto impacto (`oklch(0.18 0.02 255)` no claro / `oklch(0.97 0.005 245)` no escuro).
   - Use as **4 Variantes Funcionais de Cards (Eixo 7)**: *Elevated* (resumo do paciente/alerta ativo), *Outlined* (tabelas laboratoriais/evolução), *Filled/Subtle* (histórico/sinais vitais secundários) e *Interactive* (seleção de protocolo/calculadoras).
   - Indicadores de status (estabilidade, atenção farmacêutica, alerta crítico/alergia) usam micro-dots de `6px`, borda lateral lógica `border-inline-start: 2px solid` ou badges translúcidos (`color-mix(in oklab, ...)`) com texto neutro de alto contraste (`--ink-primary`).
 
@@ -64,7 +64,7 @@ Consulte os tokens e templates detalhados em [`references/guia_tokens_clinicos_a
 ### 3. Arquétipos Espaciais Clínicos, `@container`, Navegação em 3 Camadas e Folha Vetorial A4 (Eixos 6 & 8)
 
 - **Macrolayouts (`@media`) & Microlayouts (`@container`)**: Combine **1. Workbench Split-View** (parâmetros clínicos à esquerda + folha A4/laudo ao vivo à direita) ou **3. Command Center / Data Grid de Alta Densidade** com `container-type: inline-size` + `@container` nos cards de sinais vitais e prescrição.
-- **Navegação Semântica em 3 Camadas**: Global (`<nav aria-label="Menu clínico principal">`), Local (`<nav aria-label="Seções do prontuário">`) e Breadcrumbs (`<nav aria-label="Caminho de navegação"><ol role="list">` + `aria-current="page"`).
+- **Navegação Semântica Contextual**: Global (`<nav aria-label="Menu clínico principal">`), Local (`<nav aria-label="Seções do prontuário">`) e Breadcrumbs (`<nav aria-label="Caminho de navegação"><ol role="list">` + `aria-current="page"`) quando houver hierarquia profunda ($\ge 3$ níveis).
 - **Folha Vetorial A4 (`210mm × 297mm`)**: Construída com **100% CSS Grid vetorial e SVG**, exibida em tela sobre `--surface-canvas` com `--shadow-elevation-2`, e em `@media print` ocultando `.no-print`/`nav`/`aside`, removendo sombras e garantindo fidelidade milimétrica para exportação PDF.
 
 ---

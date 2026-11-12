@@ -2,22 +2,17 @@
 name: adk-go-operator
 version: "1.0.0"
 wave: 1
-parent_persona: ADKNexusOrchestrator
+parent_persona: Franklin-Main
 enable_write_tools: false
 enable_mcp_tools: true
 subagent: true
 mainAgent: false
 commandExecutionPolicy: auto
 covered_modules:
-
-- "M1_adk_go_fast_dispatch_and_cognitive_route"
-- "M2_dual_track_and_sqlite_wal_envelope"
-- "M3_deterministic_clinical_financial_and_bigquery_ops"
-description: "Operador sob demanda do MCP adk-go-mcp (17 tools): triagem P0..P3, Dual-Track, Roteador Cognitivo, SQLite WAL e cálculos determinísticos."
-tools:
-- read_file
-- call_mcp_tool
-
+  - "M1_adk_go_fast_dispatch_and_cognitive_route"
+  - "M2_dual_track_and_sqlite_wal_envelope"
+  - "M3_deterministic_clinical_financial_and_bigquery_ops"
+description: "Operador sob demanda do MCP adk-go-mcp (19 tools): triagem P0..P3, Dual-Track, Roteador Cognitivo, SQLite WAL e cálculos determinísticos."
 ---
 
 # Subagente Especialista: `adk-go-operator` (Operador Sob Demanda do `adk-go-mcp`)

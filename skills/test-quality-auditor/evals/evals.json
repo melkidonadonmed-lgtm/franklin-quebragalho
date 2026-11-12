@@ -332,7 +332,7 @@
       "input_code": "",
       "expected_issues": [],
       "expected_status": "NEAR_MISS_IGNORED",
-      "expected_output": "Reconhece como Near-Miss de UI/UX Tátil e delega para analise-design-tatil-frontend.",
+      "expected_output": "Reconhece como Near-Miss de UI/UX Tátil e delega para frontend-ui-ux-auditor.",
       "assertions": [
         "Identifica corretamente que a consulta pertence ao domínio de UI/UX Tátil (should_trigger=false)"
       ]

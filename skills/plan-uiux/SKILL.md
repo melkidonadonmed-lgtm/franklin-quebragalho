@@ -1,13 +1,13 @@
 ---
 name: plan-uiux
 description: "Análise minuciosa e global de frontend UI/UX com REA Reverse Engineer Anything, proporção 60-30-10 OKLCH e propostas de mutação Antes Depois. Use para auditar UI com REA; não use para backend puro."
-version: "1.1.0"
-updated_at: "2026-10-28"
+version: "1.2.0"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
-  version: "1.1.0"
-  updated_at: "2026-10-28"
+  version: "1.2.0"
+  updated_at: "2026-11-12"
   author: "UI-Architect & Melki"
   category: "Auditoria Estrutural e Planejamento Global UI/UX com REA"
   tags: ["plan-uiux", "rea-uiux", "oklch", "60-30-10", "container-queries", "before-after-diff"]
@@ -16,7 +16,7 @@ metadata:
 
 ## 1. Propósito e Gatilhos de Ativação (Quando Usar)
 
-Executa auditoria estrutural e visual de aplicações frontend (JavaScript/TypeScript/React e templates Go) orientada a evidências verificáveis do **REA (`Reverse Engineer Anything`)**, confrontando o grafo real do código com a arquitetura CSS moderna (`OKLCH`, proporção `60-30-10`, sombras multi-camadas, `@container` e tipografia fluida `clamp()`) e emitindo planos **CLAREZA** com diffs `Antes vs. Depois`.
+Executa auditoria estrutural e visual de aplicações frontend empacotadas, compiladas ou em execução (bundles JS/TS/Electron, binários Go com UI embarcada e instâncias web ao vivo) orientada a evidências verificáveis do **REA (`Reverse Engineer Anything`)**, confrontando o grafo real com a arquitetura CSS moderna (`OKLCH`, proporção `60-30-10`, sombras multi-camadas, `@container` e tipografia fluida `clamp()`) e emitindo planos **CLAREZA** com diffs `Antes vs. Depois`. Para repositórios de código-fonte aberto sem build empacotado, prefira `frontend-ui-ux-auditor` ou `auditoria-projetos-sistema`.
 
 ## 2. Entradas, Pré-requisitos e Parâmetros
 
@@ -46,7 +46,7 @@ Executa auditoria estrutural e visual de aplicações frontend (JavaScript/TypeS
 
 ## 4. Saídas, Entregáveis e Formato do Plano CLAREZA
 
-Todo achado deve ser rotulado com classificação epistêmica estrita (`[FATO OBSERVADO]`, `[INFERÊNCIA TÉCNICA]`, `[INCERTEZA / LACUNA]`) e estruturado nas 7 seções **CLAREZA** (**C**ontexto, **L**eitor, **A**ção, **R**eferências, **E**strutura, **Z**onas de Risco, **A**valiação) acompanhado do bloco de mutação `Antes vs. Depois` (veja exemplos completos em [`references/mutation_patterns.md`](references/mutation_patterns.md)).
+Todo achado deve ser rotulado com classificação epistêmica estrita (`[FATO OBSERVADO]`, `[INFERÊNCIA TÉCNICA]`, `[INCERTEZA / LACUNA]`) e estruturado nas 7 seções **CLAREZA** (**C**ontexto, **L**eitor, **A**ção, **R**eferências, **E**strutura, **Z**onas de Risco, **A**valiação) acompanhado do bloco de mutação `Antes vs. Depois` (veja exemplos em [`references/mutation_patterns.md`](references/mutation_patterns.md) e critérios em [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md)).
 
 ## 5. Limites, Exceções e Guardrails (Quando NÃO Usar)
 

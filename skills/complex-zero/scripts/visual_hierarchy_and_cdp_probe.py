@@ -2,8 +2,9 @@
 """
 visual_hierarchy_and_cdp_probe.py
 Motor compartilhado de auditoria estrutural, hierarquia visual, descompactação de menus,
-anti-proliferação de abas (reuso de slots existentes) e sonda Chrome DevTools / CDP
-para a fusão operacional `complex-zero` (v3.0.0) <-> `nav-x-func` (v6.0.0).
+governança semântica de abas (permitindo separação de domínios distintos e bloqueando abas
+de função duplicada, sub-abas aninhadas ou componentes de backend expostos) e sonda Chrome DevTools / CDP
+para `complex-zero` (v3.1.0) integrado a `auditoria-projetos-sistema` (v6.0.0).
 """
 
 from __future__ import annotations
@@ -32,6 +33,11 @@ PADDING_COMPACT_RE = re.compile(
 )
 NAV_TAG_RE = re.compile(r"<nav\b[^>]*>", re.IGNORECASE)
 ROLE_TAB_RE = re.compile(r"\brole\s*=\s*['\"]tab['\"]", re.IGNORECASE)
+TAB_LABEL_EXTRACT_RE = re.compile(r"<[^>]*\brole\s*=\s*['\"]tab['\"][^>]*>([^<]+)<", re.IGNORECASE)
+BACKEND_TAB_NAME_RE = re.compile(
+    r"\b(?:sql_raw|db_pool|worker_queue|cron_daemon|grpc_stub|env_vars|raw_payload|redis_keys|sqlite_wal)\b",
+    re.IGNORECASE,
+)
 SUBTAB_CALL_RE = re.compile(
     r"\b(?:switchNodesSubview|setCatalogTreeMode|setCatalogCategoryFilter|switchSubTab)\s*\(",
     re.IGNORECASE,
@@ -98,7 +104,10 @@ CHROME_DEVTOOLS_EVALUATE_SCRIPT = """() => {
   });
 
   const visibleNavs = Array.from(document.querySelectorAll('nav')).filter(isVis).length;
-  const allTabs = document.querySelectorAll('[role="tab"]').length;
+  const tabEls = Array.from(document.querySelectorAll('[role="tab"]'));
+  const allTabs = tabEls.length;
+  const normLabels = tabEls.map((t) => (t.textContent || '').trim().toLowerCase()).filter(Boolean);
+  const duplicateTabLabels = normLabels.filter((lbl, idx) => normLabels.indexOf(lbl) !== idx);
   const visibleInputs = Array.from(document.querySelectorAll('textarea, input[type="text"], input[type="search"], input:not([type])')).filter(isVis).length;
 
   return {
@@ -109,9 +118,9 @@ CHROME_DEVTOOLS_EVALUATE_SCRIPT = """() => {
       theme: document.documentElement.getAttribute('data-theme') || 'default',
     },
     visualHierarchy: { h1Px, h2Px, h3Px, bodyPx, hierarchyMonotonic },
-    organizationSprawl: { visibleNavs, allTabs, visibleInputs },
+    organizationSprawl: { visibleNavs, allTabs, duplicateTabLabels, visibleInputs },
     crampedMenus,
-    passed: hierarchyMonotonic && crampedMenus.length === 0 && visibleNavs <= 3 && allTabs <= 4 && visibleInputs <= 2,
+    passed: hierarchyMonotonic && crampedMenus.length === 0 && visibleNavs <= 3 && allTabs <= 6 && duplicateTabLabels.length === 0 && visibleInputs <= 2,
   };
 }"""
 
@@ -214,9 +223,20 @@ def _inspect_sprawl_and_graph_nodes(combined: str, report: UnifiedVisualOrgRepor
         report.sprawl_and_org_violations.append(
             f"Excesso de barras <nav> ({report.nav_landmarks_count} detectadas > limite de 3 Camadas: Global, Local e Breadcrumbs)"
         )
-    if report.primary_tabs_count > 4:
+    tab_labels = [lbl.strip().lower() for lbl in TAB_LABEL_EXTRACT_RE.findall(combined) if lbl.strip()]
+    dup_labels = sorted({lbl for lbl in tab_labels if tab_labels.count(lbl) > 1})
+    if dup_labels:
         report.sprawl_and_org_violations.append(
-            f"Proliferação de abas primárias ({report.primary_tabs_count} abas > limite de 4): consolide nos slots existentes"
+            f"Abas com função/rótulo duplicado ({', '.join(dup_labels)}): proibido criar novas abas para a mesma função"
+        )
+    backend_tabs = [lbl for lbl in tab_labels + list(PRIMARY_TAB_CALL_RE.findall(combined)) if BACKEND_TAB_NAME_RE.search(lbl)]
+    if backend_tabs:
+        report.sprawl_and_org_violations.append(
+            f"Componentes internos de backend expostos em abas de UI ({', '.join(sorted(set(backend_tabs)))})"
+        )
+    if report.primary_tabs_count > 6:
+        report.sprawl_and_org_violations.append(
+            f"Excesso de abas primárias ({report.primary_tabs_count} abas > teto de 6 domínios distintos): saneie a aba principal primeiro"
         )
     if report.primary_tabs_count > 0 and report.nested_subtab_calls > 0:
         report.sprawl_and_org_violations.append(

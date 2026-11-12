@@ -7,7 +7,9 @@
       "installers": "_Instaladores",
       "documents": "_Documentos_Recebidos",
       "media": "_Midia",
-      "code": "C:\\Users\\melki\\dev\\scratch"
+      "code_node": "C:\\Users\\melki\\dev\\sandbox\\node",
+      "code_python": "C:\\Users\\melki\\dev\\sandbox\\python",
+      "scripts_pwsh": "C:\\Users\\melki\\dev\\tools"
     }
   },
   "protected_desktop_files": [
@@ -16,5 +18,11 @@
     "FrontCraft-Studio.cmd",
     "Antigravity-Painel-Controle.cmd"
   ],
-  "dev_archive_folder": "C:\\Users\\melki\\dev\\_arquivo"
+  "dev_canonical_folders": [
+    "C:\\Users\\melki\\dev\\repos",
+    "C:\\Users\\melki\\dev\\sandbox",
+    "C:\\Users\\melki\\dev\\tools",
+    "C:\\Users\\melki\\dev\\notes",
+    "C:\\Users\\melki\\dev\\references"
+  ]
 }

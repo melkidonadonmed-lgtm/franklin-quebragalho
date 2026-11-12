@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "CognitiveAdaptivePlanSchema",
-  "description": "Schema canônico v3.0.0 para planos adaptativos não-lineares emitidos pelo high-level-context-planner (intent-cognitive-planner)",
+  "description": "Schema canônico v3.0.0 para planos adaptativos não-lineares emitidos pelo high-level-context-planner",
   "type": "object",
   "properties": {
     "plan_id": {

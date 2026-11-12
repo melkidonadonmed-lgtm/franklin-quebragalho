@@ -65,7 +65,7 @@ Ao criar ou fazer bootstrap de qualquer projeto novo ou existente (ou via `C:\Us
 
 ## 0. CONTEXTO DO PROJETO (Auto-detectado)
 - **Baseline Temporal:** Novembro de 2026 (rejeite APIs/sintaxes legadas; na dúvida sobre pacotes ou SDKs, consulte docs atuais ou MCP).
-- **Stack Ativa:** [Ex: Python 3.12+ / Go 1.22+ / TypeScript 5+ / React — preencher no init via manifestos da raiz]
+- **Stack Ativa:** [Ex: Python 3.12+ / Go 1.24+ / TypeScript 5+ / React — preencher no init via manifestos da raiz]
 - **Arquitetura de Estado:**
   - `.agents/AGENTS.md`: Regras comportamentais globais (carregado no boot).
   - `.context/context.md`: Passômetro e estado autoritativo do projeto (leitura/escrita sob demanda).
@@ -93,7 +93,7 @@ Ao criar ou fazer bootstrap de qualquer projeto novo ou existente (ou via `C:\Us
 
 ## 1. Visão Geral & Arquitetura Atual
 - **Propósito:** [1 frase sobre o que o sistema faz]
-- **Stack & Runtime:** [Ex: Go 1.22 + SQLite WAL + React/Tailwind]
+- **Stack & Runtime:** [Ex: Go 1.24+ + SQLite WAL + React/Tailwind]
 - **Módulos Ativos:** [Lista rápida dos serviços/pastas principais que já estão prontos]
 
 ## 2. Decisões Técnicas Críticas (Não Violar)

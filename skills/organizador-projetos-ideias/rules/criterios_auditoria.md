@@ -16,13 +16,14 @@ Para assegurar que a concepção de ideias (`ideation_to_v1`) e a organização 
   - Ausência de metadados da versão com data (`AAAA-MM-DD`) ao consolidar a v1.0 -> `[FAIL: METADADOS_VERSAO_AUSENTES]`
   - Proposta de MVP gerada com clareza, design/estrutura propostos e confirmação da v1.0 solicitada -> `[PASS]`
 
-### Regra 2: Sincronização de Documentos-Chave e Paridade `README.md` vs. Estado Real (Modo 2)
+### Regra 2: Análise Holística, Estrutura Ideal Pré-Preenchida e Paridade `README.md` vs. Disco (Modo 2)
 
-- **Critério**: Na organização de projeto (`project_organizer_sync`), a skill verificou arquivos faltantes, estruturou/atualizou `AGENTS.md`, `SPEC.md`, `CONTEXT.md`, `DESIGN.md`, `GEMINI.md`/`CLAUDE.md` e garantiu que o `README.md` reflita exatamente os arquivos e pastas reais presentes no disco?
+- **Critério**: Na organização de projeto (`project_organizer_sync`), a skill mapeou a estrutura atual, analisou o conteúdo global e a intenção, comparou com padrões de repositórios de referência, propôs a estrutura ideal explicando o conteúdo de cada arquivo, pré-preencheu arquivos iniciais com código básico funcional + segurança e garantiu paridade `1:1` do `README.md` com o disco?
 - **Teste**:
   - `README.md` cita arquivos, scripts ou pastas inexistentes no disco sem marcá-los como roadmap -> `[FAIL: README_DESATUALIZADO_VS_REAL]`
-  - Omissão na verificação/criação dos documentos-chave (`AGENTS.md`, `SPEC.md`, `CONTEXT.md`, `DESIGN.md`) -> `[FAIL: DOCUMENTOS_CHAVE_INCOMPLETOS]`
-  - Documentação base completa e `README.md` batendo 1:1 com a árvore real -> `[PASS]`
+  - Entrega de MVP ou estrutura com arquivos ocos/placebos sem código funcional básico nem segurança -> `[FAIL: MVP_PLACEBO_OU_SEM_SEGURANCA]`
+  - Omissão dos documentos-chave (`AGENTS.md`, `.context/spec.md`, `.context/context.md`) -> `[FAIL: DOCUMENTOS_CHAVE_INCOMPLETOS]`
+  - Estrutura ideal explicada, base funcional segura pré-preenchida e `README.md` 1:1 com o disco -> `[PASS]`
 
 ### Regra 3: Auditoria e Organização de Componentes e Contratos (`MCP`, `FastAPI`, `RPC`)
 

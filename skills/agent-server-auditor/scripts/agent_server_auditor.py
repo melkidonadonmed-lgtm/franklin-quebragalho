@@ -175,28 +175,24 @@ def _audit_binary_hygiene(root: Path, files: List[Path]) -> Tuple[BinaryHygieneR
 
 
 def _audit_skills(root: Path, files: List[Path]) -> List[SkillAuditItem]:
-    """Audita todas as pastas contendo manifesto SKILL.md."""
+    """Audita pastas SKILL.md sob Progressive Disclosure oficial (apenas SKILL.md obrigatório; L3 exigido se L2 > 1.200 tokens)."""
     items: List[SkillAuditItem] = []
     skill_mds = [f for f in files if f.name == "SKILL.md"]
     for smd in skill_mds:
         s_dir = smd.parent
         text = smd.read_text(encoding="utf-8", errors="replace").lstrip("\ufeff")
         has_fm = text.startswith("---") and "\n---" in text[3:]
+        body = text.split("---", 2)[2] if has_fm and text.count("---") >= 2 else text
         has_scripts = (
             (s_dir / "scripts").is_dir() and any((s_dir / "scripts").iterdir())
         ) or (s_dir / "rules" / "criterios_auditoria.md").is_file()
         has_refs = (s_dir / "references").is_dir() and any((s_dir / "references").iterdir())
         has_evals = (s_dir / "evals" / "evals.json").is_file()
-        missing = [
-            label
-            for ok, label in (
-                (has_fm, "frontmatter"),
-                (has_scripts, "scripts/"),
-                (has_refs, "references/"),
-                (has_evals, "evals/evals.json"),
-            )
-            if not ok
-        ]
+        missing: List[str] = []
+        if not has_fm:
+            missing.append("frontmatter")
+        if (len(body) // 4) > 1200 and not (has_refs or has_scripts):
+            missing.append("references/ (Progressive Disclosure L3 exigido para SKILL.md > 1200 tokens)")
         items.append(
             SkillAuditItem(
                 name=s_dir.name,
@@ -225,14 +221,30 @@ def _classify_framework_and_lang(f: Path, text: str) -> Tuple[str, str]:
 
 
 def _audit_agents(root: Path, files: List[Path]) -> List[AgentAuditItem]:
-    """Audita módulos de orquestradores (Py/TS/Go) e contratos declarativos de subagentes (agents/*.md)."""
+    """Audita orquestradores (Py/TS/Go) e subagentes (agents/*.md, .agents/agents/*.md) em 8 eixos (Sintaxe, Objetivo, Função, SDK, Guardrails, Policy e Menor Privilégio)."""
+    import ast as py_ast
+
     items: List[AgentAuditItem] = []
     for f in files:
         rel = f.relative_to(root).as_posix()
         suffix = f.suffix.lower()
-        if suffix == ".md" and rel.startswith("agents/"):
+        if suffix == ".md" and (rel.startswith("agents/") or rel.startswith(".agents/agents/")):
             text = f.read_text(encoding="utf-8", errors="replace").lstrip("\ufeff")
             has_fm = text.startswith("---") and "\n---" in text[3:]
+            fm_block = text.split("---", 2)[1] if has_fm else ""
+            body_block = text.split("---", 2)[2].strip() if has_fm and text.count("---") >= 2 else ""
+            has_wildcard_tools = bool(re.search(r'^\s*-\s*["\']?\*["\']?\s*$', fm_block, re.MULTILINE))
+            has_policy = "commandExecutionPolicy" in fm_block or "enable_write_tools" in fm_block
+            has_objective = len(body_block) >= 60
+            md_missing: List[str] = []
+            if not has_fm:
+                md_missing.append("frontmatter")
+            if has_wildcard_tools:
+                md_missing.append("least_privilege (tools: '*' proibido)")
+            if not has_policy:
+                md_missing.append("policy (commandExecutionPolicy/enable_write_tools)")
+            if not has_objective:
+                md_missing.append("objective_body")
             items.append(
                 AgentAuditItem(
                     name=f.stem,
@@ -242,8 +254,8 @@ def _audit_agents(root: Path, files: List[Path]) -> List[AgentAuditItem]:
                     reasoning_pattern="Wave / Subagent Contract",
                     has_max_steps=True,
                     has_stop_condition=True,
-                    type_safety=has_fm,
-                    missing_elements=[] if has_fm else ["frontmatter"],
+                    type_safety=has_fm and not has_wildcard_tools,
+                    missing_elements=md_missing,
                 )
             )
             continue
@@ -254,10 +266,26 @@ def _audit_agents(root: Path, files: List[Path]) -> List[AgentAuditItem]:
             continue
         text = f.read_text(encoding="utf-8", errors="replace")
         lang, fw = _classify_framework_and_lang(f, text)
+        syntax_ok = True
+        if suffix == ".py":
+            try:
+                py_ast.parse(text, filename=rel)
+            except SyntaxError:
+                syntax_ok = False
+        has_placebo = bool(re.search(r"\braise\s+NotImplementedError\b", text))
         has_max = bool(MAX_STEPS_RE.search(text))
         has_stop = bool(STOP_COND_RE.search(text))
-        type_safe = ("Any" not in text and "interface{}" not in text) or bool(STRICT_SCHEMA_RE.search(text))
-        missing = [lbl for ok, lbl in ((has_max, "max_steps"), (has_stop, "stop_condition")) if not ok]
+        type_safe = syntax_ok and (("Any" not in text and "interface{}" not in text) or bool(STRICT_SCHEMA_RE.search(text)))
+        missing = [
+            lbl
+            for ok, lbl in (
+                (syntax_ok, "valid_syntax"),
+                (not has_placebo, "real_function (NotImplementedError detectado)"),
+                (has_max, "max_steps"),
+                (has_stop, "stop_condition"),
+            )
+            if not ok
+        ]
         items.append(
             AgentAuditItem(
                 name=f.stem,
@@ -285,9 +313,24 @@ def _has_stdout_pollution(suffix: str, text: str) -> bool:
     return False
 
 
+def _has_mcp_sdk_in_manifests(root: Path) -> bool:
+    """Verifica se os manifestos do projeto declaram SDK oficial MCP (Python mcp/fastmcp, TS @modelcontextprotocol/sdk ou Go mcp/adk)."""
+    for mf, pat in (
+        ("pyproject.toml", r"(?i)\b(mcp|fastmcp)\b"),
+        ("package.json", r"@modelcontextprotocol/sdk"),
+        ("go.mod", r"(?i)(modelcontextprotocol|mcp-go|google\.golang\.org/adk)"),
+    ):
+        p = root / mf
+        if p.is_file() and re.search(pat, p.read_text(encoding="utf-8", errors="replace")):
+            return True
+    return False
+
+
 def _audit_mcp_servers(root: Path, files: List[Path], global_strict: bool) -> List[McpServerAuditItem]:
-    """Inspeciona servidores MCP quanto à higiene STDIO e contratos estritos."""
+    """Inspeciona servidores MCP quanto ao SDK declarado + comportamento (higiene STDIO e contratos estritos)."""
     items: List[McpServerAuditItem] = []
+    has_manifest = any((root / m).is_file() for m in ("pyproject.toml", "package.json", "go.mod"))
+    sdk_declared = _has_mcp_sdk_in_manifests(root) if has_manifest else True
     for f in files:
         if f.suffix.lower() not in {".py", ".ts", ".go"} or "test" in f.name.lower():
             continue
@@ -305,13 +348,15 @@ def _audit_mcp_servers(root: Path, files: List[Path], global_strict: bool) -> Li
             missing.append("stdout_hygiene (AUD-MCP-01)")
         if not strict:
             missing.append("strict_contracts (AUD-CNT-01)")
+        if not sdk_declared:
+            missing.append("mcp_sdk_in_manifest (AUD-MCP-01)")
         items.append(
             McpServerAuditItem(
                 name=f.parent.name if f.stem == "server" else f.stem,
                 file=rel,
                 transport="STDIO",
                 stdout_hygiene="POLLUTED" if polluted else "CLEAN",
-                strict_contracts=strict,
+                strict_contracts=strict and sdk_declared,
                 missing_elements=missing,
             )
         )
@@ -319,7 +364,7 @@ def _audit_mcp_servers(root: Path, files: List[Path], global_strict: bool) -> Li
 
 
 def _audit_a2a_cards(root: Path, files: List[Path]) -> List[A2ANodeAuditItem]:
-    """Audita cartões de identidade A2A (agent-card.json / agent_card.json)."""
+    """Audita cartões A2A (metadados name/version/description, IDs únicos em skills[].id e assinatura JWS)."""
     items: List[A2ANodeAuditItem] = []
     card_files = [f for f in files if f.name in {"agent-card.json", "agent_card.json"}]
     for cf in card_files:
@@ -329,14 +374,18 @@ def _audit_a2a_cards(root: Path, files: List[Path]) -> List[A2ANodeAuditItem]:
             data = {}
         if not isinstance(data, dict):
             data = {}
+        has_meta = bool(data.get("name")) and bool(data.get("version")) and bool(data.get("description"))
         has_ifaces = bool(data.get("supportedInterfaces"))
-        has_skills = isinstance(data.get("skills"), list) and len(data.get("skills", [])) > 0
+        raw_skills = data.get("skills") if isinstance(data.get("skills"), list) else []
+        skill_ids = [str(s.get("id", "")).strip() for s in raw_skills if isinstance(s, dict) and str(s.get("id", "")).strip()]
+        has_unique_ids = len(raw_skills) > 0 and len(skill_ids) == len(raw_skills) and len(set(skill_ids)) == len(skill_ids)
         has_jws = isinstance(data.get("signatures"), list) and len(data.get("signatures", [])) > 0
         missing = [
             lbl
             for ok, lbl in (
+                (has_meta, "metadata (name/version/description)"),
                 (has_ifaces, "supportedInterfaces"),
-                (has_skills, "skills"),
+                (has_unique_ids, "skills[].id (unique IDs)"),
                 (has_jws, "signatures (JWS)"),
             )
             if not ok
@@ -346,7 +395,7 @@ def _audit_a2a_cards(root: Path, files: List[Path]) -> List[A2ANodeAuditItem]:
                 card_path=cf.relative_to(root).as_posix(),
                 name=str(data.get("name", cf.stem)),
                 has_supported_interfaces=has_ifaces,
-                has_skills_catalog=has_skills,
+                has_skills_catalog=has_unique_ids,
                 has_jws_signatures=has_jws,
                 missing_elements=missing,
             )
@@ -455,7 +504,7 @@ def run_self_test() -> Dict[str, Any]:
         root = Path(tmp)
         (root / ".gitignore").write_text(".env\n", encoding="utf-8")
         (root / ".env.example").write_text("API_KEY=\n", encoding="utf-8")
-        (root / "pyproject.toml").write_text("[project]\nname='demo'\n", encoding="utf-8")
+        (root / "pyproject.toml").write_text("[project]\nname='demo'\ndependencies=['mcp>=1.0.0']\n", encoding="utf-8")
         (root / "bin").mkdir()
         ag_dir = root / "agents"
         ag_dir.mkdir()
@@ -480,6 +529,8 @@ def run_self_test() -> Dict[str, Any]:
         (a2a_dir / "agent-card.json").write_text(
             json.dumps({
                 "name": "demo-node",
+                "description": "Nó A2A de demonstração",
+                "version": "1.0.0",
                 "supportedInterfaces": [{"protocolBinding": "JSONRPC"}],
                 "skills": [{"id": "demo-skill"}],
                 "signatures": [{"signature": "sig"}],

@@ -1,116 +1,102 @@
-# Guia de Tokens Clínicos, Calculadoras Determinísticas e Folha Vetorial A4 (`v4.0.0`)
+# Guia de Tokens Clínicos `OKLCH`, Calculadoras Determinísticas e Folha Vetorial A4 (`v5.0.0`)
 
-Referência de Tier 3 para implementação de interfaces médicas sob `design-interface-medica-minimalista` alinhada ao SSOT de Física da Luz Zenital (90°–120°), Sombras Multi-Camadas e Folha Vetorial A4.
+Referência de Tier 3 para implementação de interfaces médicas sob `design-interface-medica-minimalista`, alinhada ao SSOT de Cores Perceptuais `OKLCH` + `light-dark()`, Luz Zenital (90°–120°), Sombras Multi-Camadas sem `!important` (via `@layer`) e Folha Vetorial A4.
 
 ---
 
-## 1. Tokens Semânticos Clínicos (`globals.css`)
+## 1. Tokens Semânticos Clínicos em `OKLCH` (`globals.css`)
 
 ```css
-html, body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  font-optical-sizing: auto;
-  font-synthesis: none;
-}
+@layer reset, tokens, base, layouts, components, print;
 
-:root,
-[data-theme="clinical-day"] {
-  --surface-canvas: #F4F6F8;
-  --surface-sunken: #ECEFF3;
-  --surface-card: #FFFFFF;
-  --surface-elevated: #FFFFFF;
-  --surface-glass: rgba(255, 255, 255, 0.84);
-
-  --ink-primary: #0F172A;
-  --ink-secondary: #334155;
-  --ink-muted: #64748B;
-
-  --cta-bg: #0F172A;
-  --cta-ink: #F8FAFC;
-
-  --status-ok: #059669;
-  --status-warn: #D97706;
-  --status-danger: #DC2626;
-  --status-info: #0284C7;
-
-  --border-hairline: rgba(15, 23, 42, 0.08);
-  --catch-light: inset 0 1px 0 0 rgba(255, 255, 255, 0.85);
-  --recess-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-
-  --elevation-1:
-    0 1px 2px -1px rgba(0, 0, 0, 0.08),
-    0 2px 4px 0 rgba(0, 0, 0, 0.04),
-    var(--catch-light);
-  --elevation-2:
-    0 4px 6px -2px rgba(0, 0, 0, 0.12),
-    0 10px 15px -3px rgba(0, 0, 0, 0.08),
-    0 0 0 1px rgba(0, 0, 0, 0.06),
-    var(--catch-light);
-  --elevation-3:
-    0 12px 24px -6px rgba(0, 0, 0, 0.18),
-    0 24px 48px -12px rgba(0, 0, 0, 0.14),
-    0 0 0 1px rgba(128, 128, 128, 0.12),
-    var(--catch-light);
-
-  --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
-  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
-}
-
-[data-theme="clinical-night"] {
-  --surface-canvas: #0B0E14;
-  --surface-sunken: #07090D;
-  --surface-card: #121721;
-  --surface-elevated: #181F2C;
-  --surface-glass: rgba(18, 23, 33, 0.82);
-
-  --ink-primary: #F1F5F9;
-  --ink-secondary: #CBD5E1;
-  --ink-muted: #94A3B8;
-
-  --cta-bg: #F8FAFC;
-  --cta-ink: #0F172A;
-
-  --border-hairline: rgba(255, 255, 255, 0.08);
-  --catch-light: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
-}
-
-.clinical-unit {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.a4-sheet {
-  width: 210mm;
-  min-height: 297mm;
-  background: #FFFFFF;
-  color: #0F172A;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 12px;
-  padding: 15mm;
-  box-shadow: var(--elevation-2);
-}
-
-@media print {
-  @page {
-    size: A4 portrait;
-    margin: 12mm;
+@layer base {
+  html, body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-optical-sizing: auto;
+    font-synthesis: none;
   }
-  body {
-    background: #FFFFFF !important;
-    color: #000000 !important;
+}
+
+@layer tokens {
+  :root {
+    color-scheme: light dark;
+
+    --surface-canvas: light-dark(oklch(0.97 0.005 245), oklch(0.16 0.015 255));
+    --surface-sunken: light-dark(oklch(0.95 0.006 245), oklch(0.13 0.015 255));
+    --surface-card: light-dark(oklch(1 0 0), oklch(0.21 0.018 255));
+    --surface-elevated: light-dark(oklch(1 0 0), oklch(0.26 0.020 255));
+    --surface-glass: light-dark(oklch(1 0 0 / 0.84), oklch(0.21 0.018 255 / 0.82));
+
+    --ink-primary: light-dark(oklch(0.18 0.02 255), oklch(0.96 0.005 245));
+    --ink-secondary: light-dark(oklch(0.38 0.02 255), oklch(0.82 0.012 250));
+    --ink-muted: light-dark(oklch(0.52 0.02 255), oklch(0.68 0.015 250));
+
+    --cta-bg: light-dark(oklch(0.18 0.02 255), oklch(0.97 0.005 245));
+    --cta-ink: light-dark(oklch(0.97 0.005 245), oklch(0.18 0.02 255));
+
+    --status-ok: oklch(0.60 0.15 162);
+    --status-warn: oklch(0.68 0.16 70);
+    --status-danger: oklch(0.58 0.20 25);
+    --status-info: oklch(0.60 0.15 240);
+
+    --border-hairline: light-dark(oklch(0.18 0.02 255 / 0.08), oklch(1 0 0 / 0.10));
+    --catch-light: inset 0 1px 0 0 light-dark(oklch(1 0 0 / 0.85), oklch(1 0 0 / 0.12));
+    --shadow-inset: inset 0 2px 4px 0 light-dark(oklch(0 0 0 / 0.06), oklch(0 0 0 / 0.45));
+
+    --shadow-elevation-1:
+      0 1px 2px -1px light-dark(oklch(0.18 0.02 255 / 0.08), oklch(0 0 0 / 0.45)),
+      0 2px 4px -1px light-dark(oklch(0.18 0.02 255 / 0.04), oklch(0 0 0 / 0.35)),
+      var(--catch-light);
+    --shadow-elevation-2:
+      0 4px 8px -2px light-dark(oklch(0.18 0.02 255 / 0.10), oklch(0 0 0 / 0.55)),
+      0 12px 20px -4px light-dark(oklch(0.18 0.02 255 / 0.07), oklch(0 0 0 / 0.50)),
+      var(--catch-light);
+    --shadow-elevation-3:
+      0 8px 16px -4px light-dark(oklch(0.18 0.02 255 / 0.12), oklch(0 0 0 / 0.65)),
+      0 24px 48px -8px light-dark(oklch(0.18 0.02 255 / 0.14), oklch(0 0 0 / 0.60)),
+      var(--catch-light);
+
+    --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
   }
-  .no-print, nav, aside {
-    display: none !important;
+
+  [data-theme="clinical-day"] { color-scheme: light; }
+  [data-theme="clinical-night"] { color-scheme: dark; }
+}
+
+@layer components {
+  .clinical-unit {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
-  .a4-sheet, .surface-card {
-    box-shadow: none !important;
-    border: 1px solid #CBD5E1 !important;
-    page-break-inside: avoid;
+
+  .a4-sheet, .sus-grid {
+    inline-size: 210mm;
+    min-block-size: 297mm;
+    background: oklch(1 0 0);
+    color: oklch(0.18 0.02 255);
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 12px;
+    padding: 15mm;
+    box-shadow: var(--shadow-elevation-2);
+  }
+}
+
+@layer print {
+  @media print {
+    @page { size: A4 portrait; margin: 12mm; }
+    body { background: oklch(1 0 0); color: oklch(0.12 0 0); }
+    .no-print, nav, aside { display: none; }
+    .a4-sheet, .sus-grid, .surface-card {
+      box-shadow: none;
+      border: 1px solid oklch(0.85 0.01 250);
+      break-inside: avoid;
+    }
   }
 }
 ```

@@ -40,7 +40,7 @@
         "agent-server-auditor",
         "mcp-2026-07-28",
         "a2a-protocol",
-        "audit-websocket-jsonrpc",
+        "least-privilege",
         "agent-card-jws",
         "stdio-hygiene"
       ],
@@ -61,9 +61,12 @@
       "name": "android-agy-projects",
       "description": "Arquitetura, MVP e auditoria Android (Kotlin 2.4+, AGP 9 Built-in Kotlin, KSP2, Jetpack Compose, Navigation 3, R8, ANR e memory leaks). Use para criar ou auditar apps Android/Gradle; não use para iOS.",
       "tags": [
-        "android-agy-projects",
-        "Android Architecture, Performance Audit & Dependency Lifecycle",
-        "franklin-skills"
+        "android",
+        "agp-9",
+        "kotlin-k2",
+        "ksp2",
+        "jetpack-compose",
+        "navigation-3"
       ],
       "examples": [
         "Executar a skill android-agy-projects no contexto atual"
@@ -84,8 +87,9 @@
       "tags": [
         "prompt-engineering",
         "arquitetura",
+        "cot-tot",
         "guardrails-modulares",
-        "anti-alucinacao"
+        "structured-output"
       ],
       "examples": [
         "Executar a skill arquiteto-conteudo-solucoes no contexto atual"
@@ -102,14 +106,14 @@
     {
       "id": "audit-skills-antigravity",
       "name": "audit-skills-antigravity",
-      "description": "Executa audit-skills-antigravity em habilidades Skills privadas em Python, Go e JS via REA, analisando Context Bloat, colisões, Pass@k e FNR. Use para auditar skills; não use para CSS.",
+      "description": "Executa audit-skills-antigravity em Skills privadas em Python, Go e JS via REA, auditando sintaxe, colisões de rotas/referências, coerência cognitiva por arquétipo, Pass@k e FNR. Use para auditar skills; não use para CSS.",
       "tags": [
         "audit-skills-antigravity",
         "rea-skill-audit",
+        "cognitive-audit",
+        "route-collision",
         "context-bloat",
-        "pass-at-k",
-        "fnr",
-        "progressive-disclosure"
+        "pass-at-k"
       ],
       "examples": [
         "Executar a skill audit-skills-antigravity no contexto atual"
@@ -201,11 +205,11 @@
       "description": "Audita via ciclo ReAct (CDP DevTools e AST) aplicações frontend complexas com canvas infinito @xyflow/react, WebSocket Chokidar, nós fantasmas funções falsas e Next.js 15 async params. Use para grafos; não use para páginas simples.",
       "tags": [
         "frontend",
-        "architecture",
-        "nav-x-func-fusion",
-        "react-flow",
         "xyflow",
-        "nextjs-15"
+        "nextjs-15",
+        "oklch",
+        "container-queries",
+        "ast-analysis"
       ],
       "examples": [
         "Executar a skill complex-zero no contexto atual"
@@ -385,11 +389,14 @@
     {
       "id": "frontend-ui-ux-auditor",
       "name": "frontend-ui-ux-auditor",
-      "description": "Audita com precisão matemática densidade de nós DOM, contraste WCAG 2.1 AA, física da luz 135, elevação por sombras, espaçamento e camadas. Use para diagnóstico visual de frontend; não use para backend.",
+      "description": "Audita com precisão matemática densidade de nós DOM, contraste WCAG 2.1 AA, luz zenital 90-120, elevação por sombras, espaçamento e camadas. Use para diagnóstico visual de frontend; não use para backend.",
       "tags": [
-        "frontend-ui-ux-auditor",
-        "Frontend UI/UX Mathematical Auditing, OKLCH Design Tokens, Logical Box Model & Optical Physics",
-        "franklin-skills"
+        "ui-ux-audit",
+        "oklch",
+        "wcag-contrast",
+        "zenithal-light",
+        "dom-density",
+        "container-queries"
       ],
       "examples": [
         "Executar a skill frontend-ui-ux-auditor no contexto atual"
@@ -475,9 +482,12 @@
       "name": "high-level-context-planner",
       "description": "Planejador de contexto de alto nível decompondo metas em fases numeradas com Fase 0, tasks paralelizáveis e Complexity Tracking. Use para planejar épicos complexos; não use para comando único.",
       "tags": [
-        "high-level-context-planner",
-        "Análise de Intenção, Planejamento Cognitivo Não-Linear & Engenharia de Contexto",
-        "franklin-skills"
+        "planejamento",
+        "dag",
+        "cot-tot",
+        "react",
+        "complexity-wall",
+        "convergencia"
       ],
       "examples": [
         "Executar a skill high-level-context-planner no contexto atual"
@@ -543,9 +553,9 @@
       "tags": [
         "organizador-projetos",
         "refinamento-ideias",
-        "mvp",
+        "mvp-funcional",
+        "benchmark-repos",
         "mcp-fastapi-rpc",
-        "documentacao-viva",
         "higiene-repositorio"
       ],
       "examples": [
@@ -589,9 +599,12 @@
       "name": "re-a-ndroid",
       "description": "Engenharia reversa e auditoria de APKs Android com re-a-ndroid, REA e ADB descompilando DEX .so, assinaturas v1-v3.1, funções placebo, latência de rotas e alvos 48dp. Use para auditar APKs; não use para criar MVP.",
       "tags": [
-        "re-a-ndroid",
-        "android-security-auditing",
-        "franklin-skills"
+        "android-reverse-engineering",
+        "rea",
+        "adb",
+        "apk-signature",
+        "dex-audit",
+        "a11y-48dp"
       ],
       "examples": [
         "Executar a skill re-a-ndroid no contexto atual"
@@ -708,7 +721,7 @@
         "jku": "http://localhost:10999/public_keys.json",
         "typ": "JOSE+JSON"
       },
-      "signature": "05ceb6a4bec845e3d529b1cd0324c091467649d9adcab1c44e8c8dff3935832d"
+      "signature": "3001128c495958a41e9cb0c71091a28123fd20ef7b01f09f635732780507cfdd"
     }
   ]
 }

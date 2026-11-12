@@ -276,7 +276,7 @@ export function CustomMetricNode({ data }: NodeProps) {
   const { label, path: filePath, type, isUpdated, isGhost, hasFakeCode, metrics, onInspect } = nodeData;
 
   const badgeTag = isGhost ? '[GHOST]' : type === 'directory' ? '[DIR]' : '[FILE]';
-  const statusTag = isGhost ? '[FAIL: DISCO]' : hasFakeCode ? '[WARN: STUB]' : '[PASS: VERIFIED]';
+  const statusTag = isGhost ? '[ERR: DISCO]' : hasFakeCode ? '[WARN: STUB]' : '[SYNCED]';
 
   return (
     <div
@@ -296,17 +296,9 @@ export function CustomMetricNode({ data }: NodeProps) {
 
       {metrics && !isGhost && (
         <dl className="node-metrics-grid" style={{ fontVariantNumeric: 'tabular-nums' }}>
-          <div className="metric-badge" title="Latência real do Event Loop">
+          <div className="metric-badge" title="Latência real do Event Loop (detalhes completos no Inspetor Lateral)">
             <dt className="sr-only">Latência</dt>
             <dd>[LAT] {metrics.latencyMs.toFixed(1)}ms</dd>
-          </div>
-          <div className="metric-badge" title="Memória Heap alocada">
-            <dt className="sr-only">Memória</dt>
-            <dd>[MEM] {metrics.memoryKb}KB</dd>
-          </div>
-          <div className="metric-badge" title="Taxa de quadros medida via rAF">
-            <dt className="sr-only">Quadros por segundo</dt>
-            <dd>[FPS] {metrics.fps}</dd>
           </div>
           <div className="metric-badge" title="Complexidade Ciclomática AST">
             <dt className="sr-only">Complexidade</dt>

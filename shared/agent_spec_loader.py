@@ -54,7 +54,6 @@ class DeclarativeAgentSpec(BaseModel):
     goal: str = ""
     version: str = "1.0.0"
     model: str = "gemini-3.8-flash"
-    temperature: float = 0.1
     role: str = "Especialista Autônomo"
     parent_persona: str = "UI-Architect"
     wave: int = 1
@@ -290,7 +289,7 @@ def load_agent_spec(yaml_path_or_str: str, verbose: bool = True) -> Dict[str, An
 
     if verbose:
         logger.info("[*] Instanciando Agente: %s (v%s)", spec_data["name"], spec_data["version"])
-        logger.info("[*] Modelo Base: %s | Temperatura: %s", spec_data["model"], spec_data["temperature"])
+        logger.info("[*] Modelo Base: %s", spec_data["model"])
         logger.info("[*] Servidores MCP Conectados: %s", [s["name"] for s in spec_data["mcp_servers"]])
         logger.info("[*] Guardrails Ativos: Max Calls = %s", spec_data["guardrails"]["max_tool_calls"])
 
@@ -303,7 +302,6 @@ agent:
   name: "state-checker-observer"
   version: "1.1.0"
   model: "gemini-3.8-flash"
-  temperature: 0.1
   system_prompt: |
     Você é o Subagente Observador de Estado e Validador de Qualidade (State Checker & Audit Observer).
     Confronte os achados dos subagentes executores com a AST real, descarte falsos positivos e calcule Snorm.

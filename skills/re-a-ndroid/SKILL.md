@@ -1,16 +1,16 @@
 ---
 name: re-a-ndroid
 description: "Engenharia reversa e auditoria de APKs Android com re-a-ndroid, REA e ADB descompilando DEX .so, assinaturas v1-v3.1, funções placebo, latência de rotas e alvos 48dp. Use para auditar APKs; não use para criar MVP."
-version: "2.1.0"
-updated_at: "2026-11-02"
+version: "2.2.0"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
-  version: "2.1.0"
-  updated_at: "2026-11-02"
+  version: "2.2.0"
+  updated_at: "2026-11-12"
   author: "arq-software-team & melki-agent-os"
   category: "android-security-auditing"
-  tags: []
+  tags: ["android-reverse-engineering", "rea", "adb", "apk-signature", "dex-audit", "a11y-48dp"]
 ---
 # Skill: `re-a-ndroid` — Auditoria Integral de Aplicações Android com REA, CoT, ReAct & Self-Refine (`v2.2.0`)
 
@@ -32,32 +32,7 @@ A skill **`re-a-ndroid`** estabelece o protocolo determinístico de engenharia r
 * `package_name` / `launcher_activity` (opcional): Identificadores para instrumentação via `adb shell`.
 * `rea_detail` (opcional): `"summary"` (padrão para economia de contexto em `inspect_analysis_view`) ou `"full"`.
 
-```text
-┌─────────────────────────────────────────────────────────────────────────┐
-│ 0. ANCORAGEM PRE-FLIGHT DE APIS (Zero Inspeção às Cegas)                │
-│  • Gemini API / Live API: https://aistudio.google.com/llms.txt          │
-│    e https://aistudio.google.com/llms-full.txt (ou gemini_search_docs)  │
-│  • WebSockets & JSON-RPC 2.0: audit-websocket-jsonrpc.md                │
-└────────────────────┬────────────────────────────────────────────────────┘
-                     ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                     1. CHAIN-OF-THOUGHT (CoT)                           │
-│  • Decomposição analítica da meta de auditoria em sub-hipóteses isoladas│
-│  • Mapeamento prévio de pré-condições, vetores de ataque e contratos    │
-└────────────────────┬────────────────────────────────────────────────────┘
-                     ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        2. REACT LOOP (Act + Observe)                    │
-│  • Intercalação entre ferramentas estáticas (REA) e dinâmicas (ADB)      │
-│  • Pesquisa ativa paralela em bases de CVEs (OSV.dev, NVD) e docs       │
-└────────────────────┬────────────────────────────────────────────────────┘
-                     ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                     3. SELF-REFINE & ZERO-TRUST AUDIT                   │
-│  • Re-inspeção física dos achados (Read-After-Write / Evidence-IDs)     │
-│  • Cálculo das 6 métricas determinísticas e instruções ao Deep Coder    │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+**Ciclo Cognitivo:** `0. Pre-Flight Condicional (somente se o APK consumir Gemini API ou WS/JSON-RPC)` $\to$ `1. CoT (Sub-hipóteses de segurança/rotas)` $\to$ `2. ReAct (REA estático + ADB dinâmico + OSV.dev)` $\to$ `3. Self-Refine (Read-After-Write + 6 métricas)`.
 
 ---
 
@@ -80,9 +55,9 @@ A skill **`re-a-ndroid`** estabelece o protocolo determinístico de engenharia r
 
 1. **Etapa 1 — Ingestão, Grafo e Descompilação Estática (REA v6.8+):** Execute `inspect_android_package` (`detail="summary"`), `inspect_apk_signature` + `inspect_analysis_view(kind="apk-signature", detail="summary")` (validando esquemas v1–v3.1, linhagem de rotação de chaves e `posture`, nunca `inspect_signature` que é restrito a Mach-O), `decode_android_resources` e `project_android_application_graph`. Quando houver libs nativas de engines, acione `identify_flutter_build` / `inspect_dart_aot` ou `inspect_il2cpp_metadata`. Se JADX atingir timeout (`details.limit` com `scope: "rea-runtime"`), ajuste `jadx.operation_timeout_ms` via `update_analysis_settings` e isole retornos com `_meta.provenance.untrusted_content == true`.
 2. **Etapa 2 — Inspeção Dinâmica e Visual (ADB):** Meça o boot com `adb shell am start -W -n "[PKG]/[ACTIVITY]"`, extraia a árvore de UI via `adb shell uiautomator dump /sdcard/window_dump.xml` e colete `adb shell dumpsys gfxinfo "[PKG]" framestats`.
-3. **Etapa 3 — Ancoragem Pre-Flight, Interceptação de Rede (`WSS`/`JSON-RPC`) e Caça a Funções Placebo:**
-   * Antes de auditar chamadas à Gemini API / Firebase AI / Live API / Antigravity Agent no app, consulte [`https://aistudio.google.com/docs`](https://aistudio.google.com/docs), [`https://aistudio.google.com/docs/antigravity-agent`](https://aistudio.google.com/docs/antigravity-agent), [`https://aistudio.google.com/llms.txt`](https://aistudio.google.com/llms.txt), [`https://aistudio.google.com/llms-full.txt`](https://aistudio.google.com/llms-full.txt) e [`https://github.com/google-gemini/cookbook`](https://github.com/google-gemini/cookbook) (ou `gemini_search_docs`) para nunca checar endpoints ou modelos às cegas.
-   * Ao auditar conexões persistentes `ws://`/`wss://` e payloads `JSON-RPC 2.0`, aplique a sub-skill [`../agent-server-auditor/references/audit-websocket-jsonrpc.md`](../agent-server-auditor/references/audit-websocket-jsonrpc.md) (TLS 1.3, SSL Pinning, Ephemeral Tokens fora da URL, *Exponential Backoff + Jitter*, exclusividade `result`/`error` e $RTT_{\text{avg}} < 150\text{ ms}$).
+3. **Etapa 3 — Interceptação de Rede (`HTTPS`/`WSS`/`JSON-RPC`) e Caça a Funções Placebo:**
+   * **Somente quando o APK integrar Gemini API / Live API**, consulte `gemini_search_docs` antes de auditar os contratos.
+   * **Somente quando o APK usar `ws://`/`wss://` ou `JSON-RPC 2.0`**, aplique [`../agent-server-auditor/references/audit-websocket-jsonrpc.md`](../agent-server-auditor/references/audit-websocket-jsonrpc.md) (`TLS 1.3`, `Network Security Config` / CA confiável, Ephemeral Tokens fora da URL, *Exponential Backoff + Jitter* e $RTT_{\text{avg}} < 150\text{ ms}$).
    * Inspecione métodos de segurança (`isRooted`, `verifyToken`, `checkServerTrusted`) com retorno booleano estático via `inspect_android_method`.
 4. **Etapa 4 — Auditoria ReAct de Dependências e CVEs:** Cruze versões de SDKs de terceiros com OSV.dev/NVD e formule o patch exato para `gradle/libs.versions.toml` ou `build.gradle.kts`.
 5. **Etapa 5 — Síntese e Validação Matemática (`scripts/rea_android_auditor.py`):** Calcule as 6 métricas formais, vincule cada achado a um `Evidence-ID` e emita o Laudo Self-Refine completo detalhado em [`references/matriz_8_modulos_e_laudo.md`](references/matriz_8_modulos_e_laudo.md).
@@ -109,8 +84,8 @@ O entregável final segue o template padronizado em [`references/matriz_8_modulo
 * **Quando NÃO Usar (Fronteira Negativa):**
   * **Não use para criar projetos/MVPs Android do zero ou configurar AGP 9/KSP2 inicial sem APK/código alvo:** Para scaffolding greenfield em Kotlin 2.4+ / Compose BOM `2026.09.00`, utilize `android-agy-projects`.
   * **Não use para auditoria de frontend Web puro (React/Next.js/CSS):** Utilize `plan-uiux`, `complex-zero` ou `frontend-testing-auditor`.
-* **Guardrails de Execução e Compliance para o Deep Coder:**
-  * **Zero Auditoria de API às Cegas:** Nunca valide contratos Gemini API, WebSockets ou JSON-RPC sem consultar [`https://aistudio.google.com/llms.txt`](https://aistudio.google.com/llms.txt), [`https://aistudio.google.com/llms-full.txt`](https://aistudio.google.com/llms-full.txt) e [`../agent-server-auditor/references/audit-websocket-jsonrpc.md`](../agent-server-auditor/references/audit-websocket-jsonrpc.md).
+* **Guardrails de Execução e Compliance ([`rules/criterios_auditoria.md`](rules/criterios_auditoria.md)):**
+  * **Pre-Flight Condicional:** Consulte `gemini_search_docs` ou [`../agent-server-auditor/references/audit-websocket-jsonrpc.md`](../agent-server-auditor/references/audit-websocket-jsonrpc.md) quando o app contiver chamadas Gemini API ou transporte WebSocket/JSON-RPC.
   * **Zero Confiança Textual:** Nunca marque um achado como corrigido sem reexecutar o comando REA/ADB ou o script validador (*Read-After-Write*).
   * **Preservação de Assinatura e SDK:** Reparos em `build.gradle.kts` ou classes Java/Kotlin devem preservar a compatibilidade com `minSdk`/`targetSdk` e a integridade de assinatura v2/v3.
   * **Air-Gap Sandbox Enforcement:** Em ambientes isolados, utilize capturas locais (`apk-summary.json`, `window_dump.xml`) sem baixar binários externos não auditados.

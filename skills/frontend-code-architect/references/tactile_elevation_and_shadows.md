@@ -119,8 +119,8 @@ import '@/styles/design-system.css';
 export const viewport: Viewport = {
   colorScheme: 'light dark',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f8fafc' },
-    { media: '(prefers-color-scheme: dark)', color: '#0f172a' },
+    { media: '(prefers-color-scheme: light)', color: 'oklch(0.985 0.004 255)' },
+    { media: '(prefers-color-scheme: dark)', color: 'oklch(0.16 0.02 260)' },
   ],
 };
 
@@ -151,16 +151,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 ---
 
-## 4. Referência de Interatividade, Apontadores (`pointer: coarse`), Macro/Microlayout (`@container`) e Dashboard Analítico
+## 4. Referência de Interatividade, Apontadores (`pointer: coarse`) e Macro/Microlayout (`@container`)
 
-Consulte os códigos completos em [`Guia de Arquitetura para Interfaces Frontend Complexas (Macro-Micro, OKLCH e Acessibilidade).md`](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Guia%20de%20Arquitetura%20para%20Interfaces%20Frontend%20Complexas%20(Macro-Micro,%20OKLCH%20e%20Acessibilidade).md):
+Consulte os contratos completos em [`../../design-md/references/design_system_composition_reference.md`](../../design-md/references/design_system_composition_reference.md):
 
 ```css
 /* 1. Botão Base + Regra LVHA (:link -> :visited -> :hover -> :active) + Apontadores */
 .btn-acao {
   padding: 0.5em 1em; border-radius: 6px;
   background-color: var(--brand-primary, oklch(0.62 0.21 259));
-  color: #ffffff; font-weight: 600;
+  color: oklch(1 0 0); font-weight: 600;
   user-select: none; touch-action: manipulation;
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
@@ -190,19 +190,6 @@ Consulte os códigos completos em [`Guia de Arquitetura para Interfaces Frontend
 
 ---
 
-## 5. Grafo Interativo (`@xyflow/react` + `WebSocket` + `Chokidar`) e Roteamento Dinâmico Next.js 15+ App Router
+## 5. Grafos Interativos (`@xyflow/react`) e Next.js 15+ Async Params
 
-Consulte a implementação completa (`server/watcher.ts`, `src/app/api/scan/route.ts`, `animated-node.css`, `CustomFileNode.tsx` e `FileMapInteractive.tsx`) em [`Padrão de Grafo Interativo e Ações em Tempo Real (Batch 150ms + Web Worker + LOD).md`](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Padr%C3%A3o%20de%20Grafo%20Interativo%20e%20A%C3%A7%C3%B5es%20em%20Tempo%20Real%20(Batch%20150ms%20+%20Web%20Worker%20+%20LOD).md):
-
-1. **Invariantes do Grafo Reativo (`@xyflow/react` + `ws` / SSE):**
-   - **Normalização Multiplataforma no Watcher (`server/watcher.ts`):** `const relativePath = path.relative(targetDir, filePath).replace(/\\/g, '/');` com `chokidar.watch(targetDir, { ignored: /(^|[\/\\])\../, persistent: true, ignoreInitial: true })`.
-   - **Prevenção de Re-renderização Infinita:** Declare `const nodeTypes = { customFile: CustomFileNode };` **fora** do escopo do componente React e ative `onlyRenderVisibleElements={true}` no `<ReactFlow />`.
-   - **Pulso Visual em Edições (`change`) vs. Re-scan Estrutural (`add`/`unlink`):** Eventos `change` acionam `triggerNodeFlash(data.relativePath)` (`1500ms` com `.node-flashing`) e atualizam apenas o preview aberto; eventos estruturais (`add`, `unlink`, `addDir`, `unlinkDir`) acionam `reloadTree()` (`/api/scan`).
-   - **Alternativa Enxuta Serverless (SSE):** Em vez de processo Node separado na porta `3001`, exponha `src/app/api/stream/route.ts` com `ReadableStream` e consuma no navegador via `new EventSource('/api/stream')`.
-
-2. **Roteamento Dinâmico no Next.js 15+ App Router (`params` e `searchParams` Assíncronos):**
-   - **Segmentos:** `[slug]` (`{ slug: 'a' }`), `[...slug]` Catch-all obrigatório (`{ slug: ['a', 'b'] }`), `[[...slug]]` Catch-all opcional incluindo raiz (`{ slug: undefined | ['a', 'b'] }`).
-   - **Server Component (`page.tsx`):** `export default async function Page({ params }: { params: Promise<{ slug: string }> }) { const { slug } = await params; ... }` combinado com `export async function generateStaticParams()` e `notFound()`.
-   - **Client Component (`'use client'`):** Desembrulhe a Promise com `import { use } from 'react'; const { slug } = use(params);`.
-   - **Layouts (`layout.tsx`) vs. `searchParams`:** `layout.tsx` recebe `params: Promise<...>`, mas **nunca** `searchParams` (Layouts não re-renderizam na navegação entre subrotas; ler query strings no Layout causaria *stale state*). No cliente, envolva `useSearchParams()` em `<Suspense>`.
-   - **Route Handlers (`route.ts`):** `export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) { const { id } = await ctx.params; ... }`.
+Para dashboards com grafos em tempo real (`onlyRenderVisibleElements`, `nodeTypes` fora do componente, WebSocket/Chokidar batch `150ms`) e roteamento `params: Promise<...>` no Next.js 15+, consulte diretamente [`../../complex-zero/SKILL.md`](../../complex-zero/SKILL.md).

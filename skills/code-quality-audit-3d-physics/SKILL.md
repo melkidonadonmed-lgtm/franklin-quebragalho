@@ -2,12 +2,12 @@
 name: code-quality-audit-3d-physics
 description: "Audita e sanitiza código de Física 3D, Computação Gráfica WebGL Three.js Babylon.js, shaders, colisões e nota Snorm Pass@10. Use para revisar motores 3D e simulação; não use para CRUD web."
 version: "1.0.0"
-updated_at: "2026-10-15"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "1.0.0"
-  updated_at: "2026-10-15"
+  updated_at: "2026-11-12"
   author: "Franklin-Main & Melki"
   category: "Auditoria de Código, Física 3D e Simulação Numérica"
   tags: ["fisica-3d", "auditoria-codigo", "ast-parser", "threejs", "webgl", "testes-deterministicos", "pass-at-k", "snorm"]
@@ -33,7 +33,7 @@ Ative esta skill quando o usuário solicitar:
 ## 3. LIMITES, EXCEÇÕES E QUANDO NÃO USAR
 
 - **Não usar** para auditoria geral de governança de pastas Git/README/`.env` de repositórios web comuns sem motor numérico/3D (use `auditoria-projetos-sistema`).
-- **Não usar** para consultoria puramente estética de cores/tipografia CSS sem relação com performance de loop, física 3D ou higiene de código (use `analise-design-tatil-frontend` ou `consultor-design-tatil-frontend`).
+- **Não usar** para consultoria puramente estética de cores/tipografia CSS sem relação com performance de loop, física 3D ou higiene de código (use `frontend-ui-ux-auditor` ou `plan-uiux`).
 - **Não aplicar** mutações destrutivas no código-fonte auditado sem antes apresentar o Relatório Consolidado do Observador e obter aprovação do desenvolvedor.
 
 ---
@@ -48,7 +48,7 @@ Ative esta skill quando o usuário solicitar:
 
 ## 5. PROCESSAMENTO INTERNO E FLUXO DE EXECUÇÃO (3 ONDAS)
 
-A execução opera sob o **Padrão Envelope em 3 Ondas**, coordenando os **5 Módulos de Subskills** documentados em [references/subskill_modules_spec.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-quality-audit-3d-physics/references/subskill_modules_spec.md) e [references/dossie_auditoria_qualidade_codigo_3d.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-quality-audit-3d-physics/references/dossie_auditoria_qualidade_codigo_3d.md) (ou via `franklin_execute_dag(plan_path_or_json="physics", target_dir="<caminho_arquivo>")`):
+A execução opera sob o **Padrão Envelope em 3 Ondas**, coordenando os **5 Módulos de Subskills** documentados em [`references/subskill_modules_spec.md`](references/subskill_modules_spec.md), [`references/dossie_auditoria_qualidade_codigo_3d.md`](references/dossie_auditoria_qualidade_codigo_3d.md) e [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md) (ou via `franklin_execute_dag(plan_path_or_json="physics", target_dir="<caminho_arquivo>")`):
 
 ```text
 ┌───────────────────────────────────────────────────────────────────────────┐
@@ -79,13 +79,13 @@ A execução opera sob o **Padrão Envelope em 3 Ondas**, coordenando os **5 Mó
 
 ### Passo 1: Onda 1 — Varredura Estática de AST (Módulos 1, 2 e 3)
 
-- Para arquivos Python (`.py`), execute [scripts/static_ast_parser.py](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py):
+- Para arquivos Python (`.py`), execute [`scripts/static_ast_parser.py`](scripts/static_ast_parser.py):
 
   ```powershell
   uv run python skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py <caminho_arquivo.py>
   ```
 
-- Para arquivos JavaScript/TypeScript (`.js`, `.ts`), execute [scripts/js_ts_ast_parser.js](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js):
+- Para arquivos JavaScript/TypeScript (`.js`, `.ts`), execute [`scripts/js_ts_ast_parser.js`](scripts/js_ts_ast_parser.js):
 
   ```powershell
   node skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js <caminho_arquivo.ts>
@@ -98,7 +98,7 @@ A execução opera sob o **Padrão Envelope em 3 Ondas**, coordenando os **5 Mó
 
 ### Passo 2: Onda 2 — Suíte de Testes Determinísticos em Tempo de Execução (Módulo 4)
 
-- Execute [scripts/physics_test_runner.py](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-quality-audit-3d-physics/scripts/physics_test_runner.py):
+- Execute [`scripts/physics_test_runner.py`](scripts/physics_test_runner.py):
 
   ```powershell
   uv run python skills/code-quality-audit-3d-physics/scripts/physics_test_runner.py --target <caminho_arquivo.py> --json
@@ -113,7 +113,7 @@ A execução opera sob o **Padrão Envelope em 3 Ondas**, coordenando os **5 Mó
 
 ### Passo 3: Onda 3 — Validação Cruzada e Consolidação pelo Observador (Módulo 5)
 
-- Para executar as 3 ondas integradas com o filtro anti-alucinação e gerar o relatório consolidado, dispare diretamente [scripts/state_checker_observer.py](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-quality-audit-3d-physics/scripts/state_checker_observer.py) ou acione o DAG no Epic-Volta via `franklin_execute_dag(plan_path_or_json="physics", target_dir="<caminho_arquivo>")`:
+- Para executar as 3 ondas integradas com o filtro anti-alucinação e gerar o relatório consolidado, dispare diretamente [`scripts/state_checker_observer.py`](scripts/state_checker_observer.py) ou acione `franklin_execute_dag(plan_path_or_json="physics", target_dir="<caminho_arquivo>")`:
 
   ```powershell
   uv run python skills/code-quality-audit-3d-physics/scripts/state_checker_observer.py <caminho_arquivo>

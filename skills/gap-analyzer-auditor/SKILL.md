@@ -2,12 +2,12 @@
 name: gap-analyzer-auditor
 description: "Analista de brechas RCA e convergência Spec-to-Code inspecionando logs e traces para separar fatos de inferências e emitir Hand-off Payload YAML. Use para RCA de falhas; não use para planejamento inicial."
 version: "2.2.0"
-updated_at: "2026-10-26"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
-allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
+allowed-tools: ["read_file", "call_mcp_tool"]
 metadata:
   version: "2.2.0"
-  updated_at: "2026-10-26"
+  updated_at: "2026-11-12"
   author: "LoopPlanner & Melki"
   category: "Auditoria de Processos, RCA e Hand-off Multiagente"
   tags: ["rca", "closed-loop", "hand-off", "auditoria", "converge"]
@@ -19,7 +19,7 @@ metadata:
 - **Nome Oficial**: `gap-analyzer-auditor`
 - **Identificador de Ativo**: `SKILL_GAP_ANALYZER_AUDITOR_V2_2`
 - **Versão de Referência**: `2.2.0`
-- **Compatibilidade Normativa**: Multi-LLM (Gemini 2.5+, Claude 3.5+, GPT-4o+, Google ADK, LangGraph, MCP Spec 2026-07-28, GitHub Spec Kit SDD `/speckit-converge`).
+- **Compatibilidade Normativa**: Multi-LLM (Gemini 3.8+, Claude 4+, Google ADK 2.x, MCP Spec 2026-07-28, Spec-Driven Convergence `/speckit-converge`).
 - **Papel na Arquitetura**: Nó Crítico / Auditor de RCA e Convergência em malha fechada (*stateless analyzer & convergence engine*).
 
 ---
@@ -31,10 +31,10 @@ metadata:
 Esta skill atua como o **Portão 3 (`gap-analyzer-auditor` `v2.2.0`)** da esteira canônica de qualidade, recebendo evidências factuais de:
 
 - **Portão 1 (`code-acceptability-auditor` `v1.1.0`)**: Rejeições AST/Pydantic de código Python (`SEC001..003`, `SYN001`, `ERR001..003`, `TYP001..002`, `ARCH001..003`, `Score < 75.0`).
-- **Portão 2 (`test-quality-auditor` `v1.2.0`)**: Reprovações de suítes de testes e `evals/` nos 5 domínios (`python`, `ts_js`, `go`, `mcp`, `harness`, nota $< 81$ ou `pass_rate < 1.0`).
+- **Portão 2 (`test-quality-auditor` `v1.3.0`)**: Reprovações de suítes de testes e `evals/` nos 5 domínios (`python`, `ts_js`, `go`, `mcp`, `harness`, nota $< 81$ ou `pass_rate < 1.0`).
 - **Traces de Runtime & Logs Operacionais**: Comandos, scripts, pipelines ou automações que falharem ou emitirem stack traces inesperados.
 - **Modo Convergência Spec-to-Code (`/speckit-converge`)**: Para comparar a especificação/plano (`spec.md`, `plan.md`, `tasks.md`) contra o estado atual do código no disco, detectando requisitos não atendidos (`FR-###`, `SC-###`, `T###`) e gerando novas tasks rastreáveis *append-only* (`[ ] T0XX [P] [CONV] caminho/exato.ext`) sem reescrever o histórico.
-- Para isolar fatos documentados (`[FATO]`) de inferências diagnósticas (`[INFERÊNCIA]`) e lacunas (`[LACUNA]`), formulando alternativas estruturadas (Opção 1 Cirúrgica vs Opção 2 Arquitetural) e gerando o contrato de hand-off em YAML para retroalimentar o `high-level-context-planner` (`intent-cognitive-planner`).
+- Para isolar fatos documentados (`[FATO]`) de inferências diagnósticas (`[INFERÊNCIA]`) e lacunas (`[LACUNA]`), formulando alternativas estruturadas (Opção 1 Cirúrgica vs Opção 2 Arquitetural) e gerando o contrato de hand-off em YAML ([`references/schema_handoff_payload.json`](references/schema_handoff_payload.json)) para retroalimentar o `high-level-context-planner`.
 
 ### Quando NÃO Usar e Fronteira com os Portões 1 e 2
 
@@ -62,8 +62,8 @@ Para garantir máxima precisão diagnóstica sem sobrecarregar a janela de conte
 1. **Segregação Epistêmica Estrita**: Separe rigorosamente `[FATO]` (evidência textual/log/disco), `[INFERÊNCIA]` (hipótese causal) e `[LACUNA]` (dado ausente).
 2. **Alinhamento Não-Linear com o Planejador (`high-level-context-planner` v3.0)**:
    - Cada ajuste em `required_adjustments` deve respeitar o teto de **$\le 5$ regras ativas por nó** e indicar o padrão cognitivo recomendado (`ReAct`, `ToT` ou `Self-Refine`).
-   - Quando a anomalia envolver artefatos de interface/frontend, referencie o contrato `DESIGN.md` do projeto e a SSOT em [`Preferências de Trabalho com Agentes.md`](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md) (tokens semânticos orientados ao propósito sem cores travadas e `tabular-nums` em tabelas).
-3. **Matriz de Qualidade do Diagnóstico**:
+   - Quando a anomalia envolver artefatos de interface/frontend, referencie o contrato `DESIGN.md` do projeto via [`../design-md/SKILL.md`](../design-md/SKILL.md).
+3. **Matriz de Qualidade do Diagnóstico ([`rules/criterios_auditoria.md`](rules/criterios_auditoria.md))**:
    - `[PASS / FAIL]` **Segregação de Fatos**: Classificação rigorosa sem alucinação de logs.
    - `[PASS / FAIL]` **Paridade de Alternativas (`ToT`)**: Opção 1 (Cirúrgica) vs. Opção 2 (Arquitetural).
    - `[PASS / FAIL]` **Contrato Estruturado Append-Only**: Payload YAML válido preservando tasks concluídas.
@@ -123,7 +123,7 @@ Para cada brecha diagnosticada, estruturar no mínimo duas rotas resolutivas:
 
 Toda auditoria executada por esta skill deve emitir o relatório no modelo canônico abaixo:
 
-```markdown
+````markdown
 # RELATÓRIO DE AUDITORIA TÉCNICA, RCA E CONVERGÊNCIA SPEC-TO-CODE
 
 ## 1. Mapeamento Factual e Síntese da Anomalia / Convergência
@@ -169,8 +169,7 @@ contingency_trigger: "[Condição em que o fallback deve ser acionado]"
 ---
 
 **Deseja acionar o `high-level-context-planner` agora com este payload para emitir o plano corretivo revisado (Convergência Append-Only), ou deseja ajustar a alternativa recomendada?**
-
-```
+````
 
 ---
 

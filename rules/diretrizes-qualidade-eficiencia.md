@@ -10,7 +10,7 @@ description: "Kernel Operacional, Criação de Projetos e Governança (v2.0 SSOT
 ## 0. CONTEXTO DO PROJETO & PROTOCOLO DE BOOTSTRAP (Criação de Projetos)
 
 - **Baseline Temporal:** Novembro de 2026 (rejeite APIs/sintaxes legadas; na dúvida sobre pacotes ou SDKs, consulte docs atuais ou MCP).
-- **Stack Ativa:** Python 3.12+ (`uv`) / Go 1.22+ / TypeScript 5+ / Node LTS / React / Windows 11 (`pwsh`)
+- **Stack Ativa:** Python 3.12+ (`uv`) / Go 1.24+ / TypeScript 5+ / Node LTS / React / Windows 11 (`pwsh`)
 - **Arquitetura de Estado (Tríade de Governança Local):**
   1. `.agents/AGENTS.md` (ou `AGENTS.md` na raiz): Regras comportamentais globais e Stack Ativa auto-detectada via manifestos (`pyproject.toml`, `go.mod`, `package.json`, `Cargo.toml`) sem varrer subpastas.
   2. `.context/context.md`: Passômetro e estado autoritativo do projeto (visão geral, módulos ativos, decisões críticas, changelog e backlog).
@@ -33,8 +33,7 @@ description: "Kernel Operacional, Criação de Projetos e Governança (v2.0 SSOT
 - **Proibição de Testes "Happy-Path Only" em Fronteiras Zero-Trust (Anti-Green-Build-Illusion):** Todo teste de rota autenticada, OAuth/OIDC, Portão HITL, Webhook assinado ou Guardrail SQL/MCP deve obrigatoriamente conter pelo menos 1 caso adversarial por vetor provando a rejeição (`400`/`401`/`403` e ausência de vazamento de segredos em respostas públicas). Nunca afrouxar validações de produção para simplificar mocks de `httptest`.
 - **Unificação Vetorial MemPalace (`~/.config/mempalace`) e UTF-8 no Windows:** Concentrar índices (`vault_sections_index.json`, `chroma.sqlite3`) em `~/.config/mempalace`, aplicar *Min-Chunk Merge* (`>= 160B`), *Max-Chunk Split* (`<= 1800c`) com cabeçalho `[ID | Project | Room | Heading]`, consultar FTS5/vetores via SQLite `mode=ro` (`< 25ms`, sem subprocesso) e exigir `PYTHONUTF8=1` em todo processo stdio Python no Windows.
 - **Binários MCP Pré-Compilados e Modelos Vigentes (`gemini-3.8-*`):** Em `mcp_config.json`, invocar sempre executáveis locais compilados (`gopls.exe mcp`, `adk-go-mcp.exe`) em vez de `go run ...@latest`, e proibir strings de modelos depreciados (`gemini-2.5-*`) em código ou cascatas de fallback.
-- **Exceção à Regra 6 para Entradas Gerenciadas por Extensão e Versões Fixas:** Entradas MCP gravadas automaticamente por extensões (ex.: `datacloud_*_remote` da extensão DataCloud do Antigravity) mantêm o nome original; renomeá-las gera duplicatas porque a extensão recria o nome dela. Pacotes `npx` em configs MCP usam versão exata publicada há ≥ 2 semanas, nunca `@latest`.
-- **Registro Canônico MCP (`dev/tools/mcp-registry.json`):** Servidor MCP próprio é declarado uma única vez no registro e propagado com `uv run dev/tools/mcp_registry.py apply`; configs de cliente não são editadas à mão para essas entradas. Rodar `mcp_registry.py check` (exit 0) antes de encerrar qualquer mudança de MCP.
+- **Governança MCP Canônica (`dev/tools/mcp-registry.json`, Exceções de Extensão & Versões Fixas):** Declarar MCPs próprios uma única vez no registro (`uv run dev/tools/mcp_registry.py apply` + `check` exit 0), usar pacotes `npx` com versão exata publicada há $\ge 2$ semanas (nunca `@latest`) e preservar nomes originais gerados por extensões (`datacloud_*_remote`).
 
 ---
 

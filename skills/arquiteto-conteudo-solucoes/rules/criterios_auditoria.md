@@ -43,10 +43,10 @@ Para evitar validações vazias e simulações fictícias de auditoria, toda che
 ### Regra 5: Limite de Perguntas no Modo B
 
 - **Critério**: O agente ativou o Modo B (Refinamento Colaborativo)?
-- **Teste**: Quantidade de perguntas feitas ao usuário.
+- **Teste**: Quantidade de perguntas estratégicas feitas ao usuário.
 - **Resultado**:
-  - Se <= 2 perguntas pontuais com proposta estruturada -> `[PASS]`
-  - Se > 2 perguntas -> `[FAIL: Limite de perguntas excedido]`
+  - Se entre 1 e 3 perguntas estratégicas (`<= 3`) com proposta estruturada -> `[PASS]`
+  - Se > 3 perguntas -> `[FAIL: Limite de perguntas excedido]`
 
 ### Regra 6: Proibição de Auditorias Fictícias
 

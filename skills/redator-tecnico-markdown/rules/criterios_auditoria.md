@@ -1,10 +1,10 @@
-# Critérios Determinísticos de Auditoria — `redator-tecnico-markdown` (`v1.2.0`)
+# Critérios Determinísticos de Auditoria — `redator-tecnico-markdown` (`v1.3.0`)
 
 Regras falsificáveis com marcadores determinísticos (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) sob o Módulo **M5 (Documentação Técnica Markdown & Layout Shielding)**:
 
 ---
 
-- **`[PASS]` Critério 01 (Lei da Linha em Branco — `02-layout-shielding.md`):** Presença obrigatória de linhas em branco antes e depois de títulos, tabelas, alertas GitHub (`> [!NOTE]`), listas e blocos de código.
+- **`[PASS]` Critério 01 (Lei da Linha em Branco):** Presença obrigatória de linhas em branco antes e depois de títulos, tabelas, alertas GitHub (`> [!NOTE]`), listas e blocos de código.
 - **`[FAIL: COLISAO_DE_BLOCO_MARKDOWN]` Critério 01:** Elementos estruturais colados sem linha em branco adjacente, quebrando a renderização CommonMark/GFM.
 - **`[UNVERIFIED]` Critério 01:** Documento de destino não gerado ou apenas rascunho verbal.
 

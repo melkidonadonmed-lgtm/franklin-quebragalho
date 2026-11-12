@@ -2,21 +2,21 @@
 name: frontend-testing-auditor
 description: "Audita qualidade de interfaces web via audit_tactile_ui.py verificando WAI-ARIA, zero emojis, zero bloat Base64, OKLCH e anti-XSS. Use para validar qualidade de UI; não use para implementar componentes."
 version: "5.0.0"
-updated_at: "2026-10-27"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "5.0.0"
-  updated_at: "2026-10-27"
+  updated_at: "2026-11-12"
   author: "UI-Architect & Melki"
   category: "Frontend QA, Accessibility, OKLCH 3-Layer Tokens, Optical Physics & Deterministic Auditing"
   tags: ["frontend-testing", "oklch", "axe-core", "wcag-aa", "anti-borrao-gpu", "deterministic-audit"]
 ---
-# Frontend Testing & Deterministic Auditor (`frontend-testing-auditor` v5.0.0 — 9 Eixos, OKLCH, `@container`, Breadcrumbs & FSM)
+# Frontend Testing & Deterministic Auditor (`frontend-testing-auditor` v5.0.0 — 9 Eixos, OKLCH, `@container` & FSM)
 
 ## 1. Objetivo e Diretrizes de Ativação
 
-Esta Skill fornece a esteira **determinística** de testes automatizados e auditoria estática para interfaces web modernas, alinhada aos **9 Eixos + Matriz de Complexidade** da Fonte Única de Verdade (SSOT) em [`Preferências de Trabalho com Agentes.md`](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md) e [`../design-md/SKILL.md`](../design-md/SKILL.md). Substitui avaliações subjetivas por **métricas verificáveis** de acessibilidade e Navegação em 3 Camadas (Axe-Core / WCAG 2.1 AA / Breadcrumbs), nitidez anti-borrão de GPU, tokens em 3 camadas (`OKLCH`) e sombras multi-camadas (`AUDIT-VIS-01`), estados funcionais reais (`AUDIT-STATE-01`) e segurança anti-XSS (`AUDIT-SEC-01`).
+Esta Skill fornece a esteira **determinística** de testes automatizados (`jest-axe` / `Vitest` / `Playwright`) e inspeção estática AST/regex (`scripts/audit_tactile_ui.py`) para interfaces web modernas, alinhada aos **9 Eixos + Matriz de Complexidade** da Fonte Única de Verdade (SSOT) em [`../../rules/diretrizes-frontend-9-eixos.md`](../../rules/diretrizes-frontend-9-eixos.md) e [`../design-md/SKILL.md`](../design-md/SKILL.md). Para inspeção interativa do DOM ao vivo via CDP/browser, combine com `auditoria-projetos-sistema` (Modo 3) ou `complex-zero`.
 
 ### Gatilhos Positivos (Quando Usar)
 
@@ -63,77 +63,9 @@ Esta Skill fornece a esteira **determinística** de testes automatizados e audit
 
 ---
 
-## 3. Template de Teste Automatizado (`SurfaceCard.test.tsx`)
+## 3. Template de Teste Automatizado e Rubrica (`references/a11y_fsm_rubric.md`)
 
-```tsx
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { axe, toHaveNoViolations } from 'jest-axe';
-import { SurfaceCard } from './SurfaceCard';
-
-expect.extend(toHaveNoViolations);
-
-describe('Deterministic UI Audit (9 Axes): <SurfaceCard />', () => {
-  it('[AUDIT-A11Y-01] deve passar no motor Axe-Core com 0 violações WCAG 2.1 AA', async () => {
-    const { container } = render(
-      <SurfaceCard title="Receita Recorrente" eyebrow="FINTECH" variant="elevated">
-        <p className="tabular-metric">R$ 128.450,00</p>
-      </SurfaceCard>
-    );
-    const results = await axe(container);
-    expect(results).toHaveNoViolations();
-  });
-
-  it('[AUDIT-VIS-01] deve aplicar classe sculpted-card e as 4 variantes de Card', () => {
-    render(
-      <SurfaceCard title="Bloco de Destaque" variant="outlined" interactive={true}>
-        <span>Conteúdo</span>
-      </SurfaceCard>
-    );
-    const card = screen.getByRole('article', { name: /Bloco de Destaque/i });
-    expect(card).toHaveClass('sculpted-card');
-    expect(card).toHaveAttribute('data-variant', 'outlined');
-    expect(card).toHaveAttribute('data-interactive', 'true');
-  });
-
-  it('[AUDIT-STATE-01/02] deve transitar entre loading, error, empty e pressed na máquina de estados', () => {
-    const { rerender } = render(
-      <SurfaceCard title="Telemetria" isLoading={true}>
-        <span>OK</span>
-      </SurfaceCard>
-    );
-    expect(screen.getByRole('status')).toHaveAttribute('aria-busy', 'true');
-
-    rerender(
-      <SurfaceCard title="Telemetria" isLoading={false} error="Timeout de conexão">
-        <span>OK</span>
-      </SurfaceCard>
-    );
-    expect(screen.getByRole('alert')).toHaveTextContent('Timeout de conexão');
-
-    rerender(
-      <SurfaceCard title="Telemetria" isLoading={false} error={null}>
-        <span>Estável</span>
-      </SurfaceCard>
-    );
-    const card = screen.getByRole('article', { name: 'Telemetria' });
-    fireEvent.mouseDown(card);
-    expect(card).toHaveAttribute('data-state', 'pressed');
-    fireEvent.mouseUp(card);
-    expect(card).toHaveAttribute('data-state', 'idle');
-  });
-
-  it('[AUDIT-SEC-01] deve escapar strings maliciosas prevenindo XSS', () => {
-    const xssPayload = '<img src=x onerror="alert(1)" />';
-    render(
-      <SurfaceCard title="Input Seguro">
-        <p>{xssPayload}</p>
-      </SurfaceCard>
-    );
-    expect(screen.getByText(xssPayload)).toBeInTheDocument();
-  });
-});
-```
+Consulte o template completo `SurfaceCard.test.tsx` (`jest-axe` + FSM `loading/error/empty/pressed` + escape anti-XSS) e os indicadores por pilar em [`references/a11y_fsm_rubric.md`](references/a11y_fsm_rubric.md) e [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md).
 
 ---
 

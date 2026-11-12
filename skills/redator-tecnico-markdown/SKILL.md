@@ -1,141 +1,63 @@
 ---
 name: redator-tecnico-markdown
 description: "Redige relatórios executivos, notas técnicas e atas de decisão em Markdown com caixas de alerta GitHub e Google Style Guides. Use para documentação técnica; não use apenas para converter HTML em PDF."
-version: "1.2.0"
-updated_at: "2026-10-14"
-compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
-allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
+version: "1.3.0"
+updated_at: "2026-11-12"
+compatibility: "Antigravity 2.0, CommonMark/GFM, Obsidian"
+allowed-tools: ["read_file", "write_file", "edit_file", "call_mcp_tool"]
 metadata:
-  version: "1.2.0"
-  updated_at: "2026-10-14"
+  version: "1.3.0"
+  updated_at: "2026-11-12"
   author: "DocMaker & Melki"
   category: "Documentação Técnica e Redação Estruturada"
   tags: ["markdown", "obsidian", "google-styleguides", "documentacao"]
 ---
-# 1. NOME DA SKILL
+# Redação Técnica Estruturada em Markdown (`redator-tecnico-markdown`)
 
-`redator-tecnico-markdown` (Redação Técnica Estruturada, Notas Executivas, Documentação Padrão Obsidian/GitHub e Alinhamento Google Style Guides).
+## 1. Propósito e Gatilhos de Ativação (Quando Usar)
 
----
-
-## 2. GATILHOS DE ATIVAÇÃO (QUANDO USAR)
-
-Ative e execute esta skill sempre que:
-
-- O usuário solicitar: "redija um relatório técnico", "crie uma nota para o Obsidian sobre este tema", "elabore uma ata de decisão de arquitetura (ADR)", "escreva a documentação do projeto em Markdown", "estruture um roadmap executivo em .md".
-- For necessário transformar notas brutas, resumos de reuniões ou rascunhos conceituais em documentos profissionais prontos para arquivo ou publicação.
-- Como etapa prévia antes da conversão para PDF, para garantir que o Markdown possua formatação semântica perfeita.
-- Quando a documentação exigir blocos de código com rigor de tipagem e formatação aderente aos padrões Google (`pyguide`, `jsoncguide`, `htmlcssguide`).
+- Redigir relatórios executivos, notas técnicas, ADRs (atas de decisão de arquitetura), guias de instalação e notas para o Obsidian em Markdown (GFM).
+- Padronizar rascunhos técnicos com frontmatter YAML, alertas GitHub e blocos de código alinhados aos Google Style Guides antes de eventual exportação PDF.
 
 ### Quando NÃO Usar
 
-- Para compilar ou converter Markdown para arquivos PDF (utilize `conversor-html-pdf`).
-- Para desenhar especificamente diagramas de fluxo ou árvores de diretórios (utilize `organizador-fluxo-arvore-arquivos`).
-- Para criar skills do Antigravity (utilize `evoluir-skills`).
+- Apenas para converter Markdown/HTML existente em PDF (use `conversor-html-pdf`).
+- Para mapear especificamente fluxogramas de ideias e árvores comentadas de diretórios (use `organizador-fluxo-arvore-arquivos`).
+- Para auditar contratos de skills do Antigravity (use `audit-skills-antigravity`).
 
 ---
 
-## 3. ENTRADAS ESPERADAS E PRÉ-REQUISITOS
+## 2. Entradas Esperadas e Pré-requisitos
 
-- `topic_or_draft` (obrigatório): Tema, rascunho de texto, atas ou código a ser documentado.
-- `document_type` (opcional): `relatorio_executivo`, `nota_tecnica`, `adr_decisao`, `roadmap`, `guia_instalacao`. Padrão: `nota_tecnica`.
-- `output_path` (opcional): Destino do arquivo `.md` resultante (padrão: `C:\Users\melki\dev\notes\Inbox\` ou diretório `docs\` do projeto).
-- `frontmatter_metadata` (opcional): Dicionário de metadados adicionais (`tags`, `aliases`, `author`).
-
----
-
-## 4. DIRETRIZES DE FORMATAÇÃO, BLINDAGEM DE LAYOUT E GOOGLE STYLE GUIDES
-
-Todo documento técnico em Markdown gerado por esta skill segue a governança global e os padrões Google:
-
-### 4.1. Lei da Linha em Branco (Blank Line Law)
-
-- Inserção obrigatória de linha em branco antes e depois de títulos (`#` a `######`), listas ordenadas e não-ordenadas, tabelas completas, citações em bloco (`>`) e cercas de código (três crases).
-
-### 4.2. Cabeçalho Frontmatter YAML Canônico
-
-Toda nota deve iniciar com metadados estruturados:
-
-```yaml
----
-title: "[TÍTULO_DO_DOCUMENTO]"
-date: YYYY-MM-DD
-author: "DocMaker & Melki"
-tags:
-  - categoria/subcategoria
-status: "concluido"
-aliases:
-  - "[Sinônimo_Busca]"
----
-```
-
-### 4.3. Caixas de Alerta Estilizadas (GitHub Alerts)
-
-Utilizar exclusivamente os marcadores canônicos suportados no Obsidian e GitHub:
-
-- `> [!NOTE]` Informações e contexto de apoio.
-- `> [!IMPORTANT]` Requisitos e passos fundamentais.
-- `> [!TIP]` Boas práticas e ganhos de produtividade.
-- `> [!WARNING]` Riscos conhecidos e limitações técnicas.
-- `> [!CAUTION]` Operações de alto risco e prevenção de perda.
-
-### 4.4. Tabelas Ricas com Alinhamento Explícito
-
-- Cabeçalhos de tabela com alinhamento explícito (`| :--- | :---: | :--- |`).
-- Proibição de quebras brutas de linha dentro de células; utilizar `<br>` se necessário.
-- Escape de barras verticais (`\|`) quando ocorrem dentro do texto das células.
-
-### 4.5. Padrões de Código Embutido (Google Style Guides)
-
-Qualquer trecho de código documentado dentro do Markdown deve seguir rigorosamente os Guias Oficiais do Google:
-
-- **Identificador de Linguagem Mandatório**: Toda cerca de código (três crases) deve especificar explicitamente a linguagem (`python`, `json`, `html`, `css`, `powershell`, `bash`, `mermaid`, `yaml`).
-- **Python (`pyguide`)**: Tipagem estática explícita (`typing`), docstrings Google (`Args:`, `Returns:`), indentação de 4 espaços (ou 2 se projeto Google), nomes em `snake_case` e classes em `PascalCase`.
-- **HTML/CSS (`htmlcssguide`)**: Tags e atributos em minúsculas, indentação de 2 espaços, omissão de barra final em elementos vazios (`<br>`, `<img>`, `<hr>`), seletores em `kebab-case`, zero sem unidade (`0`, não `0px`).
-- **JSON (`jsoncguide`)**: Propriedades em `camelCase`, payloads estruturados com envelopes claros (`data`, `error`), datas em padrão ISO 8601 UTC.
+- `topic_or_draft` (obrigatório): Tema, rascunho, ata ou código a documentar.
+- `document_type` (opcional): `nota_tecnica` (padrão), `relatorio_executivo`, `adr_decisao`, `roadmap`, `guia_instalacao`.
+- `output_path` (opcional): Caminho `.md` de destino (`C:\Users\melki\dev\notes\Inbox\` ou `docs\` do repositório).
 
 ---
 
-## 5. PROCESSO PASSO A PASSO (EXECUÇÃO DE REDAÇÃO)
+## 3. Diretrizes e Fluxo de Execução (Passo a Passo)
 
-### Passo 1: Triagem do Objetivo e Estrutura do Documento
-
-Identificar o propósito e delimitar a hierarquia de seções:
-
-- Visão Geral / Sumário Executivo.
-- Diagnóstico Técnico / Motivação.
-- Especificação Detalhada com Tabelas e Código (validado pelos Google Style Guides).
-- Recomendações e Próximos Passos.
-
-### Passo 2: Redação com Validação de Sintaxe
-
-Construir o documento aplicando a Lei da Linha em Branco, escape estrito de símbolos angulares soltos (`<`, `>`) e formatação Google nos exemplos de código.
-
-### Passo 3: Revisão de Metadados e Gravação
-
-Gravar o arquivo `.md` no local designado e verificar a integridade da codificação UTF-8:
-
-```powershell
-Set-Content -Path $outputPath -Value $markdownContent -Encoding utf8
-```
+1. **Estrutura e Frontmatter YAML ([`references/guia_estilo_markdown.md`](references/guia_estilo_markdown.md))**:
+   - Iniciar com YAML válido (`title`, `date: YYYY-MM-DD`, `author`, `tags`, `status`) quando destinado ao Obsidian ou acervo documental.
+   - Organizar em Sumário Executivo, Diagnóstico/Contexto, Especificação Técnica e Próximos Passos.
+2. **Blindagem CommonMark/GFM e Google Style Guides**:
+   - **Lei da Linha em Branco**: Linha vazia obrigatória antes e depois de títulos, listas, tabelas, blocos `>` e cercas de código.
+   - **Alertas Canônicos**: Usar `> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]` ou `> [!CAUTION]` sem aninhamento.
+   - **Escape Seguro**: Escapar `\|` em células de tabela, `\$` literal em prosa e usar 4 crases (```` ```` ````) ao envolver blocos que já contenham crases triplas.
+   - **Código Tipado**: Declarar sempre a linguagem na cerca (`python`, `go`, `typescript`, `json`, `powershell`, `mermaid`, `yaml`).
+3. **Gravação Física (`write_file` / `edit_file`)**: Persistir em UTF-8 e conferir contra [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md).
 
 ---
 
-## 6. SAÍDAS E ENTREGÁVEIS (MODELO DE SAÍDA)
+## 4. Saídas e Entregáveis
 
-A resposta final da skill entrega:
-
-1. **Documento Markdown Formatado:**
-   - Arquivo `.md` gravado no disco com metadados YAML e formatação completa.
-2. **Resumo das Seções Redigidas:**
-   - Visão sintética dos tópicos abordados, padrões de estilo aplicados e tags atribuídas.
-3. **Link Clicável Local:**
-   - Link no padrão `file:///` apontando diretamente para o arquivo gerado.
+1. Arquivo `.md` gravado e validado segundo [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md).
+2. Resumo conciso das seções redigidas e link clicável `file:///`.
 
 ---
 
-## 7. EXCEÇÕES E LIMITES (QUANDO NÃO USAR)
+## 5. Guardrails e Limites
 
-- NUNCA embutir scripts maliciosos ou tags `<script>` não filtradas no Markdown.
-- NUNCA inventar dados fictícios em atas técnicas; rotular incertezas como `[UNVERIFIED]`.
-- Esta skill gera **apenas** o arquivo Markdown; para exportação em PDF, delegue para `conversor-html-pdf`.
+- **Zero Invenção Factual**: Rotular dados não comprovados como `[UNVERIFIED]`; nunca fabricar métricas ou decisões não tomadas.
+- **Zero XSS/Segredos**: Proibido embutir `<script>` não sanitizado ou credenciais reais em exemplos de código.
+- Para exportação binária em `.pdf`, delegar para `conversor-html-pdf`.

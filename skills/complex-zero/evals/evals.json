@@ -37,10 +37,10 @@
   },
   {
     "eval_id": "ACT-05-visual-hierarchy-cramped-menus-and-anti-tab-sprawl",
-    "prompt": "Minha interface está uma bagunça: menus compactados com tipografia horrível (11px/12px), várias entradas de chat repetidas e cada alteração cria novas abas em vez de usar os elementos da página.",
+    "prompt": "Minha interface está uma bagunça: a aba principal está quebrada, criaram abas repetidas com a mesma função e abas expondo filas internas do backend, além de menus compactados (11px/12px) e várias entradas de chat.",
     "expected_assertions": [
-      "Aciona a fusão complex-zero v3.0 + nav-x-func v6.0 reprovando CRAMPED_MENU_OR_BAD_TYPOGRAPHY (font-size < 13px, gap < 6px, min-block-size < 40px) e VISUAL_HIERARCHY_FLATNESS",
-      "Aplica a regra de Consolidação In-Place (TAB_AND_NAV_SPRAWL_NO_SLOT_REUSE): proíbe criar novas abas ou sub-abas aninhadas, reduz <nav> para <= 3 camadas e unifica inputs de chat em 1 único Composer",
+      "Aciona complex-zero v3.1 integrado a auditoria-projetos-sistema v6.0 reprovando CRAMPED_MENU_OR_BAD_TYPOGRAPHY (font-size < 13px, gap < 6px, min-block-size < 40px) e VISUAL_HIERARCHY_FLATNESS",
+      "Permite abas distintas para domínios independentes, mas sanea a aba principal primeiro, funde abas com função duplicada, remove abas de componentes internos de backend, proíbe sub-abas aninhadas e unifica inputs de chat em 1 único Composer",
       "Executa Print (take_screenshot) + Sonda DOM (evaluate_script via --dump-cdp-script) no Chrome DevTools MCP para validar a hierarquia real renderizada"
     ]
   }

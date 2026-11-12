@@ -2,12 +2,12 @@
 name: auditoria-projetos-sistema
 description: "Audita código real (AST), estrutura física, diagnóstico de MVP, navegação em 3 camadas (X ativa Y / SGA), Regra 60-30-10 OKLCH e DOM via agent-browser @eX (0 a 100). Use para auditar projetos e MVP; não use para refatorar código."
 version: "6.0.0"
-updated_at: "2026-11-03"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "6.0.0"
-  updated_at: "2026-11-03"
+  updated_at: "2026-11-12"
   author: "Melki & Franklin-Main"
   category: "Auditoria Unificada de Projetos, Código Real, MVP, Navegação em Ilhas (SGA) e Física Visual 60-30-10 OKLCH"
   tags: ["auditoria-projetos-sistema", "antigravity-project-auditor", "nav-x-func", "mvp", "ast-code-audit", "60-30-10-oklch", "3-layer-navigation", "agent-browser", "sga-score"]
@@ -80,18 +80,18 @@ Consulte [`references/matriz_5_pilares_e_hand_off_2026.md`](references/matriz_5_
 1. **Qualidade AST & Orfandade (25 pts):** Rastrear arquivos/exports órfãos não consumidos pelos entrypoints, funções `> 60` linhas, `except:` genérico e stubs vazios via `project_structure_and_code_auditor.py` e `frontiercode_maintainability_guardrail.py`.
 2. **Segurança, Ancoragem Pre-Flight Gemini API & Contratos MCP/RPC (15 pts):**
    - Validar isolamento de segredos em `.env`, schemas estritos (`Pydantic v2` `extra="forbid"`, `Zod` `.strict()`) e higiene STDIO em servidores MCP.
-   - Para **Gemini API / Live API**, conferir ancoragem em [`https://aistudio.google.com/llms.txt`](https://aistudio.google.com/llms.txt) e [`https://aistudio.google.com/llms-full.txt`](https://aistudio.google.com/llms-full.txt); para **WebSockets / JSON-RPC 2.0**, aplicar [`../agent-server-auditor/references/audit-websocket-jsonrpc.md`](../agent-server-auditor/references/audit-websocket-jsonrpc.md).
+   - **Apenas quando o projeto utilizar Gemini API / Live API ou WebSockets / JSON-RPC 2.0**, conferir SDKs vigentes via `gemini_search_docs` e aplicar [`../agent-server-auditor/references/audit-websocket-jsonrpc.md`](../agent-server-auditor/references/audit-websocket-jsonrpc.md).
 
-### Módulo 3: Regra `60-30-10`, Cores `OKLCH`, Sombras em 3 Níveis & Navegação em 3 Camadas (`SGA` — 20 pts)
+### Módulo 3: Regra `60-30-10`, Cores `OKLCH`, Sombras em 3 Níveis & Navegação Contextual (`SGA` — 20 pts)
 
 1. **Proporção Cromática `60-30-10` e Cores Perceptuais `OKLCH` (Eixos 3 e 4):**
-   - **60% Superfície Dominante (Fundo/Canvas):** `--bg-canvas` / `--surface-canvas` neutra e repousante em `oklch()` + `light-dark()` (no Dark Mode: $L = 0.16$, zero `#000000` puro).
-   - **30% Estrutura Secundária (Cards/Painéis):** `--bg-surface-1` / `--surface-card` ($L = 0.22$) e `--bg-surface-2` / `--surface-elevated` ($L = 0.27$) nas **4 Variantes de Cards** (*Elevated*, *Outlined*, *Filled/Subtle*, *Interactive*) com `@container`.
+   - **60% Superfície Dominante (Fundo/Canvas):** `--surface-canvas` neutra e repousante em `oklch()` + `light-dark()` (no Dark Mode: $L = 0.16$, zero `#000000` puro).
+   - **30% Estrutura Secundária (Cards/Painéis):** `--surface-card` ($L = 0.22$) e `--surface-elevated` ($L = 0.27$) usando contextualmente o repertório das **4 Variantes de Cards** (*Elevated*, *Outlined*, *Filled/Subtle*, *Interactive*) com `@container`.
    - **10% Acento Cirúrgico e Destaque Acromático:** `--brand-primary` calibrado em `OKLCH` (`color-mix(in oklab, ...)` / `oklch(from ...)`) restrito a CTAs primários, foco `:focus-visible` e indicadores de `6px`/`2px` (zero poluição neon).
 2. **Física da Luz Zenital (90°–120°) e Sombras em 3 Níveis (Eixo 5):**
    - Exigir **Umbra de Contato** + **Penumbra Difusa com `spread` negativo** + **Borda Especular Superior (`inset 0 1px 0 0`)** nos 3 níveis (`--shadow-elevation-1..3`) e recesso tátil (`--shadow-inset`).
-3. **Navegação Semântica em 3 Camadas, Reuso In-Place & Nitidez Tipográfica (Eixos 2 e 8 + `SGA`):**
-   - Limite de `<= 3` blocos `<nav>` (*Global* com `<= 4` abas, *Local/In-Page* e *Breadcrumbs* `<ol role="list">` + `aria-current="page"`), **Ordem DOM = Ordem Visual**, menus descompactados (`font-size >= 13px`, `gap >= 8px`, alvos `>= 44px`), reuso In-Place (proibido criar sub-abas aninhadas), `Clicar em X ativa Y?` e tipografia fluida (`clamp()`, `65ch`, `antialiased`, `font-synthesis: none`, `tabular-nums`).
+3. **Navegação Semântica Contextual, Regra de Abas & Nitidez Tipográfica (Eixos 2 e 8 + `SGA`):**
+   - Limite de `<= 3` blocos `<nav>` (*Global*, *Local/In-Page* e *Breadcrumbs* `<ol role="list">` + `aria-current="page"` apenas em hierarquias $\ge 3$ níveis), **Ordem DOM = Ordem Visual**, menus descompactados (`font-size >= 13px`, `gap >= 8px`, alvos `>= 44px`), **Regra de Abas** (novas abas permitidas para separar domínios distintos; proibidas abas com a mesma função, sem sanear a aba principal, sub-abas aninhadas ou expondo componentes de backend), `Clicar em X ativa Y?` e tipografia fluida (`clamp()`, `65ch`, `antialiased`, `font-synthesis: none`, `tabular-nums`).
 
 ---
 

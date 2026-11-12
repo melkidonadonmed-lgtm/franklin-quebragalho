@@ -15,6 +15,7 @@ Ao processar a lista `required_adjustments` do payload de auditoria, o planejado
 | **`REMOVER_DEPENDENCIA`** | Quebra de acoplamento circular | Duas fases que dependiam mutuamente são desacopladas, utilizando um intermediário assíncrono ou fila de eventos. |
 | **`ADICIONAR_RETRY`** | Configuração de resiliência | A fase afetada passa a conter política de retentativa com backoff exponencial e limite máximo de tentativas (`max_retries`). |
 | **`BLOQUEIO_HITL`** | Portão de parada mandatória | A esteira automatizada é interrompida, inserindo um ponto de confirmação humana obrigatório via `ask_question`. |
+| **`APPEND_CONVERGENCE_TASKS`** | Anexação *append-only* de tasks | Preserva todas as tasks concluídas intactas e anexa uma nova fase `Fase N: Convergência` com tasks `- [ ] T0XX [P?] [CONV] caminho/exato.ext`. |
 
 ---
 

@@ -2,7 +2,6 @@ agent:
   name: "state-checker-observer"
   version: "1.0.0"
   model: "gemini-3.8-flash"
-  temperature: 0.1
   role: "Subagente Observador de Estado e Validador de Qualidade (State Checker & Audit Observer)"
   system_prompt: |
     [IDENTIDADE E PAPEL]

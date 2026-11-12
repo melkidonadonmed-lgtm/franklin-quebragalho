@@ -63,8 +63,8 @@
 - **Especificação Técnica & Contratos MCP/A2A**: [SPEC.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/SPEC.md) | [.context/spec.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.context/spec.md)
 - **Contexto Operacional & Arquitetura**: [CONTEXT.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/CONTEXT.md) | [.context/context.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.context/context.md)
 - **Estado Atual, Travas Anti-Regressão & Changelog**: [CURRENT_STATE.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/CURRENT_STATE.md)
-- **Regras Versionadas do Projeto (Sincronizadas com `~/.gemini/config/rules/`)**: [rules/diretrizes-qualidade-eficiencia.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/rules/diretrizes-qualidade-eficiencia.md) | [rules/diretrizes-frontend-9-eixos.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/rules/diretrizes-frontend-9-eixos.md)
-- **Catálogo de Agentes e Skills**: [MY_AGENTS.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_AGENTS.md) | [MY_SKILLS.md][def2] | [Preferências de Trabalho com Agentes.md][def]
+- **Regras Versionadas do Projeto (Sincronizadas com `~/.gemini/config/rules/`)**: [rules/diretrizes-qualidade-eficiencia.md](file:///c:/Users/melki/dev/repos/franklin-quebragalho/rules/diretrizes-qualidade-eficiencia.md) | [rules/diretrizes-frontend-9-eixos.md][def4]
+- **Catálogo de Agentes e Skills**: [MY_AGENTS.md][def3] | [MY_SKILLS.md][def2] | [Preferências de Trabalho com Agentes.md][def]
 
 ---
 
@@ -92,5 +92,10 @@ Ao concluir qualquer entrega, apresente obrigatoriamente este bloco curto:
 - **Dica para a Próxima Tarefa:** [1 sugestão prática, técnica ou de comando para o próximo passo do backlog]
 - **Evolução de Regra (Se aplicável):** [Se houve erro evitável hoje, sugira 1 linha para "Memória Evolutiva" ou criação de Skill]
 
+**
+**
+
 [def]: file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md
 [def2]: file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md
+[def3]: file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_AGENTS.md
+[def4]: file:///c:/Users/melki/dev/repos/franklin-quebragalho/rules/diretrizes-frontend-9-eixos.md

@@ -99,7 +99,7 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
             ("auditoria-projetos-sistema", "ai_ready_data_pipeline.py", "Sanitização e chunking SHA-256 para diretrizes clínicas/RAG"),
         ],
         "plans/ui_composition_dag.json",
-        "Coordenador clínico unificado (clinical_preceptor_orchestrator em adk-tests/py_agent/clinical_coordinator.py) com AgentTools separados: anatomy_3d_inspector (appmy) + hexagonal_score_calculator (scoreboard) e replanejamento dinâmico.",
+        "Coordenador clínico unificado (clinical_preceptor_orchestrator em adk-py-agents/py_agent/pipelines/clinical_coordinator.py) com AgentTools separados: anatomy_3d_inspector (appmy) + hexagonal_score_calculator (scoreboard) e replanejamento dinâmico.",
     ),
     (
         ("ui", "ux", "front", "tela", "botao", "menu", "css", "tailwind", "react", "design", "sombra", "tatil", "tactile", "elevacao"),
@@ -161,15 +161,15 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
     ),
     (
         ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra", "test", "auditor", "rca", "converge", "gap", "intencao", "cognitiv", "kahn", "a2a", "stdio"),
-        "🤖 Esteira de Qualidade (AST • Testes/Evals • Servidores MCP/A2A • RCA/Convergência), Planejamento Cognitivo Não-Linear & Orquestração DAG (26 Skills Canônicas)",
+        "🤖 Esteira de Qualidade (AST • Testes/Evals • Servidores MCP/A2A • RCA/Convergência), Planejamento Cognitivo Não-Linear & Orquestração DAG (29 Skills Canônicas)",
         ["agent-server-auditor", "code-acceptability-auditor", "test-quality-auditor", "gap-analyzer-auditor", "high-level-context-planner", "skill-orquestrador-planos-encadeados"],
         [
             ("agent-server-auditor", "agent_server_auditor.py", "Auditor arquitetural poliglota (Go/TS/Py) de agentes, higiene STDIO MCP, A2A JWS, binários e max_steps"),
-            ("high-level-context-planner", "cognitive_plan_builder.py", "Motor Cognitivo (intent-cognitive-planner): 4 quadrantes, CLAREZA/CREATE + CoT/ReAct/ToT/Self-Refine e Parede <= 5 regras/nó"),
+            ("high-level-context-planner", "cognitive_plan_builder.py", "Motor Cognitivo: 4 quadrantes, CLAREZA/CREATE + CoT/ReAct/ToT/Self-Refine e Parede <= 5 regras/nó"),
             ("skill-orquestrador-planos-encadeados", "dag_chain_validator.py", "Compilador de Ondas DAG (Kahn), detector de colisão de arquivos [P] e validador de Context Fork"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão 1 AST + Pydantic v2 (12 regras: Segurança, Tipagem, McCabe <= 10, Score >= 75)"),
             ("test-quality-auditor", "test_quality_auditor.py", "Portão 2 de qualidade de suítes de testes em 5 módulos (Py/TS/Go/MCP/Harness + PerfKit)"),
-            ("workspace", "validate_skills.py", "Validador determinístico das 26 skills canônicas"),
+            ("workspace", "validate_skills.py", "Validador determinístico das 29 skills canônicas"),
         ],
         "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json | plans/distributed_agent_mediation_dag.json",
         "Planejamento Não-Linear ('high-level-context-planner' v3.0 <=5 regras/nó) -> Compilação de Ondas Kahn ('skill-orquestrador-planos-encadeados' v3.0) -> Esteira em 3 Portões ('code-acceptability-auditor' -> 'test-quality-auditor' -> 'gap-analyzer-auditor').",
@@ -199,11 +199,11 @@ def _render_ecosystem_topology() -> str:
     lines = [
         "# ⚡ Topologia Interativa de Agentes Multi-Repo (5 Camadas • 14 Repositórios)\n",
         "## 1. Camadas de Execução e Custo Cognitivo",
-        "- **Camada 0 (Bússola & Heartbeat Zero-LLM — 0 tokens)**: `franklin_smart_compass()`, `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1`, `POST /rpc` (`mesh/heartbeat` em `adk-tests`).",
+        "- **Camada 0 (Bússola & Heartbeat Zero-LLM — 0 tokens)**: `franklin_smart_compass()`, `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1`, `POST /rpc` (`mesh/heartbeat` em `adk-go-mcp`).",
         "- **Camada 1 (Orquestração & Loop Fechado)**: `Franklin-Main` (Execução Direta) e `LoopPlanner` (`high-level-context-planner` Fase 0 -> `skill-orquestrador-planos-encadeados` -> `gap-analyzer-auditor`).",
         "- **Camada 2 (Esquadrão Frontend & Composição Visual por Propósito — Topologia 3+1)**: `UI-Architect` + `ui-shell-navigator` (Onda 1) -> `ui-controls-data` + `ui-motion-interaction` (Onda 2) -> `ui-deterministic-observer` (Onda 3 Gatekeeper `AUDIT-VIS-01 >= 90`).",
         "- **Camada 3 (Gatekeepers Determinísticos AST/Pass@k — 0 tokens)**: `SkillCraft` (`code-acceptability-auditor` Score >= 75, `test-quality-auditor`), `3D Physics Auditor` (`franklin_execute_dag('physics')`) e `dispatch_skill_deterministic_tests` (Go Eval Harness).",
-        "- **Camada 4 (Malha Multiagente Cloud/Web & Clínica)**: `adk-tests` (`mesh_hybrid_orchestrator`, `self_healing_specialist`, `customer_issue_reviewer`, `AgyCalcCluster`, `clinical_preceptor_orchestrator` -> `anatomy_3d_inspector` [`appmy`] + `hexagonal_score_calculator` [`scoreboard`]), `epic-volta` (`DAGEngine` Kahn + `MCPBridgeAgent` + `ContextSentinel`), `mcp-web-agents` (Gateway 4+1 + `watchdogBridge.ts`) e `PCM`/`scoreboard` (`prescmed-clinical-reviewer`).\n",
+        "- **Camada 4 (Malha Multiagente Cloud/Web & Clínica)**: `adk-go-mcp` + `adk-py-agents` + `adk-ts-agent` (`mesh_hybrid_orchestrator`, `self_healing_specialist`, `customer_issue_reviewer`, `AgyCalcCluster`, `clinical_preceptor_orchestrator` -> `anatomy_3d_inspector` [`appmy`] + `hexagonal_score_calculator` [`scoreboard`]), `epic-volta` (`DAGEngine` Kahn + `MCPBridgeAgent` + `ContextSentinel`), `mcp-web-agents` (Gateway 4+1 + `watchdogBridge.ts`) e `PCM`/`scoreboard` (`prescmed-clinical-reviewer`).\n",
         "## 2. Personas Especialistas & Skills Vinculadas (`franklin-quebragalho`)",
     ]
     for p_name, s_list in sorted(by_persona.items()):
@@ -267,8 +267,8 @@ def _resolve_compass_profile(q: str) -> Tuple[str, List[str], List[Tuple[str, st
         if any(k in q for k in keywords):
             return title, rec_skills, scripts, dag_plan, guardrail
     return (
-        "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 24 Skills)",
-        ["organizador-projetos-ideias", "antigravity-project-auditor", "auditoria-projetos-sistema", "arquiteto-conteudo-solucoes", "code-acceptability-auditor", "design-md", "frontend-code-architect"],
+        "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 29 Skills)",
+        ["organizador-projetos-ideias", "auditoria-projetos-sistema", "arquiteto-conteudo-solucoes", "code-acceptability-auditor", "design-md", "frontend-code-architect"],
         [
             ("auditoria-projetos-sistema", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (detecta sozinho se é código Geral ou 3D)"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST pré-commit de segurança e tipagem Python (Score >= 75)"),

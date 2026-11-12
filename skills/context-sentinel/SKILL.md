@@ -2,12 +2,12 @@
 name: context-sentinel
 description: "Audita a integridade da janela de contexto em conversas multi-turn e extrai estado estruturado da sessão ([FATO], [PENDENCIA], [LACUNA]) em SQLite ou JSON. Use a cada ciclo; não use para código."
 version: "1.1.0"
-updated_at: "2026-10-19"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
-allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
+allowed-tools: ["read_file", "call_mcp_tool"]
 metadata:
   version: "1.1.0"
-  updated_at: "2026-10-19"
+  updated_at: "2026-11-12"
   author: "Franklin-Main & Melki"
   category: "Auditoria e Integridade de Janela de Contexto"
   tags: ["context-rot", "sqlite", "snapshots", "pydantic"]
@@ -36,7 +36,7 @@ Skill especializada em auditoria de integridade da janela de contexto, mitigaç�
 ## ⚙️ Pré-requisitos e Entradas
 
 1. **Histórico da Sessão / Turnos Atuais**: Sequência de passos executados, arquivos tocados e decisões tomadas.
-2. **Alvo de Persistência**: `.context/CURRENT_STATE.md`, `.context/SESSION_LOG.md`, `state_checkpoint.json` ou SQLite local (`checkpoints.db`).
+2. **Alvo de Persistência**: `.context/context.md` (espelhado em `CONTEXT.md`), `state_checkpoint.json` ou SQLite local (`checkpoints.db`).
 
 ---
 

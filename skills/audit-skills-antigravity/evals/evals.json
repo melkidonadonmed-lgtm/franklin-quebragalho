@@ -1,14 +1,23 @@
 {
   "skill_name": "audit-skills-antigravity",
-  "version": "2.1.0",
+  "version": "2.3.0",
   "evals": [
     {
       "id": "eval-audit-skills-rea-01",
-      "prompt": "Execute audit-skills-antigravity via REA e motor Go para auditar Context Bloat, YAML frontmatter, Pass@3 e FNR das skills privadas do repositório.",
+      "prompt": "Execute audit-skills-antigravity via REA e motor Go para auditar sintaxe, referências quebradas no ambiente, colisões de rotas/gatilhos, Context Bloat, Pass@3 e FNR das skills do repositório.",
       "expected_assertions": [
-        "Coleta evidências estáticas via REA (analyze_javascript_application / inspect_analysis_view) e motor Go",
-        "Calcula Tokens Estimados, contagem de regras (teto <= 10), Pass@3 e FNR",
-        "Classifica cada skill nas 6 categorias ([MANTER], [ATUALIZAÇÃO], [AJUSTE], [MELHORIA], [EXCLUSÃO], [FUSÃO])"
+        "Verifica integridade física de links e referências (scripts/, references/, rules/, evals/) e compatibilidade com o ambiente",
+        "Detecta colisões de nomes, rotas e gatilhos de ativação entre skills do catálogo",
+        "Calcula Tokens Estimados, contagem de regras (teto <= 10), Pass@3 e FNR"
+      ]
+    },
+    {
+      "id": "eval-audit-skills-cognitive-02",
+      "prompt": "Audite a camada cognitivo-discriminativa das skills verificando os 8 elos de coerência, contaminação entre domínios (cores/UI em skills não-visuais), os 6 fatores-chave em skills de planejamento e uso real de ferramentas (click/a11y/DOM) em skills de auditoria E2E.",
+      "expected_assertions": [
+        "Reprova skills de planejamento que omitam divisão, estrutura, coerência lógica, gestão de ambiguidade, processos ou guardrails",
+        "Reprova skills de auditoria E2E/UI que não utilizem ferramentas reais de análise como click, a11y, snapshot/DOM ou scripts verificadores",
+        "Detecta skills vagas, regras opostas/contraditórias e contaminação de boilerplate visual (OKLCH/60-30-10) em skills não-visuais"
       ]
     }
   ]

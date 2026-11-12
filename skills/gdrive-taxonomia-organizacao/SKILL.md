@@ -1,136 +1,69 @@
 ---
 name: gdrive-taxonomia-organizacao
 description: "Estrutura e categoriza pastas no Google Drive aplicando taxonomia canônica numerada e padronização de datas ISO YYYY-MM-DD. Use para organizar taxonomia no Drive; não use para exclusão de duplicatas."
-version: "1.1.0"
-updated_at: "2026-10-14"
-compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+version: "1.2.0"
+updated_at: "2026-11-12"
+compatibility: "Windows 11, pwsh 7+, Google Drive Desktop ou workspace-mcp"
 allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
-  version: "1.1.0"
-  updated_at: "2026-10-14"
+  version: "1.2.0"
+  updated_at: "2026-11-12"
   author: "DriveMaster & Melki"
   category: "Gestão Cloud e Taxonomia Documental"
   tags: ["google-drive", "taxonomia", "datas-iso", "organizacao"]
 ---
-# 1. NOME DA SKILL
+# Taxonomia Numerada e Datas ISO no Google Drive (`gdrive-taxonomia-organizacao`)
 
-`gdrive-taxonomia-organizacao` (Taxonomia Estruturada, Nomenclatura Canônica ISO e Classificação Temática em `G:\Meu Drive\`).
+## 1. Propósito e Gatilhos de Ativação (Quando Usar)
 
----
-
-## 2. GATILHOS DE ATIVAÇÃO (QUANDO USAR)
-
-Ative e execute esta skill sempre que:
-
-- O usuário solicitar: "organize as pastas do meu Google Drive", "arrume os arquivos soltos na raiz do Drive", "padronize os nomes de arquivos com datas no Drive", "classifique documentos nas pastas numeradas do Drive".
-- A raiz de `G:\Meu Drive\` tiver arquivos dispersos sem categorização semântica.
-- For necessário renomear lotes de arquivos para formato uniforme (`YYYY-MM-DD_Nome_Sem_Espaco_Duplo.ext`).
+- Classificar arquivos soltos na raiz de `G:\Meu Drive\` dentro das pastas numeradas reais da máquina definidas em [`references/taxonomia_padrao.json`](references/taxonomia_padrao.json).
+- Padronizar lotes de nomes no formato `YYYY-MM-DD_Assunto_Descritivo.ext` preservando a extensão original.
 
 ### Quando NÃO Usar
 
-- Para varredura de arquivos pesados (>100MB) ou quarentena de descarte de duplicatas por SHA-256 (utilize `gdrive-auditoria-limpeza`).
-- Para organização de notas locais no cofre Obsidian em `C:\Users\melki\dev\notes\` (utilize `obsidian-vault` ou `curadoria-obsidian-vault`).
-- Para manipulação de arquivos locais em `Downloads`/`Desktop`/`dev` do Windows (utilize `manutencao-disco-windows`).
+- Varredura de arquivos `> 100 MB` ou quarentena de duplicatas por `SHA-256` (use `gdrive-auditoria-limpeza`).
+- Notas do Obsidian Vault (`curadoria-obsidian-vault`) ou disco local (`manutencao-disco-windows`).
 
 ---
 
-## 3. ENTRADAS ESPERADAS E PRÉ-REQUISITOS
+## 2. Entradas Esperadas e Pré-requisitos
 
-- `target_folder` (opcional): Pasta do Google Drive a ser organizada (padrão: `G:\Meu Drive\`).
-- `taxonomy_profile` (opcional): Perfil de taxonomia (`padrao_melki`). Padrão: `padrao_melki`.
-- `apply_iso_dates` (opcional, booleano): Se deve renomear arquivos inserindo a data de modificação/criação no padrão ISO `YYYY-MM-DD_`. Padrão: `false` (solicitar confirmação).
-- **Pré-requisito**: Google Drive montado em `G:\Meu Drive\`. **Atenção PowerShell**: Use `-LiteralPath` ao manipular pastas com colchetes como `[01]Projetos`.
-
----
-
-## 4. TAXONOMIA CANÔNICA DO GOOGLE DRIVE (ESTRUTURA REAL NESTA MÁQUINA)
-
-O ecossistema em `G:\Meu Drive\` segue a árvore temática numerada real desta máquina:
-
-```text
-G:\Meu Drive\
-├── [01]Projetos/                    # Projetos específicos (ex: 01. App de anatomia, 08_Projeto_App_Scoreboard)
-├── 01_Modelos_Rapidos/              # Modelos ágeis de receituários, atestados e condutas
-├── 02_Protocolos_e_Medicamentos/    # Guias farmacológicos, protocolos clínicos e posologias
-├── 03_Medicina_Faculdade/           # Materiais acadêmicos, aulas, slides e referências médicas
-├── 04_Workspace_e_Banco_de_Dados/   # Aplicativos, acervos, briefings, cadernos Colab e AppSheets
-├── 05_Banco_dados_apoio_backup/     # Backups estruturados e bases de dados de apoio
-├── 07_Gemini_Gems/                  # System prompts, Gems e personas customizadas
-├── 09_ui_web_kits/                  # Kits de UI, referências de Design System e dossiês de skills
-├── 10_Pessoal/                      # Documentos pessoais, certidões, contratos e financeiro
-├── 11_Salvo_do_Chrome/              # Capturas, PDFs e páginas salvas do navegador
-├── 12_MCP_Servers/                  # Backups e referências de servidores MCP
-├── 15_chaves_api/                   # Referências de chaves em Google Docs (PROIBIDO copiar para repos/notas)
-├── 16_Documentos_comp_SUS/          # Formulários e planilhas oficiais do SUS (APAC, LME, SISREG, GAL, SISCAN)
-├── 99_Arquivo_Historico/            # Itens históricos congelados de anos/versões anteriores
-└── Franklin_Skills_Docs_2026/       # Dossiê legível e comparativo das skills do Franklin Quebra-Galho
-```
-
-### 4.1. Regras de Nomenclatura Canônica
-
-1. **Datas ISO no Prefixo:** Documentos com data relevante devem adotar `YYYY-MM-DD_Assunto_Descritivo.ext`.
-2. **Higienização de Caracteres:**
-   - Substituição de espaços múltiplos por espaço único ou underline (`_`).
-   - Eliminação de caracteres problemáticos em nomes de arquivos (`#`, `%`, `&`, `{`, `}`, `\`, `<`, `>`, `*`, `?`, `/`, `$`, `!`, `'`, `"`, `:`, `@`).
-3. **Preservação de Extensão:** Nunca alterar a extensão original do arquivo.
+- `target_folder` (opcional): Padrão `G:\Meu Drive\`.
+- `apply_iso_dates` (opcional, booleano): Padrão `false` (exige confirmação HITL antes de renomear em lote).
+- **Pré-requisito**: `G:\Meu Drive\` montado (ou consulta via `workspace-mcp` / skill `gdrive`). No PowerShell, usar sempre `-LiteralPath` por causa de colchetes como `[01]Projetos`.
 
 ---
 
-## 5. PROCESSO PASSO A PASSO (EXECUÇÃO DE TAXONOMIA)
+## 3. Fluxo de Execução (Passo a Passo)
 
-### Passo 1: Mapeamento de Itens Soltos
+1. **Mapeamento Não-Destrutivo**:
 
-Listar todos os arquivos soltos na raiz de `G:\Meu Drive\` sem alterar nada:
+   ```powershell
+   Get-ChildItem -LiteralPath "G:\Meu Drive\" -File | Select-Object Name, Length, Extension, LastWriteTime
+   ```
 
-```powershell
-Get-ChildItem -LiteralPath "G:\Meu Drive\" -File | Select-Object Name, Length, Extension, LastWriteTime
-```
+2. **Classificação contra a Taxonomia Canônica ([`references/taxonomia_padrao.json`](references/taxonomia_padrao.json))**:
+   - `[01]Projetos`, `01_Modelos_Rapidos`, `02_Protocolos_e_Medicamentos`, `03_Medicina_Faculdade`, `04_Workspace_e_Banco_de_Dados`, `05_Banco_dados_apoio_backup`, `07_Gemini_Gems`, `09_ui_web_kits`, `10_Pessoal`, `11_Salvo_do_Chrome`, `12_MCP_Servers`, `16_Documentos_comp_SUS`, `99_Arquivo_Historico` e `Franklin_Skills_Docs_2026`.
+   - Higienizar espaços duplos e caracteres ilegais sem alterar a extensão.
+3. **Simulação (`Dry-Run` / `-WhatIf`) e Aprovação HITL**: Exibir matriz `Arquivo Atual -> Destino Canônico` antes de mover.
+4. **Execução Segura com `-LiteralPath`**:
 
-### Passo 2: Associação com a Taxonomia Real da Máquina
-
-Classificar cada arquivo em sua respectiva pasta temática existente:
-
-- Formulários/fichas do SUS (APAC, LME, GAL, SISCAN, SISREG) ➔ `16_Documentos_comp_SUS/`
-- Aulas médicas, slides (`.gslides`) e resumos de faculdade ➔ `03_Medicina_Faculdade/`
-- Protocolos clínicos e medicamentos ➔ `02_Protocolos_e_Medicamentos/`
-- Prompts, especificações de agentes e Gems ➔ `07_Gemini_Gems/` ou `04_Workspace_e_Banco_de_Dados/`
-- Kits de interface, design tokens e dossiês de UI ➔ `09_ui_web_kits/`
-- Documentos pessoais, laudos próprios e comprovantes ➔ `10_Pessoal/`
-- Arquivos históricos e backups encerrados ➔ `99_Arquivo_Historico/`
-
-### Passo 3: Apresentação da Simulação (Dry-Run)
-
-Exibir ao usuário a matriz de movimentação: `Arquivo Atual ➔ Destino Canônico`.
-
-### Passo 4: Execução com Verificação (`-LiteralPath`)
-
-Aplicar a movimentação utilizando `-LiteralPath` para evitar expansão indevida de colchetes no PowerShell:
-
-```powershell
-$destino = "G:\Meu Drive\03_Medicina_Faculdade"
-if (!(Test-Path -LiteralPath $destino)) { New-Item -ItemType Directory -Path $destino -Force }
-Move-Item -LiteralPath "G:\Meu Drive\Tuberculose Novo modificado.gslides" -Destination $destino -WhatIf
-```
+   ```powershell
+   $destino = "G:\Meu Drive\03_Medicina_Faculdade"
+   Move-Item -LiteralPath $arquivoOrigem -Destination $destino -WhatIf
+   ```
 
 ---
 
-## 6. SAÍDAS E ENTREGÁVEIS (MODELO DE SAÍDA)
+## 4. Saídas e Entregáveis
 
-A resposta final da skill entrega:
-
-1. **Mapa da Estrutura Canônica:**
-   - Visualização das pastas reais de `G:\Meu Drive\` com a contagem de arquivos alocados.
-2. **Tabela de Arquivos Classificados:**
-   - Origem ➔ Destino e nome normalizado.
-3. **Resumo de Higienização de Nomes:**
-   - Quantidade de nomes corrigidos (espaços múltiplos removidos, datas ISO inseridas).
-4. **Links de Acesso Local:**
-   - Links com esquema `file:///` para verificação direta no Explorer.
+1. Tabela `Origem -> Destino Canônico` e resumo de nomes normalizados (`YYYY-MM-DD`).
+2. Veredito `[PASS]` / `[FAIL]` segundo [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md) e links `file:///`.
 
 ---
 
-## 7. EXCEÇÕES E LIMITES (QUANDO NÃO USAR)
+## 5. Guardrails e Limites
 
-- NUNCA ler, expor ou copiar conteúdos de `15_chaves_api` para repositórios Git ou notas do Obsidian.
-- NUNCA mover arquivos compartilhados com links ativos sem avisar o usuário sobre o impacto na hierarquia.
-- NUNCA mesclar ou renomear `G:\Outros computadores` (backups de PCs anteriores de julho, agosto e setembro de 2026).
+- **Proibido** ler, mover ou expor `15_chaves_api` em repositórios Git ou notas do Obsidian.
+- **Proibido** criar pastas paralelas fora da árvore canônica sem autorização humana ou alterar `G:\Outros computadores`.
+- Avisar explicitamente antes de mover arquivos compartilhados com links ativos.

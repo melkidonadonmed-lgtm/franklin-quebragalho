@@ -1,22 +1,22 @@
 ---
 name: frontend-ui-ux-auditor
-description: "Audita com precisão matemática densidade de nós DOM, contraste WCAG 2.1 AA, física da luz 135, elevação por sombras, espaçamento e camadas. Use para diagnóstico visual de frontend; não use para backend."
-version: "3.0.0"
-updated_at: "2026-10-27"
+description: "Audita com precisão matemática densidade de nós DOM, contraste WCAG 2.1 AA, luz zenital 90-120, elevação por sombras, espaçamento e camadas. Use para diagnóstico visual de frontend; não use para backend."
+version: "3.1.0"
+updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
-  version: "3.0.0"
-  updated_at: "2026-10-27"
+  version: "3.1.0"
+  updated_at: "2026-11-12"
   author: "UI-Architect & Melki"
   category: "Frontend UI/UX Mathematical Auditing, OKLCH Design Tokens, Logical Box Model & Optical Physics"
-  tags: []
+  tags: ["ui-ux-audit", "oklch", "wcag-contrast", "zenithal-light", "dom-density", "container-queries"]
 ---
-# Skill: Auditor de UI/UX, Box Model Lógico, Cores Perceptuais `OKLCH`, Navegação em 3 Camadas e Física da Luz (`v3.0.0`)
+# Skill: Auditor de UI/UX, Box Model Lógico, Cores Perceptuais `OKLCH`, Navegação Contextual e Luz Zenital (`v3.1.0`)
 
 ## 1. Objetivo, Propósito e Quando Usar (Gatilhos)
 
-Esta Skill estabelece a esteira de auditoria matemática para inspecionar componentes e layouts frontend, garantindo acabamento alinhado aos **9 Eixos da SSOT** ([`Preferências de Trabalho com Agentes.md`](file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md)). O motor determinístico (`scripts/ui_ux_frontend_auditor.py`) avalia Design Tokens em 3 camadas (`OKLCH` / escala `4px/8px`), propriedades lógicas e prevenção de colapso de margem, contraste WCAG 2.1 AA, nitidez tipográfica fluida anti-borrão GPU, árvore DOM, navegação em 3 camadas, sombras multi-camadas e Container Queries (`@container`).
+Esta Skill estabelece a esteira de auditoria matemática para inspecionar componentes e layouts frontend, garantindo acabamento alinhado aos **9 Eixos da SSOT** ([`../../rules/diretrizes-frontend-9-eixos.md`](../../rules/diretrizes-frontend-9-eixos.md)). O motor determinístico (`scripts/ui_ux_frontend_auditor.py`) avalia Design Tokens em 3 camadas (`OKLCH` / escala `4px/8px`), propriedades lógicas e prevenção de colapso de margem, contraste WCAG 2.1 AA, nitidez tipográfica fluida anti-borrão GPU, árvore DOM, navegação contextual, sombras multi-camadas com luz zenital (90°–120°) e Container Queries (`@container`).
 
 ### Gatilhos Positivos (Quando Usar)
 
@@ -94,3 +94,10 @@ $$\text{Score}_{\text{UI/UX}} = \sum_{j=1}^{6} W_j \cdot S_j$$
 ```powershell
 uv run python skills/frontend-ui-ux-auditor/scripts/ui_ux_frontend_auditor.py --target "<arquivo_ou_diretorio>"
 ```
+
+---
+
+## 5. Exceções, Limites e Guardrails
+
+- **Escopo Estático vs. Runtime:** `ui_ux_frontend_auditor.py` inspeciona estaticamente HTML/CSS/JSX/TSX conforme [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md); para inspeção interativa do DOM renderizado (`@eX` / CDP), combine com `auditoria-projetos-sistema` ou `complex-zero`.
+- **Somente Leitura:** Esta skill diagnostica e pontua a interface; mutações de refatoração cabem a `frontend-code-architect`.

@@ -131,10 +131,10 @@ CANONICAL_TRIGGER_EVAL_CASES: List[TriggerEvalCase] = [
     TriggerEvalCase(
         case_id="TRG-08",
         cluster="Frontend & UI",
-        query="auditar com precisão matemática densidade de nós DOM, contraste WCAG 2.1 AA, física da luz 135 e elevação por sombras",
+        query="auditar com precisão matemática densidade de nós DOM, contraste WCAG 2.1 AA, luz zenital 90-120 e elevação por sombras",
         expected_skill="frontend-ui-ux-auditor",
         near_miss_skills=["frontend-testing-auditor", "design-md"],
-        rationale="Auditoria óptica/matemática de densidade DOM, física da luz 135° e sombras.",
+        rationale="Auditoria óptica/matemática de densidade DOM, luz zenital 90°–120° e sombras.",
     ),
     TriggerEvalCase(
         case_id="TRG-09",
