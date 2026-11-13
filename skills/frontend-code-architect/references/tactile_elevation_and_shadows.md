@@ -156,22 +156,40 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 Consulte os contratos completos em [`../../design-md/references/design_system_composition_reference.md`](../../design-md/references/design_system_composition_reference.md):
 
 ```css
-/* 1. Botão Base + Regra LVHA (:link -> :visited -> :hover -> :active) + Apontadores */
+/* 1. Botão Tátil Base + Regra LVHA (:link -> :visited -> :hover -> :active) + Apontadores */
 .btn-acao {
   padding: 0.5em 1em; border-radius: 6px;
   background-color: var(--brand-primary, oklch(0.62 0.21 259));
   color: oklch(1 0 0); font-weight: 600;
   user-select: none; touch-action: manipulation;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: var(--shadow-elevation-1), inset 0 1px 1px oklch(1 0 0 / 0.18), inset 0 -1px 2px oklch(0 0 0 / 0.40);
+  transition: background-color 0.2s ease, transform 0.15s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.15s cubic-bezier(0.22, 1, 0.36, 1);
 }
 @media (any-pointer: coarse) {
   .btn-acao { padding: 0.85em 1.5em; min-height: 48px; min-width: 48px; }
 }
-.btn-acao:hover { background-color: oklch(from var(--brand-primary) calc(l - 0.08) c h); }
+.btn-acao:hover {
+  background-color: oklch(from var(--brand-primary) calc(l - 0.08) c h);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-elevation-2), inset 0 1px 1px oklch(1 0 0 / 0.25);
+}
+.btn-acao:active {
+  transform: translateY(1px);
+  box-shadow: var(--elevation-pressed-inset, var(--shadow-inset));
+  transition-duration: 80ms;
+}
 .btn-acao:focus { outline: none; }
 .btn-acao:focus-visible { outline: 2px solid oklch(0.68 0.17 237); outline-offset: 2px; }
 
-/* 2. Macrolayout 3 Colunas (Header + Sidebar + Canvas + Chat) e Microlayout @container */
+/* 2. Utilitários de Sombra Contextual (Adendo C — Card Clean, Texto sobre Mídia e Dropdown SVG) */
+.heroTitleOverGradient {
+  text-shadow: 0 2px 4px oklch(0 0 0 / 0.35), 0 4px 12px oklch(0 0 0 / 0.20);
+}
+.menuDropdownShadow {
+  filter: drop-shadow(0 4px 6px oklch(0 0 0 / 0.08)) drop-shadow(0 10px 15px oklch(0 0 0 / 0.12));
+}
+
+/* 3. Macrolayout 3 Colunas (Header + Sidebar + Canvas + Chat) e Microlayout @container */
 .app-layout {
   display: grid; height: 100vh; width: 100vw;
   grid-template-rows: 60px 1fr;

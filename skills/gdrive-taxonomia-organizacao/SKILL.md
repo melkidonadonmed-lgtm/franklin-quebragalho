@@ -1,13 +1,10 @@
 ---
 name: gdrive-taxonomia-organizacao
 description: "Estrutura e categoriza pastas no Google Drive aplicando taxonomia canônica numerada e padronização de datas ISO YYYY-MM-DD. Use para organizar taxonomia no Drive; não use para exclusão de duplicatas."
-version: "1.2.0"
-updated_at: "2026-11-12"
 compatibility: "Windows 11, pwsh 7+, Google Drive Desktop ou workspace-mcp"
-allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "1.2.0"
-  updated_at: "2026-11-12"
+  updated_at: "2026-11-13"
   author: "DriveMaster & Melki"
   category: "Gestão Cloud e Taxonomia Documental"
   tags: ["google-drive", "taxonomia", "datas-iso", "organizacao"]

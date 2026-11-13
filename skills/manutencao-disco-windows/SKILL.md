@@ -1,13 +1,10 @@
 ---
 name: manutencao-disco-windows
 description: "Executa manutenção de arquivos locais no Windows 11 (Downloads, Desktop e dev/) isolando instaladores antigos e resíduos temporários. Use para higiene de disco local; não use para Google Drive."
-version: "1.2.0"
-updated_at: "2026-11-12"
 compatibility: "Windows 11, pwsh 7+, Python 3.12+"
-allowed-tools: ["read_file", "run_command"]
 metadata:
   version: "1.2.0"
-  updated_at: "2026-11-12"
+  updated_at: "2026-11-13"
   author: "FileOpsLocal & Melki"
   category: "Sistema Operacional e Automação Local"
   tags: ["windows-11", "powershell", "downloads", "disco", "dev-workspace"]

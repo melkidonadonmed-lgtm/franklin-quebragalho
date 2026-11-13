@@ -1,7 +1,7 @@
 """
 test_skill_trigger_precision.py
 Suíte de testes determinísticos para a precisão de disparo Nível 1 (Should-Trigger vs. Near-Misses)
-de todas as 25 Agent Skills Canônicas do Franklin Quebra-Galho.
+de todas as 29 Agent Skills Canônicas do Franklin Quebra-Galho.
 """
 
 from __future__ import annotations
@@ -10,8 +10,8 @@ import server
 from shared.trigger_eval_suite import CANONICAL_TRIGGER_EVAL_CASES, run_trigger_eval_suite
 
 
-def test_all_25_canonical_skills_covered_in_trigger_suite() -> None:
-    """Garante que todas as 25 skills canônicas do disco possuem casos should-trigger e near-miss."""
+def test_all_29_canonical_skills_covered_in_trigger_suite() -> None:
+    """Garante que todas as 29 skills canônicas do disco possuem casos should-trigger e near-miss."""
     disk_skills = {
         d.name for d in server.SKILLS_ROOT.iterdir() if d.is_dir() and (d / "SKILL.md").exists()
     }

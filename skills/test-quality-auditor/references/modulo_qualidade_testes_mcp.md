@@ -1,6 +1,6 @@
 # Módulo Canônico de Qualidade de Testes para MCP (`mcp_test_auditor.py` — `v1.1.0`)
 
-Este documento estabelece o padrão de auditoria em **7 Módulos Sequenciais** e o **Dossiê de Qualidade (Níveis 1 a 4)** para suítes de testes de **Servidores, Clientes e Pontes MCP (Model Context Protocol — JSON-RPC 2.0, FastMCP Python, Go `StdioServer`, TypeScript MCP e WebSockets)**, operando em conjunto com a sub-skill [`../../agent-server-auditor/references/audit-websocket-jsonrpc.md`](../../agent-server-auditor/references/audit-websocket-jsonrpc.md) e consulta sob demanda via `gemini_search_docs` quando envolver SDKs Gemini.
+Este documento estabelece o padrão de auditoria em **7 Módulos Sequenciais** e o **Dossiê de Qualidade (Níveis 1 a 4)** para suítes de testes de **Servidores, Clientes e Pontes MCP (Model Context Protocol — JSON-RPC 2.0, FastMCP Python, Go `StdioServer`, TypeScript MCP e WebSockets)**, operando em conjunto com a skill `agent-server-auditor` (`references/audit-websocket-jsonrpc.md`) e consulta sob demanda via `google-developer-knowledge` / `gemini_get_doc` (`aistudio.google.com/llms.txt`; evite `gemini_search_docs`, desabilitada) quando envolver SDKs Gemini.
 
 ---
 

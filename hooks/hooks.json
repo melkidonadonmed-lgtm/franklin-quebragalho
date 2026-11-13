@@ -3,11 +3,11 @@
     "enabled": false,
     "PreToolUse": [
       {
-        "matcher": "run_command",
+        "matcher": "run_command|call_mcp_tool",
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/melki/dev/repos/franklin-quebragalho/.venv/Scripts/python.exe C:/Users/melki/dev/repos/franklin-quebragalho/hooks/antigravity_harness_hook.py PreToolUse",
+            "command": "python ./scripts/antigravity_harness_hook.py PreToolUse",
             "timeout": 10
           }
         ]
@@ -15,14 +15,24 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "run_command",
+        "matcher": "run_command|call_mcp_tool",
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/melki/dev/repos/franklin-quebragalho/.venv/Scripts/python.exe C:/Users/melki/dev/repos/franklin-quebragalho/hooks/antigravity_harness_hook.py PostToolUse",
+            "command": "python ./scripts/antigravity_harness_hook.py PostToolUse",
             "timeout": 10
           }
         ]
+      }
+    ]
+  },
+  "franklin-docs-ttl-probe": {
+    "enabled": false,
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "python ./scripts/antigravity_harness_hook.py SessionStart",
+        "timeout": 5
       }
     ]
   }

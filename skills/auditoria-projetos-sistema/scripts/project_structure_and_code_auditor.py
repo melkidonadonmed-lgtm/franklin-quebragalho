@@ -204,7 +204,16 @@ def _audit_oklch_and_60_30_10(root: Path, files: List[Path]) -> Dict[str, Any]:
     has_3_surfaces = any(k in combined for k in ("--surface-canvas", "--bg-canvas")) and any(
         k in combined for k in ("--surface-card", "--bg-surface-1")
     )
-    has_3_shadows = "--shadow-elevation-1" in combined or "--shadow-tactile-card" in combined or "inset 0" in combined
+    has_3_shadows = any(
+        k in combined
+        for k in (
+            "--shadow-elevation-1",
+            "--shadow-elevation-low",
+            "--shadow-layer-sm",
+            "--shadow-tactile-card",
+            "inset 0",
+        )
+    )
     return {
         "applicable": True,
         "has_oklch_colors": has_oklch,

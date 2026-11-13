@@ -167,13 +167,13 @@ def _scan_single_file(f: Path, text: str, acc: Dict[str, Any]) -> None:
 
     acc["has_clamp"] = acc["has_clamp"] or ("clamp(" in low)
     acc["has_tabular"] = acc["has_tabular"] or ("tabular-nums" in low)
-    acc["has_65ch"] = acc["has_65ch"] or ("65ch" in low and "line-height" in low)
+    acc["has_65ch"] = acc["has_65ch"] or (("65ch" in low or "60ch" in low) and "line-height" in low)
     acc["has_anti_squish"] = acc["has_anti_squish"] or ("flex-shrink: 0" in low and "white-space: nowrap" in low)
     acc["has_cmd_k"] = acc["has_cmd_k"] or any(k in low for k in ("ctrl+k", "cmd+k", "⌘k", "meta+k", "commandpalette", 'aria-current="page"'))
     acc["has_breadcrumbs"] = acc["has_breadcrumbs"] or ('aria-current="page"' in low or "breadcrumb" in low)
-    acc["has_container_queries"] = acc["has_container_queries"] or ("@container" in low or "container-type" in low)
+    acc["has_container_queries"] = acc["has_container_queries"] or ("@container" in low or "container-type" in low or "subgrid" in low)
     acc["has_oklch_tokens"] = acc["has_oklch_tokens"] or ("oklch(" in low or "light-dark(" in low or "--surface-canvas" in low or "--bg-canvas" in low)
-    acc["has_logical_box"] = acc["has_logical_box"] or ("inline-size" in low or "padding-inline" in low or "flow-root" in low)
+    acc["has_logical_box"] = acc["has_logical_box"] or ("inline-size" in low or "padding-inline" in low or "flow-root" in low or "--space-" in low)
     if "row-reverse" in low:
         acc["reverse_tab_order"] += 1
 

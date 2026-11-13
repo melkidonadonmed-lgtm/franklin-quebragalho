@@ -1,13 +1,10 @@
 ---
 name: gdrive-auditoria-limpeza
 description: "Audita e higieniza Google Drive detectando arquivos pesados >100MB, duplicatas por hash e pastas vazias órfãs com Dry-run. Use para limpeza de arquivos duplicados no Drive; não use para disco local."
-version: "1.2.0"
-updated_at: "2026-11-12"
 compatibility: "Windows 11, pwsh 7+, Google Drive Desktop ou workspace-mcp"
-allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "1.2.0"
-  updated_at: "2026-11-12"
+  updated_at: "2026-11-13"
   author: "DriveMaster & Melki"
   category: "Gestão Cloud e Higienização de Armazenamento"
   tags: ["google-drive", "limpeza", "sha256", "dry-run"]

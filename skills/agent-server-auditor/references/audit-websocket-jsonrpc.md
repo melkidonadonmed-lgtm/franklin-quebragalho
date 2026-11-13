@@ -16,7 +16,7 @@ allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 
 ## 0. ANCORAGEM DOCUMENTAL PRE-FLIGHT (CONDICIONAL AO PROTOCOLO)
 
-Antes de auditar ou implementar endpoints WebSocket (`ws://` / `wss://`), sessões **Gemini Live API** ou barramentos **JSON-RPC 2.0** (`MCP` / `A2A`), valide as especificações e modelos vigentes na sessão via `gemini_search_docs` / `gemini_get_doc` (sem fixar versões estáticas) e os índices oficiais consolidados em [`protocol_matrix.md`](protocol_matrix.md), além dos contratos locais (`openapi.json`, `.well-known/agent-card.json`, `tools.json`).
+Antes de auditar ou implementar endpoints WebSocket (`ws://` / `wss://`), sessões **Gemini Live API** ou barramentos **JSON-RPC 2.0** (`MCP` / `A2A`), valide as especificações e modelos vigentes na sessão via `google-developer-knowledge` (`search_documents`/`get_documents`) ou `gemini_get_doc` (`chunk_id`; evite `gemini_search_docs`, desabilitada no servidor local) e os índices oficiais consolidados em [`protocol_matrix.md`](protocol_matrix.md), além dos contratos locais (`openapi.json`, `.well-known/agent-card.json`, `tools.json`).
 
 ---
 
@@ -118,7 +118,7 @@ A execução roda em nó efêmero isolado (`ModeTask` / `context: fork`), report
 
 ## 4. O QUE NÃO FAZER (PROIBIÇÕES ESTRITAS / GUARDRAILS)
 
-1. **[PROIBIDO] NUNCA chegar às cegas na API:** Proibido auditar ou codificar chamadas Gemini API / Live API / JSON-RPC sem antes consultar `gemini_search_docs`, `https://aistudio.google.com/llms.txt` ou `https://aistudio.google.com/llms-full.txt`.
+1. **[PROIBIDO] NUNCA chegar às cegas na API:** Proibido auditar ou codificar chamadas Gemini API / Live API / Decisions API / JSON-RPC sem antes consultar `google-developer-knowledge` (`search_documents`), `gemini_get_doc` (`chunk_id`), `https://aistudio.google.com/llms.txt` ou `https://aistudio.google.com/llms-full.txt` (nunca use `gemini_search_docs`, desabilitada).
 2. **[PROIBIDO] NUNCA usar transporte não criptografado em produção:** Toda comunicação remota exige transporte seguro (`wss://` / `https://`).
 3. **[PROIBIDO] NUNCA passar credenciais estáticas na URL:** Tokens/API keys permanentes na Query String vazam em logs de proxy e histórico.
 4. **[PROIBIDO] NUNCA ignorar reconexão sem Jitter:** Reconectar todos os clientes ao mesmo tempo causa ataques de tempestade de reconexão (*Thundering Herd Problem*).

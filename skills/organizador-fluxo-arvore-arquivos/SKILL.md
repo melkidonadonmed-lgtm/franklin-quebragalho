@@ -1,13 +1,10 @@
 ---
 name: organizador-fluxo-arvore-arquivos
 description: "Transforma ideias brutas e requisitos de apps em fluxos visuais Mermaid e árvores de diretórios comentadas em Markdown ou PDF. Use para mapear fluxos e pastas; não use para auditar segurança AST."
-version: "1.2.0"
-updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, Markdown GFM, Mermaid, Edge Headless"
-allowed-tools: ["read_file", "write_file", "edit_file", "run_command"]
 metadata:
   version: "1.2.0"
-  updated_at: "2026-11-12"
+  updated_at: "2026-11-13"
   author: "DocMaker & Melki"
   category: "Planejamento Visual e Diagramação de Diretórios"
   tags: ["mermaid", "arvore-arquivos", "fluxogramas", "planejamento"]

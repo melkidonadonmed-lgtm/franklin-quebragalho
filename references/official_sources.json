@@ -1,0 +1,472 @@
+{
+  "schema_version": "1.0.0",
+  "ttl_days": 7,
+  "sources": [
+    {
+      "id": "antigravity_llms",
+      "kind": "remote",
+      "title": "Google Antigravity Official Documentation Index",
+      "url": "https://antigravity.google/llms.txt",
+      "target_rules": [
+        "rules/authoring-skills.md",
+        "rules/authoring-plugins-hooks.md",
+        "rules/authoring-subagents.md",
+        "rules/authoring-mcp-jsonrpc.md",
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "https://antigravity.google/docs/skills",
+        "https://antigravity.google/docs/rules",
+        "https://antigravity.google/docs/plugins",
+        "https://antigravity.google/docs/hooks",
+        "https://antigravity.google/docs/subagents",
+        "https://antigravity.google/docs/mcp"
+      ]
+    },
+    {
+      "id": "agentskills_spec",
+      "kind": "remote",
+      "title": "Agent Skills Open Specification",
+      "url": "https://agentskills.io/specification.md",
+      "target_rules": [
+        "rules/authoring-skills.md"
+      ],
+      "required_invariants": [
+        "name",
+        "description",
+        "SKILL.md",
+        "references/"
+      ]
+    },
+    {
+      "id": "mcp_llms",
+      "kind": "remote",
+      "title": "Model Context Protocol (MCP) Official Index",
+      "url": "https://modelcontextprotocol.io/llms.txt",
+      "target_rules": [
+        "rules/authoring-mcp-jsonrpc.md"
+      ],
+      "required_invariants": [
+        "2026-07-28",
+        "Model Context Protocol"
+      ]
+    },
+    {
+      "id": "adk_llms",
+      "kind": "remote",
+      "title": "Google Agent Development Kit (ADK) Docs Index",
+      "url": "https://google.github.io/adk-docs/llms.txt",
+      "target_rules": [
+        "rules/authoring-subagents.md",
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "Agent Development Kit",
+        "https://adk.dev/"
+      ]
+    },
+    {
+      "id": "gemini_api_llms",
+      "kind": "remote",
+      "title": "Google Gemini API & AI Studio Docs Index",
+      "url": "https://aistudio.google.com/llms.txt",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "models.md",
+        "libraries.md",
+        "interactions"
+      ]
+    },
+    {
+      "id": "aistudio_models",
+      "kind": "remote",
+      "title": "Gemini API Models Reference (Gemini 4 & Deprecations)",
+      "url": "https://aistudio.google.com/docs/models.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md",
+        "rules/diretrizes-qualidade-eficiencia.md"
+      ],
+      "required_invariants": [
+        "gemini-4-hydrogen",
+        "gemini-4-argon",
+        "gemini-4-carbon"
+      ]
+    },
+    {
+      "id": "aistudio_libraries",
+      "kind": "remote",
+      "title": "Gemini API Official SDKs & Libraries (github.com/googleapis)",
+      "url": "https://aistudio.google.com/docs/libraries.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "google-genai",
+        "@google/genai",
+        "google.golang.org/genai",
+        "google-generativeai",
+        "@google/generativeai",
+        "google.golang.org/generative-ai"
+      ]
+    },
+    {
+      "id": "aistudio_decisions_api",
+      "kind": "remote",
+      "title": "Gemini Decisions API (gemini-decision-1)",
+      "url": "https://aistudio.google.com/docs/decisions-api.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "gemini-decision-1",
+        "decisions.create"
+      ]
+    },
+    {
+      "id": "antigravity_models",
+      "kind": "remote",
+      "title": "Google Antigravity IDE & Orchestrator Models",
+      "url": "https://antigravity.google/docs/models.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md",
+        "rules/authoring-subagents.md"
+      ],
+      "required_invariants": [
+        "Gemini 4 Hydrogen",
+        "Gemini 4 Carbon",
+        "Orchestrator"
+      ]
+    },
+    {
+      "id": "antigravity_sdk_overview",
+      "kind": "remote",
+      "title": "Google Antigravity Python SDK (google-antigravity)",
+      "url": "https://antigravity.google/docs/sdk/overview.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md",
+        "rules/authoring-subagents.md"
+      ],
+      "required_invariants": [
+        "google-antigravity",
+        "LocalAgentConfig",
+        "GOOGLE_GENAI_USE_VERTEXAI"
+      ]
+    },
+    {
+      "id": "googleapis_python_genai_changelog",
+      "kind": "remote",
+      "title": "googleapis/python-genai Release Changelog",
+      "url": "https://raw.githubusercontent.com/googleapis/python-genai/main/CHANGELOG.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "3.3.0",
+        "gemini-4-hydrogen"
+      ]
+    },
+    {
+      "id": "aistudio_deprecations",
+      "kind": "remote",
+      "title": "Gemini API Model Deprecations & Shutdown Dates",
+      "url": "https://aistudio.google.com/docs/deprecations.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md",
+        "rules/authoring-subagents.md",
+        "rules/diretrizes-qualidade-eficiencia.md"
+      ],
+      "required_invariants": [
+        "gemini-2.5-flash-lite",
+        "gemini-3.1-flash-live-preview",
+        "gemini-omni-1.1-flash",
+        "gemini-3.1-flash-image-preview"
+      ]
+    },
+    {
+      "id": "aistudio_latest_model",
+      "kind": "remote",
+      "title": "Latest Gemini Models Comparison (Gemini 4 Family)",
+      "url": "https://aistudio.google.com/docs/latest-model.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "gemini-4-hydrogen",
+        "gemini-4-argon",
+        "gemini-4-carbon"
+      ]
+    },
+    {
+      "id": "aistudio_antigravity_agent",
+      "kind": "remote",
+      "title": "Antigravity Managed Agent on Gemini Interactions API",
+      "url": "https://aistudio.google.com/docs/antigravity-agent.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md",
+        "rules/authoring-subagents.md"
+      ],
+      "required_invariants": [
+        "antigravity-preview-09-2026",
+        "gemini-4-hydrogen",
+        "v1beta"
+      ]
+    },
+    {
+      "id": "googleapis_js_genai_changelog",
+      "kind": "remote",
+      "title": "googleapis/js-genai Release Changelog",
+      "url": "https://raw.githubusercontent.com/googleapis/js-genai/main/CHANGELOG.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "3.3.0",
+        "3.0.0"
+      ]
+    },
+    {
+      "id": "googleapis_java_genai_changelog",
+      "kind": "remote",
+      "title": "googleapis/java-genai Release Changelog",
+      "url": "https://raw.githubusercontent.com/googleapis/java-genai/main/CHANGELOG.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "2.3.0",
+        "2.0.0"
+      ]
+    },
+    {
+      "id": "googleapis_kotlin_genai_changelog",
+      "kind": "remote",
+      "title": "googleapis/kotlin-genai Release Changelog",
+      "url": "https://raw.githubusercontent.com/googleapis/kotlin-genai/main/CHANGELOG.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "2.1.0",
+        "2.0.0"
+      ]
+    },
+    {
+      "id": "googleapis_dotnet_genai_changelog",
+      "kind": "remote",
+      "title": "googleapis/dotnet-genai Release Changelog",
+      "url": "https://raw.githubusercontent.com/googleapis/dotnet-genai/main/CHANGELOG.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "2.1.0",
+        "2.0.0"
+      ]
+    },
+    {
+      "id": "googleapis_go_genai_changelog",
+      "kind": "remote",
+      "title": "googleapis/go-genai Release Changelog",
+      "url": "https://raw.githubusercontent.com/googleapis/go-genai/main/CHANGELOG.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "1.77.0",
+        "interactions"
+      ]
+    },
+    {
+      "id": "googleapis_python_aiplatform_changelog",
+      "kind": "remote",
+      "title": "googleapis/python-aiplatform Release Changelog",
+      "url": "https://raw.githubusercontent.com/googleapis/python-aiplatform/main/CHANGELOG.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "2.9.0"
+      ]
+    },
+    {
+      "id": "googleapis_nodejs_agentplatform_changelog",
+      "kind": "remote",
+      "title": "googleapis/nodejs-agentplatform Release Changelog",
+      "url": "https://raw.githubusercontent.com/googleapis/nodejs-agentplatform/main/CHANGELOG.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "0.17.0"
+      ]
+    },
+    {
+      "id": "googleapis_mcp_toolbox_changelog",
+      "kind": "remote",
+      "title": "googleapis/mcp-toolbox Release Changelog",
+      "url": "https://raw.githubusercontent.com/googleapis/mcp-toolbox/main/CHANGELOG.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "1.17.0"
+      ]
+    },
+    {
+      "id": "googleapis_mcp_toolbox_sdk_py_changelog",
+      "kind": "remote",
+      "title": "googleapis/mcp-toolbox-sdk-python toolbox-core Changelog",
+      "url": "https://raw.githubusercontent.com/googleapis/mcp-toolbox-sdk-python/main/packages/toolbox-core/CHANGELOG.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "1.4.0"
+      ]
+    },
+    {
+      "id": "googleapis_mcp_toolbox_sdk_js_pkg",
+      "kind": "remote",
+      "title": "googleapis/mcp-toolbox-sdk-js @toolbox-sdk/core Package",
+      "url": "https://raw.githubusercontent.com/googleapis/mcp-toolbox-sdk-js/main/packages/toolbox-core/package.json",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "@toolbox-sdk/core",
+        "1.2.0"
+      ]
+    },
+    {
+      "id": "googleapis_mcp_toolbox_sdk_go_mod",
+      "kind": "remote",
+      "title": "googleapis/mcp-toolbox-sdk-go Core Go Module",
+      "url": "https://raw.githubusercontent.com/googleapis/mcp-toolbox-sdk-go/main/core/go.mod",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "github.com/googleapis/mcp-toolbox-sdk-go/core"
+      ]
+    },
+    {
+      "id": "googleapis_gcloud_mcp_pkg",
+      "kind": "remote",
+      "title": "googleapis/gcloud-mcp Package Manifest",
+      "url": "https://raw.githubusercontent.com/googleapis/gcloud-mcp/main/packages/gcloud-mcp/package.json",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "@google-cloud/gcloud-mcp",
+        "0.5.3"
+      ]
+    },
+    {
+      "id": "googleapis_storage_mcp_pkg",
+      "kind": "remote",
+      "title": "googleapis/gcloud-mcp storage-mcp Package Manifest",
+      "url": "https://raw.githubusercontent.com/googleapis/gcloud-mcp/main/packages/storage-mcp/package.json",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "@google-cloud/storage-mcp",
+        "0.6.0"
+      ]
+    },
+    {
+      "id": "jsonrpc_spec",
+      "kind": "remote",
+      "title": "JSON-RPC 2.0 Specification",
+      "url": "https://www.jsonrpc.org/specification",
+      "target_rules": [
+        "rules/authoring-mcp-jsonrpc.md"
+      ],
+      "required_invariants": [
+        "jsonrpc",
+        "2.0",
+        "Parse error",
+        "Invalid Request"
+      ]
+    },
+    {
+      "id": "agy_builtin_skills_doc",
+      "kind": "local_home",
+      "title": "Antigravity Builtin Skills Guide",
+      "home_rel_path": ".gemini/antigravity-cli/builtin/skills/agy-customizations/docs/skills.md",
+      "target_rules": [
+        "rules/authoring-skills.md"
+      ],
+      "required_invariants": [
+        "SKILL.md",
+        "references/",
+        "scripts/",
+        "Progressive Disclosure"
+      ]
+    },
+    {
+      "id": "agy_builtin_rules_doc",
+      "kind": "local_home",
+      "title": "Antigravity Builtin Rules Guide",
+      "home_rel_path": ".gemini/antigravity-cli/builtin/skills/agy-customizations/docs/rules.md",
+      "target_rules": [
+        "rules/authoring-rules-and-google-apis.md"
+      ],
+      "required_invariants": [
+        "GEMINI.md",
+        "AGENTS.md",
+        "24,000 bytes",
+        "20,000-token"
+      ]
+    },
+    {
+      "id": "agy_builtin_plugins_doc",
+      "kind": "local_home",
+      "title": "Antigravity Builtin Plugins Guide",
+      "home_rel_path": ".gemini/antigravity-cli/builtin/skills/agy-customizations/docs/plugins.md",
+      "target_rules": [
+        "rules/authoring-plugins-hooks.md"
+      ],
+      "required_invariants": [
+        "plugin.json",
+        "hooks.json",
+        "mcp_config.json",
+        "rules/AGENTS.md"
+      ]
+    },
+    {
+      "id": "agy_builtin_hooks_doc",
+      "kind": "local_home",
+      "title": "Antigravity Builtin Hooks Guide",
+      "home_rel_path": ".gemini/antigravity-cli/builtin/skills/agy-customizations/docs/hooks.md",
+      "target_rules": [
+        "rules/authoring-plugins-hooks.md"
+      ],
+      "required_invariants": [
+        "PreToolUse",
+        "PostToolUse",
+        "SessionStart",
+        "PreInvocation",
+        "Stop",
+        "camelCase"
+      ]
+    },
+    {
+      "id": "agy_builtin_mcp_doc",
+      "kind": "local_home",
+      "title": "Antigravity Builtin MCP Guide",
+      "home_rel_path": ".gemini/antigravity-cli/builtin/skills/agy-customizations/docs/mcp_servers.md",
+      "target_rules": [
+        "rules/authoring-mcp-jsonrpc.md"
+      ],
+      "required_invariants": [
+        "mcp_config.json",
+        "Streamable HTTP",
+        "2024-11-05"
+      ]
+    }
+  ]
+}

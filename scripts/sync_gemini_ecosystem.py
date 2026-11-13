@@ -46,7 +46,6 @@ GOV_SUBAGENTS: tuple[str, ...] = (
     "review-squad.md", "intent-hitl-mediator.md", "dev-workspace-publisher.md",
 )
 MIRRORED_AGENTS_REPOS: tuple[str, ...] = (
-    "franklin-quebragalho",
     "adk-go-mcp",
     "adk-py-agents",
     "adk-ts-agent",
@@ -58,6 +57,8 @@ MIRRORED_AGENTS_REPOS: tuple[str, ...] = (
     "mytts",
     "scoreboard",
 )
+
+GLOBAL_ONLY_RULES: tuple[str, ...] = ("diretrizes-qualidade-eficiencia.md",)
 
 
 def _remove_dir_or_link(target: Path) -> None:
@@ -107,8 +108,12 @@ def _prepare_and_clean_dirs() -> None:
         GEMINI_ROOT / "doc",
         GEMINI_ROOT / "agents",
         GEMINI_ROOT / "config" / "agents",
+        GEMINI_ROOT / "config" / "rules",
+        GEMINI_ROOT / "config" / "specs-cache",
         GEMINI_ROOT / "plans",
         CONFIG_PLUGIN_ROOT / "skills",
+        CONFIG_PLUGIN_ROOT / "rules",
+        CONFIG_PLUGIN_ROOT / "scripts",
         CONFIG_PLUGIN_ROOT / "plans",
         CONFIG_PLUGIN_ROOT / "lib",
         CONFIG_PLUGIN_ROOT / "doc",
@@ -283,44 +288,36 @@ def _mirror_context_to_root(repo_dir: Path) -> list[str]:
     return written
 
 
-def _sync_local_triad_and_plugin_assets() -> None:
-    """Sincroniza a Tríade de Governança v2.0 (.agents/ e .context/), rules/, SSOT global, hooks e assets do plugin."""
-    ssot_rule = ROOT_DIR / "rules" / "diretrizes-qualidade-eficiencia.md"
-    if ssot_rule.exists():
-        raw_ssot = ssot_rule.read_text(encoding="utf-8")
-        lines = raw_ssot.splitlines()
-        body_ssot = raw_ssot
-        if lines and lines[0].strip() == "---":
-            end_fm = next((i for i in range(1, min(15, len(lines))) if lines[i].strip() == "---"), 0)
-            if end_fm > 0:
-                body_ssot = "\n".join(lines[end_fm + 1 :]).lstrip() + "\n"
-        for global_agents_md in (
-            USER_HOME / "AGENTS.md",
-            USER_HOME / ".agents" / "AGENTS.md",
-        ):
-            global_agents_md.parent.mkdir(parents=True, exist_ok=True)
-            global_agents_md.write_text(body_ssot, encoding="utf-8")
+def _cleanup_ssot_home_duplicates() -> None:
+    """Remove duplicatas SSOT em ~/AGENTS.md, ~/.agents/AGENTS.md e franklin/.agents/AGENTS.md."""
+    ssot_marker = "Kernel Operacional, Criação de Projetos e Governança"
+    for dup_agents in (USER_HOME / "AGENTS.md", USER_HOME / ".agents" / "AGENTS.md"):
+        if dup_agents.is_file():
+            content = dup_agents.read_text(encoding="utf-8", errors="ignore")
+            if ssot_marker in content:
+                dup_agents.unlink(missing_ok=True)
+    repo_dup = ROOT_DIR / ".agents" / "AGENTS.md"
+    if repo_dup.is_file() and (ROOT_DIR / "AGENTS.md").is_file() and ROOT_DIR.name not in MIRRORED_AGENTS_REPOS:
+        repo_dup.unlink(missing_ok=True)
 
-    for repo_dir in REPOS_ROOT.iterdir():
-        if not repo_dir.is_dir() or repo_dir.name.startswith("."):
-            continue
-        src_f = repo_dir / "AGENTS.md"
-        dst_f = repo_dir / ".agents" / "AGENTS.md"
-        if src_f.exists() and (not dst_f.exists() or repo_dir.name in MIRRORED_AGENTS_REPOS):
-            dst_f.parent.mkdir(parents=True, exist_ok=True)
-            if not dst_f.is_file() or _eol_normalized(src_f) != _eol_normalized(dst_f):
-                shutil.copy2(src_f, dst_f)
-        _mirror_context_to_root(repo_dir)
 
+def _sync_rules_and_plugin_bundle() -> None:
+    """Distribui rules/ sem duplicação (always_on em config/rules, demais no plugin) e empacota scripts/manifest."""
     rules_src = ROOT_DIR / "rules"
     rules_dst = GEMINI_ROOT / "config" / "rules"
+    plugin_rules_dst = CONFIG_PLUGIN_ROOT / "rules"
     if rules_src.exists():
-        expected_rules = {p.name for p in rules_src.glob("*.md")}
-        if rules_dst.exists():
-            for existing_rule in list(rules_dst.glob("*.md")):
-                if existing_rule.name not in expected_rules:
-                    existing_rule.unlink(missing_ok=True)
-        _copy_tree(rules_src, rules_dst)
+        global_names = set(GLOBAL_ONLY_RULES)
+        plugin_names = {p.name for p in rules_src.glob("*.md") if p.name not in global_names}
+        for existing in list(rules_dst.glob("*.md")):
+            if existing.name not in global_names:
+                existing.unlink(missing_ok=True)
+        for existing in list(plugin_rules_dst.glob("*.md")):
+            if existing.name not in plugin_names:
+                existing.unlink(missing_ok=True)
+        for rule_file in rules_src.glob("*.md"):
+            target_dir = rules_dst if rule_file.name in global_names else plugin_rules_dst
+            shutil.copy2(rule_file, target_dir / rule_file.name)
 
     assets_src = ROOT_DIR / "assets"
     if assets_src.exists():
@@ -328,11 +325,42 @@ def _sync_local_triad_and_plugin_assets() -> None:
 
     for src_file, dst_file in (
         (ROOT_DIR / "hooks" / "hooks.json", CONFIG_PLUGIN_ROOT / "hooks.json"),
+        (ROOT_DIR / "hooks" / "antigravity_harness_hook.py", CONFIG_PLUGIN_ROOT / "scripts" / "antigravity_harness_hook.py"),
         (ROOT_DIR / "plugin.json", CONFIG_PLUGIN_ROOT / "plugin.json"),
     ):
         if src_file.exists():
+            dst_file.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src_file, dst_file)
-    (CONFIG_PLUGIN_ROOT / "mcp_config.json").write_text('{\n  "mcpServers": {}\n}\n', encoding="utf-8")
+
+    legacy_mcp = CONFIG_PLUGIN_ROOT / "mcp_config.json"
+    if legacy_mcp.exists():
+        legacy_mcp.unlink(missing_ok=True)
+    plugin_readme = (
+        "# franklin-skills\n\n"
+        f"Plugin enxuto gerado automaticamente por `sync_gemini_ecosystem.py`: {len(GLOBAL_CORE_FRANKLIN_SKILLS)} "
+        "skills core universais (`skills/`), regras modulares (`rules/`), hook harness portátil (`hooks.json` + "
+        "`scripts/antigravity_harness_hook.py`), planos DAG (`plans/`) e biblioteca compartilhada (`lib/`).\n"
+    )
+    (CONFIG_PLUGIN_ROOT / "README.md").write_text(plugin_readme, encoding="utf-8")
+
+
+def _sync_local_triad_and_plugin_assets() -> None:
+    """Sincroniza a Tríade de Governança v2.0 (.context/), rules/ sem duplicata, hooks e bundle do plugin."""
+    _cleanup_ssot_home_duplicates()
+
+    for repo_dir in REPOS_ROOT.iterdir():
+        if not repo_dir.is_dir() or repo_dir.name.startswith("."):
+            continue
+        if repo_dir != ROOT_DIR:
+            src_f = repo_dir / "AGENTS.md"
+            dst_f = repo_dir / ".agents" / "AGENTS.md"
+            if src_f.exists() and (not dst_f.exists() or repo_dir.name in MIRRORED_AGENTS_REPOS):
+                dst_f.parent.mkdir(parents=True, exist_ok=True)
+                if not dst_f.is_file() or _eol_normalized(src_f) != _eol_normalized(dst_f):
+                    shutil.copy2(src_f, dst_f)
+        _mirror_context_to_root(repo_dir)
+
+    _sync_rules_and_plugin_bundle()
 
 
 def _sync_docs_and_agent_card() -> int:
@@ -395,14 +423,18 @@ def _format_antigravity_agent_markdown(item: Path) -> str:
     spec = load_agent_spec(str(item), verbose=False)
     desc_escaped = json.dumps(spec["description"], ensure_ascii=False)
     tools_list = [t for t in (spec.get("tools") or []) if t not in ("*", "call_mcp_tool")]
-    tools_block = f"tools:\n" + "\n".join(f"  - {t}" for t in tools_list) + "\n" if tools_list else ""
+    tools_block = "tools:\n" + "\n".join(f"  - {t}" for t in tools_list) + "\n" if tools_list else ""
+    skills_list = spec.get("skills") or []
+    skills_block = "skills:\n" + "\n".join(f"  - {s}" for s in skills_list) + "\n" if skills_list else ""
+    raw_policy = str(spec.get("commandExecutionPolicy", "sandbox"))
+    policy_yaml = '"off"' if raw_policy == "off" else raw_policy
     return (
         f"---\nname: {spec['name']}\ndescription: {desc_escaped}\nsubagent: true\nmainAgent: false\n"
-        f"enable_write_tools: {str(bool(spec.get('enable_write_tools', True))).lower()}\n"
-        f"enable_mcp_tools: {str(bool(spec.get('enable_mcp_tools', True))).lower()}\n"
-        f"enable_subagent_tools: {str(bool(spec.get('enable_subagent_tools', False))).lower()}\n"
-        f"commandExecutionPolicy: {spec.get('commandExecutionPolicy', 'auto')}\n"
-        f"{tools_block}---\n\n{body}\n"
+        f"model: {spec.get('model', 'inherit')}\n"
+        f"commandExecutionPolicy: {policy_yaml}\n"
+        f"inheritMcp: {str(bool(spec.get('inheritMcp', True))).lower()}\n"
+        f"inheritCustomizations: {str(bool(spec.get('inheritCustomizations', True))).lower()}\n"
+        f"{tools_block}{skills_block}---\n\n{body}\n"
     )
 
 
@@ -450,7 +482,12 @@ def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
     all_franklin = sorted(p.name for p in (ROOT_DIR / "skills").iterdir() if p.is_dir() and (p / "SKILL.md").exists())
 
     profiles: dict[str, dict[str, Any]] = {
-        name: dict(ui_profile) for name in ("frontcraft-studio", "scoreboard", "mytts", "astral-pet-assist", "android-auto-first-app", "skills-web")
+        name: dict(ui_profile) for name in ("frontcraft-studio", "scoreboard", "mytts", "astral-pet-assist", "android-auto-first-app")
+    }
+    profiles["skills-web"] = {
+        "franklin_skills": [*ui_f, "android-agy-projects"],
+        "user_skills": ui_u,
+        "subagents": UI_SUBAGENTS,
     }
     for name in ("mcp-web-agents", "webmcp", "google-auth-mcp", "caveman-agent", "epic-volta"):
         profiles[name] = dict(mcp_profile)

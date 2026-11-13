@@ -6,10 +6,30 @@
   --color-slate-850: oklch(0.235 0.038 258.5);
   --color-slate-900: oklch(0.208 0.042 265.755);
   --color-slate-950: oklch(0.155 0.028 261.692);
+  --shadow-elevation-1: var(--shadow-layer-sm);
+  --shadow-elevation-2: var(--shadow-layer-md);
+  --shadow-elevation-3: var(--shadow-layer-lg);
+  --shadow-elevation-low: var(--shadow-elevation-1);
+  --shadow-elevation-medium: var(--shadow-elevation-2);
+  --shadow-elevation-high: var(--shadow-elevation-3);
+  --shadow-inset-sunken: var(--shadow-inset);
 }
 
 :root {
   color-scheme: light dark;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-inline-icon: var(--space-2);
+  --space-card-gap: var(--space-3);
+  --space-card-padding: clamp(1rem, 3cqi, 1.75rem);
+  --space-grid-gap: clamp(1rem, 2.5vw, 1.5rem);
+  --space-section-inset: clamp(1.5rem, 4vw, 3rem);
+  --radius-card: 1rem;
+  --brand-primary: oklch(0.623 0.214 259.815);
   --bg-canvas: light-dark(oklch(0.984 0.003 247.858), oklch(0.155 0.028 261.692));
   --surface-canvas: var(--bg-canvas);
   --surface-sunken: light-dark(oklch(0.955 0.006 255), oklch(0.13 0.025 261));
@@ -17,10 +37,27 @@
   --bg-surface: var(--surface-card);
   --text-primary: light-dark(oklch(0.208 0.042 265.755), oklch(0.968 0.007 247.896));
   --ink-primary: var(--text-primary);
-  --shadow-inset: inset 0 2px 4px 0 oklch(0.08 0.02 255 / 0.45), inset 0 1px 0 0 oklch(0.98 0.005 255 / 0.08);
-  --shadow-elevation-1: 0 1px 2px 0 oklch(0.08 0.02 255 / 0.26), 0 2px 6px -1px oklch(0.08 0.02 255 / 0.20), inset 0 1px 0 0 oklch(0.98 0.005 255 / 0.08);
-  --shadow-elevation-2: 0 2px 5px -1px oklch(0.08 0.02 255 / 0.32), 0 8px 18px -2px oklch(0.08 0.02 255 / 0.28), inset 0 1px 0 0 oklch(0.99 0.002 255 / 0.14);
-  --shadow-elevation-3: 0 6px 12px -2px oklch(0.08 0.02 255 / 0.38), 0 20px 36px -4px oklch(0.08 0.02 255 / 0.46), inset 0 1px 0 0 oklch(0.99 0.002 255 / 0.16);
+  --catch-light: inset 0 1px 0 0 light-dark(oklch(1 0 0 / 0.85), oklch(0.98 0.005 255 / 0.12));
+  --shadow-inset:
+    inset 0 2px 4px 0 light-dark(oklch(0.15 0.02 255 / 0.08), oklch(0.08 0.02 255 / 0.55)),
+    inset 0 0 0 1px light-dark(oklch(0.15 0.02 255 / 0.05), oklch(0.98 0.005 255 / 0.08));
+  --shadow-layer-sm:
+    0 1px 2px 0 light-dark(oklch(0.20 0.03 255 / 0.05), oklch(0.08 0.02 255 / 0.45)),
+    0 2px 6px -1px light-dark(oklch(0.20 0.03 255 / 0.04), oklch(0.08 0.02 255 / 0.35)),
+    var(--catch-light);
+  --shadow-layer-md:
+    0 2px 5px -1px light-dark(oklch(0.20 0.03 255 / 0.06), oklch(0.08 0.02 255 / 0.50)),
+    0 8px 18px -2px light-dark(oklch(0.20 0.03 255 / 0.08), oklch(0.08 0.02 255 / 0.60)),
+    0 0 12px 0 light-dark(transparent, oklch(from var(--brand-primary) l c h / 0.14)),
+    var(--catch-light);
+  --shadow-layer-lg:
+    0 6px 12px -2px light-dark(oklch(0.20 0.03 255 / 0.07), oklch(0.08 0.02 255 / 0.55)),
+    0 20px 36px -6px light-dark(oklch(0.20 0.03 255 / 0.14), oklch(0.08 0.02 255 / 0.75)),
+    0 0 24px 0 light-dark(transparent, oklch(from var(--brand-primary) l c h / 0.24)),
+    var(--catch-light);
+  --shadow-elevation-1: var(--shadow-layer-sm);
+  --shadow-elevation-2: var(--shadow-layer-md);
+  --shadow-elevation-3: var(--shadow-layer-lg);
 }
 
 @layer base {
@@ -55,14 +92,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: var(--surface-sunken, oklch(0.13 0.025 261));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: oklch(0.27 0.035 260);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: oklch(0.35 0.04 260);
 }

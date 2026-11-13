@@ -16,7 +16,7 @@ O **Franklin Quebra-Galho** (`franklin-quebragalho`) é o assistente principal d
 | **`plan-uiux`** | `v1.1.0` | 🚀 Produção | Análise minuciosa e global de frontend UI/UX com REA (`analyze_javascript_application` / `inspect_analysis_view`), proporção `60-30-10` `OKLCH`, `@container` e propostas `Antes vs. Depois`. | [skills/plan-uiux/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/plan-uiux/SKILL.md) |
 | **`audit-skills-antigravity`** | `v2.1.0` | 🚀 Produção | Auditoria matemática e estrutural de Skills privadas via REA + motor Go (`scripts/skill_auditor_rea.go`): Context Bloat, YAML, $\text{Pass}@k$ e $\text{FNR}$. | [skills/audit-skills-antigravity/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/audit-skills-antigravity/SKILL.md) |
 | **`complex-zero`** | `v3.0.0` | 🚀 Produção | Auditoria ReAct, inspeção física CDP/DevTools, AST anti-fake (*ghost nodes*, funções vazias e telemetria simulada) e engenharia de alta complexidade (`@xyflow/react`, `WebSocket` 150ms, `chokidar`, `OKLCH`, `@container` e Next.js 15+ async `params`). | [skills/complex-zero/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/complex-zero/SKILL.md) |
-| **`agent-server-auditor`** | `v1.1.0` | 🚀 Produção | Auditor arquitetural poliglota (Go, TS, Py) para agentes, servidores MCP (`2026-07-28`), nós A2A (`v1.0` JWS), binários, travas `max_steps` e `memories/audit_report.json`. | [skills/agent-server-auditor/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/agent-server-auditor/SKILL.md) |
+| **`agent-server-auditor`** | `v1.2.0` | 🚀 Produção | Auditor arquitetural poliglota (Go, TS, Py) para agentes, servidores MCP (`2026-07-28`), nós A2A (`v1.0` JWS), binários, travas `max_steps` e `memories/audit_report.json`. | [skills/agent-server-auditor/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/agent-server-auditor/SKILL.md) |
 | **`organizador-projetos-ideias`** | `v1.0.0` | 🚀 Produção | Organizador de ideias do zero (`ideation_to_v1`) e sincronizador completo de projetos (`project_organizer_sync`). | [skills/organizador-projetos-ideias/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/organizador-projetos-ideias/SKILL.md) |
 | **`code-acceptability-auditor`** | `v1.1.0` | 🚀 Produção | Portão 1 AST/Pydantic de código Python (`12` regras), Quality Gate (`>=75/100`) e Trigger Matrix ($F_1=1.0$). | [skills/code-acceptability-auditor/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/code-acceptability-auditor/SKILL.md) |
 | **`design-md`** | `v7.0.0` | 🚀 Produção | Cria ou atualiza o contrato `DESIGN.md` na raiz do projeto com tokens semânticos `OKLCH` em 3 camadas, regra `60-30-10`, escala tipográfica fluida e composição espacial. | [skills/design-md/](file:///c:/Users/melki/dev/repos/franklin-quebragalho/skills/design-md/SKILL.md) |
@@ -45,7 +45,7 @@ O **Franklin Quebra-Galho** (`franklin-quebragalho`) é o assistente principal d
 ## Comandos Rápidos
 
 - **Executar Servidor MCP Localmente**: `uv run python server.py`
-- **Executar Suíte Completa de Testes (`83/83`)**: `uv run pytest -q`
+- **Executar Suíte Completa de Testes (`101/101`)**: `uv run pytest -q`
 - **Auditar Todas as Skills (`29/29`)**: `uv run python scripts/validate_skills.py`
 - **Auditar Estrutura Física e AST do Projeto**: `uv run python skills/auditoria-projetos-sistema/scripts/project_structure_and_code_auditor.py --self-test`
 - **Sincronizar Catálogo, Regras e Plugin Global**: `uv run python scripts/sync_gemini_ecosystem.py`

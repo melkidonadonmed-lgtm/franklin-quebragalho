@@ -1,6 +1,6 @@
 # Referência Mestre de Arquitetura, Design System em 3 Camadas (`OKLCH`), Física Óptica e Modelos por Complexidade (`v7.0.0`)
 
-Esta referência consolida os **9 Eixos + Matriz de Decisão** da Fonte Única de Verdade (SSOT) em [`../../rules/diretrizes-frontend-9-eixos.md`](../../rules/diretrizes-frontend-9-eixos.md) para consulta direta das skills `design-md`, `frontend-code-architect`, `frontend-ui-ux-auditor`, `frontend-testing-auditor` e `auditoria-projetos-sistema`.
+Esta referência consolida os **9 Eixos + Matriz de Decisão** da Fonte Única de Verdade (SSOT) em [`../../../rules/diretrizes-frontend-9-eixos.md`](../../../rules/diretrizes-frontend-9-eixos.md) para consulta direta das skills `design-md`, `frontend-code-architect`, `frontend-ui-ux-auditor`, `frontend-testing-auditor` e `auditoria-projetos-sistema`.
 
 ---
 
@@ -78,15 +78,24 @@ p, li {
   --primitive-neutral-800: oklch(0.22 0.025 260);
   --primitive-neutral-900: oklch(0.16 0.02 260);
 
-  --space-1: 0.25rem;  /* 4px */
-  --space-2: 0.5rem;   /* 8px */
-  --space-3: 0.75rem;  /* 12px */
-  --space-4: 1rem;     /* 16px */
-  --space-6: 1.5rem;   /* 24px */
-  --space-8: 2rem;     /* 32px */
+  --space-0-5: 0.125rem; /* 2px */
+  --space-1: 0.25rem;    /* 4px */
+  --space-2: 0.5rem;     /* 8px */
+  --space-3: 0.75rem;    /* 12px */
+  --space-4: 1rem;       /* 16px */
+  --space-6: 1.5rem;     /* 24px */
+  --space-8: 2rem;       /* 32px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+  --space-inline-icon: var(--space-2);
+  --space-card-gap: var(--space-3);
+  --space-card-padding: clamp(1rem, 3cqi, 1.75rem);
+  --space-grid-gap: clamp(1rem, 2.5vw, 1.5rem);
+  --space-section-inset: clamp(1.5rem, 4vw, 3rem);
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
+  --radius-card: 1rem;
   --radius-full: 9999px;
 
   /* 2. TOKENS SEMÂNTICOS (Reativos via light-dark, color-mix e RCS from) */
@@ -124,27 +133,46 @@ p, li {
   --btn-hover: oklch(from var(--brand-primary) calc(l - 0.08) c h);
   --badge-bg: oklch(from var(--brand-primary) l c h / 0.12);
 
-  /* SOMBRAS EM CAMADAS: Umbra de contato + Penumbra difusa com spread negativo */
-  --shadow-elevation-1:
+  /* SOMBRAS EM CAMADAS: Primitivas (--shadow-layer-*) + Semânticas (Umbra + Penumbra spread negativo + Catch-Light) */
+  --shadow-layer-sm:
     0px 1px 2px 0px oklch(0.2 0.03 255 / 0.05),
     0px 2px 4px -1px oklch(0.2 0.03 255 / 0.04),
     var(--catch-light);
-  --shadow-elevation-2:
+  --shadow-layer-md:
     0px 2px 4px -1px oklch(0.2 0.03 255 / 0.06),
     0px 6px 12px -2px oklch(0.2 0.03 255 / 0.08),
-    0px 14px 24px -4px oklch(0.2 0.03 255 / 0.05);
-  --shadow-elevation-3:
+    0px 14px 24px -4px oklch(0.2 0.03 255 / 0.05),
+    var(--catch-light);
+  --shadow-layer-lg:
     0px 4px 8px -2px oklch(0.2 0.03 255 / 0.06),
     0px 16px 24px -4px oklch(0.2 0.03 255 / 0.10),
-    0px 32px 48px -8px oklch(0.2 0.03 255 / 0.14);
-  --shadow-inset:
-    inset 0px 2px 4px 0px oklch(0.15 0.02 255 / 0.08),
-    inset 0px 0px 0px 1px oklch(0.15 0.02 255 / 0.05);
+    0px 32px 48px -8px oklch(0.2 0.03 255 / 0.14),
+    var(--catch-light);
 
+  --shadow-elevation-1: var(--shadow-layer-sm);
+  --shadow-elevation-2: var(--shadow-layer-md);
+  --shadow-elevation-3: var(--shadow-layer-lg);
+  --shadow-inset:
+    inset 0px 2px 4px 0px light-dark(oklch(0.15 0.02 255 / 0.08), oklch(0 0 0 / 0.65)),
+    inset 0px 0px 0px 1px light-dark(oklch(0.15 0.02 255 / 0.05), oklch(1 0 0 / 0.05));
+  --elevation-pressed-inset:
+    inset 0px 3px 6px -1px light-dark(oklch(0.15 0.02 255 / 0.16), oklch(0 0 0 / 0.55)),
+    inset 0px 1px 2px 0px light-dark(oklch(0.15 0.02 255 / 0.22), oklch(0 0 0 / 0.70));
+
+  /* Aliases Semânticos e Compatibilidade Tailwind v4 (@theme) */
+  --elevation-flat: none;
   --elevation-1: var(--shadow-elevation-1);
   --elevation-2: var(--shadow-elevation-2);
   --elevation-3: var(--shadow-elevation-3);
+  --elevation-low: var(--shadow-elevation-1);
+  --elevation-medium: var(--shadow-elevation-2);
+  --elevation-high: var(--shadow-elevation-3);
+  --shadow-elevation-low: var(--shadow-elevation-1);
+  --shadow-elevation-medium: var(--shadow-elevation-2);
+  --shadow-elevation-high: var(--shadow-elevation-3);
+  --shadow-inset-sunken: var(--shadow-inset);
   --sunken-recess: var(--shadow-inset);
+  --shadow-clean-card: var(--shadow-elevation-2);
 
   --font-sans: 'Inter', 'Plus Jakarta Sans', 'Geist', 'IBM Plex Sans', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'IBM Plex Mono', 'Geist Mono', ui-monospace, monospace;
@@ -154,14 +182,17 @@ p, li {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --shadow-elevation-1:
-      0px 2px 4px oklch(0 0 0 / 0.45),
+    --shadow-layer-sm:
+      0px 1px 2px 0px oklch(0 0 0 / 0.45),
+      0px 2px 4px -1px oklch(0 0 0 / 0.35),
       inset 0px 1px 0px 0px oklch(1 0 0 / 0.08);
-    --shadow-elevation-2:
-      0px 8px 20px -2px oklch(0 0 0 / 0.6),
+    --shadow-layer-md:
+      0px 2px 4px -1px oklch(0 0 0 / 0.50),
+      0px 8px 20px -2px oklch(0 0 0 / 0.60),
       0px 0px 12px 0px oklch(from var(--brand-primary) l c h / 0.14),
       inset 0px 1px 0px 0px oklch(1 0 0 / 0.12);
-    --shadow-elevation-3:
+    --shadow-layer-lg:
+      0px 4px 8px -2px oklch(0 0 0 / 0.55),
       0px 20px 40px -6px oklch(0 0 0 / 0.75),
       0px 0px 24px 0px oklch(from var(--brand-primary) l c h / 0.24),
       inset 0px 1px 0px 0px oklch(1 0 0 / 0.16);
@@ -169,7 +200,23 @@ p, li {
 }
 
 [data-theme="light"] { color-scheme: light; }
-[data-theme="dark"]  { color-scheme: dark; }
+[data-theme="dark"] {
+  color-scheme: dark;
+  --shadow-layer-sm:
+    0px 1px 2px 0px oklch(0 0 0 / 0.45),
+    0px 2px 4px -1px oklch(0 0 0 / 0.35),
+    inset 0px 1px 0px 0px oklch(1 0 0 / 0.08);
+  --shadow-layer-md:
+    0px 2px 4px -1px oklch(0 0 0 / 0.50),
+    0px 8px 20px -2px oklch(0 0 0 / 0.60),
+    0px 0px 12px 0px oklch(from var(--brand-primary) l c h / 0.14),
+    inset 0px 1px 0px 0px oklch(1 0 0 / 0.12);
+  --shadow-layer-lg:
+    0px 4px 8px -2px oklch(0 0 0 / 0.55),
+    0px 20px 40px -6px oklch(0 0 0 / 0.75),
+    0px 0px 24px 0px oklch(from var(--brand-primary) l c h / 0.24),
+    inset 0px 1px 0px 0px oklch(1 0 0 / 0.16);
+}
 ```
 
 ---
@@ -230,7 +277,8 @@ dialog::backdrop {
   background-color: oklch(0 0 0 / 0.55);
   backdrop-filter: blur(8px);
   opacity: 0;
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), overlay 0.3s allow-discrete, display 0.3s allow-discrete;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), overlay 0.3s, display 0.3s;
+  transition-behavior: allow-discrete;
 }
 dialog[open]::backdrop { opacity: 1; }
 @starting-style { dialog[open]::backdrop { opacity: 0; } }
@@ -248,7 +296,8 @@ dialog[open]::backdrop { opacity: 1; }
     inset 0px 1px 0px 0px oklch(1 0 0 / 0.25);                     /* 4. Bisel especular */
   opacity: 0;
   transform: scale(0.92) translateY(16px);
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), overlay 0.3s allow-discrete, display 0.3s allow-discrete;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), overlay 0.3s, display 0.3s;
+  transition-behavior: allow-discrete;
 }
 .glassModal[open] { opacity: 1; transform: scale(1) translateY(0); }
 @starting-style { .glassModal[open] { opacity: 0; transform: scale(0.92) translateY(16px); } }

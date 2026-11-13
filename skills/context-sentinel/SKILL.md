@@ -1,13 +1,10 @@
 ---
 name: context-sentinel
 description: "Audita a integridade da janela de contexto em conversas multi-turn e extrai estado estruturado da sessão ([FATO], [PENDENCIA], [LACUNA]) em SQLite ou JSON. Use a cada ciclo; não use para código."
-version: "1.1.0"
-updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
-allowed-tools: ["read_file", "call_mcp_tool"]
 metadata:
   version: "1.1.0"
-  updated_at: "2026-11-12"
+  updated_at: "2026-11-13"
   author: "Franklin-Main & Melki"
   category: "Auditoria e Integridade de Janela de Contexto"
   tags: ["context-rot", "sqlite", "snapshots", "pydantic"]

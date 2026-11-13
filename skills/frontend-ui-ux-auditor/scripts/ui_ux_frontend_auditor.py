@@ -37,7 +37,7 @@ TW_ARBITRARY_PX_RE = re.compile(
     r"\b(?:p|px|py|pt|pr|pb|pl|m|mx|my|mt|mr|mb|ml|gap|gap-x|gap-y|w|h|top|left|right|bottom)-\[(\d+)px\]"
 )
 CSS_SPACING_PX_RE = re.compile(
-    r"(?:padding(?:-(?:top|right|bottom|left))?|margin(?:-(?:top|right|bottom|left))?|gap)\s*:\s*([^;}{]+)",
+    r"(?:padding(?:-(?:top|right|bottom|left|inline|block|inline-start|inline-end|block-start|block-end))?|margin(?:-(?:top|right|bottom|left|inline|block|inline-start|inline-end|block-start|block-end))?|(?:row-|column-)?gap)\s*:\s*([^;}{]+)",
     re.IGNORECASE,
 )
 PX_VAL_RE = re.compile(r"(\d+)\s*px", re.IGNORECASE)
@@ -49,7 +49,11 @@ COLOR_PAIR_RE = re.compile(
     re.IGNORECASE | re.DOTALL,
 )
 REFLOW_TRANSITION_RE = re.compile(
-    r"transition(?:-property)?\s*:[^;}{]*\b(width|height|padding|margin|top|left|right|bottom)\b",
+    r"transition(?:-property)?\s*:[^;}{]*\b(width|height|inline-size|block-size|padding|margin|top|left|right|bottom)\b",
+    re.IGNORECASE,
+)
+SHORTHAND_ALLOW_DISCRETE_RE = re.compile(
+    r"transition\s*:[^;}{]*\ballow-discrete\b",
     re.IGNORECASE,
 )
 BOX_SHADOW_RE = re.compile(r"box-shadow\s*:\s*([^;}{]+)", re.IGNORECASE)
@@ -282,7 +286,15 @@ def audit_light_and_motion(
                 "--shadow-elevation-1",
                 "--shadow-elevation-2",
                 "--shadow-elevation-3",
+                "--shadow-elevation-low",
+                "--shadow-elevation-medium",
+                "--shadow-elevation-high",
+                "--shadow-layer-sm",
+                "--shadow-layer-md",
+                "--shadow-layer-lg",
                 "--shadow-inset",
+                "--shadow-inset-sunken",
+                "--shadow-clean-card",
                 "--elevation-1",
                 "--elevation-2",
                 "--elevation-3",
@@ -290,10 +302,14 @@ def audit_light_and_motion(
                 "--elevation-medium",
                 "--elevation-high",
                 "--elevation-pressed",
+                "--elevation-pressed-inset",
                 "tactile-low",
                 "tactile-md",
                 "tactile-lg",
                 "tactile-pressed",
+                "shadow-elevation-low",
+                "shadow-elevation-medium",
+                "shadow-elevation-high",
                 "shadow-lg",
                 "shadow-xl",
                 "shadow-2xl",
@@ -317,6 +333,9 @@ def audit_light_and_motion(
     if not zero_reflow:
         motion_score -= 45.0
         recs.append(f"Proibido animar propriedades de reflow ({', '.join(set(reflow_hits))}); use apenas transform e opacity.")
+    if SHORTHAND_ALLOW_DISCRETE_RE.search(source):
+        motion_score -= 10.0
+        recs.append("Declarar 'transition-behavior: allow-discrete' como propriedade separada após 'transition' para compatibilidade cross-browser.")
     if not has_reduced_motion:
         motion_score -= 25.0
         recs.append("Incluir suporte a '@media (prefers-reduced-motion: reduce)' ou 'motion-reduce:transition-none' para acessibilidade motora.")

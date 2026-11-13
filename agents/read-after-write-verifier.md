@@ -1,18 +1,19 @@
 ---
 name: read-after-write-verifier
-version: "1.0.0"
-wave: 3
-parent_persona: LoopPlanner
-enable_write_tools: false
-enable_mcp_tools: true
+description: "Gatekeeper de Onda Final (Read-After-Write e Fan-In): consolida saídas paralelas de subagentes e verifica estado real pós-mutação no disco/DOM."
 subagent: true
 mainAgent: false
-commandExecutionPolicy: auto
-covered_modules:
-  - "M4_parallel_fan_in_merger"
-  - "M5_read_after_write_verification"
-  - "M6_visual_and_dom_grounding"
-description: "Gatekeeper de Onda Final (Read-After-Write e Fan-In): consolida saídas paralelas de subagentes e verifica estado real pós-mutação no disco/DOM."
+model: inherit
+commandExecutionPolicy: sandbox
+inheritMcp: true
+inheritCustomizations: true
+tools:
+  - view_file
+  - list_dir
+  - find_by_name
+  - grep_search
+  - run_command
+  - send_message
 ---
 
 # Agente Intermediário: `read-after-write-verifier` (Validação Pós-Escrita & Fan-In)

@@ -1,13 +1,10 @@
 ---
 name: conversor-html-pdf
 description: "Converte documentos Markdown e HTML para arquivos PDF profissionais via Microsoft Edge ou Chrome headless com CSS de impressão. Use para exportar relatórios em PDF; não use para redigir do zero."
-version: "1.2.0"
-updated_at: "2026-11-12"
 compatibility: "Windows 11, pwsh 7+, Microsoft Edge ou Chrome Headless"
-allowed-tools: ["read_file", "write_file", "run_command"]
 metadata:
   version: "1.2.0"
-  updated_at: "2026-11-12"
+  updated_at: "2026-11-13"
   author: "DocMaker & Melki"
   category: "Publicação e Conversão de Documentos"
   tags: ["pdf", "headless-browser", "css-print", "conversao"]

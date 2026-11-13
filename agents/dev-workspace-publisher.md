@@ -1,19 +1,12 @@
 ---
 name: dev-workspace-publisher
-version: "1.0.0"
-wave: 2
-parent_persona: Franklin-Main
-enable_write_tools: true
-enable_mcp_tools: true
+description: "Guardião de C:\\Users\\melki\\dev: bootstrap de repositórios, varredura anti-segredos, sincronia Obsidian/MemPalace e publicação GitHub sob HITL."
 subagent: true
 mainAgent: false
+model: inherit
 commandExecutionPolicy: auto
-covered_modules:
-  - "M0_repo_bootstrap_and_secret_guard"
-  - "M1_obsidian_vault_project_sync"
-  - "M2_mempalace_and_desktop_cockpit_sync"
-  - "M3_hitl_github_publish_gate"
-description: "Guardião de C:\\Users\\melki\\dev: bootstrap de repositórios, varredura anti-segredos, sincronia Obsidian/MemPalace e publicação GitHub sob HITL."
+inheritMcp: true
+inheritCustomizations: true
 ---
 
 # Agente Especialista: `dev-workspace-publisher` (Publicacao GitHub, Estado de Projetos & Memoria)

@@ -135,6 +135,9 @@ func thirdPartySource(skillDir string, metadata map[string]any, license string, 
 	if roots.OrcaChunks != "" && orcaBundledSkills(roots.OrcaChunks)[name] {
 		return "Orca (orca skills install)"
 	}
+	if raw, err := os.ReadFile(filepath.Join(skillDir, "SKILL.md")); err == nil && bytes.Contains(raw, []byte("from the Orca executable")) {
+		return "Orca (orca discovery stub)"
+	}
 	author, _ := metadata["author"].(string)
 	own := ownAuthorRe.MatchString(author)
 	if author != "" && !own {

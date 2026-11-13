@@ -1,18 +1,18 @@
 ---
 name: intent-hitl-mediator
-version: "1.0.0"
-wave: 1
-parent_persona: LoopPlanner
-enable_write_tools: false
-enable_mcp_tools: true
+description: "Mediador de Onda 1 (Triagem de Intenção, Portão HITL e Atribuição GCP): classifica intenções Pydantic, exige aprovação HITL e injeta labels GCP."
 subagent: true
 mainAgent: false
-commandExecutionPolicy: auto
-covered_modules:
-  - "M1_strict_intent_classification"
-  - "M2_hitl_policy_and_idempotency_gate"
-  - "M3_gcp_resource_attribution_dak"
-description: "Mediador de Onda 1 (Triagem de Intenção, Portão HITL e Atribuição GCP): classifica intenções Pydantic, exige aprovação HITL e injeta labels GCP."
+model: inherit
+commandExecutionPolicy: "off"
+inheritMcp: true
+inheritCustomizations: true
+tools:
+  - view_file
+  - list_dir
+  - find_by_name
+  - grep_search
+  - send_message
 ---
 
 # Agente Intermediário: `intent-hitl-mediator` (Triagem, Governança HITL e Atribuição GCP)

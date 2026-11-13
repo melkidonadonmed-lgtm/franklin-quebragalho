@@ -18,6 +18,16 @@ from typing import Any, Dict, List, Literal, Tuple
 
 from pydantic import BaseModel, ConfigDict, Field
 
+_SCRIPT_DIR = str(Path(__file__).resolve().parent)
+if _SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPT_DIR)
+
+from protocol_policy_checks import (  # noqa: E402
+    audit_subagent_markdown,
+    collect_code_protocol_gaps,
+    populate_clean_self_test_tree,
+)
+
 IGNORED_DIRS: frozenset[str] = frozenset({
     ".git", ".venv", "venv", "node_modules", "__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache",
 })
@@ -220,31 +230,54 @@ def _classify_framework_and_lang(f: Path, text: str) -> Tuple[str, str]:
     return lang, "Custom Agent Orchestrator"
 
 
-def _audit_agents(root: Path, files: List[Path]) -> List[AgentAuditItem]:
-    """Audita orquestradores (Py/TS/Go) e subagentes (agents/*.md, .agents/agents/*.md) em 8 eixos (Sintaxe, Objetivo, Função, SDK, Guardrails, Policy e Menor Privilégio)."""
+def _audit_code_agent_file(f: Path, rel: str, suffix: str) -> AgentAuditItem:
+    """Audita um módulo de código Py/TS/Go de agente ou orquestrador."""
     import ast as py_ast
 
+    text = f.read_text(encoding="utf-8", errors="replace")
+    lang, fw = _classify_framework_and_lang(f, text)
+    syntax_ok = True
+    if suffix == ".py":
+        try:
+            py_ast.parse(text, filename=rel)
+        except SyntaxError:
+            syntax_ok = False
+    has_placebo = bool(re.search(r"\braise\s+NotImplementedError\b", text))
+    has_max = bool(MAX_STEPS_RE.search(text))
+    has_stop = bool(STOP_COND_RE.search(text))
+    type_safe = syntax_ok and (("Any" not in text and "interface{}" not in text) or bool(STRICT_SCHEMA_RE.search(text)))
+    missing = [
+        lbl
+        for ok, lbl in (
+            (syntax_ok, "valid_syntax"),
+            (not has_placebo, "real_function (NotImplementedError detectado)"),
+            (has_max, "max_steps"),
+            (has_stop, "stop_condition"),
+        )
+        if not ok
+    ]
+    return AgentAuditItem(
+        name=f.stem,
+        file=rel,
+        language=lang,
+        framework=fw,
+        reasoning_pattern="ReAct / StateGraph",
+        has_max_steps=has_max,
+        has_stop_condition=has_stop,
+        type_safety=type_safe,
+        missing_elements=missing,
+    )
+
+
+def _audit_agents(root: Path, files: List[Path]) -> List[AgentAuditItem]:
+    """Audita orquestradores (Py/TS/Go) e subagentes (agents/*.md, .agents/agents/*.md)."""
     items: List[AgentAuditItem] = []
     for f in files:
         rel = f.relative_to(root).as_posix()
         suffix = f.suffix.lower()
         if suffix == ".md" and (rel.startswith("agents/") or rel.startswith(".agents/agents/")):
             text = f.read_text(encoding="utf-8", errors="replace").lstrip("\ufeff")
-            has_fm = text.startswith("---") and "\n---" in text[3:]
-            fm_block = text.split("---", 2)[1] if has_fm else ""
-            body_block = text.split("---", 2)[2].strip() if has_fm and text.count("---") >= 2 else ""
-            has_wildcard_tools = bool(re.search(r'^\s*-\s*["\']?\*["\']?\s*$', fm_block, re.MULTILINE))
-            has_policy = "commandExecutionPolicy" in fm_block or "enable_write_tools" in fm_block
-            has_objective = len(body_block) >= 60
-            md_missing: List[str] = []
-            if not has_fm:
-                md_missing.append("frontmatter")
-            if has_wildcard_tools:
-                md_missing.append("least_privilege (tools: '*' proibido)")
-            if not has_policy:
-                md_missing.append("policy (commandExecutionPolicy/enable_write_tools)")
-            if not has_objective:
-                md_missing.append("objective_body")
+            md_missing, type_safe = audit_subagent_markdown(text)
             items.append(
                 AgentAuditItem(
                     name=f.stem,
@@ -254,51 +287,16 @@ def _audit_agents(root: Path, files: List[Path]) -> List[AgentAuditItem]:
                     reasoning_pattern="Wave / Subagent Contract",
                     has_max_steps=True,
                     has_stop_condition=True,
-                    type_safety=has_fm and not has_wildcard_tools,
+                    type_safety=type_safe,
                     missing_elements=md_missing,
                 )
             )
             continue
         if suffix not in {".py", ".ts", ".go"} or "test" in f.name.lower():
             continue
-        is_agent_path = "orchestrator" in f.name.lower() or "agent" in f.name.lower()
-        if not is_agent_path or rel.startswith("skills/"):
+        if ("orchestrator" not in f.name.lower() and "agent" not in f.name.lower()) or rel.startswith("skills/"):
             continue
-        text = f.read_text(encoding="utf-8", errors="replace")
-        lang, fw = _classify_framework_and_lang(f, text)
-        syntax_ok = True
-        if suffix == ".py":
-            try:
-                py_ast.parse(text, filename=rel)
-            except SyntaxError:
-                syntax_ok = False
-        has_placebo = bool(re.search(r"\braise\s+NotImplementedError\b", text))
-        has_max = bool(MAX_STEPS_RE.search(text))
-        has_stop = bool(STOP_COND_RE.search(text))
-        type_safe = syntax_ok and (("Any" not in text and "interface{}" not in text) or bool(STRICT_SCHEMA_RE.search(text)))
-        missing = [
-            lbl
-            for ok, lbl in (
-                (syntax_ok, "valid_syntax"),
-                (not has_placebo, "real_function (NotImplementedError detectado)"),
-                (has_max, "max_steps"),
-                (has_stop, "stop_condition"),
-            )
-            if not ok
-        ]
-        items.append(
-            AgentAuditItem(
-                name=f.stem,
-                file=rel,
-                language=lang,
-                framework=fw,
-                reasoning_pattern="ReAct / StateGraph",
-                has_max_steps=has_max,
-                has_stop_condition=has_stop,
-                type_safety=type_safe,
-                missing_elements=missing,
-            )
-        )
+        items.append(_audit_code_agent_file(f, rel, suffix))
     return items
 
 
@@ -415,6 +413,13 @@ def _collect_protocol_and_entity_gaps(details: AuditDetails) -> Tuple[List[str],
         for a in details.agents
         if not a.has_max_steps
     ]
+    warn_agt: List[str] = []
+    for ag in details.agents:
+        for item in ag.missing_elements:
+            if ag.language == "Markdown" and item != "objective_body":
+                crit_agt.append(f"Agente '{ag.file}': {item}.")
+            elif ag.language == "Markdown" and item == "objective_body":
+                warn_agt.append(f"AUD-AGT-02: Agente '{ag.file}' sem corpo objetivo (>= 60 chars).")
     warn_mcp = [
         f"AUD-CNT-01: Servidor MCP '{s.file}' sem contrato estrito explícito."
         for s in details.mcp_servers
@@ -426,7 +431,7 @@ def _collect_protocol_and_entity_gaps(details: AuditDetails) -> Tuple[List[str],
         for c in details.a2a_nodes
         if c.missing_elements
     ]
-    return crit_mcp + crit_agt, warn_mcp + warn_skl + warn_a2a
+    return crit_mcp + crit_agt, warn_agt + warn_mcp + warn_skl + warn_a2a
 
 
 def _compute_gaps_and_score(
@@ -434,6 +439,7 @@ def _compute_gaps_and_score(
     bin_report: BinaryHygieneReport,
     misplaced_bins: List[str],
     details: AuditDetails,
+    protocol_gaps: List[str] | None = None,
 ) -> Tuple[GapAnalysis, float, Literal["APPROVED", "CONFORME_COM_RESSALVAS", "REJECTED"]]:
     """Consolida gaps críticos, avisos e nota determinística de conformidade (0-100)."""
     critical: List[str] = []
@@ -445,6 +451,8 @@ def _compute_gaps_and_score(
     critical.extend([f"AUD-BIN-01: Binário compilado fora de bin/dist/build: '{mb}'." for mb in misplaced_bins])
     ent_crit, ent_warn = _collect_protocol_and_entity_gaps(details)
     critical.extend(ent_crit)
+    if protocol_gaps:
+        critical.extend(protocol_gaps)
     warnings.extend(ent_warn)
 
     score = max(0.0, round(100.0 - (len(critical) * 25.0) - (len(warnings) * 5.0), 2))
@@ -474,7 +482,8 @@ def audit_repository(target_root: Path, persist: bool = False, output_path: Path
         mcp_servers=_audit_mcp_servers(root, files, global_strict),
         a2a_nodes=_audit_a2a_cards(root, files),
     )
-    gaps, score, status = _compute_gaps_and_score(root, bin_report, misplaced_bins, details)
+    protocol_gaps = collect_code_protocol_gaps(root, files)
+    gaps, score, status = _compute_gaps_and_score(root, bin_report, misplaced_bins, details, protocol_gaps)
     report = AgentServerAuditReport(
         timestamp=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         target_root=root.as_posix(),
@@ -498,51 +507,35 @@ def audit_repository(target_root: Path, persist: bool = False, output_path: Path
     return report
 
 
+def _verify_protocol_policy_self_test(root: Path, ag_dir: Path) -> None:
+    """Executa verificações adversariais de políticas Antigravity, SDK legado, modelos banidos e v1beta."""
+    (ag_dir / "bad_subagent.md").write_text(
+        "---\nname: bad\ndescription: \"x\"\nenable_write_tools: true\ntools:\n  - call_mcp_tool\n---\n"
+        + ("Objetivo completo do subagente para passar check de tamanho. " * 2),
+        encoding="utf-8",
+    )
+    (ag_dir / "legacy_client.py").write_text(
+        "import google.generativeai as genai_old\nfrom google import genai\n"
+        "client = genai.Client()\nclient.interactions.create(model='gemini-2.5-pro')\n",
+        encoding="utf-8",
+    )
+    pol_rep = audit_repository(root, persist=False)
+    joined = "\n".join(pol_rep.gap_analysis.critical_missing_structures)
+    for expected in ("AUD-AGT-02", "AUD-SDK-01", "AUD-MOD-01", "AUD-API-01"):
+        assert expected in joined, f"Esperado {expected} em gaps críticos: {joined}"
+
+
 def run_self_test() -> Dict[str, Any]:
     """Executa bateria de auto-validação determinística sobre fixtures sintéticas aprovadas e reprovadas."""
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
-        (root / ".gitignore").write_text(".env\n", encoding="utf-8")
-        (root / ".env.example").write_text("API_KEY=\n", encoding="utf-8")
-        (root / "pyproject.toml").write_text("[project]\nname='demo'\ndependencies=['mcp>=1.0.0']\n", encoding="utf-8")
-        (root / "bin").mkdir()
-        ag_dir = root / "agents"
-        ag_dir.mkdir()
-        (ag_dir / "orchestrator.py").write_text(
-            "from google.adk import Agent\nmax_steps = 10\nstop_condition = 'COMPLETED'\n", encoding="utf-8"
-        )
-        mcp_dir = root / "mcp_servers" / "clean_srv"
-        mcp_dir.mkdir(parents=True)
-        (mcp_dir / "server.py").write_text(
-            'import sys\nfrom mcp import FastMCP\nmodel_config = ConfigDict(extra="forbid")\nprint("ok", file=sys.stderr)\n',
-            encoding="utf-8",
-        )
-        sk_dir = root / "skills" / "demo-skill"
-        for sub in ("scripts", "references", "evals"):
-            (sk_dir / sub).mkdir(parents=True)
-        (sk_dir / "SKILL.md").write_text("---\nname: demo-skill\n---\n# Body\n", encoding="utf-8")
-        (sk_dir / "scripts" / "run.py").write_text("x = 1\n", encoding="utf-8")
-        (sk_dir / "references" / "ref.md").write_text("# Ref\n", encoding="utf-8")
-        (sk_dir / "evals" / "evals.json").write_text('[{"eval_id":"1","prompt":"p","assertions":["a"]}]', encoding="utf-8")
-        a2a_dir = root / ".well-known"
-        a2a_dir.mkdir()
-        (a2a_dir / "agent-card.json").write_text(
-            json.dumps({
-                "name": "demo-node",
-                "description": "Nó A2A de demonstração",
-                "version": "1.0.0",
-                "supportedInterfaces": [{"protocolBinding": "JSONRPC"}],
-                "skills": [{"id": "demo-skill"}],
-                "signatures": [{"signature": "sig"}],
-            }),
-            encoding="utf-8",
-        )
+        ag_dir, mcp_dir = populate_clean_self_test_tree(root)
         clean_rep = audit_repository(root, persist=True)
         assert clean_rep.summary.status == "APPROVED", f"Esperado APPROVED, obteve {clean_rep.summary.status}"
         assert clean_rep.summary.compliance_score == 100.0
         assert (root / "memories" / "audit_report.json").is_file()
 
-        # Injetar poluição STDIO e binário solto -> deve reprovar (REJECTED)
+        _verify_protocol_policy_self_test(root, ag_dir)
         (mcp_dir / "server.py").write_text('from mcp import FastMCP\nprint("polluted stdout")\n', encoding="utf-8")
         (root / "stray.exe").write_bytes(b"MZ")
         dirty_rep = audit_repository(root, persist=False)

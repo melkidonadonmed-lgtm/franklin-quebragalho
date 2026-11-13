@@ -1,21 +1,20 @@
 ---
 name: review-squad
-version: "1.0.0"
-wave: 1
-parent_persona: SkillCraft
-enable_write_tools: false
-enable_mcp_tools: true
-enable_subagent_tools: true
+description: "Coordenador do Review Squad (Zero-Context + SoC): audita Plano, Read-After-Write, Coerência Spec vs. Código, Segurança Zero-Trust e E2E/UI."
 subagent: true
 mainAgent: false
-commandExecutionPolicy: auto
-covered_modules:
-  - "M1_plan_and_variable_review"
-  - "M2_read_after_write_state_check"
-  - "M3_spec_to_code_drift_audit"
-  - "M4_zero_trust_security_review"
-  - "M5_e2e_and_ui_integration_review"
-description: "Coordenador do Review Squad (Zero-Context + SoC): audita Plano, Read-After-Write, Coerência Spec vs. Código, Segurança Zero-Trust e E2E/UI."
+model: inherit
+commandExecutionPolicy: sandbox
+inheritMcp: true
+inheritCustomizations: true
+tools:
+  - view_file
+  - list_dir
+  - find_by_name
+  - grep_search
+  - run_command
+  - invoke_subagent
+  - send_message
 ---
 
 # Subagente Global: `review-squad` (Goldfish & SoC Review Group)

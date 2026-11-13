@@ -3,10 +3,10 @@ name: dev-workspace-publisher
 description: "Guardião de C:\\Users\\melki\\dev: bootstrap de repositórios, varredura anti-segredos, sincronia Obsidian/MemPalace e publicação GitHub sob HITL."
 subagent: true
 mainAgent: false
-enable_write_tools: true
-enable_mcp_tools: true
-enable_subagent_tools: false
+model: inherit
 commandExecutionPolicy: auto
+inheritMcp: true
+inheritCustomizations: true
 ---
 
 # Agente Especialista: `dev-workspace-publisher` (Publicacao GitHub, Estado de Projetos & Memoria)

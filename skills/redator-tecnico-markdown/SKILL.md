@@ -1,13 +1,10 @@
 ---
 name: redator-tecnico-markdown
 description: "Redige relatórios executivos, notas técnicas e atas de decisão em Markdown com caixas de alerta GitHub e Google Style Guides. Use para documentação técnica; não use apenas para converter HTML em PDF."
-version: "1.3.0"
-updated_at: "2026-11-12"
 compatibility: "Antigravity 2.0, CommonMark/GFM, Obsidian"
-allowed-tools: ["read_file", "write_file", "edit_file", "call_mcp_tool"]
 metadata:
   version: "1.3.0"
-  updated_at: "2026-11-12"
+  updated_at: "2026-11-13"
   author: "DocMaker & Melki"
   category: "Documentação Técnica e Redação Estruturada"
   tags: ["markdown", "obsidian", "google-styleguides", "documentacao"]

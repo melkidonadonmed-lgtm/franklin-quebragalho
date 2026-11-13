@@ -691,7 +691,7 @@
     {
       "id": "test-quality-auditor",
       "name": "test-quality-auditor",
-      "description": "Auditoria de suítes de testes em 5 módulos (Python, TS, Go, MCP e Harness) detectando Green Build Illusion e falhas AAA. Use para auditar suítes de testes e gerar grading.json; não use para código de produção.",
+      "description": "Audita suítes de testes em 5 módulos (Python, TS, Go, MCP e Harness) detectando Green Build Illusion e falhas AAA. Use para auditar suítes de testes e gerar grading.json; não use para código de produção.",
       "tags": [
         "test-quality",
         "ast-auditor",
@@ -721,7 +721,7 @@
         "jku": "http://localhost:10999/public_keys.json",
         "typ": "JOSE+JSON"
       },
-      "signature": "3001128c495958a41e9cb0c71091a28123fd20ef7b01f09f635732780507cfdd"
+      "signature": "4067a50a1ae583578dd12c3ca075338a8d7dcf216791b81c93c2a44862e9d536"
     }
   ]
 }

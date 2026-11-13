@@ -73,9 +73,36 @@ def check_governance_and_secrets(repo_root: Path, target_files: List[Path]) -> L
     return errors
 
 
+def _run_skill_and_ecosystem_gates(repo_root: Path, target_files: List[Path], gov_errors: List[str]) -> None:
+    """Executa validate_skills em SKILL.md alterados e validate_ecosystem quando rules/hooks/agents mudarem."""
+    scripts_dir = repo_root / "scripts"
+    if str(scripts_dir) not in sys.path:
+        sys.path.insert(0, str(scripts_dir))
+    from validate_skills import validate_ecosystem, validate_skill_dir
+
+    touched_skills = {
+        f.parent for f in target_files
+        if f.name == "SKILL.md" and f.parent.parent == repo_root / "skills"
+    }
+    for s_dir in sorted(touched_skills):
+        for err in validate_skill_dir(s_dir):
+            gov_errors.append(f"[SKILL-GATE-FAIL] {s_dir.name}: {err}")
+
+    eco_roots = ("rules", "agents", "hooks")
+    touches_eco = any(
+        f == repo_root / "plugin.json" or any(p in eco_roots for p in f.relative_to(repo_root).parts[:1])
+        for f in target_files
+        if repo_root in f.parents
+    )
+    if touches_eco:
+        for err in validate_ecosystem(repo_root):
+            gov_errors.append(f"[ECO-GATE-FAIL] {err}")
+
+
 def run_quality_gates(repo_root: Path, target_files: List[Path], min_score: float = 75.0) -> Dict[str, Any]:
-    """Executa os Portões 1 (AST Code Acceptability) e 2 (Test Quality Nível 4) sobre a lista de arquivos."""
+    """Executa os Portões 1 (AST), 2 (Test Quality) e 3 (Contratos Skills/Ecosystem) nos arquivos alvo."""
     gov_errors = check_governance_and_secrets(repo_root, target_files)
+    _run_skill_and_ecosystem_gates(repo_root, target_files, gov_errors)
     code_auditor = CodeAcceptabilityAuditor(min_quality_score=min_score)
     code_reports: List[Dict[str, Any]] = []
     test_reports: List[Dict[str, Any]] = []

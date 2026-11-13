@@ -110,10 +110,22 @@ def _audit_tokens_and_layers(
         "--shadow-elevation-1",
         "--shadow-elevation-2",
         "--shadow-elevation-3",
+        "--shadow-elevation-low",
+        "--shadow-elevation-medium",
+        "--shadow-elevation-high",
+        "--shadow-layer-sm",
+        "--shadow-layer-md",
+        "--shadow-layer-lg",
         "--shadow-inset",
+        "--shadow-inset-sunken",
+        "--shadow-clean-card",
         "--elevation-1",
         "--elevation-2",
         "--elevation-3",
+        "--elevation-low",
+        "--elevation-medium",
+        "--elevation-high",
+        "--elevation-pressed-inset",
         "--catch-light",
         "--shadow-sculpted",
         "--rim-light",
@@ -211,6 +223,16 @@ def _audit_a11y(combined_stripped: str, findings: list[AuditFinding]) -> float:
         s_a11y -= 10.0
         findings.append(
             AuditFinding("AUDIT-A11Y-02", "LOW", "global", "Proteção prefers-reduced-motion ausente.")
+        )
+    if re.search(r"transition\s*:[^;}{]*\ballow-discrete\b", combined_stripped, re.IGNORECASE):
+        s_a11y -= 5.0
+        findings.append(
+            AuditFinding(
+                "AUDIT-A11Y-02",
+                "LOW",
+                "global",
+                "Declare 'transition-behavior: allow-discrete' como propriedade separada após 'transition'.",
+            )
         )
     return max(0.0, s_a11y)
 

@@ -1,0 +1,151 @@
+{
+  "generated_at": "2026-11-13",
+  "roots": {
+    "gemini_skills": {
+      "count": 38,
+      "skill_md_bytes": 418958,
+      "est_full_tokens": 104739
+    },
+    "agents_skills": {
+      "count": 73,
+      "skill_md_bytes": 924149,
+      "est_full_tokens": 231037
+    },
+    "franklin_repo": {
+      "count": 29,
+      "skill_md_bytes": 254230,
+      "est_full_tokens": 63557
+    },
+    "adk_go_mcp": {
+      "count": 7,
+      "skill_md_bytes": 37362,
+      "est_full_tokens": 9340
+    },
+    "mytts": {
+      "count": 1,
+      "skill_md_bytes": 6560,
+      "est_full_tokens": 1640
+    },
+    "plugin:android-cli-plugin": {
+      "count": 2,
+      "skill_md_bytes": 20404
+    },
+    "plugin:chrome-devtools-plugin": {
+      "count": 6,
+      "skill_md_bytes": 37366
+    },
+    "plugin:data-agent-kit-plugin": {
+      "count": 40,
+      "skill_md_bytes": 436836
+    },
+    "plugin:firebase": {
+      "count": 13,
+      "skill_md_bytes": 86484
+    },
+    "plugin:franklin-skills": {
+      "count": 6,
+      "skill_md_bytes": 67841
+    },
+    "plugin:gdrive": {
+      "count": 1,
+      "skill_md_bytes": 12279
+    },
+    "plugin:gemini-api": {
+      "count": 3,
+      "skill_md_bytes": 66979
+    },
+    "plugin:google-antigravity-sdk": {
+      "count": 1,
+      "skill_md_bytes": 8288
+    },
+    "plugin:google-cloud-developer": {
+      "count": 5,
+      "skill_md_bytes": 56176
+    },
+    "plugin:google-developer-knowledge": {
+      "count": 1,
+      "skill_md_bytes": 8384
+    },
+    "plugin:gsheets": {
+      "count": 1,
+      "skill_md_bytes": 19467
+    },
+    "plugin:mempalace": {
+      "count": 3,
+      "skill_md_bytes": 22776
+    },
+    "plugin:modern-web-guidance-plugin": {
+      "count": 2,
+      "skill_md_bytes": 36213
+    },
+    "plugin:superpowers": {
+      "count": 15,
+      "skill_md_bytes": 164914
+    }
+  },
+  "idle_candidates": {
+    "gemini_skills": [
+      "accidental-data-loss-prevention",
+      "bigquery-ai-ml",
+      "bigquery-bigframes",
+      "bigquery-data-transfer-service",
+      "bigquery-graph-author",
+      "bigquery-graph-query",
+      "bigquery-observability",
+      "bigquery-optimization",
+      "bigquery-troubleshooting",
+      "bigtable-basics",
+      "building-data-apps",
+      "cloud-databases-onboarding",
+      "data-autocleaning",
+      "dataform-bigquery",
+      "dbt-bigquery",
+      "discovering-gcp-data-assets",
+      "enforcing-resource-attribution",
+      "federate-lakehouse-catalog",
+      "gcp-composer-troubleshooting",
+      "gcp-data-pipelines",
+      "gcp-dataflow",
+      "gcp-managed-airflow-dag-authoring",
+      "gcp-managed-airflow-migrations",
+      "gcp-managed-airflow-recommendations",
+      "gcp-managed-spark-upgrades",
+      "gcp-pipeline-orchestration",
+      "gcp-pipeline-resource-provisioning",
+      "gcp-spark",
+      "gcp-spark-observability",
+      "gcp-spark-troubleshooting",
+      "gcs-security-assessment",
+      "google-cloud-storage-basics",
+      "google-cloud-storage-bucket-architect",
+      "google-cloud-storage-fuse",
+      "managing-python-dependencies",
+      "ml-best-practices",
+      "notebook-guidance",
+      "schema-mapping"
+    ],
+    "agents_skills": [
+      "android-for-cars-parked-apps",
+      "developing-genkit-dart",
+      "display-glasses-with-jetpack-compose-glimmer",
+      "engage-sdk-integration",
+      "ink-app-builder",
+      "ink-custom-brush-builder",
+      "leanback-to-compose-tv-migration",
+      "media3-cast-integration",
+      "microsoft-foundry",
+      "migrate-ai-sdk-v6-to-v7",
+      "migrate-xml-views-to-jetpack-compose",
+      "orca-cli",
+      "orca-computer-use",
+      "orchestration",
+      "projected-hardware",
+      "wear-compose-m3",
+      "wear-widgets"
+    ]
+  },
+  "totals": {
+    "skill_dirs": 247,
+    "total_skill_md_bytes": 2685666
+  }
+}

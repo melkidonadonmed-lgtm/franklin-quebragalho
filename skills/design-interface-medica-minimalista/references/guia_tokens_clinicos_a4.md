@@ -43,20 +43,30 @@ Referência de Tier 3 para implementação de interfaces médicas sob `design-in
 
     --border-hairline: light-dark(oklch(0.18 0.02 255 / 0.08), oklch(1 0 0 / 0.10));
     --catch-light: inset 0 1px 0 0 light-dark(oklch(1 0 0 / 0.85), oklch(1 0 0 / 0.12));
-    --shadow-inset: inset 0 2px 4px 0 light-dark(oklch(0 0 0 / 0.06), oklch(0 0 0 / 0.45));
+    --shadow-inset:
+      inset 0 2px 4px 0 light-dark(oklch(0 0 0 / 0.06), oklch(0 0 0 / 0.45)),
+      inset 0 0 0 1px light-dark(oklch(0 0 0 / 0.04), oklch(1 0 0 / 0.05));
+    --shadow-inset-sunken: var(--shadow-inset);
 
-    --shadow-elevation-1:
+    --shadow-layer-sm:
       0 1px 2px -1px light-dark(oklch(0.18 0.02 255 / 0.08), oklch(0 0 0 / 0.45)),
       0 2px 4px -1px light-dark(oklch(0.18 0.02 255 / 0.04), oklch(0 0 0 / 0.35)),
       var(--catch-light);
-    --shadow-elevation-2:
+    --shadow-layer-md:
       0 4px 8px -2px light-dark(oklch(0.18 0.02 255 / 0.10), oklch(0 0 0 / 0.55)),
       0 12px 20px -4px light-dark(oklch(0.18 0.02 255 / 0.07), oklch(0 0 0 / 0.50)),
       var(--catch-light);
-    --shadow-elevation-3:
+    --shadow-layer-lg:
       0 8px 16px -4px light-dark(oklch(0.18 0.02 255 / 0.12), oklch(0 0 0 / 0.65)),
       0 24px 48px -8px light-dark(oklch(0.18 0.02 255 / 0.14), oklch(0 0 0 / 0.60)),
       var(--catch-light);
+
+    --shadow-elevation-1: var(--shadow-layer-sm);
+    --shadow-elevation-2: var(--shadow-layer-md);
+    --shadow-elevation-3: var(--shadow-layer-lg);
+    --shadow-elevation-low: var(--shadow-elevation-1);
+    --shadow-elevation-medium: var(--shadow-elevation-2);
+    --shadow-elevation-high: var(--shadow-elevation-3);
 
     --font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
     --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;

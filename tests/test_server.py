@@ -442,10 +442,10 @@ def test_frontend_skills_and_ui_subagents_integration() -> None:
     ):
         parsed_spec = module.load_agent_spec(str(server.ROOT_DIR / "agents" / agent_md), verbose=False)
         assert parsed_spec["name"] == agent_md.removesuffix(".md")
-        assert parsed_spec["version"] in ("1.1.0", "1.2.0", "3.0.0", "3.1.0", "4.0.0")
         expected_write = agent_md != "ui-deterministic-observer.md"
         assert parsed_spec["enable_write_tools"] is expected_write
-        assert parsed_spec["enable_mcp_tools"] is True
+        assert parsed_spec["inheritMcp"] is True
+        assert parsed_spec["subagent"] is True and parsed_spec["mainAgent"] is False
         assert len(parsed_spec["description"]) > 20
         assert len(parsed_spec["system_prompt"]) > 100
 
@@ -461,9 +461,9 @@ def test_frontend_skills_and_ui_subagents_integration() -> None:
         )
         assert fallback_spec["name"] == "ui-shell-navigator"
         assert fallback_spec["enable_write_tools"] is True
-        assert fallback_spec["enable_mcp_tools"] is True
+        assert fallback_spec["commandExecutionPolicy"] == "auto"
+        assert fallback_spec["inheritMcp"] is True
         assert len(fallback_spec["description"]) > 20
-        assert len(fallback_spec["covered_modules"]) == 2
     finally:
         module.yaml = orig_yaml
 
@@ -568,19 +568,26 @@ def test_gemini_ecosystem_directories(tmp_path: Path, monkeypatch: pytest.Monkey
     assert (gemini_root / "agents" / "ui-shell-navigator.md").exists()
     hitl_agent = (gemini_root / "agents" / "intent-hitl-mediator.md").read_text(encoding="utf-8")
     assert '  - "*"' not in hitl_agent
-    assert "enable_write_tools: false" in hitl_agent
+    assert "enable_write_tools:" not in hitl_agent
+    assert 'commandExecutionPolicy: "off"' in hitl_agent
     assert not stale_rule.exists(), "sync deve podar rules/*.md removidas em ~/.gemini/config/rules"
     assert (gemini_root / "config" / "rules" / "diretrizes-qualidade-eficiencia.md").exists()
+    assert not (gemini_root / "config" / "rules" / "diretrizes-frontend-9-eixos.md").exists()
     assert (split_repo / ".agents" / "AGENTS.md").read_text(encoding="utf-8") == "# Kernel Split Preservado\n"
     assert (gemini_root / "config" / "agents" / "adk-go-operator.md").exists()
     assert not (gemini_root / "config" / "agents" / "ui-shell-navigator.md").exists()
     assert (gemini_root / "plans" / "ui_composition_dag.json").exists()
     assert (gemini_root / "lib" / "agent_spec_loader.py").exists()
     assert (gemini_root / "doc" / "AGENTS.md").exists() and (gemini_root / "doc" / "agent_card.json").exists()
-    assert (gemini_root / "config" / "plugins" / "franklin-skills" / "plugin.json").exists()
+    plugin_root = gemini_root / "config" / "plugins" / "franklin-skills"
+    assert (plugin_root / "plugin.json").exists()
+    assert (plugin_root / "scripts" / "antigravity_harness_hook.py").exists()
+    assert (plugin_root / "rules" / "diretrizes-frontend-9-eixos.md").exists()
+    assert not (plugin_root / "rules" / "diretrizes-qualidade-eficiencia.md").exists()
+    assert not (plugin_root / "mcp_config.json").exists()
     skills_json = json.loads((gemini_root / "config" / "skills.json").read_text(encoding="utf-8"))
     assert skills_json["entries"][0]["path"] == (home / ".agents" / "skills").as_posix()
-    assert (home / "AGENTS.md").exists() and (home / ".agents" / "AGENTS.md").exists()
+    assert not (home / "AGENTS.md").exists() and not (home / ".agents" / "AGENTS.md").exists()
     assert (repo / "CONTEXT.md").read_text(encoding="utf-8") == "estado canônico\n"
     assert (repo / ".agents" / "skills.json").exists()
     assert {p: p.stat().st_mtime_ns for p in guarded} == before, "o teste escreveu no home real"

@@ -1,13 +1,27 @@
 {
   "$schema": "https://antigravity.google/schemas/v1/plugin.json",
   "name": "franklin-skills",
-  "displayName": "Franklin Quebra-Galho (29 Skills, 10 Subagentes & Topologia Distribuída)",
-  "version": "3.8.0",
-  "description": "Ecossistema autoral com 29 Skills canônicas, 10 Subagentes Especialistas (Topologia 3+1 de UI), Governança Determinística AST e Planos DAG para Antigravity.",
+  "displayName": "Franklin Auditor & Governance Suite",
+  "version": "3.9.0",
+  "description": "Suite de auditoria determinística AST, testes AAA, RCA e regras autorais para Antigravity com zero bloat global.",
+  "author": {
+    "name": "Melki Franklin",
+    "url": "https://github.com/melkidonadonmed-lgtm"
+  },
+  "homepage": "https://github.com/melkidonadonmed-lgtm/franklin-quebragalho",
+  "repository": "https://github.com/melkidonadonmed-lgtm/franklin-quebragalho",
+  "license": "MIT",
+  "keywords": [
+    "antigravity",
+    "auditor",
+    "skills",
+    "governance",
+    "ast"
+  ],
   "logo": "assets/logo.svg",
   "suggestedPrompts": [
-    "Orquestrar composição de UI nas 3 ondas do UI-Architect (ui-shell-navigator, ui-controls-data, ui-motion-interaction e ui-deterministic-observer)",
-    "Refinar prompt ou auditar entropia de system prompt via refine-prompt e prompt_entropy_auditor.py",
-    "Auditar MVP, organizar estrutura de pastas/contratos (MCP/FastAPI/RPC) e sincronizar README.md via organizador-projetos-ideias e auditoria-projetos-sistema"
+    "Auditar MVP, contratos MCP/RPC e navegação deste repositório via auditoria-projetos-sistema e organizador-projetos-ideias",
+    "Auditar suíte de testes contra Green Build Illusion e quality score AST via test-quality-auditor e code-acceptability-auditor",
+    "Executar RCA determinística de falhas via gap-analyzer-auditor ou auditar skills via audit-skills-antigravity"
   ]
 }

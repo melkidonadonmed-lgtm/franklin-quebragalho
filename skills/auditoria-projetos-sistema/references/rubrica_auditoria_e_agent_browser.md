@@ -56,6 +56,8 @@ agent-browser screenshot ./reports/audit_annotated.png --annotate
 
 - `[FAIL: VIOLACAO_60_30_10_OU_OKLCH]`: Ausência de tokens `oklch()`, uso de `#000000` puro ou poluição cromática fora da proporção `60-30-10`.
 - `[FAIL: SOMBRA_LAVADA_OU_SEM_LUZ_ZENITAL]`: Sombra simples borrada de camada única sem Umbra + Penumbra (`spread` negativo) + `inset 0 1px 0 0`.
-- `[FAIL: MENU_COMPACTADO_OU_PROLIFERACAO_ABAS]`: Botões de menu com `font-size < 13px`, `gap < 6px`, `min-block-size < 44px` ou criação de sub-abas aninhadas.
-- `[FAIL: BORRAO_GPU_OU_TIPOGRAFIA_FRACA]`: Ausência de `antialiased` + `font-synthesis: none`, uso de `scale()` fracionário em texto ou falta de `tabular-nums`.
+- `[FAIL: MENU_COMPACTADO_OU_PROLIFERACAO_ABAS]`: Botões de menu com `font-size < 13px`, `gap < 6px`, `min-block-size < 44px` (`< 48px` em `any-pointer: coarse`), ausência de `env(safe-area-inset-bottom)` na barra inferior mobile ou criação de sub-abas aninhadas.
+- `[FAIL: ESPACAMENTO_ARBITRARIO_OU_RAIO_NAO_CONCENTRICO]`: Uso de pixels mágicos fora da escala `--space-*`, violação da Lei de Proximidade ($\text{padding interno} > \text{gap externo}$) ou `border-radius` interno igual ao externo sem descontar o `padding` ($R_{\text{in}} = \max(4\text{px}, R_{\text{out}} - P)$).
+- `[FAIL: CARD_SEM_CONTAINER_OU_SUBGRID_QUEBRADO]`: Componente de card consultando `@media` em vez de `@container`, coluna de mídia vazia sem `:has(> img)`, ou `container-type: inline-size` aplicado no mesmo nó DOM que declara `subgrid`.
+- `[FAIL: BORRAO_GPU_OU_TIPOGRAFIA_FRACA]`: Ausência de `antialiased` + `font-synthesis: none`, uso de `scale()` fracionário em texto, `clamp()` com $\max > 2.5\times \min$, `transition: ... allow-discrete` dentro do shorthand ou falta de `tabular-nums`.
 - `[FAIL: DIVSOUP_OU_NO_INERTE]`: Tags `<div>` simulando botões sem ARIA ou controles placebo sem ação real (`X não ativa Y`).

@@ -600,8 +600,10 @@ def _validate_single_skill_dir(s_dir: Path) -> List[str]:
         if name_val and name_val != s_dir.name and not is_template:
             errs.append(f"Nome no frontmatter ('{name_val}') difere da pasta ('{s_dir.name}')")
         desc_text = str(meta.get("description", "")).strip()
-        if len(desc_text) > 240:
-            errs.append(f"Descrição excede o orçamento de contexto L1 de 240 chars ({len(desc_text)} chars)")
+        if len(desc_text) > 1024:
+            errs.append(f"Descrição excede o teto rígido agentskills.io de 1024 chars ({len(desc_text)} chars)")
+        elif len(desc_text) > 450:
+            errs.append(f"Descrição excede o orçamento recomendado L1 de 450 chars ({len(desc_text)} chars)")
         if desc_text and not is_template and not re.search(r"\b(n[aã]o use|do not use|don't use|skip when)\b", desc_text, re.IGNORECASE):
             errs.append("Descrição deve declarar fronteira negativa ('Não use para...' / 'Do not use...')")
         if len(body.splitlines()) > 500:

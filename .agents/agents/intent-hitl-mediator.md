@@ -3,10 +3,16 @@ name: intent-hitl-mediator
 description: "Mediador de Onda 1 (Triagem de Intenção, Portão HITL e Atribuição GCP): classifica intenções Pydantic, exige aprovação HITL e injeta labels GCP."
 subagent: true
 mainAgent: false
-enable_write_tools: false
-enable_mcp_tools: true
-enable_subagent_tools: false
-commandExecutionPolicy: auto
+model: inherit
+commandExecutionPolicy: "off"
+inheritMcp: true
+inheritCustomizations: true
+tools:
+  - view_file
+  - list_dir
+  - find_by_name
+  - grep_search
+  - send_message
 ---
 
 # Agente Intermediário: `intent-hitl-mediator` (Triagem, Governança HITL e Atribuição GCP)

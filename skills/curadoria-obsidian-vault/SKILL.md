@@ -1,13 +1,10 @@
 ---
 name: curadoria-obsidian-vault
 description: "Audita e higieniza o cofre do Obsidian validando frontmatter YAML, links bidirecionais Wikilinks e sincronia com MemPalace wing notes. Use para curadoria do vault; não use para Google Drive."
-version: "1.3.0"
-updated_at: "2026-11-12"
 compatibility: "Windows 11, Python 3.12+, pwsh 7+, MemPalace MCP"
-allowed-tools: ["read_file", "write_file", "edit_file", "run_command", "call_mcp_tool"]
 metadata:
   version: "1.3.0"
-  updated_at: "2026-11-12"
+  updated_at: "2026-11-13"
   author: "VaultMaster & Melki"
   category: "Gestão de Conhecimento e PKM"
   tags: ["obsidian", "wikilinks", "frontmatter", "mempalace", "hybrid-search", "anexos-orfaos"]

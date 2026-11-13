@@ -16,7 +16,7 @@ import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 logger = logging.getLogger("AgentSpecLoader")
 
@@ -61,13 +61,17 @@ class DeclarativeAgentSpec(BaseModel):
     parent_persona: str = "UI-Architect"
     wave: int = 1
     workspace: str = "inherit"
-    enable_write_tools: bool = True
-    enable_mcp_tools: bool = True
-    enable_subagent_tools: bool = False
+    enable_write_tools: Optional[bool] = None
+    enable_mcp_tools: Optional[bool] = None
+    enable_subagent_tools: Optional[bool] = None
     subagent: bool = True
     mainAgent: bool = False
-    commandExecutionPolicy: str = "auto"
+    commandExecutionPolicy: str = "sandbox"
+    inheritMcp: bool = True
+    inheritCustomizations: bool = True
     tools: List[str] = Field(default_factory=list)
+    skills: List[str] = Field(default_factory=list)
+    mcpServers: List[Any] = Field(default_factory=list)
     covered_modules: List[str] = Field(default_factory=list)
     system_prompt: str = "Atue com rigor técnico, valide evidências no disco e mantenha qualidade linear alta."
     guardrails: AgentGuardrailsSpec = Field(default_factory=AgentGuardrailsSpec)
@@ -82,6 +86,23 @@ class DeclarativeAgentSpec(BaseModel):
             ),
         ]
     )
+
+    @model_validator(mode="after")
+    def _derive_effective_capabilities(self) -> "DeclarativeAgentSpec":
+        """Deriva enable_* a partir de tools/commandExecutionPolicy/inheritMcp quando omitidos."""
+        write_tool_names = {
+            "write_to_file", "replace_file_content", "multi_replace_file_content", "write_file", "edit_file"
+        }
+        if self.enable_write_tools is None:
+            if self.tools:
+                self.enable_write_tools = any(t in write_tool_names for t in self.tools)
+            else:
+                self.enable_write_tools = self.commandExecutionPolicy != "off"
+        if self.enable_mcp_tools is None:
+            self.enable_mcp_tools = self.inheritMcp
+        if self.enable_subagent_tools is None:
+            self.enable_subagent_tools = (not self.tools) or ("invoke_subagent" in self.tools)
+        return self
 
 
 AgentGuardrailsSpec.model_rebuild()
