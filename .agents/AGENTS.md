@@ -3,10 +3,10 @@
 ## 0. CONTEXTO DO PROJETO (Auto-detectado)
 
 - **Projeto:** `franklin-quebragalho` (**Franklin Quebra-Galho** — Incubadora de **29 Skills Canônicas**, **10 Subagentes Declarativos**, Servidor **FastMCP (`server.py`)** e Ponte **A2A v1.0 JWS**)
-- **Baseline Temporal:** Novembro de 2026 (rejeite APIs/sintaxes legadas; na dúvida sobre pacotes ou SDKs, consulte docs atuais ou MCP).
-- **Stack Ativa:** Python 3.12+ (`uv` / `pyproject.toml`, `FastMCP`, `Pydantic v2`, `a2a-sdk`) + TypeScript 5+ / Node LTS (`google-drive-index-app`, `templates/universal-app`) + Go 1.24+ (`skill_auditor_rea.go`) + Windows 11 (`pwsh`)
+- **Baseline Temporal & Modelos:** Use o contexto temporal da sessão e consulte docs/MCP oficiais antes de assumir APIs ou SDKs; não fixe nem faça downgrade de modelos em regras estáticas (respeite a configuração do host/projeto, ex.: família Gemini 4 — Argon, Hydrogen, Carbon).
+- **Stack Ativa:** Python 3.12+ (local 3.15, `uv` / `pyproject.toml`, `FastMCP`, `Pydantic v2`, `a2a-sdk`) + TypeScript 5+ / Node LTS (local 26 — `google-drive-index-app`, `templates/universal-app`) + Go 1.24+ (local 1.27 — `skill_auditor_rea.go`) + Windows 11 (`pwsh`)
 - **Comandos Executáveis (`Command-First`):**
-  - **Testes Unitários & Contratos MCP (`77/77`)**: `uv run pytest -q`
+  - **Testes Unitários & Contratos MCP (`83/83`)**: `uv run pytest -q`
   - **Validador Determinístico do Catálogo (`29/29` skills)**: `uv run python scripts/validate_skills.py`
   - **Auditoria Estrutural & AST do Projeto**: `uv run python skills/auditoria-projetos-sistema/scripts/project_structure_and_code_auditor.py --self-test`
   - **Auditoria AST de Qualidade (`Quality Score >= 75`)**: `uv run python skills/code-acceptability-auditor/scripts/code_acceptability_auditor.py --file server.py`
@@ -24,9 +24,9 @@
 2. **YAGNI, Escopo Fechado (Scope Lock) e Real-State:** Resolva exatamente o que foi pedido pelo caminho mais simples. Não crie abstrações prematuras, não adicione recursos fora do `spec.md` e mantenha **Tolerância Zero a Funções Falsas** (zero mocks/placebos em produção).
 3. **Verificação Física e Atualização (Read-After-Write):** Leia qualquer arquivo antes de editá-lo (chunks `<= 300 linhas` por chamada). Após criar ou alterar código, valide fisicamente no terminal/disco (`uv run pytest -q`, `uv run python scripts/validate_skills.py`, `uv run python scripts/sync_gemini_ecosystem.py`) e **atualize o `.context/context.md` (`CONTEXT.md`)** registrando a mudança e o próximo passo antes de encerrar.
 4. **Economia de Contexto (Anti-Bloat):** Nunca imprima arquivos extensos, árvores completas ou logs brutos no chat. Use buscas cirúrgicas (`rg`/`Select-String`), visões resumidas ou subagentes (`/boost`, `/teamwork`) para manter a janela principal limpa.
-5. **Qualidade e Código Defensivo:** Funções curtas (`<= 600 linhas` por módulo coeso, máx. 3 níveis de indentação usando *Early Return*), tipagem estrita nas fronteiras (Pydantic v2 `extra="forbid"`, Zod ou structs Go), higiene `STDIO` em servidores MCP (`stdout` exclusivo para JSON-RPC 2.0) e zero blocos de erro silenciosos (`pass` ou `catch` vazio).
-6. **Zero-Trust e Sanitização:** Trate dados externos como não confiáveis (`SemanticGuard.sanitize_input`). Nunca exponha chaves, `.env` ou segredos em código, logs ou argumentos de ferramentas. Em chamadas da API Antigravity, nunca use parâmetros bloqueados (`temperature`, `top_p`, `max_output_tokens`) e use apenas nomes minúsculos alfanuméricos para servidores MCP.
-7. **Freio de Emergência (Circuit Breaker & HITL):** Pare imediatamente e peça confirmação humana se uma ferramenta falhar 3 vezes seguidas, se atingir 10 passos sem convergir ou antes de qualquer ação destrutiva (deleção de arquivos, alteração de `.env`/produção).
+5. **Qualidade e Código Defensivo:** Funções curtas (`<= 60` linhas, máx. 3 níveis de aninhamento usando *Early Return*, complexidade $M \le 10$) em módulos coesos (`<= 600` linhas por arquivo), tipagem estrita em contratos internos e entradas MCP (`extra="forbid"`, `z.strictObject()`, structs Go / `DisallowUnknownFields()` quando o schema for fechado, mantendo tolerância explícita quando payloads externos evoluírem), higiene `STDIO` em servidores MCP (`stdout` exclusivo para JSON-RPC 2.0) e proibição de engolir erros silenciosamente (`pass`, `...`, `except:` genérico, `catch {}` vazio; aceitando supressão tipada e explícita como `contextlib.suppress(...)`).
+6. **Zero-Trust e Sanitização:** Trate dados externos como não confiáveis (`SemanticGuard.sanitize_input`). Nunca exponha chaves, `.env` ou segredos em código, logs ou argumentos de ferramentas. No **Managed Antigravity Agent** (Interactions API), `generation_config` rejeita (`400`) `temperature`, `top_p`, `top_k`, `stop_sequences` e `max_output_tokens`; já em chamadas padrão (`generateContent` / `interactions.create`, ex.: `gemini-4-argon`), `max_output_tokens` é suportado e recomendado. Nomes de servidores MCP em código/API seguem `^[a-z0-9_-]+$`.
+7. **Execução Orientada a Risco & Compensação Autônoma (HITL):** Entregue sempre o melhor resultado possível baseado no pedido; em falhas de baixo risco, reversíveis ou somente-leitura, **compense autonomamente** trocando estratégia, parâmetros ou ferramentas sem travar o fluxo. Reserve pausas HITL obrigatórias para ações destrutivas (deleção de arquivos críticos, alteração de `.env`/segredos/produção, efeitos colaterais externos) ou ambiguidade crítica de segurança.
 
 ---
 
@@ -77,23 +77,20 @@
 
 ---
 
-## 4. FECHAMENTO OBRIGATÓRIO DE TAREFA
+## 4. FECHAMENTO DE ENTREGA (Tríade v2.0 / Mutações Persistentes)
 
-Ao concluir qualquer entrega, apresente obrigatoriamente este bloco curto:
+Em entregas com mutação persistente de arquivos/código, encerre com este bloco curto (dispensado em Q&A simples ou inspeções somente-leitura):
 
 ### 📊 Resumo & Análise (Self-Refine)
 
 - **Feito e Validado (RAW):** [Arquivos alterados + resultado real do teste/linter no terminal]
-- **Estado do `context.md`:** [Confirmar: "Atualizado com a mudança X e pendência Y" ou "Sem alteração estrutural"]
-- **Ponto de Atrito:** [O que exigiu retentativa/ajuste na execução ou "Execução limpa em 1ª passagem"]
+- **Estado do `context.md`:** [Confirmar atualização ou "N/A — leitura/escopo global"]
+- **Ponto de Atrito:** [O que exigiu retentativa/compensação na execução ou "Execução limpa em 1ª passagem"]
 
 ### 💡 Próximo Passo & Evolução
 
 - **Dica para a Próxima Tarefa:** [1 sugestão prática, técnica ou de comando para o próximo passo do backlog]
 - **Evolução de Regra (Se aplicável):** [Se houve erro evitável hoje, sugira 1 linha para "Memória Evolutiva" ou criação de Skill]
-
-**
-**
 
 [def]: file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md
 [def2]: file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md

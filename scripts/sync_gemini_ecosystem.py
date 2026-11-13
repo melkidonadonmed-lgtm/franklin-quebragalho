@@ -45,6 +45,19 @@ UI_SUBAGENTS: tuple[str, ...] = (
 GOV_SUBAGENTS: tuple[str, ...] = (
     "review-squad.md", "intent-hitl-mediator.md", "dev-workspace-publisher.md",
 )
+MIRRORED_AGENTS_REPOS: tuple[str, ...] = (
+    "franklin-quebragalho",
+    "adk-go-mcp",
+    "adk-py-agents",
+    "adk-ts-agent",
+    "GoSTylo",
+    "PCM",
+    "appmy",
+    "frontcraft-studio",
+    "mcp-web-agents",
+    "mytts",
+    "scoreboard",
+)
 
 
 def _remove_dir_or_link(target: Path) -> None:
@@ -293,17 +306,25 @@ def _sync_local_triad_and_plugin_assets() -> None:
             continue
         src_f = repo_dir / "AGENTS.md"
         dst_f = repo_dir / ".agents" / "AGENTS.md"
-        if src_f.exists() and (not dst_f.exists() or repo_dir.name in ("franklin-quebragalho", "adk-go-mcp", "adk-py-agents", "adk-ts-agent")):
+        if src_f.exists() and (not dst_f.exists() or repo_dir.name in MIRRORED_AGENTS_REPOS):
             dst_f.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src_f, dst_f)
+            if not dst_f.is_file() or _eol_normalized(src_f) != _eol_normalized(dst_f):
+                shutil.copy2(src_f, dst_f)
         _mirror_context_to_root(repo_dir)
 
-    for src_dir, dst_dir in (
-        (ROOT_DIR / "rules", GEMINI_ROOT / "config" / "rules"),
-        (ROOT_DIR / "assets", CONFIG_PLUGIN_ROOT / "assets"),
-    ):
-        if src_dir.exists():
-            _copy_tree(src_dir, dst_dir)
+    rules_src = ROOT_DIR / "rules"
+    rules_dst = GEMINI_ROOT / "config" / "rules"
+    if rules_src.exists():
+        expected_rules = {p.name for p in rules_src.glob("*.md")}
+        if rules_dst.exists():
+            for existing_rule in list(rules_dst.glob("*.md")):
+                if existing_rule.name not in expected_rules:
+                    existing_rule.unlink(missing_ok=True)
+        _copy_tree(rules_src, rules_dst)
+
+    assets_src = ROOT_DIR / "assets"
+    if assets_src.exists():
+        _copy_tree(assets_src, CONFIG_PLUGIN_ROOT / "assets")
 
     for src_file, dst_file in (
         (ROOT_DIR / "hooks" / "hooks.json", CONFIG_PLUGIN_ROOT / "hooks.json"),
@@ -373,7 +394,7 @@ def _format_antigravity_agent_markdown(item: Path) -> str:
     _, body = _extract_yaml_and_body(raw)
     spec = load_agent_spec(str(item), verbose=False)
     desc_escaped = json.dumps(spec["description"], ensure_ascii=False)
-    tools_list = [t for t in (spec.get("tools") or []) if t != "call_mcp_tool"]
+    tools_list = [t for t in (spec.get("tools") or []) if t not in ("*", "call_mcp_tool")]
     tools_block = f"tools:\n" + "\n".join(f"  - {t}" for t in tools_list) + "\n" if tools_list else ""
     return (
         f"---\nname: {spec['name']}\ndescription: {desc_escaped}\nsubagent: true\nmainAgent: false\n"
@@ -386,20 +407,14 @@ def _format_antigravity_agent_markdown(item: Path) -> str:
 
 
 def _sync_gemini_cli_agents(src: Path, dst: Path) -> int:
-    """Sincroniza todos os 10 subagentes para ~/.gemini/agents (referência e Gemini CLI)."""
+    """Sincroniza todos os 10 subagentes para ~/.gemini/agents sem injetar wildcard tools: '*'."""
     if not src.exists():
         return 0
-    from shared.agent_spec_loader import _extract_yaml_and_body, load_agent_spec
 
     dst.mkdir(parents=True, exist_ok=True)
     count = 0
     for item in src.glob("*.md"):
-        raw = item.read_text(encoding="utf-8")
-        _, body = _extract_yaml_and_body(raw)
-        spec = load_agent_spec(str(item), verbose=False)
-        desc_escaped = json.dumps(spec["description"], ensure_ascii=False)
-        cli_md = f"---\nname: {spec['name']}\ndescription: {desc_escaped}\ntools:\n  - \"*\"\n---\n\n{body}\n"
-        (dst / item.name).write_text(cli_md, encoding="utf-8")
+        (dst / item.name).write_text(_format_antigravity_agent_markdown(item), encoding="utf-8")
         count += 1
     return count
 

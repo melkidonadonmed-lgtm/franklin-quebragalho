@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-12T18:51:17Z",
+  "timestamp": "2026-11-13T13:01:26Z",
   "audit_version": "1.0.0",
   "target_root": "C:/Users/melki/dev/repos/franklin-quebragalho",
   "summary": {
@@ -213,7 +213,7 @@
         "name": "agent_spec_loader",
         "file": "shared/agent_spec_loader.py",
         "language": "Python",
-        "framework": "Custom Agent Orchestrator",
+        "framework": "Google ADK 2.x",
         "reasoning_pattern": "ReAct / StateGraph",
         "has_max_steps": true,
         "has_stop_condition": true,

@@ -40,6 +40,7 @@
 ### 2.2 Filtro Anti-Homogeneização (`Cross-Domain Contamination`)
 
 Impede que skills de domínios não-visuais herdem regras genéricas de UI/CSS por cópia de template:
+
 - Skills dos arquétipos `PLANNING`, `CODE_SECURITY_AUDIT` (exceto auditores de UI) e `STORAGE_OPS_DOCS` **não podem** exigir tokens visuais exclusivos de frontend (`oklch(`, `60-30-10`, `--shadow-elevation-`, `@container`), preservando a especificidade de cada domínio.
 
 ### 2.3 Matriz Discriminativa por Arquétipo de Domínio (*Does What It Says*)
@@ -69,4 +70,3 @@ Impede que skills de domínios não-visuais herdem regras genéricas de UI/CSS p
 4. **`[RECOMENDAÇÃO: MELHORIA]`**: Inchaço de contexto (`> 1.200` tokens no `SKILL.md` sem *Progressive Disclosure* em `references/`).
 5. **`[RECOMENDAÇÃO: EXCLUSÃO]`**: Skill obsoleta, quebrada ou placebo sem capacidade real ($\text{Pass}@k < 50\%$).
 6. **`[RECOMENDAÇÃO: FUSÃO]`**: Colisão de rota/nome ou sobreposição semântica crítica de gatilhos (`>= 80%`) com outra skill do catálogo.
-

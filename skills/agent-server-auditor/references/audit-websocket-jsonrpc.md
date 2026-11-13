@@ -4,7 +4,7 @@ description: >-
   Sub-skill especialista para auditoria estatica e dinamica de conexoes persistentes WebSockets (ws:// e wss://) e contratos de mensagens JSON-RPC 2.0. Inspeciona ancoragem documental pre-flight (Gemini API llms.txt / llms-full.txt, MCP e A2A), handshakes TLS 1.3, reconexao dinamica (Exponential Backoff + Jitter), integridade de RPC, esquemas Pydantic/Zod e seguranca contra injecoes. Use ao auditar WebSockets, Live API, MCP ou JSON-RPC 2.0; nao use para CSS estatico.
 version: "1.2.0"
 updated_at: "2026-11-12"
-compatibility: "Node.js 20+, Python 3.12+, Go 1.24+, Agent Skills Spec 2026, MCP 2026-07-28, A2A v1.0, Gemini 3.8 Live API"
+compatibility: "Node.js 20+, Python 3.12+, Go 1.24+, Agent Skills Spec 2026, MCP 2026-07-28, A2A v1.0, Gemini Live API"
 metadata:
   author: "SkillCraft & Melki"
   category: "network-protocol-auditing"
@@ -16,7 +16,7 @@ allowed-tools: ["read_file", "run_command", "call_mcp_tool"]
 
 ## 0. ANCORAGEM DOCUMENTAL PRE-FLIGHT (CONDICIONAL AO PROTOCOLO)
 
-Antes de auditar ou implementar endpoints WebSocket (`ws://` / `wss://`), sessões **Gemini Live API** ou barramentos **JSON-RPC 2.0** (`MCP` / `A2A`), valide as especificações vigentes via `gemini_search_docs` / `gemini_get_doc` (modelos `gemini-3.8-flash`, `gemini-3.8-live`) e os índices oficiais consolidados em [`protocol_matrix.md`](protocol_matrix.md), além dos contratos locais (`openapi.json`, `.well-known/agent-card.json`, `tools.json`).
+Antes de auditar ou implementar endpoints WebSocket (`ws://` / `wss://`), sessões **Gemini Live API** ou barramentos **JSON-RPC 2.0** (`MCP` / `A2A`), valide as especificações e modelos vigentes na sessão via `gemini_search_docs` / `gemini_get_doc` (sem fixar versões estáticas) e os índices oficiais consolidados em [`protocol_matrix.md`](protocol_matrix.md), além dos contratos locais (`openapi.json`, `.well-known/agent-card.json`, `tools.json`).
 
 ---
 

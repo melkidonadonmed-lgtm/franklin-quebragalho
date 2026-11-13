@@ -32,7 +32,7 @@
 | **`shared/agent_spec_loader.py` & `shared/tools/frontmatter_parser.py`** | Parsers determinísticos de contratos de subagentes (`agents/*.md`) e frontmatter YAML com fallback resiliente sem dependências externas. |
 | **`rules/diretrizes-qualidade-eficiencia.md` & `rules/diretrizes-frontend-9-eixos.md`** | Diretrizes versionadas do projeto sincronizadas automaticamente com `~/.gemini/config/rules/` via `scripts/sync_gemini_ecosystem.py`. |
 | **`plans/ui_composition_dag.json` & `plans/physics_code_audit_dag.json` & `plans/distributed_agent_mediation_dag.json`** | Planos DAG executáveis no motor Kahn (`epic-volta`). |
-| **`tests/test_server.py` & `tests/test_a2a_protocol.py` & `tests/test_harness_quality.py` & `tests/test_skill_trigger_precision.py`** | Suítes de testes Nível 4 (`77/77 PASS` no total da pasta `tests/`). |
+| **`tests/test_server.py` & `tests/test_a2a_protocol.py` & `tests/test_harness_quality.py` & `tests/test_skill_trigger_precision.py`** | Suítes de testes Nível 4 (`83/83 PASS` no total da pasta `tests/`). |
 
 ### 2.2 Catálogo das 13 Ferramentas MCP (`franklin-skills` • Protocolo `2026-07-28`)
 1. `franklin_skills_list` (`readOnlyHint=True`) — Lista as **29 Agent Skills** em Markdown, JSON ou XML Nível 1 (`<available_skills>`).
@@ -52,7 +52,7 @@
 ---
 
 ## 3. Critério de Aceite e Parada (Definition of Done)
-- [x] Passar em 100% da suíte determinística Pytest (`uv run pytest -q` — `77/77` testes aprovados).
+- [x] Passar em 100% da suíte determinística Pytest (`uv run pytest -q` — `83/83` testes aprovados).
 - [x] Validar 100% das **29 Agent Skills** canônicas (`uv run python scripts/validate_skills.py` — `29/29 PASS`, precisão de disparo Top-1 $F_1 = 1.0$).
 - [x] Passar nos auditores determinísticos AST e estruturais (`uv run python skills/code-acceptability-auditor/scripts/code_acceptability_auditor.py --file server.py` com `Score >= 75/100` e `uv run python skills/auditoria-projetos-sistema/scripts/project_structure_and_code_auditor.py --self-test` com `[PASS]`).
 - [x] Sincronizar ecossistema global e local sem divergência (`uv run python scripts/sync_gemini_ecosystem.py` retornando `"status": "SYNCHRONIZED"` e `memories/audit_report.json` com `100.0/100 APPROVED`).

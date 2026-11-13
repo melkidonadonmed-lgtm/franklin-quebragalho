@@ -15,7 +15,7 @@
 | **Servidor MCP (`server.py`)** | **`13 Tools`**, **`8 Resources`** e **`2 Prompts`** (`franklin-skills`) | `mcp_config.json` $\leftrightarrow$ `C:\Users\melki\.gemini\config\mcp_config.json` |
 | **Identidade A2A (`v1.0` JWS)** | `.well-known/agent-card.json` e `agent_card.json` com **29 skill IDs** e `tags` completas | `shared/a2a_bridge.py` (`HMAC-SHA256` + RFC 8785 JCS) |
 | **Snapshot de Auditoria** | `memories/audit_report.json` (`100.0/100 APPROVED`, `29` skills, `13` agentes) | Regenerado automaticamente por `sync_gemini_ecosystem.py` |
-| **Suíte de Testes** | **`77/77 PASS`** em 9 suítes (`tests/test_*.py`), precisão de disparo Top-1 `F1 = 1.0` | `uv run pytest -q` |
+| **Suíte de Testes** | **`83/83 PASS`** em 9 suítes (`tests/test_*.py`), precisão de disparo Top-1 `F1 = 1.0` | `uv run pytest -q` |
 
 ---
 
@@ -28,7 +28,7 @@
 2. **`[LOCK-02]` Regra `60-30-10` com Cores `OKLCH` e Sombras em 3 Camadas Reais:**
    - Toda auditoria e implementação visual (incluindo `templates/universal-app/src/canvas/elevationRenderer.ts` e `globals.css`) deve aplicar a proporção **`60-30-10`** em **`oklch(L C H / alpha)`** + `light-dark()` e **3 níveis de elevação** (`elevation-1..3` + `sunken/inset`), combinando **Umbra de Contato + Penumbra Difusa (`spread` negativo) + Borda Especular Zenital (`inset 0 1px 0 0`)**.
 3. **`[LOCK-03]` Sincronia Obrigatória Projeto $\leftrightarrow$ Memória Global (`~/.gemini` & `.agents/` / `.context/`):**
-   - Toda alteração em `skills/`, `agents/`, `rules/`, `AGENTS.md`, `SPEC.md`, `CONTEXT.md` ou `CURRENT_STATE.md` deve ser seguida da execução de `uv run python scripts/sync_gemini_ecosystem.py`, que sincroniza `.agents/AGENTS.md`, `.context/context.md`, `.context/spec.md` (em `franklin-quebragalho` e `adk-tests`), `C:\Users\melki\.gemini\config\rules\`, `C:\Users\melki\.gemini\config\plugins\franklin-skills\`, `.well-known/agent-card.json` e `memories/audit_report.json`.
+   - Toda alteração em `skills/`, `agents/`, `rules/`, `AGENTS.md`, `SPEC.md`, `CONTEXT.md` ou `CURRENT_STATE.md` deve ser seguida da execução de `uv run python scripts/sync_gemini_ecosystem.py`, que sincroniza `.agents/AGENTS.md`, `.context/context.md`, `.context/spec.md` (em `franklin-quebragalho` e nos repositórios com Tríade espelhada como `adk-go-mcp`, `adk-py-agents`, `adk-ts-agent`, `GoSTylo`, `PCM`), `C:\Users\melki\.gemini\config\rules\`, `C:\Users\melki\.gemini\config\plugins\franklin-skills\`, `.well-known/agent-card.json` e `memories/audit_report.json`.
 
 ---
 

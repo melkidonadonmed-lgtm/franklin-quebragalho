@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -53,7 +54,9 @@ class DeclarativeAgentSpec(BaseModel):
     description: str = ""
     goal: str = ""
     version: str = "1.0.0"
-    model: str = "gemini-3.8-flash"
+    model: str = Field(
+        default_factory=lambda: os.getenv("ADK_MODEL") or os.getenv("GEMINI_MODEL") or "inherit"
+    )
     role: str = "Especialista Autônomo"
     parent_persona: str = "UI-Architect"
     wave: int = 1
@@ -301,7 +304,7 @@ if __name__ == "__main__":
 agent:
   name: "state-checker-observer"
   version: "1.1.0"
-  model: "gemini-3.8-flash"
+  model: "inherit"
   system_prompt: |
     Você é o Subagente Observador de Estado e Validador de Qualidade (State Checker & Audit Observer).
     Confronte os achados dos subagentes executores com a AST real, descarte falsos positivos e calcule Snorm.

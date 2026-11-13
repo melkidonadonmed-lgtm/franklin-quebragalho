@@ -191,13 +191,13 @@ def _resolve_agents_dir() -> Path:
 
 
 def _render_ecosystem_topology() -> str:
-    """Renderiza a topologia interativa de agentes em 5 camadas e 24 skills."""
+    """Renderiza a topologia interativa de agentes em 5 camadas e 29 skills."""
     skills = _get_all_skills_data()
     by_persona: Dict[str, List[str]] = {}
     for s in skills:
         by_persona.setdefault(s["persona"], []).append(s["name"])
     lines = [
-        "# ⚡ Topologia Interativa de Agentes Multi-Repo (5 Camadas • 14 Repositórios)\n",
+        "# ⚡ Topologia Interativa de Agentes Multi-Repo (5 Camadas • Workspace Multi-Repo)\n",
         "## 1. Camadas de Execução e Custo Cognitivo",
         "- **Camada 0 (Bússola & Heartbeat Zero-LLM — 0 tokens)**: `franklin_smart_compass()`, `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1`, `POST /rpc` (`mesh/heartbeat` em `adk-go-mcp`).",
         "- **Camada 1 (Orquestração & Loop Fechado)**: `Franklin-Main` (Execução Direta) e `LoopPlanner` (`high-level-context-planner` Fase 0 -> `skill-orquestrador-planos-encadeados` -> `gap-analyzer-auditor`).",
@@ -315,7 +315,7 @@ def smart_compass_impl(
         "### 4. Qualidade Linear Sem Engessar (Regra de Bolso):",
         f"> {linear_guardrail}", "",
         "### 5. Central Interativa no Terminal (1-Clique):",
-        "- `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1` (Menu interativo de agentes, portas e 14 repositórios)",
+        "- `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1` (Menu interativo de agentes, portas e repositórios do workspace)",
         "- `franklin_get_agents(agent_name='ecosystem')` (Mapa completo das 5 camadas de agentes)",
     ])
     if auto_dispatch_dag and dag_plan.startswith("plans/") and dag_executor is not None:

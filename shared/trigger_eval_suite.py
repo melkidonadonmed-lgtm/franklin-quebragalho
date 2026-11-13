@@ -1,7 +1,7 @@
 """
 trigger_eval_suite.py
 Suíte Determinística de Avaliação de Disparo Nível 1 (Should-Trigger vs. Near-Misses)
-para as 25 Agent Skills Canônicas do Franklin Quebra-Galho.
+para as 29 Agent Skills Canônicas do Franklin Quebra-Galho.
 
 Objetivo:
 Validar matematicamente que as descrições do Nível 1 (<available_skills>) e o motor

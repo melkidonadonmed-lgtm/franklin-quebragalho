@@ -29,6 +29,7 @@ Desmascara a **Falsa Sensação de Segurança (*Green Build Illusion*)**, diagno
 ## 🎯 Gatilhos de Ativação (Quando Usar)
 
 Ative esta skill quando o usuário solicitar:
+
 - "Audite a qualidade dos testes deste repositório / arquivo (`test_*.py`, `*.test.ts`, `*_test.go`, `test_server.py`, `test_harness_quality.py`)"
 - "Analise os testes Go (`testing.T`), testes MCP (`JSON-RPC 2.0` / `FastMCP`) ou testes de Harness (`SemanticGuard`, `CheckpointStore`, `evaluate_action_risk`, `run_eval_harness`) sob o padrão AAA e Dossiê Níveis 1 a 4"
 - "Analise qual era o problema do teste, qual foi a abordagem, a montagem AAA e por que funcionou mas não resolveu o problema"
@@ -84,23 +85,30 @@ Toda auditoria conduzida por esta skill executa o pipeline determinístico em **
 ```
 
 ### Passo 1: Execução do Motor Modular (`test_quality_auditor.py`)
+
 Dispare o script utilitário sobre qualquer arquivo ou diretório (Python, TS/JS, Go, MCP ou Harness):
+
 ```powershell
 uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py <caminho_alvo> --markdown
 ```
+
 Para forçar um domínio específico (`go`, `mcp` ou `harness`):
+
 ```powershell
 uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py <caminho_alvo> --domain go --markdown
 uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py <caminho_alvo> --domain mcp --markdown
 uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py <caminho_alvo> --domain harness --markdown
 ```
+
 Para validar todos os 5 módulos espelhados (`evals/modules/*_evals.json`) + a suíte consolidada (20 casos) ou um módulo isolado:
+
 ```powershell
 uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py --run-evals
 uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py --run-evals --eval-module harness
 ```
 
 ### Passo 2: Análise Estrutural dos 7 Módulos Obrigatórios
+
 1. **Diagnóstico da Problemática do Teste:** Explicite **O Problema** (*Green Build / Green Go Test / Green MCP / Green Harness Illusion*), **A Abordagem** (Auditoria de Integridade de Asserção, Erros, Protocolo JSON-RPC, Guardas HITL e Isolamento) e **O Que Esperava Conseguir** (*Mutation Score High* / Guardrails Determinísticos).
 2. **Análise da Montagem e Seus Elementos (Padrão AAA):**
    - **Em Go (`*_test.go`):** `1. ARRANGE` (`t.TempDir()`, `t.Setenv()`, `t.Cleanup()`), `2. ACT` (captura explícita `res, err := sut()` sem `_`), `3. ASSERT` (`if err != nil { t.Fatalf(...) }`, `errors.Is`, campos de negócio).
@@ -121,6 +129,7 @@ uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py --run-
 ## 📤 Saídas e Entregáveis (Modelo de Saída — [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md))
 
 A resposta final da skill deve conter obrigatoriamente:
+
 1. **Dossiê Executivo nos 7 Módulos (Python, TS/JS, Go, MCP ou Harness):** (1) Diagnóstico da Problemática, (2) Montagem AAA, (3) Análise de Falha Tautológica, (4) Fatores de Persistência, (5) Espectro Geral e Tabela do Dossiê por Teste (Níveis 1 a 4), (6) Correção Cirúrgica Antes vs. Depois e (7) Relatório de Evals Consolidado e por Módulo Espelhado (`grading.json` / `benchmark.json`).
 2. **Veredito Determinístico do Script Modular:** Saída comprovada de `scripts/test_quality_auditor.py` com pontuação individual e global (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`).
 3. **Links Clicáveis `file:///`:** Apontamento direto para todos os arquivos de teste auditados, refatorados e artefatos gerados.

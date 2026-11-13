@@ -36,7 +36,7 @@ Toda interação opera sob tripartição estrita:
 | **LLM02:2026** | Divulgação de Informações Sensíveis | Mascaramento de chaves de API, credenciais e dados pessoais (PII) nos canais de saída; proibição de eco de variáveis de ambiente. |
 | **LLM04:2026** | Negação de Serviço do Modelo (DoS) | Controle estrito de orçamento de tokens, limites de recursão (`max_iterations`), limitação no Módulo 3 para no máximo 3 perguntas cirúrgicas e compressão semântica de contexto. |
 | **LLM06:2026** | Agência Excessiva (*Excessive Agency*) | Exigência mandatória de aprovação humana (*Human-in-the-Loop* - HITL) para mutações no mundo real (exclusão de arquivos, DROP em bancos, chamadas de pagamento). |
-| **LLM08:2026** | Dependência Excessiva (*Overreliance*) | Triagem de factibilidade com base na baseline normativa (Novembro de 2026) e emissão de `[VEREDITO: INVIÁVEL/FALHO/SUBÓTIMO]` com justificativa e alternativa superior. |
+| **LLM08:2026** | Dependência Excessiva (*Overreliance*) | Triagem de factibilidade com base no contexto temporal da sessão e docs/MCP oficiais, emitindo `[VEREDITO: INVIÁVEL/FALHO/SUBÓTIMO]` com justificativa e alternativa superior. |
 
 ---
 

@@ -45,7 +45,7 @@ O **Franklin Quebra-Galho** (`franklin-quebragalho`) é o assistente principal d
 ## Comandos Rápidos
 
 - **Executar Servidor MCP Localmente**: `uv run python server.py`
-- **Executar Suíte Completa de Testes (`77/77`)**: `uv run pytest -q`
+- **Executar Suíte Completa de Testes (`83/83`)**: `uv run pytest -q`
 - **Auditar Todas as Skills (`29/29`)**: `uv run python scripts/validate_skills.py`
 - **Auditar Estrutura Física e AST do Projeto**: `uv run python skills/auditoria-projetos-sistema/scripts/project_structure_and_code_auditor.py --self-test`
 - **Sincronizar Catálogo, Regras e Plugin Global**: `uv run python scripts/sync_gemini_ecosystem.py`

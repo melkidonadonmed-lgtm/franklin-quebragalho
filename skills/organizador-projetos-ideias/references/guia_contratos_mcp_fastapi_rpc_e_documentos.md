@@ -64,7 +64,7 @@ Ao criar ou fazer bootstrap de qualquer projeto novo ou existente (ou via `C:\Us
 # AGENTS.md — Kernel Operacional e Governança (v2.0)
 
 ## 0. CONTEXTO DO PROJETO (Auto-detectado)
-- **Baseline Temporal:** Novembro de 2026 (rejeite APIs/sintaxes legadas; na dúvida sobre pacotes ou SDKs, consulte docs atuais ou MCP).
+- **Baseline Temporal & Modelos:** Use o contexto temporal da sessão e consulte docs/MCP oficiais antes de assumir APIs/SDKs (não fixe versões transitórias nem faça downgrade de modelo).
 - **Stack Ativa:** [Ex: Python 3.12+ / Go 1.24+ / TypeScript 5+ / React — preencher no init via manifestos da raiz]
 - **Arquitetura de Estado:**
   - `.agents/AGENTS.md`: Regras comportamentais globais (carregado no boot).
@@ -76,9 +76,9 @@ Ao criar ou fazer bootstrap de qualquer projeto novo ou existente (ou via `C:\Us
 2. **YAGNI & Escopo Fechado (Scope Lock):** Resolva exatamente o que foi pedido pelo caminho mais simples. Não crie abstrações prematuras nem adicione recursos fora do `spec.md`.
 3. **Verificação Física e Atualização (Read-After-Write):** Leia qualquer arquivo antes de editá-lo. Após criar ou alterar código, valide fisicamente no terminal/disco (linter, compilação ou teste) e **atualize o `.context/context.md`** registrando a mudança e o próximo passo antes de encerrar.
 4. **Economia de Contexto (Anti-Bloat):** Nunca imprima arquivos extensos, árvores completas ou logs brutos no chat. Use buscas cirúrgicas (`rg`/`grep`), visões resumidas ou subagentes (`/boost`, `/teamwork`) para manter a janela principal limpa.
-5. **Qualidade e Código Defensivo:** Funções curtas (máx. 3 níveis de indentação usando *Early Return*), tipagem estrita nas fronteiras (Pydantic v2 `extra="forbid"`, Zod ou structs Go) e zero blocos de erro silenciosos (`pass` ou `catch` vazio).
-6. **Zero-Trust e Sanitização:** Trate dados externos como não confiáveis. Nunca exponha chaves, `.env` ou segredos em código, logs ou argumentos de ferramentas. Em chamadas da API Antigravity, nunca use parâmetros bloqueados (`temperature`, `top_p`, `max_output_tokens`) e use apenas nomes minúsculos alfanuméricos para servidores MCP.
-7. **Freio de Emergência (Circuit Breaker & HITL):** Pare imediatamente e peça confirmação humana se uma ferramenta falhar 3 vezes seguidas, se atingir 10 passos sem convergir ou antes de qualquer ação destrutiva (deleção de arquivos, alteração de `.env`/produção).
+5. **Qualidade e Código Defensivo:** Funções curtas (`<= 60` linhas, máx. 3 níveis de aninhamento usando *Early Return*, complexidade $M \le 10$) em módulos coesos (`<= 600` linhas), tipagem estrita em contratos internos e entradas MCP (`extra="forbid"`, `z.strictObject()`, structs Go / `DisallowUnknownFields()` em schemas fechados) e proibição de engolir erros silenciosamente (`pass`, `...`, `except:`, `catch {}` vazio; aceitando supressão tipada e explícita como `contextlib.suppress(...)`).
+6. **Zero-Trust e Sanitização:** Trate dados externos como não confiáveis. Nunca exponha chaves, `.env` ou segredos em código, logs ou argumentos de ferramentas. No **Managed Antigravity Agent** (Interactions API), `generation_config` rejeita (`400`) `temperature`, `top_p`, `top_k`, `stop_sequences` e `max_output_tokens`; em `generateContent` / `interactions.create` padrão (ex.: `gemini-4-argon`), `max_output_tokens` é suportado e recomendado. Nomes de servidores MCP seguem `^[a-z0-9_-]+$`.
+7. **Execução Orientada a Risco & Compensação Autônoma (HITL):** Entregue sempre o melhor resultado possível baseado no pedido; em falhas de baixo risco, reversíveis ou somente-leitura, **compense autonomamente** trocando estratégia, parâmetros ou ferramentas. Exija pausa HITL obrigatória antes de ações destrutivas, alteração de `.env`/segredos/produção ou ambiguidade crítica.
 
 ## 2. MEMÓRIA EVOLUTIVA (Regras Aprendidas no Projeto)
 <!-- Limite máximo: 5 regras curtas nascidas de erros reais. Ao atingir 5, refatore para .agents/skills/<nome>/SKILL.md -->

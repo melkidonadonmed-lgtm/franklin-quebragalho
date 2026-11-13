@@ -541,11 +541,15 @@ def test_gemini_ecosystem_directories(tmp_path: Path, monkeypatch: pytest.Monkey
     cli_extension = _seed(gemini_root / "extensions" / "wt-agent-hooks" / "gemini-extension.json", "{}\n")
     _seed(gemini_root / "plugins" / "legado.txt")
     _seed(gemini_root / "docs" / "legado.txt")
+    stale_rule = _seed(gemini_root / "config" / "rules" / "regra-obsoleta.md", "---\ntrigger: always_on\n---\nobsoleta\n")
     dup_probe = _seed(gemini_root / "config" / "skills" / "design-md" / "SKILL.md", "---\nname: design-md\n---\n")
     user_skill = _seed(home / ".agents" / "skills" / "agent-browser" / "SKILL.md")
     repo = tmp_path / "repos" / "scoreboard"
     _seed(repo / ".context" / "context.md", "estado canônico\n")
     _seed(repo / "CONTEXT.md", "raiz desatualizada\n")
+    split_repo = tmp_path / "repos" / "epic-volta"
+    _seed(split_repo / "AGENTS.md", "# Guia Detalhado\n")
+    _seed(split_repo / ".agents" / "AGENTS.md", "# Kernel Split Preservado\n")
 
     real_home = Path(r"C:\Users\melki")
     guarded = [p for p in (real_home / "AGENTS.md", real_home / ".gemini" / "config" / "skills.json") if p.exists()]
@@ -562,6 +566,12 @@ def test_gemini_ecosystem_directories(tmp_path: Path, monkeypatch: pytest.Monkey
     assert cli_extension.exists(), "sync não pode apagar ~/.gemini/extensions (diretório ativo do Gemini CLI)"
     assert user_skill.exists()
     assert (gemini_root / "agents" / "ui-shell-navigator.md").exists()
+    hitl_agent = (gemini_root / "agents" / "intent-hitl-mediator.md").read_text(encoding="utf-8")
+    assert '  - "*"' not in hitl_agent
+    assert "enable_write_tools: false" in hitl_agent
+    assert not stale_rule.exists(), "sync deve podar rules/*.md removidas em ~/.gemini/config/rules"
+    assert (gemini_root / "config" / "rules" / "diretrizes-qualidade-eficiencia.md").exists()
+    assert (split_repo / ".agents" / "AGENTS.md").read_text(encoding="utf-8") == "# Kernel Split Preservado\n"
     assert (gemini_root / "config" / "agents" / "adk-go-operator.md").exists()
     assert not (gemini_root / "config" / "agents" / "ui-shell-navigator.md").exists()
     assert (gemini_root / "plans" / "ui_composition_dag.json").exists()
