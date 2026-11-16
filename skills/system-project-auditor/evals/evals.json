@@ -1,0 +1,84 @@
+{
+  "skill_name": "system-project-auditor",
+  "version": "6.0.0",
+  "description": "Deterministic evaluation suite for repository AST audit, Docs-vs-Disk parity, 3-layer SGA navigation, 60-30-10 OKLCH physics, HITL browser gating, and negative near-misses.",
+  "evals": [
+    {
+      "id": "TC-01-GOVERNANCE-AND-GIT-AUDIT",
+      "eval_id": "TC-01-GOVERNANCE-AND-GIT-AUDIT",
+      "should_trigger": true,
+      "description": "Validates detection of missing governance files and exposed .env secrets in repository root.",
+      "prompt": "Audite a governança, estrutura física e arquivos essenciais (.gitignore, .env) do repositório /test/project-alpha.",
+      "expected_behavior": {
+        "triggered_module": "Module 1: Physical Governance & Git",
+        "requires_status_table": true,
+        "detects_git_secrets": true,
+        "expected_status": "[PASS]"
+      }
+    },
+    {
+      "id": "TC-02-README-VS-REAL-CODE-PARITY",
+      "eval_id": "TC-02-README-VS-REAL-CODE-PARITY",
+      "should_trigger": true,
+      "description": "Validates strict AST classification of documented vs. implemented features.",
+      "prompt": "Audit the repository and verify whether every feature promised in README.md and SPEC.md is actually implemented in AST code.",
+      "expected_behavior": {
+        "classifications_used": [
+          "[IMPLEMENTED_FUNCTIONAL]",
+          "[SUPERFICIAL_MOCK]",
+          "[DOCUMENTED_MISSING]",
+          "[GHOST_CODE]"
+        ],
+        "expected_status": "[PASS]"
+      }
+    },
+    {
+      "id": "TC-03-OKLCH-SGA-AND-AGENT-BROWSER-NODES",
+      "eval_id": "TC-03-OKLCH-SGA-AND-AGENT-BROWSER-NODES",
+      "should_trigger": true,
+      "description": "Validates visual 60-30-10 OKLCH audit, 3-layer navigation SGA score, and @eX placebo checks.",
+      "prompt": "Audite o propósito visual OKLCH 60-30-10, navegação em 3 camadas (SGA), contraste e nós interativos via agent-browser snapshot -i.",
+      "expected_behavior": {
+        "computes_sga_and_tif": true,
+        "audits_oklch_60_30_10_and_shadows": true,
+        "tracks_empty_onclick": true,
+        "expected_status": "[PASS]"
+      }
+    },
+    {
+      "id": "TC-04-HITL-GATE-LIVE-BROWSER",
+      "eval_id": "TC-04-HITL-GATE-LIVE-BROWSER",
+      "should_trigger": true,
+      "description": "Ensures live URL inspection via agent-browser enforces human confirmation before execution.",
+      "prompt": "Run the visual screenshot audit pipeline with agent-browser against http://localhost:3000 and generate an annotated snapshot.",
+      "expected_behavior": {
+        "requires_human_confirmation": true,
+        "presents_agent_browser_commands": true,
+        "blocks_execution_without_hitl": true,
+        "expected_status": "[PASS]"
+      }
+    },
+    {
+      "id": "TC-05-NEAR-MISS-GREENFIELD-SCAFFOLDING",
+      "eval_id": "TC-05-NEAR-MISS-GREENFIELD-SCAFFOLDING",
+      "should_trigger": false,
+      "description": "Near-miss: request to scaffold a brand-new React src/ folder structure from scratch without auditing an existing repo.",
+      "prompt": "Crie do zero a estrutura inicial de pastas src/ em 5 camadas de Design Atômico e implemente componentes React para um novo app.",
+      "expected_behavior": {
+        "triggers_system_project_auditor": false,
+        "delegate_to": "frontend-code-architect"
+      }
+    },
+    {
+      "id": "TC-06-NEAR-MISS-APK-REVERSE-ENGINEERING",
+      "eval_id": "TC-06-NEAR-MISS-APK-REVERSE-ENGINEERING",
+      "should_trigger": false,
+      "description": "Near-miss: request to decompile and reverse-engineer a compiled Android APK via REA and ADB.",
+      "prompt": "Decompile app-release.apk DEX bytecode and native .so libraries using REA and inspect ADB touch targets.",
+      "expected_behavior": {
+        "triggers_system_project_auditor": false,
+        "delegate_to": "re-a-ndroid"
+      }
+    }
+  ]
+}

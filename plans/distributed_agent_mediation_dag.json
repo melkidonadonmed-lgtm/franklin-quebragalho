@@ -1,16 +1,16 @@
 {
-  "objective": "Orquestração Distribuída com Intermediários, Governança HITL, Atribuição GCP (DAK), Execução Paralela Fan-Out e Verificação Read-After-Write em 3 Ondas",
+  "objective": "Distributed Orchestration with Mediators, HITL Governance, GCP Attribution (DAK), Parallel Fan-Out Execution, and Read-After-Write Verification in 3 Waves",
   "acceptance_criteria": [
-    "Onda 1 (intent_hitl_mediator): Diagnosticar intenção via schema estrito Pydantic (extra='forbid'), validar/pausar mutações críticas via HITL (approval_token + idempotency_key) e aplicar atribuição de recursos GCP (--label datacloud:antigravity em bq query/load/extract/mk/update/cp e CLOUDSDK_METRICS_ENVIRONMENT em gcloud)",
-    "Onda 2A (parallel_domain_workers): Executar Fan-Out paralelo de subagentes especialistas (UX/Vision, SEO/Metadata, Copy/Conteúdo e Cálculo AST) em chaves isoladas de estado sem colisão",
-    "Onda 2B (mcp_stateless_dispatcher): Executar chamadas JSON-RPC 2.0 stateless com envelope _meta (Protocolo MCP 2026-07-28) e controle de idempotência",
-    "Onda 3 (read_after_write_verifier): Realizar leitura explícita pós-escrita (Read-After-Write) no estado real e emitir veredito assinado com post_condition_verified = true"
+    "Wave 1 (intent_hitl_mediator): Classify intent via strict Pydantic schema (extra='forbid'), pause/validate critical mutations via HITL (approval_token + idempotency_key), and enforce GCP resource attribution (--label datacloud:antigravity on bq query/load/extract/mk/update/cp and CLOUDSDK_METRICS_ENVIRONMENT on gcloud)",
+    "Wave 2A (parallel_domain_workers): Execute parallel fan-out of specialist subagents (UX/Vision, SEO/Metadata, Copy/Content, AST Math) into isolated state keys without collisions",
+    "Wave 2B (mcp_stateless_dispatcher): Execute stateless JSON-RPC 2.0 calls with _meta envelope (MCP Protocol 2026-07-28) and idempotency tracking",
+    "Wave 3 (read_after_write_verifier): Perform explicit post-write read verification (Read-After-Write) on real state and emit signed verdict with post_condition_verified = true"
   ],
   "tasks": [
     {
       "id": "wave1_intent_and_attribution_gate",
       "group_id": "intent_hitl_mediator",
-      "description": "Onda 1 (Intermediário de Entrada): Triagem de intenção Pydantic v2, intercepção de política HITL (checkpoint + idempotency_key) e imposição de rótulos DAK (enforcing-resource-attribution)",
+      "description": "Wave 1 (Ingress Mediator): Pydantic v2 intent triage, HITL policy gate (checkpoint + idempotency_key), and DAK label enforcement (enforcing-resource-attribution)",
       "criticality": "HIGH",
       "payload": {
         "agent_spec": "agents/intent-hitl-mediator.md",
@@ -23,13 +23,13 @@
     {
       "id": "wave2a_parallel_domain_workers",
       "group_id": "parallel_domain_workers",
-      "description": "Onda 2A (Fan-Out Paralelo): Execução concorrente de Subagente_UX_Visual, Subagente_SEO_Metadata, Subagente_Copywriting e Subagente_Codigo_Execucao em chaves de estado isoladas",
+      "description": "Wave 2A (Parallel Fan-Out): Concurrent execution of UX, SEO, Copy, and AST Math subagents into isolated state keys",
       "dependencies": [
         "wave1_intent_and_attribution_gate"
       ],
       "criticality": "HIGH",
       "payload": {
-        "skill": "skill-orquestrador-planos-encadeados",
+        "skill": "chained-plan-orchestrator",
         "isolated_state_keys": [
           "fix_ux_result",
           "fix_seo_result",
@@ -44,7 +44,7 @@
     {
       "id": "wave2b_mcp_stateless_dispatch",
       "group_id": "mcp_stateless_dispatcher",
-      "description": "Onda 2B (Barramento MCP 2026-07-28): Despacho JSON-RPC 2.0 stateless com envelope _meta, approval_token HITL e livro-razão de idempotência",
+      "description": "Wave 2B (MCP Bus 2026-07-28): Stateless JSON-RPC 2.0 dispatch with _meta envelope, HITL approval_token, and idempotency ledger",
       "dependencies": [
         "wave1_intent_and_attribution_gate"
       ],
@@ -61,7 +61,7 @@
     {
       "id": "wave3_read_after_write_verifier",
       "group_id": "read_after_write_verifier",
-      "description": "Onda 3 (Intermediário Gatekeeper Final): Consolidação Fan-In, leitura explícita pós-mutação (Read-After-Write) e confirmação do estado real",
+      "description": "Wave 3 (Final Gatekeeper Mediator): Fan-In consolidation, explicit Read-After-Write verification, and real-state confirmation",
       "dependencies": [
         "wave1_intent_and_attribution_gate",
         "wave2a_parallel_domain_workers",

@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CognitiveAdaptivePlanSchema",
+  "description": "Canonical v3.0.0 JSON Schema for non-linear adaptive execution plans emitted by high-level-context-planner (aligned with scripts/cognitive_plan_builder.py)",
+  "type": "object",
+  "properties": {
+    "plan_id": {
+      "type": "string",
+      "description": "Unique plan identifier"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Semantic version of the generated plan"
+    },
+    "target_orchestrator": {
+      "type": "string",
+      "enum": ["chained-plan-orchestrator"],
+      "description": "Downstream DAG wave compiler and dispatcher skill"
+    },
+    "strategic_goal": {
+      "type": "string",
+      "description": "Normalized strategic objective statement"
+    },
+    "intencao": {
+      "type": "object",
+      "description": "4-quadrant intent classification block",
+      "properties": {
+        "categoria": {
+          "type": "string",
+          "enum": ["direta", "estruturada", "ambigua", "mutacao_critica_hitl"],
+          "description": "Intent quadrant classification"
+        },
+        "diagnostico": {
+          "type": "string",
+          "description": "Concise rationale for the selected intent quadrant"
+        },
+        "requer_hitl": {
+          "type": "boolean",
+          "description": "Whether mandatory Human-in-the-Loop gating is required"
+        }
+      },
+      "required": ["categoria", "diagnostico", "requer_hitl"],
+      "additionalProperties": false
+    },
+    "frameworks_selecionados": {
+      "type": "object",
+      "description": "Paired structural delivery framework and non-linear cognitive patterns",
+      "properties": {
+        "estrutural": {
+          "type": "string",
+          "enum": ["CLAREZA", "CREATE", "RTF", "TAG", "TASS"]
+        },
+        "cognitivo": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["CoT", "ReAct", "ToT", "Self-Refine"]
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["estrutural", "cognitivo"],
+      "additionalProperties": false
+    },
+    "blindagem_complexidade": {
+      "type": "object",
+      "description": "Prompt Complexity Wall compliance report",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["SHIELDED", "SUBDIVIDED", "VIOLATION"]
+        },
+        "max_regras_por_no": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "disclosure_tier": {
+          "type": "integer",
+          "enum": [1, 2, 3]
+        },
+        "estrategia": {
+          "type": "string"
+        }
+      },
+      "required": ["status", "max_regras_por_no", "disclosure_tier", "estrategia"],
+      "additionalProperties": false
+    },
+    "grafo_execucao": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Ordered list of atomic execution nodes (<= 5 active rules each)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "etapa_id": {
+            "type": "string",
+            "description": "Unique node identifier (first node starts at step_00_fase_zero)"
+          },
+          "nome": {
+            "type": "string",
+            "description": "Human-readable node title"
+          },
+          "responsible_skill": {
+            "type": "string",
+            "description": "Canonical skill slug assigned to this node"
+          },
+          "tipo_execucao": {
+            "type": "string",
+            "enum": ["model_reasoning", "tool_io", "decision_gate", "deterministic_code", "hitl_gate"]
+          },
+          "padrao_cognitivo": {
+            "type": "string",
+            "enum": ["CoT", "ReAct", "ToT", "Self-Refine"]
+          },
+          "regras_ativas_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "regras_ativas": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 5
+          },
+          "precondicoes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "target_files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "criterio_aceite": {
+            "type": "string"
+          },
+          "ramo_fallback": {
+            "type": ["string", "null"]
+          }
+        },
+        "required": [
+          "etapa_id",
+          "nome",
+          "tipo_execucao",
+          "padrao_cognitivo",
+          "regras_ativas_count",
+          "precondicoes",
+          "criterio_aceite",
+          "ramo_fallback"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "plan_id",
+    "version",
+    "target_orchestrator",
+    "strategic_goal",
+    "intencao",
+    "frameworks_selecionados",
+    "blindagem_complexidade",
+    "grafo_execucao"
+  ],
+  "additionalProperties": false
+}

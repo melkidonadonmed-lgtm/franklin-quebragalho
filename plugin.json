@@ -2,8 +2,8 @@
   "$schema": "https://antigravity.google/schemas/v1/plugin.json",
   "name": "franklin-skills",
   "displayName": "Franklin Auditor & Governance Suite",
-  "version": "3.9.0",
-  "description": "Suite de auditoria determinística AST, testes AAA, RCA e regras autorais para Antigravity com zero bloat global.",
+  "version": "4.0.0",
+  "description": "Deterministic AST auditing, AAA test validation, RCA gap analysis, and authoring rules for Antigravity with zero global context bloat.",
   "author": {
     "name": "Melki Franklin",
     "url": "https://github.com/melkidonadonmed-lgtm"
@@ -20,8 +20,8 @@
   ],
   "logo": "assets/logo.svg",
   "suggestedPrompts": [
-    "Auditar MVP, contratos MCP/RPC e navegação deste repositório via auditoria-projetos-sistema e organizador-projetos-ideias",
-    "Auditar suíte de testes contra Green Build Illusion e quality score AST via test-quality-auditor e code-acceptability-auditor",
-    "Executar RCA determinística de falhas via gap-analyzer-auditor ou auditar skills via audit-skills-antigravity"
+    "Audit MVP, MCP/RPC contracts, and 3-layer navigation of this repository using system-project-auditor and project-idea-organizer",
+    "Audit test suites against Green Build Illusion and AST quality score using test-quality-auditor and code-acceptability-auditor",
+    "Run deterministic root-cause gap analysis across logs and Spec-to-Code drift using gap-analyzer-auditor"
   ]
 }

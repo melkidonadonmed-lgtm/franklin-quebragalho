@@ -13,6 +13,7 @@ com suporte a 5 módulos espelhados:
 from __future__ import annotations
 
 import json
+import tempfile
 import time
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
@@ -220,9 +221,10 @@ def run_eval_harness(
     skill_root: Path,
     audit_fn: Callable[[str, str], FileAuditReport],
     eval_module: str = "all",
+    output_dir: Optional[Path] = None,
 ) -> Dict[str, Any]:
     """Executa os módulos espelhados e a suíte consolidada evals/evals.json."""
-    workspace_dir = skill_root / "evals" / "workspace" / "iteration-1"
+    workspace_dir = output_dir if output_dir is not None else Path(tempfile.mkdtemp(prefix="tqa_eval_"))
     modules_out_dir = workspace_dir / "modules"
     modules_out_dir.mkdir(parents=True, exist_ok=True)
     modules_dir = skill_root / "evals" / "modules"

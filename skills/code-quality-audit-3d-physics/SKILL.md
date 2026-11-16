@@ -1,53 +1,54 @@
 ---
 name: code-quality-audit-3d-physics
-description: "Audita e sanitiza código de Física 3D, Computação Gráfica WebGL Three.js Babylon.js, shaders, colisões e nota Snorm Pass@10. Use para revisar motores 3D e simulação; não use para CRUD web."
+description: "Audit and sanitize 3D physics engines, WebGL, Three.js, Babylon.js, shaders, collision stability, and Snorm Pass@10 scores in 3+1+1 envelope topology. Use to review 3D graphics and numerical simulation loops. Do NOT use for web CRUD, CSS styling, or unit-test AAA audits."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 metadata:
   version: "1.0.0"
-  updated_at: "2026-11-13"
-  author: "Franklin-Main & Melki"
-  category: "Auditoria de Código, Física 3D e Simulação Numérica"
-  tags: ["fisica-3d", "auditoria-codigo", "ast-parser", "threejs", "webgl", "testes-deterministicos", "pass-at-k", "snorm"]
+  updated_at: "2026-11-16"
+  author: "Franklin"
+  category: "3D Physics, WebGL Graphics & Numerical Simulation Auditing"
+  tags: ["code-quality-audit-3d-physics", "3d", "fisica", "fisica-3d", "auditar", "sanitizar", "codigo", "computacao", "grafica", "webgl", "three", "threejs", "babylon", "babylonjs", "shaders", "colisoes", "snorm", "pass", "pass-at-k", "ast-parser", "auditoria-codigo", "testes-deterministicos"]
 ---
 
-# `code-quality-audit-3d-physics` — Auditoria 3D/WebGL e Física Numérica
+# `code-quality-audit-3d-physics` (`v1.0.0`) — 3D/WebGL & Numerical Physics Audit
 
-## 1. Propósito e Gatilhos (Quando Usar)
+## 1. Overview & Scope
 
-Orquestra em **Topologia Envelope 3+1+1** a auditoria estática e dinâmica de motores de Física 3D, WebGL/Three.js/Babylon.js e simulação numérica:
+Orchestrates static and dynamic auditing of 3D physics engines, WebGL/Three.js/Babylon.js renderers, shaders, and numerical simulations in **3+1+1 Envelope Topology**:
+- Detects `ALLOC_IN_LOOP`, physics-render coupling, `MISSING_DELTA_TIME`, `EULER_GIMBAL_LOCK`, `UNCHECKED_NORMALIZE`, and `STRICT_FLOAT_COMPARE`.
+- Runs AST parsers (`static_ast_parser.py` / `js_ts_ast_parser.js`), runtime tests (`physics_test_runner.py`, `Pass@10`), and Observer cross-validation (`state_checker_observer.py`).
+- **When NOT to Use:** Do NOT use for CRUD/web repos (`system-project-auditor`), pure CSS/UI (`frontend-ui-ux-auditor`, `plan-uiux`), or general unit-test AAA audits (`test-quality-auditor`).
 
-- Detectar `ALLOC_IN_LOOP`, acoplamento física-render, falta de `deltaTime`, *Gimbal Lock*, `normalize` sem guarda e comparação estrita de floats.
-- Executar os parsers AST (`static_ast_parser.py` / `js_ts_ast_parser.js`), testes determinísticos (`physics_test_runner.py`, `Pass@10`) e filtro anti-falsos-positivos (`state_checker_observer.py`).
+## 2. Inputs & Prerequisites
 
-## 2. Entradas e Pré-requisitos
+- **`target_path` (required):** Target `.py`/`.js`/`.ts`/`.tsx` file or 3D engine directory.
+- **`step_function` (optional):** Step symbol (`step_physics_good`, `update`, `integrate`).
+- **`output_format` (optional):** `markdown` (default) or `json`.
 
-- **`target_path` (obrigatório):** Arquivo (`.py`, `.js`, `.ts`, `.tsx`) ou diretório do motor 3D/físico.
-- **`step_function` (opcional):** Nome da função de passo (`step_physics_good`, `update`, `integrate`).
-- **`output_format` (opcional):** `markdown` (padrão) ou `json`.
+## 3. Step-by-Step Procedure
 
-## 3. Processamento em 3 Ondas e Execução CLI
-
-Consulte o diagrama, pesos e penalidades em [`references/ondas_e_penalidades_3d.md`](references/ondas_e_penalidades_3d.md), [`references/subskill_modules_spec.md`](references/subskill_modules_spec.md), [`references/dossie_auditoria_qualidade_codigo_3d.md`](references/dossie_auditoria_qualidade_codigo_3d.md), [`references/estrutura_pontuacao_fisica_3d.md`](references/estrutura_pontuacao_fisica_3d.md) e [`references/observer_agent_spec.yaml`](references/observer_agent_spec.yaml):
+Consult [`references/3d_waves_and_penalties.md`](references/3d_waves_and_penalties.md), [`references/subskill_modules_spec.md`](references/subskill_modules_spec.md), [`references/3d_code_quality_audit_dossier.md`](references/3d_code_quality_audit_dossier.md), [`references/3d_physics_scoring_structure.md`](references/3d_physics_scoring_structure.md), and [`references/observer_agent_spec.yaml`](references/observer_agent_spec.yaml):
 
 ```powershell
-uv run python skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py <caminho_arquivo.py>
-node skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js <caminho_arquivo.ts>
-uv run python skills/code-quality-audit-3d-physics/scripts/physics_test_runner.py --target <caminho_arquivo.py> --json
-uv run python skills/code-quality-audit-3d-physics/scripts/state_checker_observer.py <caminho_arquivo>
+uv run python skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py <file.py>
+node skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js <file.ts>
+uv run python skills/code-quality-audit-3d-physics/scripts/physics_test_runner.py --target <file.py> --json
+uv run python skills/code-quality-audit-3d-physics/scripts/state_checker_observer.py <file_or_dir>
 ```
 
-Ou via DAG: `franklin_execute_dag(plan_path_or_json="physics", target_dir="<caminho_arquivo>")`.
+Or run via DAG: `franklin_execute_dag(plan_path_or_json="physics", target_dir="<target_path>")`.
 
 $$S_{\text{norm}} = 0.20 \cdot s_1 + 0.15 \cdot s_2 + 0.25 \cdot s_3 + 0.20 \cdot s_4 + 0.20 \cdot s_5$$
 
-## 4. Saídas e Entregáveis
+## 4. Gotchas & Edge Cases
 
-1. Cabeçalho executivo com $S_{\text{norm}} / 100$ e breakdown $s_1..s_5$ ([`rules/criterios_auditoria.md`](rules/criterios_auditoria.md)).
-2. Tabela das sub-dimensões $S_1..S_5$ ($25\%, 25\%, 20\%, 15\%, 15\%$) e dos 5 testes (`Pass@10`).
-3. Cards `🚨 [ERR-XXX / ID_PROBLEMA]` com `arquivo:linha`, causa raiz, código refatorado e métrica verificável.
+- `state-checker-observer` MUST inspect real lines to filter false positives (e.g., `.normalize()` guarded by `length > EPSILON`, or constructor allocations).
+- Never apply destructive refactoring without first presenting the Observer report and getting human approval.
 
-## 5. Exceções, Limites e Quando NÃO Usar
+## 5. Output Schema & Validation Criteria
 
-- **Repositórios CRUD/Web Comuns:** Não use sem motor físico/numérico (use `auditoria-projetos-sistema`).
-- **Estética CSS Pura:** Não use para cores/tipografia sem loop físico (use `frontend-ui-ux-auditor` ou `plan-uiux`).
-- **Aprovação para Mutações:** Nunca aplique alterações destrutivas sem apresentar o Relatório do Observador e obter aprovação humana.
+Emit verdicts per [`rules/audit_criteria.md`](rules/audit_criteria.md): $S_{\text{norm}} / 100$ header with $s_1..s_5$, sub-dimension table $S_1..S_5$ ($25\%, 25\%, 20\%, 15\%, 15\%$) + 5 runtime tests (`Pass@10`), and `[ERR-XXX / PROBLEM_ID]` cards with `file:line`, fix, and metric.
+
+## 6. User Communication Rule
+
+All direct responses, diagnostic cards, clarifying questions, and delivery summaries addressed to the end user MUST be written in **Portuguese (Brazil / `pt-BR`)**, unless the user explicitly requests otherwise.

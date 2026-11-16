@@ -303,7 +303,7 @@ def test_google_api_rules_grounding_and_sdk_baselines() -> None:
 
     repo_root = Path(__file__).resolve().parents[1]
     api_rule = (repo_root / "rules" / "authoring-rules-and-google-apis.md").read_text(encoding="utf-8")
-    quality_rule = (repo_root / "rules" / "diretrizes-qualidade-eficiencia.md").read_text(encoding="utf-8")
+    quality_rule = (repo_root / "rules" / "quality-efficiency-guidelines.md").read_text(encoding="utf-8")
     subagent_rule = (repo_root / "rules" / "authoring-subagents.md").read_text(encoding="utf-8")
 
     for token in (
@@ -329,7 +329,7 @@ def test_google_api_rules_grounding_and_sdk_baselines() -> None:
     ):
         assert token in api_rule, f"Token obrigatório ausente em authoring-rules-and-google-apis.md: {token}"
 
-    assert "gemini_search_docs" not in api_rule or "desabilitada" in api_rule
+    assert "gemini_search_docs" not in api_rule or "desabilitada" in api_rule or "disabled" in api_rule.lower()
     assert "gemini-4-hydrogen" in quality_rule and "3.1-flash-live-preview" in quality_rule
     assert "gemini-2.5-flash-lite" in quality_rule
     assert "3.1-flash-live-preview" in subagent_rule and "antigravity-preview-05-2026" in subagent_rule
@@ -350,7 +350,15 @@ def test_skills_have_no_broken_relative_links_or_unqualified_search_docs() -> No
             continue
         raw = md_file.read_text(encoding="utf-8")
         if "gemini_search_docs" in raw and not any(
-            guard in raw.lower() for guard in ("desabilitada", "evite `gemini_search_docs`", "nunca use `gemini_search_docs`")
+            guard in raw.lower()
+            for guard in (
+                "desabilitada",
+                "evite `gemini_search_docs`",
+                "nunca use `gemini_search_docs`",
+                "disabled",
+                "avoid `gemini_search_docs`",
+                "never use `gemini_search_docs`",
+            )
         ):
             unqualified_tool.append(str(md_file.relative_to(repo_root)))
 
@@ -406,7 +414,10 @@ def test_google_apis_and_subagents_rules_enforce_v1beta_and_tools_safety() -> No
         assert required in api_rule, f"Falta especificação vigente '{required}' em authoring-rules-and-google-apis.md"
 
     assert 'tools: ["*"]' in subagent_rule and "call_mcp_tool" in subagent_rule
-    assert "não liste `call_mcp_tool` em `tools:`" in subagent_rule
+    assert (
+        "não liste `call_mcp_tool` em `tools:`" in subagent_rule
+        or "do not list `call_mcp_tool` in `tools:`" in subagent_rule
+    )
 
 
 def test_protocol_matrix_headings_are_strictly_monotonic() -> None:
@@ -555,5 +566,55 @@ def test_agent_server_auditor_enforces_antigravity_policies_and_sdks(tmp_path: P
     assert dirty_rep.summary.status == "REJECTED"
     for expected_code in ("AUD-AGT-02", "AUD-SDK-01", "AUD-API-01"):
         assert expected_code in crit, f"Esperado {expected_code} em {crit}"
+
+
+def test_validate_skills_rejects_parent_link_escape_and_invalid_agent_tools(
+    tmp_path: Path,
+) -> None:
+    """Adversarial: validate_skill_dir blocks ../ escapes and ecosystem validator rejects legacy/missing agent tools."""
+    import scripts.validate_skills as vs
+
+    # 1. Parent relative link escape inside SKILL.md must fail
+    escape_skill = tmp_path / "escape-skill"
+    escape_skill.mkdir()
+    (escape_skill / "SKILL.md").write_text(
+        "---\n"
+        "name: escape-skill\n"
+        'description: "Use this skill when testing boundary rejection. Do NOT use for production tasks."\n'
+        "metadata:\n"
+        '  version: "1.0.0"\n'
+        '  updated_at: "2026-11-16"\n'
+        "---\n"
+        "# Escape Skill\n"
+        "## 1. Overview & Scope\nTest scope. See [secret](../other/SKILL.md).\n"
+        "## 2. Inputs & Prerequisites\nInput.\n"
+        "## 3. Step-by-Step Procedure\nRun.\n"
+        "## 4. Gotchas & Edge Cases\nStop.\n"
+        "## 5. Output Schema & Validation Criteria\nOut.\n",
+        encoding="utf-8",
+    )
+    errs_escape = vs.validate_skill_dir(escape_skill, strict_mode=True)
+    assert errs_escape, "Expected validate_skill_dir to reject ../ parent traversal link"
+    assert any(".." in err or "parent" in err.lower() or "quebrado" in err.lower() or "broken" in err.lower() for err in errs_escape), errs_escape
+
+    # 2. Subagent with Antigravity 1.x legacy tool (`view_file`) or omitted `tools:` must be rejected
+    fake_repo = tmp_path / "eco"
+    (fake_repo / "agents").mkdir(parents=True)
+    (fake_repo / "plans").mkdir(parents=True)
+    (fake_repo / "plugin.json").write_text('{"name": "test-plugin", "version": "1.0.0", "skills": "skills/"}', encoding="utf-8")
+    (fake_repo / "agents" / "legacy-tool-agent.md").write_text(
+        "---\nname: legacy-tool-agent\ndescription: Uses legacy 1.x tool\nsubagent: true\nmainAgent: false\n"
+        "model: inherit\ncommandExecutionPolicy: sandbox\ntools:\n  - view_file\n---\n# Legacy\n",
+        encoding="utf-8",
+    )
+    (fake_repo / "agents" / "missing-tools-agent.md").write_text(
+        "---\nname: missing-tools-agent\ndescription: Omits tools list\nsubagent: true\nmainAgent: false\n"
+        "model: inherit\ncommandExecutionPolicy: sandbox\n---\n# Missing tools\n",
+        encoding="utf-8",
+    )
+    eco_errs = vs._validate_plugin_and_agents(fake_repo)
+    joined = "\n".join(eco_errs)
+    assert "view_file" in joined, f"Expected legacy tool view_file rejection, got: {eco_errs}"
+    assert "missing-tools-agent.md" in joined, f"Expected missing tools rejection, got: {eco_errs}"
 
 

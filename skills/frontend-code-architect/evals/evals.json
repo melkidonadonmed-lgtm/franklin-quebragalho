@@ -5,30 +5,38 @@
     {
       "eval_id": "architect-3-tier-oklch-and-container-queries",
       "prompt": "Estruture uma aplicação analítica em React + TypeScript (Nível 2 Feature-Driven) usando tokens em 3 camadas em OKLCH (light-dark, color-mix, RCS), propriedades lógicas, sombras multi-camadas, Card polimórfico com @container e Breadcrumbs acessíveis.",
+      "should_trigger": true,
       "expected_assertions": [
-        "Organiza src/ separando app/, styles/ (tokens.css + globals.css), components/{ui,layout}/ e features/<dominio>/ respeitando <= 300 linhas por arquivo",
-        "Define tokens em 3 camadas (Primitivos, Semânticos --bg-canvas/--surface-canvas, --bg-surface-1/--surface-card, --text-primary/--ink-primary com oklch(), light-dark() e color-mix()) e sombras multi-camadas em 3 níveis",
-        "Implementa Card polimórfico (elevated, outlined, subtle, interactive) com container-type: inline-size (@container) e estados reais (idle, loading, empty, error, pressed)",
-        "Implementa navegação com Breadcrumbs (<nav aria-label='Caminho de navegação'><ol role='list'> e aria-current='page'), Ordem DOM = Ordem Visual e travas tipográficas (font-synthesis: none, tabular-nums, text-wrap: balance/pretty)"
+        "Organizes src/ separating app/, styles/ (tokens.css + globals.css), components/{ui,layout}/, and features/<domain>/ respecting <= 300 lines per file",
+        "Defines 3-layer tokens (Primitives, Semantics --bg-canvas/--surface-canvas, --bg-surface-1/--surface-card, --text-primary/--ink-primary with oklch(), light-dark(), and color-mix()) and 3-level multi-layer shadows",
+        "Implements polymorphic Card (elevated, outlined, subtle, interactive) with container-type: inline-size (@container) and real FSM states (idle, loading, empty, error, pressed)",
+        "Implements accessible Breadcrumbs (<nav aria-label='Breadcrumb'><ol role='list'> and aria-current='page'), DOM Order = Visual Order, and typographic locks (font-synthesis: none, tabular-nums, text-wrap: balance/pretty)"
       ]
     },
     {
       "eval_id": "architect-tier3-nextjs-app-router-pwa-fouc",
-      "prompt": "Implemente a estrutura de uma plataforma SaaS Fullstack & PWA em Next.js App Router (Nível 3) isolando o layout de Marketing do Workspace logado sem afetar a URL e prevenindo FOUC de tema claro/escuro.",
+      "prompt": "Implement a Fullstack SaaS & PWA shell in Next.js App Router (Tier 3) isolating Marketing from the authenticated Workspace without altering URLs and preventing light/dark theme FOUC.",
+      "should_trigger": true,
       "expected_assertions": [
-        "Utiliza Grupos de Rotas src/app/(marketing)/ e src/app/(workspace)/ com pastas privadas _components colocadas por rota",
-        "Configura Viewport API (colorScheme: 'light dark', themeColor dual), script síncrono anti-FOUC no <head> (suppressHydrationWarning) e @media (display-mode: standalone) para PWA"
+        "Uses Route Groups src/app/(marketing)/ and src/app/(workspace)/ with route-colocated private _components/ folders",
+        "Configures Viewport API (colorScheme: 'light dark', dual themeColor), synchronous anti-FOUC script in <head> (suppressHydrationWarning), and @media (display-mode: standalone) for PWA"
+      ]
+    },
+    {
+      "eval_id": "architect-negative-design-md-only",
+      "prompt": "Create only the DESIGN.md token contract in the repo root without writing any React, CSS, or HTML component code.",
+      "should_trigger": false,
+      "expected_assertions": [
+        "Does not trigger frontend-code-architect when the user strictly wants DESIGN.md contract authoring; delegates to design-md"
+      ]
+    },
+    {
+      "eval_id": "architect-negative-drive-cleanup",
+      "prompt": "Audite as duplicatas da unidade G:\\Meu Drive e converta este relatório Markdown em PDF via Edge headless.",
+      "should_trigger": false,
+      "expected_assertions": [
+        "Does not trigger frontend-code-architect for Google Drive cleanup or Markdown-to-PDF conversion tasks"
       ]
     }
-  ],
-  "trigger_eval_queries": {
-    "should_trigger": [
-      "Implemente a interface frontend seguindo o DESIGN.md com tokens OKLCH, container queries, 4 variantes de cards e controles funcionais reais",
-      "Estruture os componentes UI, Breadcrumbs e estilos nos 3 níveis de complexidade garantindo nitidez anti-borrão GPU e zero funções placebo"
-    ],
-    "near_misses": [
-      "Audite as duplicatas da unidade G:\\Meu Drive",
-      "Converta este arquivo Markdown em PDF via Edge headless"
-    ]
-  }
+  ]
 }

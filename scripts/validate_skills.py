@@ -19,13 +19,13 @@ SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 SEMVER_RE = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
 DUPLICATE_META_TOP_KEYS = ("version", "updated_at", "allowed-tools")
 NEGATIVE_TRIGGER_RE = re.compile(r"\b(n[aã]o use|do not use|don't use|skip when)\b", re.IGNORECASE)
-POSITIVE_TRIGGER_RE = re.compile(r"\b(use|ative|acion[ea]|when to use)\b", re.IGNORECASE)
+POSITIVE_TRIGGER_RE = re.compile(r"\b(use|activate|invoke|when to use|ative|acion[ea])\b", re.IGNORECASE)
 MAX_DESC_RECOMMENDED = 450
 MAX_DESC_HARD = 1024
 STOPWORDS = frozenset({
     "a", "an", "and", "as", "at", "by", "com", "da", "das", "de", "do", "dos", "e",
-    "em", "for", "from", "in", "is", "na", "nas", "no", "nos", "o", "of", "on", "or",
-    "ou", "para", "por", "quando", "se", "the", "to", "um", "uma", "use", "via", "when", "with",
+    "em", "for", "from", "in", "into", "is", "na", "nas", "no", "nos", "not", "o", "of", "on", "only", "or",
+    "ou", "para", "por", "quando", "se", "that", "the", "this", "to", "um", "uma", "use", "via", "when", "with",
 })
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -41,24 +41,24 @@ from shared.tools.frontmatter_parser import parse_frontmatter  # noqa: E402
 
 REQUIRED_SECTIONS: List[Tuple[str, str]] = [
     (
-        r"(#|##)\s+.*(Gatilhos|Quando Usar|Propósito|Proposito|Missão|Missao|Visão Geral|Visao Geral|Objetivo)",
-        "Gatilhos / Quando Usar / Objetivo",
+        r"(#|##)\s+.*(Overview|Scope|Triggers|When to Use|Purpose|Objective|Gatilhos|Quando Usar|Propósito|Proposito|Missão|Missao|Visão Geral|Visao Geral|Objetivo)",
+        "Overview & Scope / Triggers",
     ),
     (
-        r"(#|##)\s+.*(Entradas|Pr[eé]-requisitos|Par[aâ]metros|Contexto|Configura[cç][aã]o|Insumos)",
-        "Entradas / Pré-requisitos",
+        r"(#|##)\s+.*(Inputs|Prerequisites|Parameters|Context|Entradas|Pr[eé]-requisitos|Par[aâ]metros|Contexto|Configura[cç][aã]o|Insumos)",
+        "Inputs & Prerequisites",
     ),
     (
-        r"(#|##)\s+.*(Processamento|Passo a Passo|Fluxo|Execução|Execucao|Arquitetura|M[oó]dulos|Como Funciona)",
-        "Processamento / Fluxo / Arquitetura",
+        r"(#|##)\s+.*(Procedure|Step-by-Step|Operational Workflow|Workflow|Processing|Execution|Architecture|Processamento|Passo a Passo|Fluxo|Execução|Execucao|Arquitetura|M[oó]dulos|Como Funciona)",
+        "Step-by-Step Procedure",
     ),
     (
-        r"(#|##)\s+.*(Saídas|Saidas|Entregáveis|Entregaveis|Modelo de Saída|Modelo de Saida|Formato|Relat[oó]rio)",
-        "Saídas / Entregáveis",
+        r"(#|##)\s+.*(Output|Outputs|Deliverables|Validation Criteria|Report|Saídas|Saidas|Entregáveis|Entregaveis|Modelo de Saída|Modelo de Saida|Formato|Relat[oó]rio)",
+        "Output Schema & Validation Criteria",
     ),
     (
-        r"(#|##)\s+.*(Exceções|Excecoes|Limites|Quando N[AÃ]O Usar|Restri[cç][oõ]es|Guardrails)",
-        "Exceções / Limites / Guardrails",
+        r"(#|##)\s+.*(Gotchas|Edge Cases|Failure Modes|Exceptions|Limits|When NOT to Use|Restrictions|Guardrails|Exceções|Excecoes|Limites|Quando N[AÃ]O Usar|Restri[cç][oõ]es)",
+        "Gotchas, Edge Cases & Limits",
     ),
 ]
 ALLOWED_RULE_TRIGGERS = frozenset({"always_on", "model_decision", "glob", "manual"})
@@ -67,7 +67,10 @@ ALLOWED_PLUGIN_KEYS = frozenset({
     "$schema", "name", "displayName", "version", "description", "author",
     "homepage", "repository", "license", "keywords", "logo", "suggestedPrompts",
 })
-FORBIDDEN_AGENT_TOOLS = frozenset({"*", "call_mcp_tool"})
+FORBIDDEN_AGENT_TOOLS = frozenset({
+    "*", "call_mcp_tool", "view_file", "list_dir", "find_by_name",
+    "grep_search", "write_to_file", "replace_file_content", "multi_replace_file_content",
+})
 ALLOWED_EXEC_POLICIES = frozenset({"auto", "sandbox", "off"})
 
 
@@ -188,7 +191,7 @@ def _validate_scripts_dir(skill_dir: Path, errors: List[str]) -> None:
                 errors.append(f"[FAIL] Bloqueio TTY proibido: 'input()' em scripts/{py_file.name}")
 
 
-def _validate_evals_file(skill_dir: Path, errors: List[str]) -> None:
+def _validate_evals_file(skill_dir: Path, errors: List[str], *, strict_mode: bool = False, external_mode: bool = False) -> None:
     """Valida a estrutura e sintaxe JSON de evals/evals.json quando presente."""
     evals_file = skill_dir / "evals" / "evals.json"
     if not evals_file.exists():
@@ -208,6 +211,8 @@ def _validate_evals_file(skill_dir: Path, errors: List[str]) -> None:
         errors.append("[FAIL] evals.json deve conter uma lista não-vazia de testes")
         return
 
+    pos_triggers = 0
+    neg_triggers = 0
     for idx, tc in enumerate(evals_list):
         if not isinstance(tc, dict) or ("eval_id" not in tc and "id" not in tc):
             errors.append(f"[FAIL] Test case #{idx} em evals.json requer 'eval_id' (ou 'id')")
@@ -219,15 +224,43 @@ def _validate_evals_file(skill_dir: Path, errors: List[str]) -> None:
             for k in ("assertions", "expected_assertions", "expected_output", "expected_behavior", "expected", "criteria", "expected_status", "should_trigger")
         ):
             errors.append(f"[FAIL] Test case #{idx} em evals.json requer critério/asserção esperada")
+        if tc.get("should_trigger") is True:
+            pos_triggers += 1
+        elif tc.get("should_trigger") is False:
+            neg_triggers += 1
+
+    if strict_mode and not external_mode and (pos_triggers < 1 or neg_triggers < 1):
+        errors.append(
+            f"[FAIL] evals/evals.json em modo --strict exige ao menos 1 should_trigger=true e 1 should_trigger=false (+{pos_triggers}/-{neg_triggers})"
+        )
+
+
+def _validate_markdown_links(skill_dir: Path, body: str, errors: List[str]) -> None:
+    """Valida que links Markdown em SKILL.md respeitam 1 nível relativo sem escapes '../' e existem no disco."""
+    no_fences = re.sub(r"```.*?```", "", body, flags=re.DOTALL)
+    clean_md = re.sub(r"`[^`\n]+`", "", no_fences)
+    for target in re.findall(r"\[[^\]]+\]\(([^)\s]+)\)", clean_md):
+        if target.startswith(("http://", "https://", "file://", "mailto:", "#")):
+            continue
+        rel_path = target.split("#", 1)[0].split("?", 1)[0].strip()
+        if not rel_path or any(ch in rel_path for ch in "<>{}[]"):
+            continue
+        if ".." in Path(rel_path).parts or rel_path.startswith(("../", "..\\")):
+            errors.append(f"[FAIL] Parent path escape '../' forbidden in SKILL.md: {target}")
+            continue
+        if ("." in rel_path or "/" in rel_path or "\\" in rel_path) and not (skill_dir / rel_path).exists():
+            errors.append(f"[FAIL] Broken relative link in SKILL.md: {target}")
 
 
 def _validate_rules_and_references(skill_dir: Path, errors: List[str]) -> None:
-    """Valida marcadores determinísticos em rules/criterios_auditoria.md e JSONs em references/."""
-    rules_file = skill_dir / "rules" / "criterios_auditoria.md"
+    """Valida marcadores determinísticos em rules/audit_criteria.md (ou fallback legado) e JSONs em references/."""
+    audit_file = skill_dir / "rules" / "audit_criteria.md"
+    legacy_file = skill_dir / "rules" / "criterios_auditoria.md"
+    rules_file = audit_file if audit_file.exists() else legacy_file
     if rules_file.exists():
         rules_text = rules_file.read_text(encoding="utf-8")
         if "[PASS]" not in rules_text or ("[FAIL]" not in rules_text and "[FAIL:" not in rules_text):
-            errors.append("[FAIL] rules/criterios_auditoria.md deve conter [PASS] e [FAIL]")
+            errors.append(f"[FAIL] rules/{rules_file.name} deve conter [PASS] e [FAIL]")
 
     ref_dir = skill_dir / "references"
     if not ref_dir.is_dir():
@@ -273,8 +306,9 @@ def validate_skill_dir(
             if not re.search(sec_pattern, body, re.IGNORECASE):
                 errors.append(f"[FAIL] Seção essencial ausente: {sec_name}")
 
+    _validate_markdown_links(skill_dir, body, errors)
     _validate_scripts_dir(skill_dir, errors)
-    _validate_evals_file(skill_dir, errors)
+    _validate_evals_file(skill_dir, errors, strict_mode=strict_mode, external_mode=external_mode)
     _validate_rules_and_references(skill_dir, errors)
     return errors
 
@@ -386,9 +420,13 @@ def _validate_plugin_and_agents(repo_root: Path) -> List[str]:
             policy = str(meta.get("commandExecutionPolicy", "sandbox")).strip()
             if policy not in ALLOWED_EXEC_POLICIES:
                 errors.append(f"[FAIL] Agente {af.name} com commandExecutionPolicy inválido: '{policy}'")
-            tools = meta.get("tools") or []
-            if isinstance(tools, list) and any(str(t) in FORBIDDEN_AGENT_TOOLS for t in tools):
-                errors.append(f"[FAIL] Agente {af.name} declara tool proibida (* ou call_mcp_tool) em tools")
+            tools = meta.get("tools")
+            if not isinstance(tools, list) or not tools:
+                errors.append(f"[FAIL] Agente {af.name} exige lista explícita não-vazia em 'tools'")
+            else:
+                bad_tools = sorted(str(t) for t in tools if str(t) in FORBIDDEN_AGENT_TOOLS)
+                if bad_tools:
+                    errors.append(f"[FAIL] Agente {af.name} declara tools proibidas/legadas em tools: {bad_tools}")
     return errors
 
 

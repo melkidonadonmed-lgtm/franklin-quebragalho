@@ -1,23 +1,23 @@
 ---
 trigger: model_decision
-description: "Diretrizes oficiais para configurar e implementar servidores MCP (mcp_config.json, Stdio stdout exclusivo JSON-RPC, Streamable HTTP sem SSE legado) e integrações JSON-RPC 2.0 / WebSockets (wss:// TLS 1.3, validação estrita e backoff)."
+description: "Official guidelines for configuring and implementing MCP servers (mcp_config.json, STDIO stdout reserved exclusively for JSON-RPC, Streamable HTTP without legacy SSE) and JSON-RPC 2.0 / WebSockets (wss:// TLS 1.3, strict validation, and backoff)."
 ---
 
-# Regras Oficiais para MCP (`mcp_config.json`), JSON-RPC 2.0 e WebSockets
+# Official Rules for MCP (`mcp_config.json`), JSON-RPC 2.0 & WebSockets
 
-## 1. Governança `mcp_config.json` no Antigravity
+## 1. `mcp_config.json` Governance in Antigravity
 
-- **Fontes e Nomes:** Config global em `~/.gemini/config/mcp_config.json` (sincronizada via Fonte Única `dev/tools/mcp-registry.json` -> `uv run dev/tools/mcp_registry.py apply` + `check`) ou escopada em `plugins/<name>/mcp_config.json` (carrega apenas quando o plugin está ativo). Nomes de servidores em código/API seguem `^[a-z0-9_-]+$`; preserve prefixos gerados por extensões (`datacloud_*_remote`).
-- **Binários & Pacotes Determinísticos:** Use executáveis locais pré-compilados (`gopls.exe`, `adk-go-mcp.exe`) — proibido `go run ...@latest`. Pacotes `npx` exigem versão exata publicada há `>= 2` semanas (proibido `@latest`). Em subprocessos stdio Python no Windows, injete `PYTHONUTF8=1`.
-- **Flags CLI Reais:** Verifique se o CLI binário suporta flags antes de passá-las em `args` (ex.: omita `--eager` se o binário não expuser a flag).
+- **Sources & Naming:** Global config at `~/.gemini/config/mcp_config.json` (synced via Single Source `dev/tools/mcp-registry.json` -> `uv run dev/tools/mcp_registry.py apply` + `check`) or plugin-scoped at `plugins/<name>/mcp_config.json` (loaded only when the plugin is active). Server names in code/APIs must match `^[a-z0-9_-]+$`; preserve extension-generated prefixes (`datacloud_*_remote`).
+- **Deterministic Binaries & Packages:** Always invoke pre-compiled local binaries (`gopls.exe`, `adk-go-mcp.exe`) — `go run ...@latest` is forbidden. `npx` packages require exact pinned versions published `>= 2` weeks ago (never `@latest`). On Windows, inject `PYTHONUTF8=1` for Python stdio subprocesses.
+- **Verified CLI Flags:** Confirm every CLI binary supports a flag before placing it in `args` (e.g., omit `--eager` if the binary does not expose it).
 
-## 2. Transportes MCP & Higiene `STDIO`
+## 2. MCP Transports & `STDIO` Hygiene
 
-- **`stdio` (Local — `command`, `args`, `env`):** O canal `stdout` é **100% exclusivo para mensagens JSON-RPC 2.0 delimitadas**. Proíba `print()` sem `file=sys.stderr`, `console.log()` em Node ou `fmt.Println()` em Go; envie logs somente para `stderr` ou arquivo.
-- **`Streamable HTTP` (Remoto — `url` / `serverUrl`):** Aponte `url` para o endpoint Streamable HTTP (`/mcp`). **HTTP+SSE legado (spec `2024-11-05` `/sse`) não é suportado diretamente** (use bridge stdio como `mcp-remote` quando inevitável). Exija OAuth 2.1 / Bearer em endpoints protegidos, suporte a `MCP-Protocol-Version`/`_meta` e validação anti-SSRF em URLs externas.
+- **`stdio` (Local — `command`, `args`, `env`):** `stdout` is **100% exclusive to newline-delimited JSON-RPC 2.0 frames**. Forbid bare `print()` without `file=sys.stderr` in Python, `console.log()` in Node, and `fmt.Println()` in Go; route all logs to `stderr` or log files.
+- **`Streamable HTTP` (Remote — `url` / `serverUrl`):** Point `url` to the Streamable HTTP endpoint (`/mcp`). **Legacy HTTP+SSE (`2024-11-05` `/sse`) is not directly supported** (wrap via a stdio bridge such as `mcp-remote` only when unavoidable). Enforce OAuth 2.1 / Bearer auth on protected endpoints, `MCP-Protocol-Version`/`_meta` support, and anti-SSRF URL validation.
 
-## 3. Contratos JSON-RPC 2.0 & WebSockets (`wss://`)
+## 3. JSON-RPC 2.0 & WebSocket (`wss://`) Contracts
 
-- **Contratos Estritos:** Todo envelope JSON-RPC exige `"jsonrpc": "2.0"` e exclusividade mútua entre `"result"` e `"error"` (`-32700` Parse, `-32600` Invalid Request, `-32601` Method not found, `-32602` Invalid params, `-32603` Internal error). Valide DTOs internos em fronteiras RPC/MCP com `extra="forbid"` (Pydantic), `z.strictObject()` (Zod) ou `DisallowUnknownFields()` (Go — tolerando apenas payloads externos evolutivos quando documentado).
-- **WebSockets (`wss://`):** Proíba `ws://` em produção; exija TLS 1.3 validando cadeia CA do sistema ou mTLS (evite *SSL Pinning* estático em domínios cloud com rotação frequente de certificado). Nunca coloque tokens secretos na query string da URL (use cabeçalho `Authorization` / *Ephemeral Tokens*) e aplique *Exponential Backoff + Jitter* na reconexão.
-- **Testes Zero-Trust Obrigatórios:** Toda rota/tool autenticada ou protegida deve possuir testes adversariais provando rejeição determinística (`400`/`401`/`403` sem vazar segredos).
+- **Strict Contracts:** Every JSON-RPC envelope requires `"jsonrpc": "2.0"` and mutual exclusivity between `"result"` and `"error"` (`-32700` Parse, `-32600` Invalid Request, `-32601` Method not found, `-32602` Invalid params, `-32603` Internal error). Validate internal RPC/MCP DTOs with `extra="forbid"` (Pydantic), `z.strictObject()` (Zod), or `DisallowUnknownFields()` (Go — allowing documented tolerance for evolving external payloads).
+- **WebSockets (`wss://`):** Forbid `ws://` in production; require TLS 1.3 validating the system CA bundle or mTLS (avoid brittle static SSL Pinning on cloud domains with frequent cert rotation). Never place secret tokens in URL query strings (use `Authorization` headers or Ephemeral Tokens) and apply *Exponential Backoff + Jitter* on reconnects.
+- **Mandatory Zero-Trust Tests:** Every authenticated/guarded route or tool must have adversarial tests proving deterministic rejection (`400`/`401`/`403` without leaking secrets).

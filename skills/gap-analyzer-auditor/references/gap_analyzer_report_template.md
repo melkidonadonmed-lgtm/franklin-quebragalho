@@ -1,65 +1,63 @@
-# Fluxo Mermaid, Vetores RCA e Template Canônico — Gap Analyzer Auditor
+# Mermaid Pipeline, RCA Vectors & Canonical Report Template — `gap-analyzer-auditor`
 
-Referência completa de pipeline visual e modelo de entrega usada por [`../SKILL.md`](../SKILL.md). Consulte também [`arquitetura_closed_loop.md`](arquitetura_closed_loop.md), [`taxonomia_rca_falhas.md`](taxonomia_rca_falhas.md) e [`schema_handoff_payload.json`](schema_handoff_payload.json).
+Visual workflow reference and report contract consumed by [`SKILL.md`](../SKILL.md). See also [`closed_loop_architecture.md`](closed_loop_architecture.md), [`rca_failure_taxonomy.md`](rca_failure_taxonomy.md), and [`handoff_payload_schema.json`](handoff_payload_schema.json).
 
-## Fluxo Closed-Loop
+## Closed-Loop Audit Flowchart
 
 ```mermaid
 flowchart TD
-    A["Entrada: Comandos / Logs / Traces"] --> B["Fase 1: Isolamento de Fatos & Taxonomia Epistêmica"]
-    B --> C["Fase 2: Análise de Causa-Raiz (RCA em 4 Vetores)"]
-    C --> D{"Risco Crítico ou Destrutivo?"}
-    D -->|Sim| E["Emissão de [BLOQUEIO HITL] Mandatório"]
-    D -->|Não| F["Fase 3: Mapeamento de Alternativas (Opção 1 vs Opção 2)"]
-    F --> G["Fase 4: Geração do Hand-off Payload (YAML)"]
-    G --> H["Retroalimentação do high-level-context-planner"]
+    A["Input: Commands / Logs / Traces / Spec Artifacts"] --> B["Phase 1: Fact Isolation & Epistemic Typing"]
+    B --> C["Phase 2: 4-Vector Root Cause Analysis (RCA)"]
+    C --> D{"Critical or Destructive Risk?"}
+    D -->|Yes| E["Emit Mandatory [HITL BLOCK]"]
+    D -->|No| F["Phase 3: Solution Parity Matrix (Option 1 vs Option 2)"]
+    F --> G["Phase 4: Generate YAML Hand-off Payload"]
+    G --> H["Feed high-level-context-planner (Append-Only)"]
 ```
 
-## 4 Vetores de Causa-Raiz (RCA)
+## The 4 Root Cause Vectors
 
-1. **Falha de Contexto / Injeção:** Parâmetros ausentes, prompts ambíguos, estouro da Parede de Complexidade ($> 5$ regras/nó) ou schemas incompatíveis.
-2. **Falha de Ferramenta / MCP:** Retorno inválido de API, timeout, tool misuse ou discrepância de versão de protocolo.
-3. **Gargalo de Arquitetura:** Dependência circular, colisão de escrita paralela (`[P]`), loop sem condição de parada ou estouro de token budget.
-4. **Risco de Segurança / Confiabilidade:** Mutações irreversíveis sem HITL, vazamento de PII ou exposição de credenciais.
+1. **Context / Injection Failure:** Missing parameters, ambiguous prompts, Complexity Wall breaches (`> 5` rules/node), or permissive schemas.
+2. **Tooling / MCP Protocol Failure:** Invalid API payloads, timeouts, tool misuse, STDIO leaks, or protocol version drift.
+3. **Architecture Bottleneck:** Circular graph dependencies, parallel `[P]` file collisions, unbounded loops, or token budget overflow.
+4. **Security & Reliability Risk:** Unconfirmed destructive mutations, PII exposure, or leaked credentials.
 
-## Modelo Canônico de Relatório
+## Canonical Audit Report Template
 
 ````markdown
-# RELATÓRIO DE AUDITORIA TÉCNICA, RCA E CONVERGÊNCIA SPEC-TO-CODE
+# TECHNICAL AUDIT, RCA & SPEC-TO-CODE CONVERGENCE REPORT
 
-## 1. Mapeamento Factual e Síntese da Anomalia / Convergência
-- **Alvo Auditado:** [Nome do processo, pipeline, arquivo ou skill sob análise]
-- **Status do Veredito:** [CRÍTICO / ALERTA / SUBÓTIMO / CONVERGED / CONFORME]
-- **Classificação da Informação:**
-  - `[FATO]`: [Evidência textual exata, registro de log ou estado real do arquivo no disco]
-  - `[INFERÊNCIA]`: [Dedução analítica da causa imediata do erro ou da divergência Spec-to-Code]
-  - `[LACUNA]`: [Dados ausentes que limitam o diagnóstico definitivo]
+## 1. Factual Mapping & Anomaly / Convergence Summary
+- **Audited Target:** [Process, pipeline, file, or spec under analysis]
+- **Verdict Status:** [CRITICAL / WARNING / SUBOPTIMAL / CONVERGED / COMPLIANT]
+- **Epistemic Classification:**
+  - `[FACT]`: [Verbatim log entry, trace line, or verified disk file state]
+  - `[INFERENCE]`: [Causal deduction linking facts to observed error or spec drift]
+  - `[GAP]`: [Missing or truncated telemetry preventing full confirmation]
 
-## 2. Diagnóstico da Causa-Raiz (RCA) ou Lacunas de Convergência
-- **Mecanismo da Falha / Brecha:** [Causa -> Propagação -> Impacto]
-- **Ponto de Quebra:** [Etapa, função, requisito FR-### ou arquivo específico]
-- **Risco Residual:** [Impacto caso não corrigido]
+## 2. Root Cause Diagnosis (RCA) or Convergence Gaps
+- **Failure / Drift Mechanism:** [Cause -> Propagation -> Impact]
+- **Breakage Point:** [Exact stage, function, FR-### requirement, or file path]
+- **Residual Risk:** [Impact if left unresolved]
 
-## 3. Matriz de Alternativas de Solução
-| Identificador | Abordagem | Vantagens | Desvantagens / Trade-offs | Complexidade |
+## 3. Solution Alternative Matrix
+| Identifier | Approach | Pros | Cons / Trade-offs | Complexity |
 | :--- | :--- | :--- | :--- | :---: |
-| **Opção 1 (Cirúrgica)** | [Ajuste rápido] | Baixo esforço | Pode mascarar causas estruturais | Baixa |
-| **Opção 2 (Arquitetural)** | [Correção definitiva] | Robustez e prevenção | Exige refatoração de contratos | Média/Alta |
+| **Option 1 (Surgical)** | [Immediate targeted patch] | Low effort | May mask deeper structural flaws | Low |
+| **Option 2 (Architectural)** | [Structural contract fix] | Robust long-term prevention | Requires contract refactor | Medium/High |
 
-## 4. Contrato de Retroalimentação para o Planejador (Hand-off Payload)
+## 4. Planner Feedback Contract (YAML Hand-Off Payload)
 ```yaml
 handoff_target: "high-level-context-planner"
-incident_id: "AUDIT-[DATA]-[SEQ]"
-recommended_option: "Opção 2"
+incident_id: "AUDIT-[YYYY-MM-DD]-[SEQ]"
+recommended_option: "Option 2"
 required_adjustments:
-  - step: "[Etapa afetada]"
-    action: "REFATORAR"
-    patch_instructions: "[Instrução atômica (<= 5 regras)]"
-  - step: "Fase N: Convergência Spec-to-Code"
+  - step: "[Affected stage]"
+    action: "REFACTOR"
+    patch_instructions: "[Atomic instruction (<= 5 active rules)]"
+  - step: "Phase N: Spec-to-Code Convergence"
     action: "APPEND_CONVERGENCE_TASKS"
-    patch_instructions: "Anexar ao final do plano sem reescrever tasks concluídas: - [ ] T0XX [P] [CONV] src/caminho/exato.py"
-contingency_trigger: "[Condição de fallback]"
+    patch_instructions: "Append without modifying completed tasks: - [ ] T0XX [P] [CONV] src/exact/path.py"
+contingency_trigger: "[Deterministic fallback condition]"
 ```
-
-**Deseja acionar o `high-level-context-planner` agora com este payload para emitir o plano corretivo revisado (Convergência Append-Only), ou deseja ajustar a alternativa recomendada?**
 ````

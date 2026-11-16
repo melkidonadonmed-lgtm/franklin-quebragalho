@@ -1,37 +1,31 @@
 {
   "entries": [
     {
-      "path": "C:/Users/melki/dev/repos/franklin-quebragalho/skills",
+      "path": "skills",
       "include_only": [
         "agent-server-auditor",
         "android-agy-projects",
-        "arquiteto-conteudo-solucoes",
-        "audit-skills-antigravity",
-        "auditoria-projetos-sistema",
-        "code-acceptability-auditor",
+        "chained-plan-orchestrator",
+        "clinical-minimalist-ui",
         "code-quality-audit-3d-physics",
         "complex-zero",
         "context-sentinel",
-        "conversor-html-pdf",
-        "curadoria-obsidian-vault",
-        "design-interface-medica-minimalista",
         "design-md",
+        "flow-filetree-organizer",
         "frontend-code-architect",
         "frontend-testing-auditor",
         "frontend-ui-ux-auditor",
-        "gap-analyzer-auditor",
-        "gdrive-auditoria-limpeza",
-        "gdrive-taxonomia-organizacao",
+        "gdrive-cleanup-auditor",
+        "gdrive-taxonomy-organizer",
         "high-level-context-planner",
-        "manutencao-disco-windows",
-        "organizador-fluxo-arvore-arquivos",
-        "organizador-projetos-ideias",
+        "html-pdf-converter",
+        "obsidian-vault-curator",
         "plan-uiux",
         "re-a-ndroid",
-        "redator-tecnico-markdown",
         "refine-prompt",
-        "skill-orquestrador-planos-encadeados",
-        "test-quality-auditor"
+        "solution-content-architect",
+        "technical-markdown-writer",
+        "windows-disk-maintenance"
       ]
     },
     {
@@ -42,21 +36,7 @@
         "build-mcp-server",
         "api-auditor",
         "live-api-function-auditor",
-        "adk-go-mcp-router",
-        "agent-0meia",
         "code-analysis-causal-review-team"
-      ]
-    },
-    {
-      "path": "C:/Users/melki/dev/repos/adk-go-mcp/skills",
-      "include_only": [
-        "backend-architecture-skill",
-        "backfront-stress",
-        "code-quality-validation",
-        "context-architecture-skill",
-        "estante",
-        "gatekeeper-eval",
-        "temperea"
       ]
     }
   ]

@@ -16,7 +16,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
@@ -77,12 +77,17 @@ def audit_test_file(
     return report
 
 
-def run_eval_harness(skill_root: Path, eval_module: str = "all") -> Dict[str, Any]:
+def run_eval_harness(
+    skill_root: Path,
+    eval_module: str = "all",
+    output_dir: Optional[Path] = None,
+) -> Dict[str, Any]:
     """Executa o Eval-Driven Harness com despachante multi-domínio e módulos espelhados."""
     return _run_eval_harness(
         skill_root,
         audit_fn=lambda code, fname: audit_test_file(code, fname, domain="auto"),
         eval_module=eval_module,
+        output_dir=output_dir,
     )
 
 

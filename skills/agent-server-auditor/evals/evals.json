@@ -1,28 +1,34 @@
-[
-  {
-    "eval_id": "EVAL-ASA-01",
+{
+  "skill_name": "agent-server-auditor",
+  "version": "1.2.0",
+  "evals": [
+    {
+      "eval_id": "EVAL-ASA-01",
+    "should_trigger": true,
     "prompt": "Audite um servidor MCP STDIO em Python que utiliza print('Debug req') diretamente no stdout e verifique o veredito de higiene de protocolo.",
-    "expected_behavior": "Detectar poluição de stdout no servidor STDIO (stdout_hygiene == 'POLLUTED') e reprovar o status global (status == 'REJECTED') pelo Gate de Segurança de Protocolo AUD-MCP-01.",
+    "expected_behavior": "Detect stdout pollution in the STDIO server (stdout_hygiene == 'POLLUTED') and reject global status (status == 'REJECTED') under Protocol Security Gate AUD-MCP-01.",
     "assertions": [
       "stdout_hygiene == 'POLLUTED'",
       "status == 'REJECTED'",
-      "AUD-MCP-01 reportado em gap_analysis.critical_missing_structures"
+      "AUD-MCP-01 reported in gap_analysis.critical_missing_structures"
     ]
   },
   {
     "eval_id": "EVAL-ASA-02",
-    "prompt": "Inspecione um módulo de agente ReAct em Python/TypeScript/Go que não define max_steps, max_retries ou recursion_limit.",
-    "expected_behavior": "Catalogar o agente em audit_details.agents com has_max_steps == false e emitir alerta crítico de loop cognitivo sem limite de passos (AUD-AGT-01).",
+    "should_trigger": true,
+    "prompt": "Inspect a ReAct agent module in Python/TypeScript/Go that does not define max_steps, max_retries, or recursion_limit.",
+    "expected_behavior": "Catalog the agent in audit_details.agents with has_max_steps == false and emit a critical unbounded cognitive loop alert (AUD-AGT-01).",
     "assertions": [
       "has_max_steps == false",
-      "missing_elements contém 'max_steps'",
-      "gap_analysis sinaliza ausência de trava de loop"
+      "missing_elements contains 'max_steps'",
+      "gap_analysis flags missing loop depth guard"
     ]
   },
   {
     "eval_id": "EVAL-ASA-03",
-    "prompt": "Valide a conformidade de um nó A2A v1.0 através do arquivo .well-known/agent-card.json assinado com JWS.",
-    "expected_behavior": "Extrair name, supportedInterfaces, catálogo de skills e verificar a presença do bloco signatures JWS (has_jws_signatures == true).",
+    "should_trigger": true,
+    "prompt": "Validate A2A v1.0 compliance on /.well-known/agent-card.json signed with JWS.",
+    "expected_behavior": "Extract name, supportedInterfaces, skills catalog, and confirm presence of JWS signatures block (has_jws_signatures == true).",
     "assertions": [
       "has_supported_interfaces == true",
       "has_skills_catalog == true",
@@ -31,8 +37,9 @@
   },
   {
     "eval_id": "EVAL-ASA-04",
+    "should_trigger": true,
     "prompt": "Verifique a higiene de binários na raiz do projeto quando há um arquivo executável (.exe ou .asar) fora da pasta bin/ ou dist/.",
-    "expected_behavior": "Identificar o artefato compilado fora de bin/dist/build, contabilizar em compiled_artifacts_count > 0 e marcar binary_hygiene.status como 'REJECTED'.",
+    "expected_behavior": "Identify compiled artifact outside bin/dist/build, count compiled_artifacts_count > 0, and mark binary_hygiene.status as 'REJECTED'.",
     "assertions": [
       "compiled_artifacts_count > 0",
       "binary_hygiene.status == 'REJECTED'"
@@ -40,12 +47,34 @@
   },
   {
     "eval_id": "EVAL-ASA-05",
-    "prompt": "Execute a auditoria arquitetural completa com persistência ativada (--persist) e valide o arquivo gerado em memories/audit_report.json.",
-    "expected_behavior": "Gerar o arquivo memories/audit_report.json contendo timestamp UTC, audit_version '1.0.0', summary, binary_hygiene, audit_details e gap_analysis validados via Pydantic v2 (extra='forbid').",
+    "should_trigger": true,
+    "prompt": "Run full architectural audit with persistence enabled (--persist) and validate memories/audit_report.json.",
+    "expected_behavior": "Generate memories/audit_report.json containing UTC timestamp, audit_version '1.0.0', summary, binary_hygiene, audit_details, and gap_analysis validated by Pydantic v2 (extra='forbid').",
     "assertions": [
-      "memories/audit_report.json existe no disco",
-      "JSON contém summary.compliance_score entre 0.0 e 100.0",
-      "Contrato validado com ConfigDict(extra='forbid')"
+      "memories/audit_report.json exists on disk",
+      "JSON contains summary.compliance_score between 0.0 and 100.0",
+      "Contract validated with ConfigDict(extra='forbid')"
     ]
-  }
-]
+  },
+  {
+    "eval_id": "EVAL-ASA-06-NEAR-MISS-FRONTEND-UI",
+    "should_trigger": false,
+    "prompt": "Audite o contraste WCAG 2.1 AA, sombras em 3 camadas e tokens OKLCH da minha página React.",
+    "expected_behavior": "Abstain from agent-server-auditor; route frontend visual inspection to frontend-ui-ux-auditor.",
+    "assertions": [
+      "should_trigger == false",
+      "Do not invoke agent_server_auditor.py for pure UI/CSS requests"
+    ]
+  },
+  {
+    "eval_id": "EVAL-ASA-07-NEAR-MISS-UNIT-TESTS",
+    "should_trigger": false,
+    "prompt": "Audit my pytest suite for Green Build Illusion, assert True tautologies, and AAA pattern coverage.",
+    "expected_behavior": "Abstain from agent-server-auditor; route test-suite quality auditing to test-quality-auditor.",
+      "assertions": [
+        "should_trigger == false",
+        "Do not invoke agent_server_auditor.py for unit test quality audits"
+      ]
+    }
+  ]
+}

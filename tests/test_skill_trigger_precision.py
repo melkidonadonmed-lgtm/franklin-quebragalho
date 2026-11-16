@@ -1,7 +1,7 @@
 """
 test_skill_trigger_precision.py
 Suíte de testes determinísticos para a precisão de disparo Nível 1 (Should-Trigger vs. Near-Misses)
-de todas as 29 Agent Skills Canônicas do Franklin Quebra-Galho.
+de todas as 28 Agent Skills Canônicas do Franklin Quebra-Galho.
 """
 
 from __future__ import annotations
@@ -10,8 +10,8 @@ import server
 from shared.trigger_eval_suite import CANONICAL_TRIGGER_EVAL_CASES, run_trigger_eval_suite
 
 
-def test_all_29_canonical_skills_covered_in_trigger_suite() -> None:
-    """Garante que todas as 29 skills canônicas do disco possuem casos should-trigger e near-miss."""
+def test_all_canonical_skills_covered_in_trigger_suite() -> None:
+    """Garante que todas as 28 skills canônicas do disco possuem casos should-trigger e near-miss."""
     disk_skills = {
         d.name for d in server.SKILLS_ROOT.iterdir() if d.is_dir() and (d / "SKILL.md").exists()
     }
@@ -22,7 +22,7 @@ def test_all_29_canonical_skills_covered_in_trigger_suite() -> None:
 
 
 def test_should_trigger_and_near_miss_precision_100_percent() -> None:
-    """Valida Top-1 Accuracy = 100%, Near-Miss Rejection Rate = 100% e F1 = 1.0 nos 26 casos."""
+    """Valida Top-1 Accuracy = 100%, Near-Miss Rejection Rate = 100% e F1 = 1.0 em todos os casos."""
     report = run_trigger_eval_suite()
     assert report.status == "[PASS]", f"Falhas de disparo detectadas: {report.failures}"
     assert report.failures == []
@@ -33,18 +33,18 @@ def test_should_trigger_and_near_miss_precision_100_percent() -> None:
 
 
 def test_negative_clause_penalization_on_near_misses() -> None:
-    """Valida que cláusulas 'não use para ...' penalizam falsos positivos em consultas ambíguas."""
+    """Valida que cláusulas negativas ('Do NOT use for' / 'não use para') penalizam falsos positivos."""
     report = run_trigger_eval_suite()
     by_id = {o.case_id: o for o in report.outcomes}
 
-    # TRG-03: "auditoria epistêmica isolada..." -> refine-prompt deve vencer arquiteto-conteudo-solucoes
+    # TRG-03: "auditoria epistêmica isolada..." -> refine-prompt deve vencer solution-content-architect
     trg03 = by_id["TRG-03"]
     assert trg03.top1_skill == "refine-prompt"
-    assert trg03.expected_skill_score > trg03.near_miss_scores["arquiteto-conteudo-solucoes"]
+    assert trg03.expected_skill_score > trg03.near_miss_scores["solution-content-architect"]
 
-    # TRG-12: "manutenção de arquivos locais..." -> manutencao-disco-windows deve vencer refine-prompt
+    # TRG-12: "manutenção de arquivos locais..." -> windows-disk-maintenance deve vencer refine-prompt
     trg12 = by_id["TRG-12"]
-    assert trg12.top1_skill == "manutencao-disco-windows"
+    assert trg12.top1_skill == "windows-disk-maintenance"
     assert trg12.expected_skill_score > trg12.near_miss_scores["refine-prompt"]
 
 

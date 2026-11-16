@@ -1,0 +1,44 @@
+{
+  "skill_name": "gdrive-taxonomy-organizer",
+  "version": "1.2.0",
+  "evals": [
+    {
+      "eval_id": "TC-GDRIVE-TAXONOMY-01-CANONICAL-ROUTING",
+      "should_trigger": true,
+      "prompt": "Classify loose files sitting in the root of G:/Meu Drive/ into the canonical numbered folders defined in default_drive_taxonomy.json using a dry-run table.",
+      "expected_behavior": "Maps root files into real numbered folders under G:\\Meu Drive (01_Modelos_Rapidos..99_Arquivo_Historico) without inventing parallel folders and previews moves via -WhatIf.",
+      "expected_assertions": [
+        "Routes strictly into buckets declared in default_drive_taxonomy.json",
+        "Generates Source -> Destination preview table using -LiteralPath and -WhatIf"
+      ]
+    },
+    {
+      "eval_id": "TC-GDRIVE-TAXONOMY-02-ISO-RENAME-SANITIZE",
+      "should_trigger": true,
+      "prompt": "Batch-rename files inside G:/Meu Drive/10_Pessoal to enforce YYYY-MM-DD prefixes and strip illegal symbols like # and ? while keeping extensions intact.",
+      "expected_behavior": "Normalizes names such as 'contract #1 final (new).pdf' into 'YYYY-MM-DD_Contract_1_Final_New.pdf' using -LiteralPath and HITL confirmation while preserving .pdf extension.",
+      "expected_assertions": [
+        "Applies strict ISO YYYY-MM-DD prefix and strips forbidden_characters",
+        "Preserves original file extension and uses -LiteralPath"
+      ]
+    },
+    {
+      "eval_id": "TC-GDRIVE-TAXONOMY-03-SHA256-CLEANUP",
+      "should_trigger": false,
+      "prompt": "Find SHA-256 duplicate backups and >100MB bloat in G:/Meu Drive/ and quarantine them into _Quarentena_Descarte.",
+      "expected_behavior": "Does not run taxonomic classification; delegates duplicate detection and >100MB quarantine to gdrive-cleanup-auditor.",
+      "expected_assertions": [
+        "Routes bloat and SHA-256 duplicate cleanup to gdrive-cleanup-auditor"
+      ]
+    },
+    {
+      "eval_id": "TC-GDRIVE-TAXONOMY-04-MERMAID-TREE",
+      "should_trigger": false,
+      "prompt": "Generate a Mermaid architecture flowchart and commented codebase directory tree for a new Next.js repository.",
+      "expected_behavior": "Does not apply Google Drive taxonomy; delegates codebase tree design to flow-filetree-organizer.",
+      "expected_assertions": [
+        "Routes Mermaid directory tree planning to flow-filetree-organizer"
+      ]
+    }
+  ]
+}

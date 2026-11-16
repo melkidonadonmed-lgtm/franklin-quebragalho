@@ -1,0 +1,66 @@
+{
+  "skill_name": "solution-content-architect",
+  "version": "2.5.0",
+  "description": "Evaluation suite verifying 4-mode execution (Modes A-D), 7 domain guardrail modules, anti-hallucination markers, and crisp separation from refine-prompt and skill catalog auditors.",
+  "evals": [
+    {
+      "id": "TC-01-MODE-A-DIRECT-TYPED-EXECUTION",
+      "eval_id": "TC-01-MODE-A-DIRECT-TYPED-EXECUTION",
+      "should_trigger": true,
+      "prompt": "Implement a strictly typed Python batch compression utility with Pydantic v2 ConfigDict(extra='forbid'), CLI argparse flags, and actionable error recovery hints.",
+      "expected_output": "Enters MODE A — DIRECT EXECUTION with zero questions, produces modular <= 600-line Python code with full type hints and CLI verification commands, applies Mode D validation, and includes 1 simpler alternative.",
+      "assertions": [
+        "Declares MODE A — DIRECT EXECUTION and asks 0 questions",
+        "Generates strictly typed Python code under Module M1 guardrails",
+        "Includes CLI verification command and 1 simpler alternative",
+        "Uses deterministic [PASS]/[FAIL]/[UNVERIFIED] Mode D checks"
+      ]
+    },
+    {
+      "id": "TC-02-MODE-B-ITERATIVE-REFINEMENT-CAP",
+      "eval_id": "TC-02-MODE-B-ITERATIVE-REFINEMENT-CAP",
+      "should_trigger": true,
+      "prompt": "I want to build an automation suite for my local developer workflow and enterprise APIs, help me design where to start.",
+      "expected_output": "Enters MODE B — ITERATIVE REFINEMENT, asks 1 to 3 high-impact strategic questions, and supplies an initial structured draft with domain module alignment.",
+      "assertions": [
+        "Declares MODE B — ITERATIVE REFINEMENT",
+        "Limits clarifying questions to <= 3 strategic questions",
+        "Provides a preliminary structured architecture draft"
+      ]
+    },
+    {
+      "id": "TC-03-MODE-C-PHASE-ZERO-TOT-BLUEPRINT",
+      "eval_id": "TC-03-MODE-C-PHASE-ZERO-TOT-BLUEPRINT",
+      "should_trigger": true,
+      "prompt": "Design a multi-mode technical roadmap and comparative Tree-of-Thoughts architecture for migrating a legacy REST backend to FastAPI with OpenAPI 3.1 contracts and a PostgreSQL keyset query layer.",
+      "expected_output": "Enters MODE C — STRUCTURED PLANNING, starts with Phase 0 premises, compares 2-3 ToT branches (what changes, how it changes, trade-offs), details sequential CoT phases, and applies Enterprise Prompt 3 & 5 patterns.",
+      "assertions": [
+        "Declares MODE C — STRUCTURED PLANNING",
+        "Includes Phase 0 alignment before execution steps",
+        "Presents comparative ToT branch analysis with trade-offs and CoT stages"
+      ]
+    },
+    {
+      "id": "TC-04-NEAR-MISS-ISOLATED-PROMPT-ENTROPY-AUDIT",
+      "eval_id": "TC-04-NEAR-MISS-ISOLATED-PROMPT-ENTROPY-AUDIT",
+      "should_trigger": false,
+      "prompt": "Run an isolated epistemic feasibility audit ([FACT]/[INFERENCE]/[GAP]) and Socratic entropy modulation on my existing system prompt under OWASP LLM01 XML tags.",
+      "expected_output": "Does NOT trigger solution-content-architect; routes standalone prompt epistemic auditing and entropy modulation to refine-prompt.",
+      "assertions": [
+        "Abstains from activating solution-content-architect",
+        "Delegates isolated prompt auditing and entropy modulation to refine-prompt"
+      ]
+    },
+    {
+      "id": "TC-05-NEAR-MISS-SKILL-CATALOG-SPLITTING",
+      "eval_id": "TC-05-NEAR-MISS-SKILL-CATALOG-SPLITTING",
+      "should_trigger": false,
+      "prompt": "Audit this MCP server for STDIO stdout leaks, A2A JWS agent-card compliance, and unvalidated skill contracts.",
+      "expected_output": "Does NOT trigger solution-content-architect; routes MCP/A2A/skill compliance auditing to agent-server-auditor.",
+      "assertions": [
+        "Abstains from activating solution-content-architect",
+        "Routes MCP/A2A/skill auditing to agent-server-auditor"
+      ]
+    }
+  ]
+}

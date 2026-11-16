@@ -1,15 +1,17 @@
-# Padrões de Mutação `Antes vs. Depois` (`plan-uiux`)
+# `Before vs. After` Mutation Patterns (`plan-uiux`)
+
+## 1. Surface & Tactile Action Mutation (`OKLCH` + 3-Layer Shadows)
 
 ```tsx
-// ANTES ([FATO OBSERVADO]: Estilos genéricos sem suporte a temas, OKLCH ou a11y)
+// BEFORE ([OBSERVED FACT]: Generic utility styles lacking theme support, OKLCH, or a11y)
 <div className="bg-gray-100 p-4 shadow">
-  <button onClick={handleClick}>Enviar</button>
+  <button onClick={handleClick}>Submit</button>
 </div>
 
-// DEPOIS ([INFERÊNCIA TÉCNICA]: Tokens em OKLCH, 60-30-10, área tátil min 48px)
+// AFTER ([TECHNICAL INFERENCE]: OKLCH tokens, 60-30-10 ratio, >= 48px coarse touch target)
 <div className="surface-card">
   <button className="btn-primary" type="button" onClick={handleClick}>
-    Enviar
+    Submit
   </button>
 </div>
 ```
@@ -32,20 +34,20 @@
 
 ---
 
-## 2. Mutação de Espaçamento, Raios Concêntricos, `subgrid` e `:has()` em Cards
+## 2. Spacing, Concentric Radii, `subgrid` & `:has()` Card Mutation
 
 ```css
-/* ANTES ([FATO OBSERVADO]: Pixels arbitrários, mesmo border-radius interno/externo, card quebrando em sidebars estreitas) */
+/* BEFORE ([OBSERVED FACT]: Arbitrary pixels, matching inner/outer radii, card breaking inside narrow sidebars) */
 .card-legacy {
   width: 350px;
   padding: 23px;
   border-radius: 16px;
 }
 .card-legacy .metric-box {
-  border-radius: 16px; /* Colisão óptica nos cantos! */
+  border-radius: 16px; /* Optical corner collision! */
 }
 
-/* DEPOIS ([INFERÊNCIA TÉCNICA]: Tokens semânticos, @container, subgrid de 4 regiões e Raio Concêntrico R_in = max(4px, R_out - P)) */
+/* AFTER ([TECHNICAL INFERENCE]: Semantic tokens, @container, 4-region subgrid, Concentric Radius R_in = max(4px, R_out - P)) */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
@@ -69,7 +71,7 @@
 
 .ui-card .metric-box {
   padding: var(--space-3) var(--space-4);
-  border-radius: calc(var(--radius-card, 16px) - 6px); /* 10px concêntrico */
+  border-radius: calc(var(--radius-card, 16px) - 6px); /* 10px concentric */
   font-variant-numeric: tabular-nums;
 }
 
@@ -83,14 +85,14 @@
 
 ---
 
-## 3. Mutação de Navegação: Barra Duplicada $\to$ Único DOM Adaptável (Bottom Nav $\leftrightarrow$ Sidebar Rail `240px`)
+## 3. Navigation Mutation: Duplicate Bars $\to$ Single Adaptive DOM (Bottom Nav $\leftrightarrow$ `240px` Sidebar Rail)
 
 ```css
-/* ANTES ([FATO OBSERVADO]: Duas tags <nav> duplicadas no DOM ou menu fixo sem safe-area no mobile) */
+/* BEFORE ([OBSERVED FACT]: Two duplicated <nav> blocks in DOM or fixed bar missing mobile safe-area inset) */
 .mobile-nav { display: block; height: 50px; }
 .desktop-sidebar { display: none; }
 
-/* DEPOIS ([INFERÊNCIA TÉCNICA]: Único <nav aria-label="Navegação Principal"> com env(safe-area-inset-bottom) e transição para Rail 240px em >= 48em) */
+/* AFTER ([TECHNICAL INFERENCE]: Single <nav aria-label="Primary navigation"> with env(safe-area-inset-bottom) transitioning to 240px Rail at >= 48em) */
 .adaptive-nav {
   position: fixed;
   inset-block-end: 0;

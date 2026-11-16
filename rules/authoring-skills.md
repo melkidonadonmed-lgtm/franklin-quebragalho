@@ -1,25 +1,34 @@
 ---
 trigger: model_decision
-description: "Diretrizes oficiais do Google Antigravity para criar, refatorar ou validar Agent Skills (SKILL.md, Progressive Disclosure L1-L3, references/, evals/ e frontmatter YAML)."
+description: "Official guidelines for authoring, refactoring, and validating Agent Skills (SKILL.md in Technical English, Progressive Disclosure L1-L3, references/, evals/, and pt-BR user communication bridge)."
 ---
 
-# Regras Oficiais para Criação de Agent Skills (Antigravity / AgentSkills.io)
+# Official Guidelines for Authoring Agent Skills (Antigravity / agentskills.io)
 
-1. **Descoberta e Escopo Canônico:**
-   - Workspace: `.agents/skills/<skill-name>/SKILL.md` (ou `_agents/skills/`); prefira skills em vez do formato legado `.agents/workflows/*.md` (depreciado no Antigravity 2.12+).
-   - Global/Plugin: `~/.gemini/config/skills/<skill-name>/SKILL.md` ou `plugins/<plugin>/skills/<skill-name>/SKILL.md` (use `skills.json` com `entries`/`inherits` apenas para diretórios fora do padrão).
+1. **Discovery & Canonical Locations:**
+   - Workspace: `.agents/skills/<skill-name>/SKILL.md` (or `_agents/skills/`); always author skills instead of legacy `.agents/workflows/*.md` (deprecated in Antigravity 2.12+).
+   - Global/Plugin: `~/.gemini/config/skills/<skill-name>/SKILL.md` or `plugins/<plugin>/skills/<skill-name>/SKILL.md` (use `skills.json` `entries`/`inherits` only for non-standard directories, avoiding duplication of globally active skills).
 
-2. **Frontmatter YAML Estrito (L1 — Descoberta Semântica):**
-   - Apenas **`name`** (obrigatório, minúsculas `[a-z0-9-]`, `<= 64` chars, **idêntico ao nome da pasta**) e **`description`** (obrigatório, em 3ª pessoa, declarando **O QUE** faz, **QUANDO** usar e **limite negativo** "Não use para... / Do not use for...").
-   - Sempre envolva `description` com aspas (`"..."`) ou bloco dobrado (`>-`) se houver `: ` para evitar quebra de parser PyYAML.
-   - Campos opcionais aceitos: `compatibility`, `license` e `metadata:` (`version`, `updated_at`, `author`, `category`, `tags`). **Proibido duplicar** `version`, `updated_at` ou `allowed-tools` no topo quando `metadata:` estiver presente (`validate_skills.py --strict` reprova chaves órfãs no topo).
+2. **Language Separation & Bilingual Bridge (MANDATORY):**
+   - **Internal Logic (100% Technical English):** Write every `SKILL.md` (YAML frontmatter + Markdown body), `rules/audit_criteria.md`, and `references/*.md` in concise, standardized Technical English.
+   - **User Interaction (100% Portuguese — Brazil / `pt-BR`):** Every `SKILL.md` MUST include `## 6. User Communication Rule` requiring all user-facing conversation, status reports, and deliverables to be communicated in **Portuguese (`pt-BR`)**, unless the user explicitly asks otherwise.
 
-3. **Progressive Disclosure em 3 Camadas (L1 $\to$ L2 $\to$ L3):**
-   - **L2 (`SKILL.md`):** Mantenha o corpo conciso (`<= 1.200` tokens totais no arquivo, idealmente `< 1.000`, `< 500` linhas) e focado em passos executáveis únicos — sem duplicar guias gerais de codificação.
-   - **L3 (`references/`, `scripts/`, `examples/`, `resources/`):** Descarregue tabelas densas, diagramas, templates e matrizes para `references/*.md` (links relativos de 1 nível `[arquivo](references/doc.md)` verificáveis em disco) e encapsule verificações determinísticas em `scripts/`.
-   - **Estrutura Canônica Franklin (29 Skills Core):** Preserve as 5 seções validadas (`Gatilhos / Quando Usar`, `Entradas / Pré-requisitos`, `Processamento / Fluxo`, `Saídas / Entregáveis`, `Exceções / Limites`).
-   - **Skills de Terceiros (`npx skills`, Orca, plugins externos):** Nunca edite frontmatter, corpo ou `references/` localmente; atualize pelo instalador de origem.
+3. **Strict YAML Frontmatter (L1 — Semantic Discovery):**
+   - Required fields: **`name`** (`^[a-z0-9]+(-[a-z0-9]+)*$`, `<= 64` chars, **identical to folder slug**) and **`description`** (`1-1024` chars, ideally `<= 420`, imperative 3rd-person Technical English stating **WHAT** it does, **WHEN** to use it, and explicit negative exclusion `"Do not use for ... (use <other-skill> instead)."`).
+   - Wrap `description` in double quotes (`"..."`) or folded block (`>-`) whenever `: ` appears to prevent PyYAML parsing errors.
+   - Optional fields: `compatibility`, `license`, and `metadata:` (`version` SemVer `X.Y.Z`, `updated_at`, `author`, `category`, `tags` with bilingual EN + PT-BR trigger keywords). **Never duplicate** `version`, `updated_at`, or `allowed-tools` at the top level when `metadata:` is present (`validate_skills.py --strict` rejects orphan top-level keys).
 
-4. **Evals e Portões de Validação Antes de Concluir:**
-   - Inclua `evals/evals.json` (`{"skill_name": "...", "evals": [...]}`) com casos positivos (`should_trigger: true`) e negativos próximos (`should_trigger: false`).
-   - Valide fisicamente antes de declarar pronto: `validate_skills.py --ecosystem` e `go run skills/audit-skills-antigravity/scripts/skill_auditor_rea.go` (`100/100`, 0 `broken_refs`, 0 colisões e sem vazamento CSS/OKLCH em skills não-visuais).
+4. **3-Tier Progressive Disclosure & Self-Containment (L1 -> L2 -> L3):**
+   - **L2 (`SKILL.md`):** Keep body concise (`<= 1,000` tokens, `< 100` lines, hard cap `< 500` lines) with defaults instead of ambiguous menus, concrete **Gotchas & Edge Cases**, and these 6 canonical sections:
+     1. `## 1. Overview & Scope` (`When to Use` / `When NOT to Use`)
+     2. `## 2. Inputs & Prerequisites`
+     3. `## 3. Step-by-Step Procedure`
+     4. `## 4. Gotchas & Edge Cases`
+     5. `## 5. Output Schema & Validation Criteria`
+     6. `## 6. User Communication Rule`
+   - **L3 (`references/`, `scripts/`, `rules/`, `evals/`):** Offload heavy matrices, schemas, and checklists to `references/*.md` and deterministic code to `scripts/`. Use **one-level relative paths only** (`references/guide.md`, `scripts/run.py`, `rules/audit_criteria.md`) — parent escapes (`../` or `../../`) are strictly forbidden.
+   - **Third-Party Skills (`npx skills`, Orca, external plugins):** Treat as strictly **read-only**; update only via their upstream installer.
+
+5. **Evals & Deterministic Validation Gates:**
+   - Include `evals/evals.json` (`{"skill_name": "...", "evals": [...]}`) containing at least 2 positive (`"should_trigger": true`) and 2 near-miss negative (`"should_trigger": false`) cases alongside functional assertions.
+   - Validate physically before completing: `uv run python scripts/validate_skills.py --strict --ecosystem` (must exit `0` with zero broken links, zero `../` escapes, and zero Jaccard trigger collisions).

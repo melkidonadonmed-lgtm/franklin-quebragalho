@@ -1,47 +1,57 @@
 ---
 name: high-level-context-planner
-description: "Planejador de contexto de alto nível decompondo metas em fases numeradas com Fase 0, tasks paralelizáveis e Complexity Tracking. Use para planejar épicos complexos; não use para comando único."
+description: "Decompose complex goals into cognitive Phase 0 plans with 4-quadrant intent triage, parallelizable [ID] [P?] [US#] tasks, Go/No-Go matrices, and Complexity Tracking (<= 5 rules per node). Use when planning multi-phase epics or consuming RCA hand-offs. Do NOT use for single-turn tasks, raw log RCA, or executing Kahn DAG waves."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 metadata:
+  author: "Franklin"
   version: "3.0.0"
-  updated_at: "2026-11-13"
-  author: "LoopPlanner & Melki"
-  category: "Análise de Intenção, Planejamento Cognitivo Não-Linear & Engenharia de Contexto"
-  tags: ["planejamento", "dag", "cot-tot", "react", "complexity-wall", "convergencia"]
+  updated_at: "2026-11-16"
+  category: "Intent Triage & Cognitive Planning"
+  tags: ["high-level-context-planner", "planejamento", "planejador", "fase", "fase-0", "complexidade", "complexity-tracking", "intent-triage", "cot-tot", "react", "append-only", "convergencia", "go-no-go", "dag"]
 ---
-# SKILL: `high-level-context-planner` (`v3.0.0`) — Planejamento Não-Linear (DAG)
 
-Motor cognitivo de diagnóstico de intenção, seleção de frameworks, blindagem contra a *Parede de Complexidade* ($\le 5$ regras/nó) e planejamento em grafo não-linear (Fase 0, tasks `[ID] [P?] [US#]` e Convergência *Append-Only*). Quadros e detalhamento constam em [`references/planner_frameworks_e_quadrantes.md`](references/planner_frameworks_e_quadrantes.md).
+# `high-level-context-planner` (`v3.0.0`) — Phase 0 & Complexity Shield
 
-## 1. Quando Usar (Gatilhos) e Quando NÃO Usar
+## 1. Overview & Scope
 
-- **Quando Usar:** Solicitações complexas/multifásicas com decomposição atômica e precedência DAG; combinação de frameworks (`CLAREZA`, `CREATE`, `RTF`, `TAG`, `TASS`) com `CoT`, `ReAct`, `ToT` e `Self-Refine`; auditoria/subdivisão contra teto $\le 5$ regras/nó; ou replanejamento *Append-Only* a partir de `Hand-off Payload (YAML)` do `gap-analyzer-auditor`.
-- **Quando NÃO Usar:** Tarefas simples (`1. direta`) entregues imediatamente; mutações destrutivas sem subagente/portão HITL; RCA forense inicial de logs/stack traces (use primeiro `gap-analyzer-auditor`).
+Cognitive planner for 4-quadrant intent triage, **Complexity Wall Shielding** (`<= 5` rules/node), Phase 0 `[ID] [P?] [US#]` plans, Go/No-Go matrices, and append-only `/speckit-converge` re-planning from `gap-analyzer-auditor` hand-offs.
 
-## 2. Entradas e Parâmetros Esperados
+### When NOT to Use
+- **Single-Turn Commands (`direta`):** Deliver directly without multi-phase planning.
+- **Forensic Log RCA:** Route trace diagnostics first to `gap-analyzer-auditor`.
+- **DAG Wave Dispatch:** Route Kahn compilation and fan-out to `chained-plan-orchestrator`.
 
-- `strategic_goal` / `user_query` (obrigatório): Pedido, requisito ou ideia bruta.
-- `handoff_payload` (condicional): YAML de [`references/protocolo_consumo_handoff.md`](references/protocolo_consumo_handoff.md).
-- `operational_constraints` (opcional): Limites de ambiente, caminhos (`target_dir`) e `max_rules_per_node = 5`.
+## 2. Inputs & Prerequisites
 
-## 3. Processamento e Fluxo em 5 Módulos
+- **`strategic_goal` / `user_query` (required):** Epic, feature goal, or raw spec.
+- **`handoff_payload` (conditional):** YAML adjustments per [`handoff_consumption_protocol.md`](references/handoff_consumption_protocol.md).
+- **`operational_constraints` (optional):** Paths, runtime limits, `MAX_RULES_PER_NODE = 5`.
 
-1. **Módulo 1 — Triagem & Gestão de Ambiguidade:** Classifique entre `1. direta`, `2. estruturada`, `3. ambigua` (esclareça lacunas antes de consolidar etapas) ou `4. mutacao_critica_hitl` (`requer_hitl: true`).
-2. **Módulo 2 — Frameworks (`CLAREZA`/`CREATE`/...) + Cognitivo (`CoT`/`ReAct`/`ToT`/`Self-Refine`).**
-3. **Módulo 3 — Complexity Wall Shield:** Mantenha `regras_ativas_count <= 5` por nó (dividindo nós pesados), `L1->L2->L3`, Pydantic v2 `extra="forbid"` e isolamento Context Fork em tasks `[P]`.
-4. **Módulo 4 — DAG Fase 0 & Append-Only:** Exija `step_00_fase_zero`, `[ID] [P?] [US#]` em arquivos disjuntos, `ramo_fallback` em incerteza e append-only `/speckit-converge` sem alterar tasks concluídas.
-5. **Módulo 5 — Validação Determinística:**
-   ```powershell
-   uv run python skills/high-level-context-planner/scripts/cognitive_plan_builder.py --self-test
-   uv run python skills/high-level-context-planner/scripts/cognitive_plan_builder.py --intent "<objetivo>" --framework CLAREZA
-   uv run python skills/high-level-context-planner/scripts/cognitive_plan_builder.py --validate-file plano.json --export-dag dag_plan.json
-   ```
+## 3. Step-by-Step Procedure
 
-## 4. Saídas e Entregáveis
+Consult [`planner_frameworks_and_quadrants.md`](references/planner_frameworks_and_quadrants.md) and [`go_no_go_decision_matrix.md`](references/go_no_go_decision_matrix.md):
 
-1. **Contrato JSON** conforme [`references/schema_plano_contexto.json`](references/schema_plano_contexto.json) (`max_regras_por_no <= 5`, `ramo_fallback`, `target_files`).
-2. **Plano Markdown:** Diagrama Mermaid (`flowchart TD`), checklist `[ID] [P?] [US#]`, Matriz Go/No-Go ([`references/matriz_decisao_go_no_go.md`](references/matriz_decisao_go_no_go.md)) e tabela `Complexity Tracking`.
+1. **Intent Triage:** Classify as `direta`, `estruturada`, `ambigua` (resolve `[GAP]`s first), or `mutacao_critica_hitl` (`requer_hitl: true`).
+2. **Framework Synthesis:** Pair structural (`CLAREZA`, `CREATE`, `RTF`, `TAG`, `TASS`) + cognitive (`CoT`, `ReAct`, `ToT`, `Self-Refine`).
+3. **Complexity Wall & Phase 0:** Cap `regras_ativas_count <= 5` (split overloaded nodes), anchor on `step_00_fase_zero` + `ramo_fallback`, keep `[P]` files disjoint, and apply `/speckit-converge` append-only.
+4. **CLI Verification:** Validate deterministically against [`rules/audit_criteria.md`](rules/audit_criteria.md):
 
-## 5. Limites, Self-Refine e Guardrails ([`rules/criterios_auditoria.md`](rules/criterios_auditoria.md))
+```powershell
+uv run python skills/high-level-context-planner/scripts/cognitive_plan_builder.py --self-test
+uv run python skills/high-level-context-planner/scripts/cognitive_plan_builder.py --intent "<goal>" --framework CLAREZA
+uv run python skills/high-level-context-planner/scripts/cognitive_plan_builder.py --validate-file plan.json --export-dag dag_plan.json
+```
 
-- Proibido planejamento linear cego em incerteza (declare `ReAct`/`ToT` + `ramo_fallback`), violar `>5` regras/nó, pular Fase 0, reescrever histórico na convergência, colidir `target_files` em `[P]` ou bypassar `requer_hitl: true`.
+## 4. Gotchas & Edge Cases
+
+- **No Blind Linear Plans:** Empirical uncertainty requires `ReAct`/`ToT` + `ramo_fallback`.
+- **No Write Collisions or Rewrites:** Keep `[P]` `target_files` disjoint; never erase completed tasks; retain `hitl_gate` when `requer_hitl: true`.
+
+## 5. Output Schema & Validation Criteria
+
+1. **JSON Plan:** Matches [`context_plan_schema.json`](references/context_plan_schema.json) (`max_regras_por_no <= 5`, `target_orchestrator: "chained-plan-orchestrator"`).
+2. **Markdown Plan:** Mermaid `flowchart TD`, `[ID] [P?] [US#]` checklist, Go/No-Go Matrix, `Complexity Tracking`, and `[PASS]`/`[FAIL]` status per [`rules/audit_criteria.md`](rules/audit_criteria.md).
+
+## 6. User Communication Rule
+
+Internal schemas and JSON contracts stay in Technical English; **all user-facing plan walkthroughs, Phase 0 clarifications, Go/No-Go rationales, and Self-Refine summaries MUST be delivered in Portuguese (Brazil / `pt-BR`)**, unless requested otherwise.

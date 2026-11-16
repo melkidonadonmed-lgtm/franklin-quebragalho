@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-13T21:15:23Z",
+  "timestamp": "2026-11-16T22:24:27Z",
   "audit_version": "1.0.0",
   "target_root": "C:/Users/melki/dev/repos/franklin-quebragalho",
   "summary": {
@@ -7,11 +7,10 @@
     "status": "APPROVED",
     "detected_languages": [
       "Python",
-      "TypeScript",
-      "Go"
+      "TypeScript"
     ],
     "total_agents": 20,
-    "total_skills": 29,
+    "total_skills": 28,
     "total_mcp_servers": 2,
     "total_a2a_cards": 2
   },
@@ -265,8 +264,8 @@
         "missing_elements": []
       },
       {
-        "name": "arquiteto-conteudo-solucoes",
-        "path": "skills/arquiteto-conteudo-solucoes",
+        "name": "chained-plan-orchestrator",
+        "path": "skills/chained-plan-orchestrator",
         "has_frontmatter": true,
         "has_scripts": true,
         "has_references": true,
@@ -274,17 +273,8 @@
         "missing_elements": []
       },
       {
-        "name": "audit-skills-antigravity",
-        "path": "skills/audit-skills-antigravity",
-        "has_frontmatter": true,
-        "has_scripts": true,
-        "has_references": true,
-        "has_evals": true,
-        "missing_elements": []
-      },
-      {
-        "name": "auditoria-projetos-sistema",
-        "path": "skills/auditoria-projetos-sistema",
+        "name": "clinical-minimalist-ui",
+        "path": "skills/clinical-minimalist-ui",
         "has_frontmatter": true,
         "has_scripts": true,
         "has_references": true,
@@ -328,35 +318,17 @@
         "missing_elements": []
       },
       {
-        "name": "conversor-html-pdf",
-        "path": "skills/conversor-html-pdf",
-        "has_frontmatter": true,
-        "has_scripts": true,
-        "has_references": true,
-        "has_evals": true,
-        "missing_elements": []
-      },
-      {
-        "name": "curadoria-obsidian-vault",
-        "path": "skills/curadoria-obsidian-vault",
-        "has_frontmatter": true,
-        "has_scripts": true,
-        "has_references": true,
-        "has_evals": true,
-        "missing_elements": []
-      },
-      {
-        "name": "design-interface-medica-minimalista",
-        "path": "skills/design-interface-medica-minimalista",
-        "has_frontmatter": true,
-        "has_scripts": true,
-        "has_references": true,
-        "has_evals": true,
-        "missing_elements": []
-      },
-      {
         "name": "design-md",
         "path": "skills/design-md",
+        "has_frontmatter": true,
+        "has_scripts": true,
+        "has_references": true,
+        "has_evals": true,
+        "missing_elements": []
+      },
+      {
+        "name": "flow-filetree-organizer",
+        "path": "skills/flow-filetree-organizer",
         "has_frontmatter": true,
         "has_scripts": true,
         "has_references": true,
@@ -400,8 +372,8 @@
         "missing_elements": []
       },
       {
-        "name": "gdrive-auditoria-limpeza",
-        "path": "skills/gdrive-auditoria-limpeza",
+        "name": "gdrive-cleanup-auditor",
+        "path": "skills/gdrive-cleanup-auditor",
         "has_frontmatter": true,
         "has_scripts": true,
         "has_references": true,
@@ -409,8 +381,8 @@
         "missing_elements": []
       },
       {
-        "name": "gdrive-taxonomia-organizacao",
-        "path": "skills/gdrive-taxonomia-organizacao",
+        "name": "gdrive-taxonomy-organizer",
+        "path": "skills/gdrive-taxonomy-organizer",
         "has_frontmatter": true,
         "has_scripts": true,
         "has_references": true,
@@ -427,8 +399,8 @@
         "missing_elements": []
       },
       {
-        "name": "manutencao-disco-windows",
-        "path": "skills/manutencao-disco-windows",
+        "name": "html-pdf-converter",
+        "path": "skills/html-pdf-converter",
         "has_frontmatter": true,
         "has_scripts": true,
         "has_references": true,
@@ -436,17 +408,8 @@
         "missing_elements": []
       },
       {
-        "name": "organizador-fluxo-arvore-arquivos",
-        "path": "skills/organizador-fluxo-arvore-arquivos",
-        "has_frontmatter": true,
-        "has_scripts": true,
-        "has_references": true,
-        "has_evals": true,
-        "missing_elements": []
-      },
-      {
-        "name": "organizador-projetos-ideias",
-        "path": "skills/organizador-projetos-ideias",
+        "name": "obsidian-vault-curator",
+        "path": "skills/obsidian-vault-curator",
         "has_frontmatter": true,
         "has_scripts": true,
         "has_references": true,
@@ -463,8 +426,8 @@
         "missing_elements": []
       },
       {
-        "name": "re-a-ndroid",
-        "path": "skills/re-a-ndroid",
+        "name": "project-idea-organizer",
+        "path": "skills/project-idea-organizer",
         "has_frontmatter": true,
         "has_scripts": true,
         "has_references": true,
@@ -472,8 +435,8 @@
         "missing_elements": []
       },
       {
-        "name": "redator-tecnico-markdown",
-        "path": "skills/redator-tecnico-markdown",
+        "name": "re-a-ndroid",
+        "path": "skills/re-a-ndroid",
         "has_frontmatter": true,
         "has_scripts": true,
         "has_references": true,
@@ -490,8 +453,26 @@
         "missing_elements": []
       },
       {
-        "name": "skill-orquestrador-planos-encadeados",
-        "path": "skills/skill-orquestrador-planos-encadeados",
+        "name": "solution-content-architect",
+        "path": "skills/solution-content-architect",
+        "has_frontmatter": true,
+        "has_scripts": true,
+        "has_references": true,
+        "has_evals": true,
+        "missing_elements": []
+      },
+      {
+        "name": "system-project-auditor",
+        "path": "skills/system-project-auditor",
+        "has_frontmatter": true,
+        "has_scripts": true,
+        "has_references": true,
+        "has_evals": true,
+        "missing_elements": []
+      },
+      {
+        "name": "technical-markdown-writer",
+        "path": "skills/technical-markdown-writer",
         "has_frontmatter": true,
         "has_scripts": true,
         "has_references": true,
@@ -501,6 +482,15 @@
       {
         "name": "test-quality-auditor",
         "path": "skills/test-quality-auditor",
+        "has_frontmatter": true,
+        "has_scripts": true,
+        "has_references": true,
+        "has_evals": true,
+        "missing_elements": []
+      },
+      {
+        "name": "windows-disk-maintenance",
+        "path": "skills/windows-disk-maintenance",
         "has_frontmatter": true,
         "has_scripts": true,
         "has_references": true,

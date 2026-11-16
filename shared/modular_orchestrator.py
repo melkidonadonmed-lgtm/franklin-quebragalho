@@ -316,7 +316,7 @@ class IntentAnalysisAgent(BaseSubAgent):
         is_dag = any(w in q_low for w in self.DAG_KEYWORDS)
         is_research = any(w in q_low for w in self.RESEARCH_KEYWORDS)
 
-        skill = str(context_payload.get("skill_name", "auditoria-projetos-sistema"))
+        skill = str(context_payload.get("skill_name", "system-project-auditor"))
         persona = str(context_payload.get("persona", "Franklin-Main"))
         params: Dict[str, Any] = {"query": cleaned_query, "target_dir": target_dir, "skill_name": skill}
 
@@ -397,7 +397,7 @@ class MCPWorkerAgent(BaseSubAgent):
                 execution_data = dict(self.tool_dispatcher(params) or {})
             else:
                 target_str = str(params.get("target_dir", "")).strip()
-                skill_name = str(params.get("skill_name", "auditoria-projetos-sistema")).strip()
+                skill_name = str(params.get("skill_name", "system-project-auditor")).strip()
                 repo_skills_dir = Path(__file__).resolve().parent.parent / "skills" / skill_name
                 if target_str and Path(target_str).exists():
                     t_path = Path(target_str)
@@ -589,7 +589,7 @@ class AgentOrchestrator:
         self,
         user_query: str,
         *,
-        skill_name: str = "auditoria-projetos-sistema",
+        skill_name: str = "system-project-auditor",
         persona: str = "Franklin-Main",
         target_dir: str = "",
         session_id: str = "default",

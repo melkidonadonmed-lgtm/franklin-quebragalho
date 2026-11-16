@@ -1,0 +1,44 @@
+{
+  "skill_name": "windows-disk-maintenance",
+  "version": "1.2.0",
+  "evals": [
+    {
+      "eval_id": "TC-WINDOWS-MAINT-01-DOWNLOADS-TRIAGE",
+      "should_trigger": true,
+      "prompt": "Triage old .exe and .msi installers older than 30 days in C:/Users/melki/Downloads into _Instaladores using -WhatIf and -LiteralPath.",
+      "expected_behavior": "Groups executables older than 30 days per local_retention_policy.json and proposes relocation to _Instaladores with -WhatIf and -LiteralPath without deleting files.",
+      "expected_assertions": [
+        "Applies 30-day installer threshold from local_retention_policy.json",
+        "Uses -WhatIf and -LiteralPath with zero Remove-Item calls"
+      ]
+    },
+    {
+      "eval_id": "TC-WINDOWS-MAINT-02-DESKTOP-LAUNCHERS",
+      "should_trigger": true,
+      "prompt": "Clean up loose temporary files on the Windows 11 Desktop while strictly protecting Cockpit-Melki.html and FrontCraft-Studio.cmd.",
+      "expected_behavior": "Preserves all protected_desktop_files listed in local_retention_policy.json and only proposes dry-run relocation for non-launcher clutter.",
+      "expected_assertions": [
+        "Skips Cockpit-Melki.html, FrontCraft-Studio.html, FrontCraft-Studio.cmd, and Antigravity-Painel-Controle.cmd",
+        "Checks process locks before proposing relocation"
+      ]
+    },
+    {
+      "eval_id": "TC-WINDOWS-MAINT-03-GOOGLE-DRIVE",
+      "should_trigger": false,
+      "prompt": "Clean up >100MB archives and duplicate backups inside G:/Meu Drive/03_Medicina_Faculdade.",
+      "expected_behavior": "Does not run local Windows disk triage against Google Drive; delegates to gdrive-cleanup-auditor.",
+      "expected_assertions": [
+        "Routes G:\\Meu Drive cleanup to gdrive-cleanup-auditor"
+      ]
+    },
+    {
+      "eval_id": "TC-WINDOWS-MAINT-04-OBSIDIAN-VAULT",
+      "should_trigger": false,
+      "prompt": "Fix broken Wikilinks, missing YAML frontmatter, and orphaned attachments inside C:/Users/melki/dev/notes.",
+      "expected_behavior": "Does not touch Obsidian vault structure; delegates bulk vault curation to obsidian-vault-curator.",
+      "expected_assertions": [
+        "Routes Obsidian vault curation to obsidian-vault-curator"
+      ]
+    }
+  ]
+}

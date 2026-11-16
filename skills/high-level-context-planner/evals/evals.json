@@ -1,63 +1,77 @@
-[
-  {
-    "eval_id": "TC-01-TRIAGEM-INTENCAO-E-GRAFO-NAO-LINEAR",
-    "category": "should-trigger",
-    "description": "Valida se uma demanda estruturada seleciona o framework CLAREZA + padrões CoT/ReAct/ToT/Self-Refine e gera Fase 0 com ramo_fallback",
-    "input": "Crie um plano cognitivo para migrar o módulo de autenticação OAuth 2.0 e validar a suíte de testes unitários.",
-    "expected_behavior": {
-      "intencao_categoria": "estruturada",
-      "framework_estrutural": "CLAREZA",
-      "contem_fase_zero": true,
-      "contem_ramo_fallback": true,
-      "max_regras_por_no": 5,
-      "status_esperado": "[PASS]"
+{
+  "skill_name": "high-level-context-planner",
+  "version": "3.0.0",
+  "description": "Evaluation suite verifying 4-quadrant intent triage, <= 5 rules/node Complexity Wall shielding, HITL gating, append-only hand-off consumption, and near-miss boundaries.",
+  "evals": [
+    {
+      "id": "TC-01-INTENT-TRIAGE-AND-PHASE-ZERO-GRAPH",
+      "eval_id": "TC-01-INTENT-TRIAGE-AND-PHASE-ZERO-GRAPH",
+      "should_trigger": true,
+      "prompt": "Create a Phase 0 cognitive execution plan with Go/No-Go gates and Complexity Tracking to migrate our OAuth 2.0 auth module and validate the test suite.",
+      "expected_output": "Classifies intent as 'estruturada', pairs CLAREZA with CoT/ReAct/ToT/Self-Refine, starts at step_00_fase_zero, includes ramo_fallback, and keeps max_regras_por_no <= 5.",
+      "assertions": [
+        "Selects 'estruturada' intent and CLAREZA structural framework",
+        "Starts graph at Phase 0 (step_00_fase_zero) with fallback branches",
+        "Enforces <= 5 active rules per node and includes Complexity Tracking"
+      ]
+    },
+    {
+      "id": "TC-02-COMPLEXITY-WALL-AUTO-SUBDIVISION",
+      "eval_id": "TC-02-COMPLEXITY-WALL-AUTO-SUBDIVISION",
+      "should_trigger": true,
+      "prompt": "Plan a multi-module refactoring phase that imposes 8 simultaneous constraints across AST security, strict typing, coverage, latency budgets, and logging.",
+      "expected_output": "Detects > 5 rules on a single node, splits the overloaded step via cognitive_plan_builder.py into atomic sub-nodes (status SUBDIVIDED), and preserves <= 5 active rules per node.",
+      "assertions": [
+        "Enforces Prompt Complexity Wall shield (status SUBDIVIDED)",
+        "No node exceeds 5 active rules",
+        "Preserves sequential dependency edges between sub-nodes"
+      ]
+    },
+    {
+      "id": "TC-03-CRITICAL-MUTATION-HITL-GATE",
+      "eval_id": "TC-03-CRITICAL-MUTATION-HITL-GATE",
+      "should_trigger": true,
+      "prompt": "Plan the permanent deletion of legacy customer tables in our production database followed by a live deployment.",
+      "expected_output": "Classifies intent as 'mutacao_critica_hitl', sets requer_hitl: true, injects a mandatory hitl_gate node before destructive steps, and pauses without direct execution.",
+      "assertions": [
+        "Classifies intent as mutacao_critica_hitl with requer_hitl: true",
+        "Injects explicit hitl_gate node in grafo_execucao",
+        "Executes zero direct disk or database mutations"
+      ]
+    },
+    {
+      "id": "TC-04-HANDOFF-APPEND-ONLY-CONVERGENCE",
+      "eval_id": "TC-04-HANDOFF-APPEND-ONLY-CONVERGENCE",
+      "should_trigger": true,
+      "prompt": "Consume this YAML hand-off from gap-analyzer-auditor and update our plan append-only: incident_id: AUDIT-2026-11-16-01, recommended_option: Option 2, action: APPEND_CONVERGENCE_TASKS, patch_instructions: Append T005 [P] [CONV] shared/modular_orchestrator.py.",
+      "expected_output": "Preserves all completed tasks untouched, appends Phase N: Convergence with T005 [P] [CONV] shared/modular_orchestrator.py, and logs incident_id AUDIT-2026-11-16-01.",
+      "assertions": [
+        "Preserves completed tasks without renumbering or erasing history",
+        "Appends convergence task T005 [P] [CONV] in Append-Only mode",
+        "Records incident_id and Option 2 rationale in Mitigation Log"
+      ]
+    },
+    {
+      "id": "TC-05-NEAR-MISS-RAW-TRACEBACK-RCA",
+      "eval_id": "TC-05-NEAR-MISS-RAW-TRACEBACK-RCA",
+      "should_trigger": false,
+      "prompt": "Inspect this raw TimeoutError stack trace from mcp-fetch-docs and diagnose the root cause before we revise any plans.",
+      "expected_output": "Does NOT trigger high-level-context-planner directly; routes initial forensic RCA over raw logs/traces to gap-analyzer-auditor.",
+      "assertions": [
+        "Abstains from generating a new Phase 0 plan prematurely",
+        "Delegates log/trace root cause analysis to gap-analyzer-auditor"
+      ]
+    },
+    {
+      "id": "TC-06-NEAR-MISS-KAHN-WAVE-EXECUTION",
+      "eval_id": "TC-06-NEAR-MISS-KAHN-WAVE-EXECUTION",
+      "should_trigger": false,
+      "prompt": "Take this finalized DAG JSON plan, compile Kahn topological waves, check for parallel file write collisions, and dispatch subagents in isolated Context Forks.",
+      "expected_output": "Does NOT trigger high-level-context-planner; delegates Kahn wave compilation and runtime dispatch to chained-plan-orchestrator.",
+      "assertions": [
+        "Abstains from re-planning an already finalized DAG",
+        "Delegates topological compilation and wave dispatch to chained-plan-orchestrator"
+      ]
     }
-  },
-  {
-    "eval_id": "TC-02-BLINDAGEM-PAREDE-DE-COMPLEXIDADE",
-    "category": "should-trigger",
-    "description": "Valida se um nó com mais de 5 regras ativas é subdividido automaticamente pelo motor cognitive_plan_builder.py para evitar a Parede de Complexidade",
-    "input": "Planeje uma etapa de refatoração que exige 8 restrições simultâneas de AST, tipagem, segurança, cobertura e performance.",
-    "expected_behavior": {
-      "blindagem_status": "SUBDIVIDED",
-      "max_regras_por_no_respeitado": true,
-      "nenhum_no_acima_de_5_regras": true,
-      "status_esperado": "[PASS]"
-    }
-  },
-  {
-    "eval_id": "TC-03-MUTACAO-CRITICA-HITL-GATE",
-    "category": "should-trigger",
-    "description": "Valida se pedidos com ações destrutivas (drop table, exclusão em produção, deploy) ativam requer_hitl=true e injetam nó hitl_gate",
-    "input": "Planeje a limpeza e remoção definitiva das tabelas legadas no banco de produção seguida de deploy.",
-    "expected_behavior": {
-      "intencao_categoria": "mutacao_critica_hitl",
-      "requer_hitl": true,
-      "contem_no_hitl_gate": true,
-      "status_esperado": "[PASS]"
-    }
-  },
-  {
-    "eval_id": "TC-04-CONSUMO-HANDOFF-CONVERGENCIA-APPEND-ONLY",
-    "category": "should-trigger",
-    "description": "Valida se a recepção de um Hand-off Payload YAML do gap-analyzer-auditor gera convergência Append-Only sem apagar tasks anteriores",
-    "input": "Recebemos o hand-off do auditor:\n```yaml\nhandoff_target: high-level-context-planner\nincident_id: AUDIT-2026-10-26-01\nrecommended_option: Opção 2\nrequired_adjustments:\n  - step: Fase 2\n    action: APPEND_CONVERGENCE_TASKS\n    patch_instructions: Anexar task T005 [P] [CONV] shared/modular_orchestrator.py\ncontingency_trigger: Falha no schema Pydantic\n```\nGere o plano revisado.",
-    "expected_behavior": {
-      "versao_plano": "v3.0.0",
-      "incident_id_registrado": "AUDIT-2026-10-26-01",
-      "append_only_preservado": true,
-      "status_esperado": "[PASS]"
-    }
-  },
-  {
-    "eval_id": "TC-05-NEAR-MISS-RCA-TRACE-DE-ERRO",
-    "category": "should-not-trigger",
-    "description": "Near-miss: pedido para diagnosticar um stack trace bruto de erro antes de replanejar",
-    "input": "Analise este traceback de TimeoutError no MCP e descubra a causa raiz antes de mudarmos o plano.",
-    "expected_behavior": {
-      "aciona_planejador_direto": false,
-      "delega_rca_para": "gap-analyzer-auditor",
-      "status_esperado": "[PASS]"
-    }
-  }
-]
+  ]
+}

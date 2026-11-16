@@ -1,0 +1,65 @@
+{
+  "skill_name": "chained-plan-orchestrator",
+  "version": "3.0.0",
+  "description": "Evaluation suite verifying Kahn topological wave compilation, parallel file-collision rejection, cycle detection, Context Fork hygiene, and single-turn near-misses.",
+  "evals": [
+    {
+      "id": "TC-01-KAHN-WAVES-AND-CONTEXT-FORK",
+      "eval_id": "TC-01-KAHN-WAVES-AND-CONTEXT-FORK",
+      "should_trigger": true,
+      "prompt": "Compile this multi-skill grafo_execucao plan into Kahn topological waves with isolated_state_key Context Fork envelopes and <= 5 active rules per node.",
+      "expected_output": "Compiles Wave 0 (step_00) and Wave 1 (step_01a, step_01b in parallel over disjoint target_files), emits ContextTransitionEnvelope objects without raw history, and passes dag_chain_validator.py.",
+      "assertions": [
+        "Groups independent nodes into parallel Kahn waves (total_waves == 2)",
+        "Assigns isolated_state_key and <= 5 active_rules per node",
+        "Confirms file_collisions == [] and status == '[PASS]'"
+      ]
+    },
+    {
+      "id": "TC-02-PARALLEL-FILE-COLLISION-REJECTION",
+      "eval_id": "TC-02-PARALLEL-FILE-COLLISION-REJECTION",
+      "should_trigger": true,
+      "prompt": "Validate a DAG plan where worker_1 and worker_2 have no preconditions and both target shared/modular_orchestrator.py in Wave 0.",
+      "expected_output": "Halts wave dispatch deterministically and emits [FAIL: PARALLEL_FILE_COLLISION] identifying Wave 0 write contention on shared/modular_orchestrator.py.",
+      "assertions": [
+        "Detects overlapping target_files inside Wave 0",
+        "Returns status '[FAIL]' with PARALLEL_FILE_COLLISION marker",
+        "Blocks parallel dispatch until serialized or split"
+      ]
+    },
+    {
+      "id": "TC-03-KAHN-CYCLE-DETECTION-BLOCK",
+      "eval_id": "TC-03-KAHN-CYCLE-DETECTION-BLOCK",
+      "should_trigger": true,
+      "prompt": "Compile a phases graph where phase A depends_on B and phase B depends_on A.",
+      "expected_output": "Detects circular dependency via Kahn in-degree sorting (has_cycle == true) and rejects dispatch with CYCLE_DETECTED.",
+      "assertions": [
+        "Identifies has_cycle == true via Kahn algorithm",
+        "Returns status '[FAIL]' with CYCLE_DETECTED",
+        "Prevents infinite orchestration loop"
+      ]
+    },
+    {
+      "id": "TC-04-NEAR-MISS-SINGLE-TURN-TASK",
+      "eval_id": "TC-04-NEAR-MISS-SINGLE-TURN-TASK",
+      "should_trigger": false,
+      "prompt": "Convert this single Markdown file report.md into a formatted PDF right now.",
+      "expected_output": "Does NOT trigger chained-plan-orchestrator; single atomic task routes directly to html-pdf-converter.",
+      "assertions": [
+        "Abstains from spinning up multi-wave DAG orchestration",
+        "Routes atomic PDF conversion directly to html-pdf-converter"
+      ]
+    },
+    {
+      "id": "TC-05-NEAR-MISS-INITIAL-PHASE-ZERO-PLANNING",
+      "eval_id": "TC-05-NEAR-MISS-INITIAL-PHASE-ZERO-PLANNING",
+      "should_trigger": false,
+      "prompt": "I have a brand-new epic idea to build a clinical portal—triage my intent across 4 quadrants, design Phase 0, and write a Complexity Tracking table from scratch.",
+      "expected_output": "Does NOT trigger chained-plan-orchestrator; routes initial cognitive planning and intent triage to high-level-context-planner.",
+      "assertions": [
+        "Abstains from wave execution before a plan exists",
+        "Routes initial Phase 0 cognitive planning to high-level-context-planner"
+      ]
+    }
+  ]
+}

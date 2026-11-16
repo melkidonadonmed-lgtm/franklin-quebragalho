@@ -1,0 +1,44 @@
+{
+  "skill_name": "html-pdf-converter",
+  "version": "1.2.0",
+  "evals": [
+    {
+      "eval_id": "TC-PDF-CONVERTER-01-MD-TO-PDF",
+      "should_trigger": true,
+      "prompt": "Convert an existing Markdown report at C:/Users/melki/dev/notes/Projetos/report.md into an A4 PDF using scripts/md-to-pdf.ps1 and verify non-zero file size.",
+      "expected_behavior": "Runs local headless Microsoft Edge or Chrome via scripts/md-to-pdf.ps1, verifies PDF Length > 0 bytes, preserves the original .md file, and logs [PASS] on Criterion 01.",
+      "expected_assertions": [
+        "Uses local Edge/Chrome headless via scripts/md-to-pdf.ps1",
+        "Verifies output PDF exists with Length > 0 bytes while preserving input file"
+      ]
+    },
+    {
+      "eval_id": "TC-PDF-CONVERTER-02-PRINT-CSS-TABLES",
+      "should_trigger": true,
+      "prompt": "Export an HTML document containing wide comparison tables to portrait A4 PDF while preventing page splits inside tables and code blocks.",
+      "expected_behavior": "Applies references/print_theme.css with @page A4 rules and break-inside: avoid on table, pre, and blockquote elements.",
+      "expected_assertions": [
+        "Applies print_theme.css page-break shielding (break-inside: avoid)",
+        "Uses zero external cloud conversion APIs"
+      ]
+    },
+    {
+      "eval_id": "TC-PDF-CONVERTER-03-MARKDOWN-AUTHORING",
+      "should_trigger": false,
+      "prompt": "Draft an Architecture Decision Record (ADR) in Markdown from scratch with GitHub alert blocks and save it to docs/adr-001.md.",
+      "expected_behavior": "Does not launch headless PDF rendering; delegates technical Markdown authoring to technical-markdown-writer.",
+      "expected_assertions": [
+        "Routes Markdown authoring from scratch to technical-markdown-writer"
+      ]
+    },
+    {
+      "eval_id": "TC-PDF-CONVERTER-04-MERMAID-DIAGRAM",
+      "should_trigger": false,
+      "prompt": "Turn these raw mobile app feature notes into a Mermaid flowchart and commented directory structure tree.",
+      "expected_behavior": "Does not trigger PDF conversion; delegates Mermaid flowcharts and file trees to flow-filetree-organizer.",
+      "expected_assertions": [
+        "Routes Mermaid diagramming and directory tree planning to flow-filetree-organizer"
+      ]
+    }
+  ]
+}

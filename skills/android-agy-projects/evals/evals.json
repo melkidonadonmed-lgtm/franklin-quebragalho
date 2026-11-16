@@ -1,55 +1,69 @@
-[
-  {
-    "eval_id": "TC-01-GREEN-MVP-AGP9-COMPOSE",
-    "category": "should-trigger",
-    "description": "Valida criação de base estrutural (Cenário A - MODO GREEN) com AGP 9.x Built-in Kotlin, KSP2 2.3.12, Compose BOM 2026.09.00, Navigation 3 e Edge-to-Edge",
-    "input": "Crie a base estrutural de um novo app Android MVP em 2026 com Kotlin, Jetpack Compose, Material 3 Expressive, Hilt, Room e Navigation 3, incluindo o libs.versions.toml.",
+{
+  "skill_name": "android-agy-projects",
+  "version": "2.1.0",
+  "evals": [
+    {
+      "eval_id": "TC-01-GREEN-MVP-AGP9-COMPOSE",
+    "should_trigger": true,
+    "description": "Validates greenfield Android MVP scaffolding (Scenario A - GREEN) with AGP 9.x Built-in Kotlin, KSP2 2.3.12, Compose BOM 2026.09.00, Navigation 3, and Edge-to-Edge.",
+    "prompt": "Crie a base estrutural de um novo app Android MVP em 2026 com Kotlin, Jetpack Compose, Material 3 Expressive, Hilt, Room e Navigation 3, incluindo o libs.versions.toml.",
     "expected_behavior": {
-      "cenario_ativo": "CENÁRIO A (MODO GREEN)",
-      "usa_agp_9_built_in_kotlin_sem_kotlin_android_plugin": true,
-      "usa_ksp2_sem_kapt": true,
-      "inclui_navigation3_e_compose_bom_2026": true,
-      "configura_enable_edge_to_edge_e_compile_sdk_36": true,
-      "status_esperado": "[PASS]"
+      "active_scenario": "SCENARIO A (GREEN MODE)",
+      "uses_agp9_built_in_kotlin_without_kotlin_android_plugin": true,
+      "uses_ksp2_without_kapt": true,
+      "includes_navigation3_and_compose_bom_2026": true,
+      "configures_enable_edge_to_edge_and_compile_sdk_36": true,
+      "expected_status": "[PASS]"
     }
   },
   {
     "eval_id": "TC-02-COT-RCA-LAZYCOLUMN-JANK-ANR",
-    "category": "should-trigger",
-    "description": "Valida diagnóstico CoT nos 5 eixos (Cenário B - MODO COT) para engasgos de rolagem (jank) em LazyColumn e ANR de I/O na Main Thread",
-    "input": "Meu app Android em Jetpack Compose está travando e dando jank ao rolar uma LazyColumn grande, além de ocasionar ANR ao filtrar os dados do Room.",
+    "should_trigger": true,
+    "description": "Validates 5-axis CoT diagnosis (Scenario B - COT) for LazyColumn scroll jank and Room Main-Thread ANRs.",
+    "prompt": "My Jetpack Compose Android app suffers scroll jank in a large LazyColumn and ANRs when filtering Room data. Diagnose across the 5 axes.",
     "expected_behavior": {
-      "cenario_ativo": "CENÁRIO B (MODO COT / RCA)",
-      "analisa_5_eixos_android": true,
-      "exige_key_primitiva_e_content_type_na_lazycolumn": true,
-      "proibe_immutable_list_cego_sob_strong_skipping_mode": true,
-      "move_io_para_dispatchers_io_e_usa_computed_state_of": true,
-      "apresenta_3_opcoes_com_tradeoffs": true,
-      "status_esperado": "[PASS]"
+      "active_scenario": "SCENARIO B (COT / RCA MODE)",
+      "analyzes_5_android_axes": true,
+      "enforces_primitive_key_and_content_type_in_lazycolumn": true,
+      "forbids_blind_immutable_list_under_strong_skipping_mode": true,
+      "offloads_io_to_dispatchers_io_and_uses_computed_state_of": true,
+      "presents_3_options_with_tradeoffs": true,
+      "expected_status": "[PASS]"
     }
   },
   {
     "eval_id": "TC-03-AUDIT-GRADLE-KAPT-TO-KSP2-R8",
-    "category": "should-trigger",
-    "description": "Valida varredura completa de gargalos (Cenário C - MODO AUDIT) migrando kapt para KSP2, habilitando R8 optimization { enable = true } e Baseline Profiles",
-    "input": "Faça uma auditoria completa neste repositório Android: o build Gradle demora 6 minutos com kapt e o cold start do APK de release está acima de 3 segundos.",
+    "should_trigger": true,
+    "description": "Validates full bottleneck audit (Scenario C - AUDIT) migrating kapt to KSP2, enabling R8 optimization { enable = true }, and Baseline Profiles.",
+    "prompt": "Audite este repositório Android: o build Gradle demora 6 minutos com kapt e o cold start do APK de release está acima de 3 segundos.",
     "expected_behavior": {
-      "cenario_ativo": "CENÁRIO C (MODO AUDIT)",
-      "recomenda_migracao_kapt_para_ksp2": true,
-      "recomenda_r8_optimization_enable_true_e_baseline_profiles": true,
-      "audita_gradle_properties_configuration_cache": true,
-      "gera_matriz_de_oportunidades_priorizada": true,
-      "status_esperado": "[PASS]"
+      "active_scenario": "SCENARIO C (AUDIT MODE)",
+      "recommends_kapt_to_ksp2_migration": true,
+      "recommends_r8_optimization_enable_true_and_baseline_profiles": true,
+      "audits_gradle_properties_configuration_cache": true,
+      "generates_prioritized_opportunity_matrix": true,
+      "expected_status": "[PASS]"
     }
   },
   {
     "eval_id": "TC-04-NEAR-MISS-WEB-NEXTJS",
-    "category": "should-not-trigger",
-    "description": "Near-miss: pedido exclusivo para refatorar rotas de uma aplicação web Next.js 15 com Tailwind CSS sem relação com Android/Gradle",
-    "input": "Refatore os componentes desta dashboard web em Next.js 15 App Router usando Tailwind CSS e tokens OKLCH.",
+    "should_trigger": false,
+    "description": "Near-miss: request strictly to refactor Next.js 15 web dashboard components with Tailwind CSS and OKLCH tokens.",
+    "prompt": "Refatore os componentes desta dashboard web em Next.js 15 App Router usando Tailwind CSS e tokens OKLCH.",
     "expected_behavior": {
-      "aciona_android_agy_projects": false,
-      "delega_para": "frontend-code-architect"
+      "triggers_android_agy_projects": false,
+      "delegate_to": "frontend-code-architect"
     }
-  }
-]
+  },
+  {
+    "eval_id": "TC-05-NEAR-MISS-APK-REVERSE-ENGINEERING",
+    "should_trigger": false,
+    "description": "Near-miss: request to decompile a shipped release APK via REA and audit ADB touch targets.",
+    "prompt": "Reverse engineer app-release.apk DEX classes with REA, verify v2/v3 APK signatures, and check 48dp touch targets over ADB.",
+      "expected_behavior": {
+        "triggers_android_agy_projects": false,
+        "delegate_to": "re-a-ndroid"
+      }
+    }
+  ]
+}

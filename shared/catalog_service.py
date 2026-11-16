@@ -36,30 +36,29 @@ if not EPIC_VOLTA_DIR.exists():
 CANONICAL_PERSONA_MAPPING: Dict[str, str] = {
     "complex-zero": "UI-Architect",
     "plan-uiux": "UI-Architect",
-    "design-interface-medica-minimalista": "UI-Architect",
+    "clinical-minimalist-ui": "UI-Architect",
     "design-md": "UI-Architect",
     "frontend-code-architect": "UI-Architect",
     "frontend-testing-auditor": "UI-Architect",
     "frontend-ui-ux-auditor": "UI-Architect",
-    "gdrive-auditoria-limpeza": "DriveMaster",
-    "gdrive-taxonomia-organizacao": "DriveMaster",
-    "manutencao-disco-windows": "FileOpsLocal",
-    "curadoria-obsidian-vault": "VaultMaster",
-    "redator-tecnico-markdown": "DocMaker",
-    "conversor-html-pdf": "DocMaker",
-    "organizador-fluxo-arvore-arquivos": "DocMaker",
+    "gdrive-cleanup-auditor": "DriveMaster",
+    "gdrive-taxonomy-organizer": "DriveMaster",
+    "windows-disk-maintenance": "FileOpsLocal",
+    "obsidian-vault-curator": "VaultMaster",
+    "technical-markdown-writer": "DocMaker",
+    "html-pdf-converter": "DocMaker",
+    "flow-filetree-organizer": "DocMaker",
     "code-acceptability-auditor": "SkillCraft",
     "test-quality-auditor": "SkillCraft",
     "agent-server-auditor": "SkillCraft",
-    "audit-skills-antigravity": "SkillCraft",
     "re-a-ndroid": "SkillCraft",
     "high-level-context-planner": "LoopPlanner",
     "gap-analyzer-auditor": "LoopPlanner",
-    "skill-orquestrador-planos-encadeados": "LoopPlanner",
-    "arquiteto-conteudo-solucoes": "Franklin-Main",
-    "auditoria-projetos-sistema": "Franklin-Main",
+    "chained-plan-orchestrator": "LoopPlanner",
+    "solution-content-architect": "Franklin-Main",
+    "system-project-auditor": "Franklin-Main",
     "android-agy-projects": "Franklin-Main",
-    "organizador-projetos-ideias": "Franklin-Main",
+    "project-idea-organizer": "Franklin-Main",
     "code-quality-audit-3d-physics": "Franklin-Main",
     "context-sentinel": "Franklin-Main",
     "refine-prompt": "Franklin-Main",
@@ -67,6 +66,7 @@ CANONICAL_PERSONA_MAPPING: Dict[str, str] = {
 }
 
 QUICK_SKILL_ALIASES: Dict[str, str] = {
+    # Canonical English slugs & short English aliases
     "complex-zero": "complex-zero",
     "xyflow": "complex-zero",
     "react-flow": "complex-zero",
@@ -76,16 +76,30 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "fisica": "code-quality-audit-3d-physics",
     "fisica-3d": "code-quality-audit-3d-physics",
     "physics": "code-quality-audit-3d-physics",
-    "pdf": "conversor-html-pdf",
-    "conversor-pdf": "conversor-html-pdf",
-    "obsidian": "curadoria-obsidian-vault",
-    "vault": "curadoria-obsidian-vault",
-    "drive-limpeza": "gdrive-auditoria-limpeza",
-    "drive-taxonomia": "gdrive-taxonomia-organizacao",
-    "disco": "manutencao-disco-windows",
-    "windows": "manutencao-disco-windows",
-    "medica": "design-interface-medica-minimalista",
-    "medico": "design-interface-medica-minimalista",
+    "pdf": "html-pdf-converter",
+    "pdf-converter": "html-pdf-converter",
+    "html-pdf": "html-pdf-converter",
+    "conversor-pdf": "html-pdf-converter",
+    "conversor-html-pdf": "html-pdf-converter",
+    "obsidian": "obsidian-vault-curator",
+    "vault": "obsidian-vault-curator",
+    "vault-curator": "obsidian-vault-curator",
+    "curadoria-obsidian-vault": "obsidian-vault-curator",
+    "drive-limpeza": "gdrive-cleanup-auditor",
+    "drive-cleanup": "gdrive-cleanup-auditor",
+    "gdrive-auditoria-limpeza": "gdrive-cleanup-auditor",
+    "drive-taxonomia": "gdrive-taxonomy-organizer",
+    "drive-taxonomy": "gdrive-taxonomy-organizer",
+    "gdrive-taxonomia-organizacao": "gdrive-taxonomy-organizer",
+    "disco": "windows-disk-maintenance",
+    "windows": "windows-disk-maintenance",
+    "disk-maintenance": "windows-disk-maintenance",
+    "manutencao-disco-windows": "windows-disk-maintenance",
+    "medica": "clinical-minimalist-ui",
+    "medico": "clinical-minimalist-ui",
+    "medical-ui": "clinical-minimalist-ui",
+    "clinical-ui": "clinical-minimalist-ui",
+    "design-interface-medica-minimalista": "clinical-minimalist-ui",
     "sentinel": "context-sentinel",
     "code-auditor": "code-acceptability-auditor",
     "acceptability": "code-acceptability-auditor",
@@ -93,11 +107,11 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "test-auditor": "test-quality-auditor",
     "evals": "test-quality-auditor",
     "qa-testes": "test-quality-auditor",
-    "arquitetura": "auditoria-projetos-sistema",
-    "arquitetura-design-implementacao-sistema": "auditoria-projetos-sistema",
-    "nav-x-func": "auditoria-projetos-sistema",
-    "nav": "auditoria-projetos-sistema",
-    "ilhas": "auditoria-projetos-sistema",
+    "arquitetura": "system-project-auditor",
+    "arquitetura-design-implementacao-sistema": "system-project-auditor",
+    "nav-x-func": "system-project-auditor",
+    "nav": "system-project-auditor",
+    "ilhas": "system-project-auditor",
     "design": "design-md",
     "design.md": "design-md",
     "code-architect": "frontend-code-architect",
@@ -117,8 +131,8 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "ui": "design-md",
     "consultor-ui": "design-md",
     "consultor-frontend": "design-md",
-    "analise-ui": "auditoria-projetos-sistema",
-    "analise-frontend": "auditoria-projetos-sistema",
+    "analise-ui": "system-project-auditor",
+    "analise-frontend": "system-project-auditor",
     "refatorar-ui": "frontend-code-architect",
     "refatoracao-frontend": "frontend-code-architect",
     "prompt": "refine-prompt",
@@ -129,19 +143,21 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "entropia": "refine-prompt",
     "desengessar": "refine-prompt",
     "fluidez": "refine-prompt",
-    "memoria": "curadoria-obsidian-vault",
-    "palacio": "curadoria-obsidian-vault",
-    "mempalace": "curadoria-obsidian-vault",
-    "notas": "curadoria-obsidian-vault",
-    "auditar": "auditoria-projetos-sistema",
-    "auditoria": "auditoria-projetos-sistema",
-    "projeto": "auditoria-projetos-sistema",
-    "repo": "auditoria-projetos-sistema",
-    "antigravity-project-auditor": "auditoria-projetos-sistema",
-    "mvp-auditor": "auditoria-projetos-sistema",
-    "project-auditor": "auditoria-projetos-sistema",
-    "diagnostico-mvp": "auditoria-projetos-sistema",
-    "mvp": "auditoria-projetos-sistema",
+    "memoria": "obsidian-vault-curator",
+    "palacio": "obsidian-vault-curator",
+    "mempalace": "obsidian-vault-curator",
+    "notas": "obsidian-vault-curator",
+    "auditar": "system-project-auditor",
+    "auditoria": "system-project-auditor",
+    "projeto": "system-project-auditor",
+    "repo": "system-project-auditor",
+    "auditoria-projetos-sistema": "system-project-auditor",
+    "antigravity-project-auditor": "system-project-auditor",
+    "mvp-auditor": "system-project-auditor",
+    "project-auditor": "system-project-auditor",
+    "system-auditor": "system-project-auditor",
+    "diagnostico-mvp": "system-project-auditor",
+    "mvp": "system-project-auditor",
     "android": "android-agy-projects",
     "android-agy": "android-agy-projects",
     "android-agy-projects": "android-agy-projects",
@@ -150,21 +166,29 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "kotlin-android": "android-agy-projects",
     "agp9": "android-agy-projects",
     "gradle-android": "android-agy-projects",
-    "organizar": "organizador-projetos-ideias",
-    "organizador": "organizador-projetos-ideias",
-    "organizar-projeto": "organizador-projetos-ideias",
-    "sincronizar-projeto": "organizador-projetos-ideias",
-    "ideia": "organizador-projetos-ideias",
-    "ideias": "organizador-projetos-ideias",
-    "solucao": "arquiteto-conteudo-solucoes",
-    "solucoes": "arquiteto-conteudo-solucoes",
-    "arquiteto": "arquiteto-conteudo-solucoes",
-    "fluxo": "organizador-fluxo-arvore-arquivos",
-    "arvore": "organizador-fluxo-arvore-arquivos",
-    "mermaid": "organizador-fluxo-arvore-arquivos",
-    "markdown": "redator-tecnico-markdown",
-    "relatorio": "redator-tecnico-markdown",
-    "doc": "redator-tecnico-markdown",
+    "organizar": "project-idea-organizer",
+    "organizador": "project-idea-organizer",
+    "organizar-projeto": "project-idea-organizer",
+    "sincronizar-projeto": "project-idea-organizer",
+    "organizador-projetos-ideias": "project-idea-organizer",
+    "idea-organizer": "project-idea-organizer",
+    "ideia": "project-idea-organizer",
+    "ideias": "project-idea-organizer",
+    "solucao": "solution-content-architect",
+    "solucoes": "solution-content-architect",
+    "arquiteto": "solution-content-architect",
+    "arquiteto-conteudo-solucoes": "solution-content-architect",
+    "solution-architect": "solution-content-architect",
+    "fluxo": "flow-filetree-organizer",
+    "arvore": "flow-filetree-organizer",
+    "mermaid": "flow-filetree-organizer",
+    "organizador-fluxo-arvore-arquivos": "flow-filetree-organizer",
+    "flow-organizer": "flow-filetree-organizer",
+    "markdown": "technical-markdown-writer",
+    "relatorio": "technical-markdown-writer",
+    "doc": "technical-markdown-writer",
+    "redator-tecnico-markdown": "technical-markdown-writer",
+    "markdown-writer": "technical-markdown-writer",
     "plano": "high-level-context-planner",
     "planejar": "high-level-context-planner",
     "planner": "high-level-context-planner",
@@ -175,20 +199,22 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "gap": "gap-analyzer-auditor",
     "rca": "gap-analyzer-auditor",
     "brechas": "gap-analyzer-auditor",
-    "orquestrar": "skill-orquestrador-planos-encadeados",
-    "orquestrador": "skill-orquestrador-planos-encadeados",
-    "dag": "skill-orquestrador-planos-encadeados",
-    "kahn": "skill-orquestrador-planos-encadeados",
-    "ondas": "skill-orquestrador-planos-encadeados",
+    "orquestrar": "chained-plan-orchestrator",
+    "orquestrador": "chained-plan-orchestrator",
+    "dag": "chained-plan-orchestrator",
+    "kahn": "chained-plan-orchestrator",
+    "ondas": "chained-plan-orchestrator",
+    "skill-orquestrador-planos-encadeados": "chained-plan-orchestrator",
+    "dag-orchestrator": "chained-plan-orchestrator",
     "server-auditor": "agent-server-auditor",
     "agent-auditor": "agent-server-auditor",
     "mcp-auditor": "agent-server-auditor",
     "a2a-auditor": "agent-server-auditor",
+    "audit-skills": "agent-server-auditor",
+    "audit-skills-antigravity": "agent-server-auditor",
+    "rea-skills": "agent-server-auditor",
     "plan-uiux": "plan-uiux",
     "rea-uiux": "plan-uiux",
-    "audit-skills": "audit-skills-antigravity",
-    "audit-skills-antigravity": "audit-skills-antigravity",
-    "rea-skills": "audit-skills-antigravity",
     "re-a-ndroid": "re-a-ndroid",
     "rea-android": "re-a-ndroid",
     "apk-auditor": "re-a-ndroid",
@@ -198,11 +224,26 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
 }
 
 REQUIRED_SKILL_SECTIONS: List[Tuple[str, str]] = [
-    (r"(#|##)\s+.*(Gatilhos|Quando Usar|Propósito|Proposito|Missão|Missao)", "Gatilhos / Quando Usar"),
-    (r"(#|##)\s+.*(Entradas|Pr[eé]-requisitos|Par[aâ]metros)", "Entradas / Pré-requisitos"),
-    (r"(#|##)\s+.*(Processamento|Passo a Passo|Fluxo|Execução|Execucao)", "Processamento / Fluxo"),
-    (r"(#|##)\s+.*(Saídas|Saidas|Entregáveis|Entregaveis|Modelo de Saída|Modelo de Saida)", "Saídas / Entregáveis"),
-    (r"(#|##)\s+.*(Exceções|Excecoes|Limites|Quando N[AÃ]O Usar)", "Exceções / Limites"),
+    (
+        r"(#|##)\s+.*(Overview|Scope|Triggers|When to Use|Purpose|Objective|Gatilhos|Quando Usar|Propósito|Proposito|Missão|Missao)",
+        "Overview & Scope / Triggers",
+    ),
+    (
+        r"(#|##)\s+.*(Inputs|Prerequisites|Parameters|Context|Entradas|Pr[eé]-requisitos|Par[aâ]metros)",
+        "Inputs & Prerequisites",
+    ),
+    (
+        r"(#|##)\s+.*(Procedure|Step-by-Step|Operational Workflow|Workflow|Processing|Execution|Architecture|Processamento|Passo a Passo|Fluxo|Execução|Execucao)",
+        "Step-by-Step Procedure",
+    ),
+    (
+        r"(#|##)\s+.*(Output|Outputs|Deliverables|Validation Criteria|Report|Saídas|Saidas|Entregáveis|Entregaveis|Modelo de Saída|Modelo de Saida)",
+        "Output Schema & Validation Criteria",
+    ),
+    (
+        r"(#|##)\s+.*(Gotchas|Edge Cases|Failure Modes|Exceptions|Limits|When NOT to Use|Restrictions|Guardrails|Exceções|Excecoes|Limites|Quando N[AÃ]O Usar)",
+        "Gotchas, Edge Cases & Limits",
+    ),
 ]
 
 
@@ -253,6 +294,26 @@ def _load_status_map() -> Dict[str, str]:
     return status_map
 
 
+def _resolve_skill_rules_file(skill_dir: Path) -> Path:
+    """Resolve o arquivo de regras da skill priorizando rules/audit_criteria.md com fallback legado."""
+    audit_path = skill_dir / "rules" / "audit_criteria.md"
+    if audit_path.exists():
+        return audit_path
+    return skill_dir / "rules" / "criterios_auditoria.md"
+
+
+def _extract_meta_tags(meta: Dict[str, Any]) -> List[str]:
+    """Extrai tags bilíngues de frontmatter (topo ou metadata.tags)."""
+    raw_nested = meta.get("metadata")
+    nested_tags = raw_nested.get("tags") if isinstance(raw_nested, dict) else None
+    raw_tags = meta.get("tags") or nested_tags or []
+    if isinstance(raw_tags, str):
+        return [raw_tags]
+    if isinstance(raw_tags, list):
+        return [str(t) for t in raw_tags if str(t).strip()]
+    return []
+
+
 def _collect_skill_data(
     skill_dir: Path,
     agents_map: Optional[Dict[str, str]] = None,
@@ -272,14 +333,21 @@ def _collect_skill_data(
             lines = [ln.strip() for ln in body.splitlines() if ln.strip() and not ln.startswith("#")]
             description = lines[0] if lines else "Skill sem descrição detalhada."
 
-        rules_file = skill_dir / "rules" / "criterios_auditoria.md"
+        rules_file = _resolve_skill_rules_file(skill_dir)
         evals_file = skill_dir / "evals" / "evals.json"
         ref_dir = skill_dir / "references"
         scripts_dir = skill_dir / "scripts"
         scripts_list = [f.name for f in scripts_dir.iterdir() if f.is_file()] if scripts_dir.is_dir() else []
         ref_list = [f.name for f in ref_dir.iterdir() if f.is_file()] if ref_dir.is_dir() else []
 
-        tags = {w for tok in (name, skill_dir.name, description) for w in re.findall(r"[a-zA-Z0-9_\-]+", tok.lower())}
+        tags: set[str] = set()
+        for tok in (name, skill_dir.name, description):
+            tags.update(re.findall(r"[a-z0-9_\-]+", _strip_accents(str(tok))))
+        for mtag in _extract_meta_tags(meta):
+            norm_mtag = _strip_accents(mtag)
+            tags.update(re.findall(r"[a-z0-9_\-]+", norm_mtag))
+            tags.update(re.findall(r"[a-z0-9]+", norm_mtag))
+
         active_agents_map = agents_map if agents_map is not None else _load_agents_map()
         active_status_map = status_map if status_map is not None else _load_status_map()
         return {
@@ -394,14 +462,14 @@ def skills_list_impl(status: str = "all", persona: str = "all", search: str = ""
 def _build_full_skill_package(skill_dir: Path) -> str:
     """Concatena contrato, rules, evals e referências de uma pasta de skill."""
     skill_file = skill_dir / "SKILL.md"
-    rules_file = skill_dir / "rules" / "criterios_auditoria.md"
+    rules_file = _resolve_skill_rules_file(skill_dir)
     evals_file = skill_dir / "evals" / "evals.json"
     ref_dir = skill_dir / "references"
     parts = [f"# PACOTE COMPLETO: {skill_dir.name.upper()}\n"]
     if skill_file.exists():
         parts.extend(["## 1. Contrato Operacional (SKILL.md)", skill_file.read_text(encoding="utf-8", errors="replace"), "\n" + ("=" * 50) + "\n"])
     if rules_file.exists():
-        parts.extend(["## 2. Regras e Critérios de Auditoria (rules/criterios_auditoria.md)", rules_file.read_text(encoding="utf-8", errors="replace"), "\n" + ("=" * 50) + "\n"])
+        parts.extend([f"## 2. Regras e Critérios de Auditoria (rules/{rules_file.name})", rules_file.read_text(encoding="utf-8", errors="replace"), "\n" + ("=" * 50) + "\n"])
     if evals_file.exists():
         parts.extend(["## 3. Testes Estruturados (evals/evals.json)", evals_file.read_text(encoding="utf-8", errors="replace"), "\n" + ("=" * 50) + "\n"])
     if ref_dir.exists() and any(ref_dir.iterdir()):
@@ -451,9 +519,10 @@ def skills_get_impl(skill_name: str, section: str = "contract") -> str:
         rel_target = sec_raw.split(":", 1)[1].strip()
         return get_progressive_registry().read_skill_resource(skill_dir.name, rel_target)
 
+    rules_path = _resolve_skill_rules_file(skill_dir)
     direct_files = {
         "contract": (skill_dir / "SKILL.md", f"Erro: SKILL.md ausente na pasta {skill_dir.name}."),
-        "rules": (skill_dir / "rules" / "criterios_auditoria.md", f"A skill '{skill_dir.name}' não possui arquivo dedicado de regras (rules/criterios_auditoria.md)."),
+        "rules": (rules_path, f"A skill '{skill_dir.name}' não possui arquivo dedicado de regras (rules/audit_criteria.md)."),
         "evals": (skill_dir / "evals" / "evals.json", f"A skill '{skill_dir.name}' não possui arquivo de evals (evals/evals.json)."),
     }
     if sec in direct_files:
@@ -471,6 +540,7 @@ def skills_get_impl(skill_name: str, section: str = "contract") -> str:
 SEARCH_STOPWORDS: frozenset[str] = frozenset({
     "de", "da", "do", "das", "dos", "para", "por", "em", "no", "na", "nos", "nas",
     "com", "sem", "ou", "e", "o", "a", "os", "as", "um", "uma", "ao", "aos", "que", "se", "use", "nao",
+    "the", "and", "for", "with", "from", "into", "that", "this", "when", "not", "dont", "only", "after", "before", "instead",
 })
 
 
@@ -480,8 +550,12 @@ def _strip_accents(text: str) -> str:
 
 
 def _split_positive_and_negative_desc(desc_norm: str) -> Tuple[str, str]:
-    """Separa a descrição Nível 1 em cláusula positiva (should-trigger) e cláusula de exclusão (não use para)."""
-    parts = re.split(r"\bnao use para\b", desc_norm, maxsplit=1)
+    """Separa a descrição Nível 1 em cláusula positiva (should-trigger) e cláusula de exclusão (bilíngue)."""
+    parts = re.split(
+        r"\b(?:nao use(?:\s+para|\s+quando)?|do not use(?:\s+for|\s+when)?|don'?t use(?:\s+for|\s+when)?|skip when)\b",
+        desc_norm,
+        maxsplit=1,
+    )
     if len(parts) == 2:
         return parts[0], parts[1]
     return desc_norm, ""
@@ -494,7 +568,7 @@ def _score_single_term(
     delta = 25 if QUICK_SKILL_ALIASES.get(t) == s_name else 0
     if t in name_norm:
         delta += 18
-    if t in norm_tags and (not neg_desc or t in pos_desc or t in name_norm):
+    if t in norm_tags and (not neg_desc or t not in neg_desc or t in pos_desc or t in name_norm):
         delta += 10
     if t in pos_desc:
         delta += 7
@@ -562,12 +636,12 @@ def skills_search_impl(query: str, limit: int = 5) -> str:
 
 
 def _validate_skill_rules_and_evals(s_dir: Path, errs: List[str]) -> None:
-    """Valida rules/criterios_auditoria.md e evals/evals.json de uma pasta de skill."""
-    rules_file = s_dir / "rules" / "criterios_auditoria.md"
+    """Valida rules/audit_criteria.md (ou fallback legado) e evals/evals.json de uma pasta de skill."""
+    rules_file = _resolve_skill_rules_file(s_dir)
     if rules_file.exists():
         rules_text = rules_file.read_text(encoding="utf-8")
         if "[PASS]" not in rules_text or ("[FAIL]" not in rules_text and "[FAIL:" not in rules_text):
-            errs.append("rules/criterios_auditoria.md deve conter marcadores [PASS] e [FAIL]")
+            errs.append(f"rules/{rules_file.name} deve conter marcadores [PASS] e [FAIL]")
     evals_file = s_dir / "evals" / "evals.json"
     if not evals_file.exists():
         return
@@ -581,7 +655,7 @@ def _validate_skill_rules_and_evals(s_dir: Path, errs: List[str]) -> None:
 
 
 def _validate_single_skill_dir(s_dir: Path) -> List[str]:
-    """Valida a conformidade contratual, frontmatter (regex + fronteiras L1), L2 (<500 linhas), rules e evals de uma skill."""
+    """Valida a conformidade contratual, frontmatter (regex + fronteiras L1), L2 (<500 linhas), links, rules e evals de uma skill."""
     errs: List[str] = []
     skill_file = s_dir / "SKILL.md"
     if not skill_file.exists():
@@ -609,6 +683,18 @@ def _validate_single_skill_dir(s_dir: Path) -> List[str]:
         if len(body.splitlines()) > 500:
             errs.append(f"Corpo L2 do SKILL.md excede 500 linhas ({len(body.splitlines())} linhas)")
         errs.extend([f"Seção obrigatória ausente: {sec_name}" for sec_pattern, sec_name in REQUIRED_SKILL_SECTIONS if not re.search(sec_pattern, body, re.IGNORECASE)])
+        no_fences = re.sub(r"```.*?```", "", body, flags=re.DOTALL)
+        clean_md = re.sub(r"`[^`\n]+`", "", no_fences)
+        for target in re.findall(r"\[[^\]]+\]\(([^)\s]+)\)", clean_md):
+            if target.startswith(("http://", "https://", "file://", "mailto:", "#")):
+                continue
+            rel_path = target.split("#", 1)[0].split("?", 1)[0].strip()
+            if not rel_path or any(ch in rel_path for ch in "<>{}[]"):
+                continue
+            if ".." in Path(rel_path).parts or rel_path.startswith(("../", "..\\")):
+                errs.append(f"Escape '../' proibido em SKILL.md: {target}")
+            elif ("." in rel_path or "/" in rel_path or "\\" in rel_path) and not (s_dir / rel_path).exists():
+                errs.append(f"Link relativo quebrado em SKILL.md: {target}")
         _validate_skill_rules_and_evals(s_dir, errs)
     except (OSError, ValueError, KeyError) as e:
         errs.append(f"Erro ao analisar arquivo: {e}")

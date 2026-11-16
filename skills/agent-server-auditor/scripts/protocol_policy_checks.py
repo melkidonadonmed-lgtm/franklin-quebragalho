@@ -20,7 +20,17 @@ LEGACY_AGENT_KEYS: Tuple[str, ...] = (
     "parent_persona",
     "covered_modules",
 )
-FORBIDDEN_AGENT_TOOLS: frozenset[str] = frozenset({"*", "call_mcp_tool"})
+FORBIDDEN_AGENT_TOOLS: frozenset[str] = frozenset({
+    "*",
+    "call_mcp_tool",
+    "view_file",
+    "list_dir",
+    "find_by_name",
+    "grep_search",
+    "write_to_file",
+    "replace_file_content",
+    "multi_replace_file_content",
+})
 LEGACY_SDK_RE = re.compile(
     r"(?:^\s*(?:import|from)\s+google\.generativeai\b|google\.generativeai\.(?:configure|GenerativeModel)|"
     r"(?:import\b[^;\n]*\bfrom|(?:import|require)\s*\()\s*['\"](?:@google/generative-?ai|@google-cloud/vertexai)['\"]|"
@@ -108,21 +118,21 @@ def _parse_frontmatter_yaml(fm_block: str) -> Dict[str, Any]:
     return loaded if isinstance(loaded, dict) else {}
 
 
-def _find_forbidden_tools(fm_dict: Dict[str, Any], fm_block: str) -> List[str]:
-    """Detecta tools proibidas ('*' ou 'call_mcp_tool') na lista tools de subagentes."""
+def _find_forbidden_tools(fm_dict: Dict[str, Any], fm_block: str) -> Tuple[List[str], bool]:
+    """Detecta tools proibidas/legadas e verifica presença explícita de 'tools:' em subagentes."""
     raw_tools = fm_dict.get("tools")
     if isinstance(raw_tools, list):
-        return sorted({str(t).strip() for t in raw_tools if str(t).strip() in FORBIDDEN_AGENT_TOOLS})
+        forbidden = sorted({str(t).strip() for t in raw_tools if str(t).strip() in FORBIDDEN_AGENT_TOOLS})
+        return forbidden, len(raw_tools) > 0
     found: List[str] = []
-    if re.search(r"^\s*-\s*[\"']?\*[\"']?\s*$", fm_block, re.MULTILINE) or re.search(
-        r"tools:\s*\[[^\]]*[\"']?\*[\"']?", fm_block
-    ):
-        found.append("*")
-    if re.search(r"^\s*-\s*[\"']?call_mcp_tool[\"']?\s*$", fm_block, re.MULTILINE) or re.search(
-        r"tools:\s*\[[^\]]*call_mcp_tool", fm_block
-    ):
-        found.append("call_mcp_tool")
-    return found
+    for bad in sorted(FORBIDDEN_AGENT_TOOLS):
+        esc = re.escape(bad)
+        if re.search(rf"^\s*-\s*[\"']?{esc}[\"']?\s*$", fm_block, re.MULTILINE) or re.search(
+            rf"tools:\s*\[[^\]]*[\"']?{esc}[\"']?", fm_block
+        ):
+            found.append(bad)
+    has_tools = bool(re.search(r"^tools\s*:", fm_block, re.MULTILINE))
+    return found, has_tools
 
 
 def _find_legacy_agent_keys(fm_dict: Dict[str, Any], fm_block: str) -> List[str]:
@@ -149,9 +159,11 @@ def audit_subagent_markdown(text: str) -> Tuple[List[str], bool]:
     fm_dict = _parse_frontmatter_yaml(fm_block)
 
     missing: List[str] = []
-    forbidden_tools = _find_forbidden_tools(fm_dict, fm_block)
+    forbidden_tools, has_explicit_tools = _find_forbidden_tools(fm_dict, fm_block)
     if forbidden_tools:
-        missing.append(f"AUD-AGT-02: tools proibidas ({', '.join(forbidden_tools)})")
+        missing.append(f"AUD-AGT-02: tools proibidas/legadas ({', '.join(forbidden_tools)})")
+    if not has_explicit_tools:
+        missing.append("AUD-AGT-02: lista explícita não-vazia em 'tools:' obrigatória")
 
     legacy_keys = _find_legacy_agent_keys(fm_dict, fm_block)
     if legacy_keys:
@@ -171,7 +183,12 @@ def audit_subagent_markdown(text: str) -> Tuple[List[str], bool]:
     if len(body_block) < 60:
         missing.append("objective_body")
 
-    type_safe = not forbidden_tools and not legacy_keys and policy in ALLOWED_EXEC_POLICIES
+    type_safe = (
+        not forbidden_tools
+        and has_explicit_tools
+        and not legacy_keys
+        and policy in ALLOWED_EXEC_POLICIES
+    )
     return missing, type_safe
 
 

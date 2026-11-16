@@ -4,7 +4,7 @@ visual_hierarchy_and_cdp_probe.py
 Motor compartilhado de auditoria estrutural, hierarquia visual, descompactação de menus,
 governança semântica de abas (permitindo separação de domínios distintos e bloqueando abas
 de função duplicada, sub-abas aninhadas ou componentes de backend expostos) e sonda Chrome DevTools / CDP
-para `complex-zero` (v3.1.0) integrado a `auditoria-projetos-sistema` (v6.0.0).
+para `complex-zero` (v3.1.0) integrado a `system-project-auditor` (v6.0.0).
 """
 
 from __future__ import annotations

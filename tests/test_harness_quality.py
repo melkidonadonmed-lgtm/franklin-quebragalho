@@ -87,7 +87,7 @@ def test_checkpoint_store_isolated_hitl_lifecycle(tmp_path: Path) -> None:
         session_id="sess-alpha",
         task_intent="Limpar instaladores antigos",
         proposed_action="Remove-Item -Force *.msi",
-        active_skill="manutencao-disco-windows",
+        active_skill="windows-disk-maintenance",
         risk_level=RiskLevel.CRITICAL.value,
         notes="Dry-run validado",
     )
@@ -96,7 +96,7 @@ def test_checkpoint_store_isolated_hitl_lifecycle(tmp_path: Path) -> None:
         session_id="sess-beta",
         task_intent="Dropar tabela temporária",
         proposed_action="DROP TABLE staging_tmp",
-        active_skill="auditoria-projetos-sistema",
+        active_skill="system-project-auditor",
         risk_level=RiskLevel.CRITICAL.value,
     )
     assert rec1.status == "PENDING"
@@ -178,7 +178,7 @@ def test_good_harness(tmp_path):
     assert "NÍVEL 4" in report_good.nivel_espectro
 
 
-def test_mirrored_eval_modules_parity_and_execution() -> None:
+def test_mirrored_eval_modules_parity_and_execution(tmp_path: Path) -> None:
     """Valida a paridade 1:1 entre scripts/*_auditor.py e evals/modules/*_evals.json e a execução do Harness."""
     expected_mirrors = {
         "python": "scripts/python_ast_auditor.py",
@@ -199,7 +199,7 @@ def test_mirrored_eval_modules_parity_and_execution() -> None:
         assert len(payload["evals"]) >= 3
 
     # 2. Executa apenas o módulo espelhado 'harness' e valida pass_rate, evidence e delta
-    harness_only = run_eval_harness(SKILL_ROOT, eval_module="harness")
+    harness_only = run_eval_harness(SKILL_ROOT, eval_module="harness", output_dir=tmp_path / "harness")
     assert harness_only["grading"]["module"] == "harness"
     assert harness_only["grading"]["summary"]["passed"] == 4
     assert harness_only["grading"]["summary"]["failed"] == 0
@@ -208,7 +208,7 @@ def test_mirrored_eval_modules_parity_and_execution() -> None:
     assert harness_only["benchmark"]["run_summary"]["delta"]["pass_rate_gain"] > 0
 
     # 3. Executa todos os módulos espelhados + suíte consolidada (20 casos)
-    all_res = run_eval_harness(SKILL_ROOT, eval_module="all")
+    all_res = run_eval_harness(SKILL_ROOT, eval_module="all", output_dir=tmp_path / "all")
     assert all_res["grading"]["summary"]["total"] == 20
     assert all_res["grading"]["summary"]["passed"] == 20
     assert all_res["grading"]["summary"]["failed"] == 0

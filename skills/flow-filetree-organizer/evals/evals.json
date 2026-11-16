@@ -1,0 +1,64 @@
+{
+  "skill_name": "flow-filetree-organizer",
+  "version": "1.2.0",
+  "description": "Evaluation suite verifying literal prompt preservation, valid Mermaid flowcharts, commented ASCII trees, MVP isolation, .md/.pdf export options, and near-miss boundaries.",
+  "evals": [
+    {
+      "id": "TC-01-LITERAL-PROMPT-AND-COMMENTED-TREE",
+      "eval_id": "TC-01-LITERAL-PROMPT-AND-COMMENTED-TREE",
+      "should_trigger": true,
+      "prompt": "Map out the visual Mermaid workflow and commented directory tree for: 'I want a simple Pomodoro timer desktop app for Windows.'",
+      "expected_output": "Preserves the exact prompt verbatim in Original request:, builds a parser-safe Mermaid flowchart with quoted labels, generates a commented ASCII tree, isolates extras in Section 5, and offers .md/.pdf export.",
+      "assertions": [
+        "Preserves user request verbatim inside Original request:",
+        "Emits valid ```mermaid flowchart with double-quoted special labels",
+        "Annotates every tree file/folder with # <purpose> comments"
+      ]
+    },
+    {
+      "id": "TC-02-EXPORT-OPTIONS-PRESENTED",
+      "eval_id": "TC-02-EXPORT-OPTIONS-PRESENTED",
+      "should_trigger": true,
+      "prompt": "Structure the execution flow and folder layout for a PowerShell automated backup script.",
+      "expected_output": "Produces the structured Mermaid flowchart, commented ASCII file tree, MVP isolation, and Section 6 offering both Markdown file save and PDF conversion via html-pdf-converter.",
+      "assertions": [
+        "Includes Section 6 offering .md save and .pdf export",
+        "Keeps core PowerShell backup MVP lean without scope bloat",
+        "Uses .env.example only if config variables appear"
+      ]
+    },
+    {
+      "id": "TC-03-DIRECT-PDF-EXPORT-REQUESTED",
+      "eval_id": "TC-03-DIRECT-PDF-EXPORT-REQUESTED",
+      "should_trigger": true,
+      "prompt": "Create the Mermaid workflow and commented directory tree for my CLI tracker idea and export it directly to formatted PDF.",
+      "expected_output": "Generates the full structured flow and commented tree and delegates PDF rendering to html-pdf-converter under HITL file-write confirmation if overwriting.",
+      "assertions": [
+        "Generates parser-safe Mermaid diagram and commented ASCII tree",
+        "Delegates final PDF conversion to html-pdf-converter"
+      ]
+    },
+    {
+      "id": "TC-04-NEAR-MISS-STATIC-PYTHON-AST-AUDIT",
+      "eval_id": "TC-04-NEAR-MISS-STATIC-PYTHON-AST-AUDIT",
+      "should_trigger": false,
+      "prompt": "Audit security vulnerabilities, eval() calls, missing type hints, and functions over 60 lines in server.py.",
+      "expected_output": "Does NOT trigger flow-filetree-organizer; routes static Python AST auditing to code-acceptability-auditor.",
+      "assertions": [
+        "Abstains from activating flow-filetree-organizer",
+        "Delegates static AST code audit to code-acceptability-auditor"
+      ]
+    },
+    {
+      "id": "TC-05-NEAR-MISS-FULL-REPO-CONTRACTS-AND-STARTER-CODE",
+      "eval_id": "TC-05-NEAR-MISS-FULL-REPO-CONTRACTS-AND-STARTER-CODE",
+      "should_trigger": false,
+      "prompt": "Reorganize my entire existing repo, sync README.md 1:1 with disk, generate working FastAPI + MCP tools.json starter code, and run dry-run root cleanup.",
+      "expected_output": "Does NOT trigger flow-filetree-organizer; delegates full repository restructuring, contract organization, and starter code creation to project-idea-organizer.",
+      "assertions": [
+        "Abstains from handling full repository synchronization and starter code",
+        "Routes full repo restructuring and MCP/FastAPI contract sync to project-idea-organizer"
+      ]
+    }
+  ]
+}

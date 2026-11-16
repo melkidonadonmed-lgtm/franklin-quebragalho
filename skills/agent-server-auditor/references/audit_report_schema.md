@@ -1,10 +1,10 @@
-# Esquema Canônico do Relatório de Auditoria (`memories/audit_report.json`)
+# Canonical Audit Report Schema (`memories/audit_report.json`)
 
 ```json
 {
-  "timestamp": "2026-10-26T10:15:00Z",
+  "timestamp": "2026-11-16T10:15:00Z",
   "audit_version": "1.0.0",
-  "target_root": "/workspace/meu-projeto",
+  "target_root": "/workspace/my-agent-project",
   "summary": {
     "compliance_score": 88.5,
     "status": "CONFORME_COM_RESSALVAS",
@@ -68,7 +68,7 @@
   "gap_analysis": {
     "critical_missing_structures": [],
     "warnings": [
-      "Subagente 'intent_diagnostician.py' não declara timeout explícito para chamadas de ferramentas."
+      "Subagent 'intent_diagnostician.py' does not declare an explicit tool-call timeout."
     ]
   }
 }

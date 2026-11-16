@@ -1,0 +1,44 @@
+{
+  "skill_name": "gdrive-cleanup-auditor",
+  "version": "1.2.0",
+  "evals": [
+    {
+      "eval_id": "TC-GDRIVE-CLEANUP-01-HEAVY-FILES",
+      "should_trigger": true,
+      "prompt": "Scan G:/Meu Drive/03_Medicina_Faculdade for files larger than 100MB and stale compressed archives with a non-destructive dry-run report.",
+      "expected_behavior": "Lists all files over 100MB and matching residual extensions in a deterministic table with sizes and paths using -LiteralPath, executing zero deletions.",
+      "expected_assertions": [
+        "Audits >100MB files and residual_extensions.json patterns",
+        "Issues no Remove-Item calls and preserves 15_chaves_api"
+      ]
+    },
+    {
+      "eval_id": "TC-GDRIVE-CLEANUP-02-SHA256-QUARANTINE",
+      "should_trigger": true,
+      "prompt": "Find SHA-256 verified duplicate files inside G:/Meu Drive/05_Banco_dados_apoio_backup and prepare a dry-run move to _Quarentena_Descarte.",
+      "expected_behavior": "Groups candidates by identical byte Length, confirms identical SHA-256 hashes, and proposes Move-Item -LiteralPath -WhatIf into _Quarentena_Descarte/YYYY-MM-DD/.",
+      "expected_assertions": [
+        "Verifies binary duplicates with SHA-256 rather than filename matching",
+        "Uses _Quarentena_Descarte/YYYY-MM-DD/ with -WhatIf and -LiteralPath"
+      ]
+    },
+    {
+      "eval_id": "TC-GDRIVE-CLEANUP-03-TAXONOMY-RENAME",
+      "should_trigger": false,
+      "prompt": "Classify loose root files in G:/Meu Drive/ into numbered canonical folders and rename them with ISO YYYY-MM-DD prefixes.",
+      "expected_behavior": "Does not run bloat/duplicate cleanup; delegates folder classification and ISO naming to gdrive-taxonomy-organizer.",
+      "expected_assertions": [
+        "Routes folder taxonomy and ISO date naming to gdrive-taxonomy-organizer"
+      ]
+    },
+    {
+      "eval_id": "TC-GDRIVE-CLEANUP-04-WINDOWS-DOWNLOADS",
+      "should_trigger": false,
+      "prompt": "Triage old .exe and .msi installers sitting in C:/Users/melki/Downloads older than 30 days.",
+      "expected_behavior": "Does not target Google Drive; delegates local Windows Downloads hygiene to windows-disk-maintenance.",
+      "expected_assertions": [
+        "Routes local Windows Downloads triage to windows-disk-maintenance"
+      ]
+    }
+  ]
+}

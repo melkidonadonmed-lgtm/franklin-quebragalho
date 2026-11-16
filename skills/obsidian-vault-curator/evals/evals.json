@@ -1,0 +1,44 @@
+{
+  "skill_name": "obsidian-vault-curator",
+  "version": "1.3.0",
+  "evals": [
+    {
+      "eval_id": "TC-VAULT-CURATOR-01-ORPHAN-ATTACHMENTS",
+      "should_trigger": true,
+      "prompt": "Audit C:/Users/melki/dev/notes for orphaned image and PDF attachments with zero Wikilink or Markdown embeds and propose dry-run quarantine.",
+      "expected_behavior": "Runs vault_hygiene_scanner.py across C:/Users/melki/dev/notes, proves zero ![[...]] or ![](...) references, and proposes moving candidates to Arquivo/_anexos_orfaos without deleting files.",
+      "expected_assertions": [
+        "Executes vault_hygiene_scanner.py before classifying orphans",
+        "Proposes non-destructive quarantine to Arquivo/_anexos_orfaos"
+      ]
+    },
+    {
+      "eval_id": "TC-VAULT-CURATOR-02-YAML-PARITY-MEMPALACE",
+      "should_trigger": true,
+      "prompt": "Run a full structural hygiene pass on the Obsidian vault: check broken Wikilinks, YAML frontmatter, repo parity, and sync MemPalace wing notes while protecting .obsidian.",
+      "expected_behavior": "Excludes .obsidian/ and .trash/, validates required YAML fields and check-vault-projects.ps1 parity, and synchronizes MemPalace (wing: notes) via MCP without SQLite lock conflicts.",
+      "expected_assertions": [
+        "Excludes .obsidian/ and .trash/ from destructive operations",
+        "Synchronizes MemPalace wing notes lock-safely via MCP or search/KG scripts"
+      ]
+    },
+    {
+      "eval_id": "TC-VAULT-CURATOR-03-EXPORT-PDF",
+      "should_trigger": false,
+      "prompt": "Convert C:/Users/melki/dev/notes/Projetos/report.md into an A4 PDF ready for printing.",
+      "expected_behavior": "Does not run Obsidian vault curation; delegates Markdown-to-PDF rendering to html-pdf-converter.",
+      "expected_assertions": [
+        "Routes binary PDF export to html-pdf-converter"
+      ]
+    },
+    {
+      "eval_id": "TC-VAULT-CURATOR-04-AUTHOR-FROM-SCRATCH",
+      "should_trigger": false,
+      "prompt": "Draft a brand-new Architecture Decision Record (ADR) in Markdown about switching our API gateway to FastMCP.",
+      "expected_behavior": "Does not trigger bulk vault curation for authoring a single new technical document; delegates to technical-markdown-writer.",
+      "expected_assertions": [
+        "Routes new Markdown authoring to technical-markdown-writer"
+      ]
+    }
+  ]
+}

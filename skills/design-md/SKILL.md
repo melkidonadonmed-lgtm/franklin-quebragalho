@@ -1,33 +1,44 @@
 ---
 name: design-md
-description: "Cria ou atualiza o contrato DESIGN.md na raiz do projeto definindo tokens semânticos OKLCH, escala tipográfica modular, espaçamento e camadas. Use para criar o DESIGN.md; não use para projetos sem UI."
-compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+description: "Use this skill when creating or updating a project's DESIGN.md contract with 3-layer OKLCH semantic tokens, modular type scale, spacing, and zenith shadows. Do NOT use for implementing React/Tailwind UI components or backend-only projects."
 metadata:
+  author: "Franklin"
   version: "8.2.0"
-  updated_at: "2026-11-13"
-  author: "UI-Architect & Melki"
-  category: "Guia de Princípios de Design System Frontend (OKLCH), Física Óptica de Sombras e Arquitetura Espacial"
-  tags: ["design-md", "frontend-design-md", "principios-de-design", "oklch", "sombras-multi-camadas", "container-queries", "starting-style", "aom-acessibilidade"]
+  updated_at: "2026-11-16"
+  tags: ["design-md", "design-system", "oklch", "light-dark", "tokens-semanticos", "escala-tipografica", "contrato-design", "sombras-elevacao", "luz-zenital", "container-queries", "starting-style", "acessibilidade"]
 ---
-# `design-md` (`v8.2.0`) — Contrato `DESIGN.md` Contextual (Zero Copia-e-Cola)
 
-Guia de princípios visuais para sintetizar `<project_root>/DESIGN.md` sob medida a partir de [`references/design_md_5_pilares_detalhados.md`](references/design_md_5_pilares_detalhados.md), [`references/design_system_composition_reference.md`](references/design_system_composition_reference.md), [`references/spacing_tokens_and_stitch_hierarchy.md`](references/spacing_tokens_and_stitch_hierarchy.md), [`../../rules/diretrizes-frontend-9-eixos.md`](../../rules/diretrizes-frontend-9-eixos.md) e [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md).
+# `design-md` — Contextual `DESIGN.md` Contract Authoring
 
-> **Regra de Ouro:** O `DESIGN.md` **NÃO é despejo de componentes**; derive decisões contextuais do propósito, público e stack real do projeto.
+## 1. Overview & Scope
 
-## 1. Quando Usar, Entradas e Limites (Quando NÃO Usar)
+Synthesizes `<project_root>/DESIGN.md` from product purpose, audience, and stack via [references/design_md_5_pillars_detailed.md](references/design_md_5_pillars_detailed.md), [references/design_system_composition_reference.md](references/design_system_composition_reference.md), and [references/spacing_tokens_and_stitch_hierarchy.md](references/spacing_tokens_and_stitch_hierarchy.md).
 
-- **Gatilhos & Entradas:** Contexto do produto, público-alvo, stack frontend e arquivos (`README.md`, CSS/tokens) para criar/atualizar o `DESIGN.md` antes de codificar telas.
-- **Quando NÃO Usar:** Projetos backend/CLI sem UI; docs de arquitetura (`SPEC.md` / `arquiteto-conteudo-solucoes`), `CONTEXT.md` ou `AGENTS.md`. Nunca copie adendos irrelevantes (ex.: Canvas Infinito em app clínico/landing page).
+- **When NOT to Use:** Exclude backend/CLI services without UI, architecture specs (`solution-content-architect`), `CONTEXT.md`, `AGENTS.md`, and direct React/Tailwind coding (`frontend-code-architect`).
 
-## 2. Processamento / Fluxo — Os 5 Pilares de `DESIGN.md`
+## 2. Inputs & Prerequisites
 
-1. **Filosofia & Identidade:** Justifique matiz ($H$), croma ($C$) e tipografia pelo domínio; garanta *Hero Funcional* e informação via bordas/`tabular-nums`.
-2. **Arquitetura Espacial:** Separe Macrolayout (`@media`, Grid RAM, 1 Arquétipo Espacial) de Microlayout (`@container` fora de `subgrid`), tokens `--space-*` + Gestalt, Raios Concêntricos e tipografia fluida (`clamp()`, `60ch–65ch`, `antialiased`, `font-synthesis: none`).
-3. **Cores `OKLCH` (60-30-10):** 60% Canvas / 30% Superfícies / 10% Destaque; eleve luminosidade $L$ no Dark Mode (`0.14 -> 0.26`, zero `#000000`) e derive hover/estados com `light-dark()`, `color-mix()` e RCS (`oklch(from ...)`).
-4. **Física Óptica de Sombras (3–4 Camadas):** Umbra + Penumbra (`spread` negativo `-1px..-8px`) + Catch-Light (`inset 0 1px 0 0`); escolha `box-shadow` vs `text-shadow` vs `filter: drop-shadow()` e apenas os modos pertinentes (Glass, Tactile Inset, Dark Glow, `<dialog>` + `@starting-style`).
-5. **Interatividade, AOM & `@layer`:** Ordem DOM = Visual, `:focus-visible`, Lei de Fitts (`>= 48x48px`, `gap >= 8px` em `any-pointer: coarse`), `prefers-reduced-motion`, `@layer` sem `!important` e árvore proporcional (Níveis 1/2/3).
+- **Product Context:** Domain purpose, complexity tier (`Tier 1..3`), and one canonical Spatial Archetype (of 6).
+- **Optional Assets & Baseline:** `README.md`, `SPEC.md`, existing CSS tokens, `rules/frontend-9-axes-guidelines.md`, and [rules/audit_criteria.md](rules/audit_criteria.md).
 
-## 3. Saídas / Entregáveis & Orquestração (`Topologia 3+1`)
+## 3. Step-by-Step Procedure
 
-Gere `<project_root>/DESIGN.md` cobrindo: (1) Propósito Visual e Hero Funcional, (2) Tokens 3 Camadas `OKLCH`, (3) Sombras Multi-Camadas e Modos selecionados, (4) Arquitetura Espacial + Tipografia, (5) Regras AOM + `@layer` filtradas de `references/`. Coordenação: `UI-Architect` + `ui-shell-navigator`, `ui-controls-data`, `ui-motion-interaction`, `ui-deterministic-observer`.
+1. **Purpose & Archetype:** Justify hue ($H$), chroma ($C$), and density by domain; require a *Functional Hero* and pick one archetype (`Split-View`, `12-Col Bento`, `Command Center`, `Editorial 65ch`, `Spatial HUD`, or `Vector A4`).
+2. **Logical Box & Type:** Mandate `border-box`, logical CSS (`inline-size`, `padding-inline`, `margin-block`), `flow-root`, `gap`, `.prose > * + *`, `4px/8px` `--space-*`, concentric radii, `clamp()` ($\max \le 2.5\times \min$), `65ch`, `balance/pretty`, `tabular-nums`, `antialiased`, and `font-synthesis: none`.
+3. **3-Layer `OKLCH` (`60-30-10`):** Define Primitives, Semantics (`--bg-canvas`/`--surface-canvas` 60%, `--bg-surface-1`/`--surface-card` 30%, `--brand-primary` 10%), and Component tokens via `oklch()`, `light-dark()`, `color-mix()`, and RCS `from`; raise Dark Mode $L$ (`0.16 -> 0.22 -> 0.27`, zero `#000000`).
+4. **`[LOCK-02]` Zenith Shadows:** Specify Umbra + negative-spread Penumbra (`-1px..-8px`) + Catch-Light (`inset 0 1px 0 0`) across `--shadow-elevation-1..3`, `--shadow-inset`, `text-shadow`, and `drop-shadow()`, adding only pertinent modes (Glass, Tactile, Dark Glow, `<dialog>` + `@starting-style`).
+5. **AOM & `@layer`:** Enforce DOM = Tab order, `:focus-visible`, `any-pointer: coarse` (`>= 48px`), `prefers-reduced-motion`, 3-layer nav with Breadcrumbs (`>= 3` levels), Real-State FSM, and `@layer` without `!important`.
+
+## 4. Gotchas & Edge Cases
+
+- **Defaults Over Menus:** Infer hue, tier, and archetype from the product brief without stalling on preference menus.
+- **Hard Bans:** Reject flat single-pass shadows, `#000000`, neon colors, fractional `scale()` on text, UI emojis, and unrelated addenda.
+- **Stop Criteria:** Stop with `[UNVERIFIED]` if no UI scope exists or `<project_root>` is inaccessible.
+
+## 5. Output Schema & Validation Criteria
+
+Deliver `<project_root>/DESIGN.md` covering Purpose/Hero, 3-Layer `OKLCH` Tokens, 3-Layer Shadows, Spatial/Type Rules, and AOM/`@layer`, passing `[AUDIT-DESIGN-01]`..`[AUDIT-DESIGN-04]` in [rules/audit_criteria.md](rules/audit_criteria.md).
+
+## 6. User Communication Rule
+
+Always formulate all direct user-facing conversation, explanations, clarifying questions, status reports, and deliverables in Portuguese (Brazil / pt-BR), unless the user explicitly requests otherwise.

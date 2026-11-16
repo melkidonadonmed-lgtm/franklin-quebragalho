@@ -1,0 +1,64 @@
+{
+  "skill_name": "project-idea-organizer",
+  "version": "1.2.0",
+  "description": "Evaluation suite verifying ideation-to-MVP with 'I don't know' fallback, full repository organization with Triad/README/contract sync, ambiguous-repo clarification, and near-miss boundaries.",
+  "evals": [
+    {
+      "id": "TC-01-IDEATION-TO-MVP-UNKNOWN-FALLBACK",
+      "eval_id": "TC-01-IDEATION-TO-MVP-UNKNOWN-FALLBACK",
+      "should_trigger": true,
+      "prompt": "I want to build a system to organize my study notes and spaced-repetition reviews, but I don't know which exact features to include yet.",
+      "expected_output": "Enters Mode 1 (ideation_to_v1), investigates core objective, activates the 'I don't know' fallback proposing a minimal secure MVP feature set, presents folder layout + design options, and offers dated v1.0.0 initialization.",
+      "assertions": [
+        "Activates Mode 1 (ideation_to_v1)",
+        "Triggers intelligent 'I don't know' fallback proposing a minimal MVP",
+        "Proposes modular starter tree with security baseline and asks for v1.0.0 confirmation"
+      ]
+    },
+    {
+      "id": "TC-02-REPO-SYNC-CONTRACTS-AND-DRY-RUN",
+      "eval_id": "TC-02-REPO-SYNC-CONTRACTS-AND-DRY-RUN",
+      "should_trigger": true,
+      "prompt": "Organize my existing repository end-to-end: check missing Triad docs, clean stray root scripts safely, align MCP tools.json and FastAPI schemas, and sync README.md 1:1 with disk.",
+      "expected_output": "Enters Mode 2 (project_organizer_sync), aligns AGENTS.md/.context/{spec,context}.md/README.md 1:1 with disk, structures MCP/FastAPI contracts, validates .env/.gitignore + git remote, draws Mermaid flowchart, and previews root moves via Dry-Run.",
+      "assertions": [
+        "Enforces 1:1 README.md vs. disk parity and Triad v2.0 alignment",
+        "Organizes MCP tools.json and FastAPI/RPC strict schemas",
+        "Requires Dry-Run preview before moving/deleting root files"
+      ]
+    },
+    {
+      "id": "TC-03-AMBIGUOUS-REPO-CLARIFICATION-BEFORE-MOVE",
+      "eval_id": "TC-03-AMBIGUOUS-REPO-CLARIFICATION-BEFORE-MOVE",
+      "should_trigger": true,
+      "prompt": "Organize this messy folder containing loose files test1.py, run_old.py, and scratch_notes.txt.",
+      "expected_output": "Detects ambiguous project intent, asks 1-3 focused clarification questions before restructuring, and presents a Dry-Run relocation preview without deleting files unilaterally.",
+      "assertions": [
+        "Detects ambiguous repository purpose and asks <= 3 clarifying questions",
+        "Presents Dry-Run relocation preview prior to modifying root files"
+      ]
+    },
+    {
+      "id": "TC-04-NEAR-MISS-STANDALONE-PDF-EXPORT",
+      "eval_id": "TC-04-NEAR-MISS-STANDALONE-PDF-EXPORT",
+      "should_trigger": false,
+      "prompt": "Convert this finished Markdown file meeting_minutes.md into an A4 formatted PDF using headless Microsoft Edge.",
+      "expected_output": "Does NOT trigger project-idea-organizer; delegates Markdown/HTML-to-PDF rendering to html-pdf-converter.",
+      "assertions": [
+        "Abstains from activating project-idea-organizer",
+        "Routes standalone PDF conversion to html-pdf-converter"
+      ]
+    },
+    {
+      "id": "TC-05-NEAR-MISS-0-TO-100-CODE-MVP-AUDIT",
+      "eval_id": "TC-05-NEAR-MISS-0-TO-100-CODE-MVP-AUDIT",
+      "should_trigger": false,
+      "prompt": "Run a 0-100 AST code audit, dead-code scan, and live browser @eX 3-layer navigation check on our repository.",
+      "expected_output": "Does NOT trigger project-idea-organizer; delegates 0-100 AST and live DOM auditing to system-project-auditor.",
+      "assertions": [
+        "Abstains from project restructuring when a 0-100 audit is requested",
+        "Routes AST + live @eX navigation scoring to system-project-auditor"
+      ]
+    }
+  ]
+}

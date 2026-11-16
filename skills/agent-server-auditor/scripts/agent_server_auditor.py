@@ -194,8 +194,10 @@ def _audit_skills(root: Path, files: List[Path]) -> List[SkillAuditItem]:
         has_fm = text.startswith("---") and "\n---" in text[3:]
         body = text.split("---", 2)[2] if has_fm and text.count("---") >= 2 else text
         has_scripts = (
-            (s_dir / "scripts").is_dir() and any((s_dir / "scripts").iterdir())
-        ) or (s_dir / "rules" / "criterios_auditoria.md").is_file()
+            ((s_dir / "scripts").is_dir() and any((s_dir / "scripts").iterdir()))
+            or (s_dir / "rules" / "audit_criteria.md").is_file()
+            or (s_dir / "rules" / "criterios_auditoria.md").is_file()
+        )
         has_refs = (s_dir / "references").is_dir() and any((s_dir / "references").iterdir())
         has_evals = (s_dir / "evals" / "evals.json").is_file()
         missing: List[str] = []

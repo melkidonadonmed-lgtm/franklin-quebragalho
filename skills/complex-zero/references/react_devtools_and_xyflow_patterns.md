@@ -1,15 +1,15 @@
-# Implementações de Referência — `complex-zero` (`v2.1.0`)
+# Reference Implementations — `complex-zero` (`v3.1.0`)
 
-Este documento contém as implementações de referência corrigidas sob os **10 Eixos da SSOT (Zero-Placebo / Real-State)** para os 4 módulos da skill `complex-zero`:
+Reference implementations complying with the **9-Axis SSOT (Zero-Placebo / Real-State)** across the 4 modules of `complex-zero`:
 
-1. **`devtools_auditor.ts`**: Sonda física em tempo de execução via Playwright/CDP (filtrando elementos visíveis, medindo alvos `>= 48x48px` sob `pointer: coarse`, `:focus-visible`, `@container` e contraste perceptual real em vez de booleanos hardcoded).
-2. **`ast_integrity_checker.ts`**: Auditor estático via TypeScript Compiler API (confinamento contra Path Traversal, detecção de *Ghost Nodes*, corpos vazios `{}`, `console.log` isolados, `setTimeout` placebos, `Math.random()` em telemetria e verificação real de `hasExecutableCode`).
-3. **`CustomMetricNode.tsx`**: Nó customizado para `@xyflow/react` com zero emojis (`[DIR]`, `[FILE]`, `[GHOST]`), `font-variant-numeric: tabular-nums`, `nodrag nopan` e superfície em `oklch()`.
-4. **`server/metrics_watcher.ts` + Rotas Next.js 15+**: Servidor `chokidar` + `WebSocket` com lote de `150ms` (`BATCH_UPDATE`) e telemetria real do Event Loop (`perf_hooks.monitorEventLoopDelay()`) + padrão assíncrono `Promise<{ slug: string }>` no Next.js 15+.
+1. **`devtools_auditor.ts`**: Runtime physical probe via Playwright/CDP (filtering visible elements, measuring `>= 48x48px` targets under `pointer: coarse`, `:focus-visible`, `@container`, and true perceptual contrast instead of hardcoded booleans).
+2. **`ast_integrity_checker.ts`**: Static TypeScript Compiler API auditor (Path Traversal confinement, *Ghost Node* detection, empty `{}` bodies, isolated `console.log` stubs, `setTimeout` placebos, `Math.random()` telemetry, and executable declaration counting).
+3. **`CustomMetricNode.tsx`**: Custom `@xyflow/react` node with zero emojis (`[DIR]`, `[FILE]`, `[GHOST]`), `font-variant-numeric: tabular-nums`, `nodrag nopan`, and `oklch()` surfaces.
+4. **`server/metrics_watcher.ts` & Next.js 15+ Routes**: `chokidar` + `WebSocket` server with `150ms` batching (`BATCH_UPDATE`) and real Event Loop telemetry (`perf_hooks.monitorEventLoopDelay()`) plus async `Promise<{ slug: string }>` routing in Next.js 15+.
 
 ---
 
-## 1. Sonda Física de Runtime via Playwright / CDP (`devtools_auditor.ts`)
+## 1. Runtime Physical Probe via Playwright / CDP (`devtools_auditor.ts`)
 
 ```typescript
 import { chromium, Browser, Page } from 'playwright';
@@ -34,7 +34,7 @@ function parseRgbOrOklchLightness(cssColor: string): number | null {
   if (rgbMatch) {
     const [r, g, b] = [Number(rgbMatch[1]) / 255, Number(rgbMatch[2]) / 255, Number(rgbMatch[3]) / 255];
     const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    return Math.cbrt(lum); // Aproximação perceptual L* a partir da luminância relativa
+    return Math.cbrt(lum); // Perceptual L* approximation from relative luminance
   }
   return null;
 }
@@ -43,7 +43,7 @@ export async function runDevToolsAudit(targetUrl: string): Promise<DevToolsAudit
   const browser: Browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
     viewport: { width: 1280, height: 800 },
-    hasTouch: true, // Ativa @media (any-pointer: coarse) para auditar a Lei de Fitts
+    hasTouch: true, // Enables @media (any-pointer: coarse) to audit Fitts' Law targets
   });
   const page: Page = await context.newPage();
 
@@ -102,7 +102,7 @@ export async function runDevToolsAudit(targetUrl: string): Promise<DevToolsAudit
       const lFg = parseRgbOrOklchLightness(fg);
       const lBg = parseRgbOrOklchLightness(bg);
       if (lFg !== null && lBg !== null && Math.abs(lFg - lBg) < 0.38) {
-        realContrastErrors.push(`${tag}: delta L perceptual insuficiente (${Math.abs(lFg - lBg).toFixed(2)} < 0.38)`);
+        realContrastErrors.push(`${tag}: insufficient perceptual delta L (${Math.abs(lFg - lBg).toFixed(2)} < 0.38)`);
       }
     }
 
@@ -131,7 +131,7 @@ export async function runDevToolsAudit(targetUrl: string): Promise<DevToolsAudit
 
 ---
 
-## 2. Auditoria AST Anti-Fake: Nós Fantasmas e Funções Falsas (`ast_integrity_checker.ts`)
+## 2. Anti-Fake AST Audit: Ghost Nodes & Stub Functions (`ast_integrity_checker.ts`)
 
 ```typescript
 import * as ts from 'typescript';
@@ -181,7 +181,7 @@ export function auditGraphIntegrity(
     let executableDeclarations = 0;
 
     if (/Math\.random\(\)/.test(sourceCode) && /(fps|cpu|latency|memory|metric)/i.test(sourceCode)) {
-      placeboPatterns.push('TELEMETRIA_SIMULADA_MATH_RANDOM');
+      placeboPatterns.push('SIMULATED_TELEMETRY_MATH_RANDOM');
     }
 
     function visit(astNode: ts.Node) {
@@ -209,13 +209,13 @@ export function auditGraphIntegrity(
 
         if (body && ts.isBlock(body)) {
           if (body.statements.length === 0) {
-            fakeFunctions.push(`${fnName} (Corpo vazio {})`);
+            fakeFunctions.push(`${fnName} (Empty body {})`);
           } else if (body.statements.length === 1) {
             const stmtText = body.statements[0].getText(sourceFile).trim();
             if (stmtText.startsWith('console.log') || stmtText.includes('alert(')) {
-              fakeFunctions.push(`${fnName} (Stub superficial: ${stmtText.slice(0, 40)})`);
+              fakeFunctions.push(`${fnName} (Superficial stub: ${stmtText.slice(0, 40)})`);
             } else if (/^setTimeout\(/.test(stmtText) && !/fetch|axios|send|dispatch/.test(stmtText)) {
-              placeboPatterns.push(`${fnName} (Delay artificial setTimeout sem I/O)`);
+              placeboPatterns.push(`${fnName} (Artificial setTimeout delay without I/O)`);
             }
           }
         }
@@ -226,7 +226,7 @@ export function auditGraphIntegrity(
     visit(sourceFile);
 
     if (executableDeclarations === 0 && /\.(ts|tsx|js|jsx)$/.test(resolvedPath)) {
-      placeboPatterns.push('ARQUIVO_SEM_DECLARACOES_EXECUTAVEIS');
+      placeboPatterns.push('FILE_WITHOUT_EXECUTABLE_DECLARATIONS');
     }
 
     const hasIssues = fakeFunctions.length > 0 || placeboPatterns.length > 0;
@@ -246,7 +246,7 @@ export function auditGraphIntegrity(
 
 ---
 
-## 3. Nó Customizado React Flow com Telemetria Tabular (`CustomMetricNode.tsx`)
+## 3. Custom React Flow Node with Tabular Telemetry (`CustomMetricNode.tsx`)
 
 ```tsx
 'use client';
@@ -276,7 +276,7 @@ export function CustomMetricNode({ data }: NodeProps) {
   const { label, path: filePath, type, isUpdated, isGhost, hasFakeCode, metrics, onInspect } = nodeData;
 
   const badgeTag = isGhost ? '[GHOST]' : type === 'directory' ? '[DIR]' : '[FILE]';
-  const statusTag = isGhost ? '[ERR: DISCO]' : hasFakeCode ? '[WARN: STUB]' : '[SYNCED]';
+  const statusTag = isGhost ? '[ERR: DISK]' : hasFakeCode ? '[WARN: STUB]' : '[SYNCED]';
 
   return (
     <div
@@ -296,12 +296,12 @@ export function CustomMetricNode({ data }: NodeProps) {
 
       {metrics && !isGhost && (
         <dl className="node-metrics-grid" style={{ fontVariantNumeric: 'tabular-nums' }}>
-          <div className="metric-badge" title="Latência real do Event Loop (detalhes completos no Inspetor Lateral)">
-            <dt className="sr-only">Latência</dt>
+          <div className="metric-badge" title="Real Event Loop latency (full details in Side Inspector)">
+            <dt className="sr-only">Latency</dt>
             <dd>[LAT] {metrics.latencyMs.toFixed(1)}ms</dd>
           </div>
-          <div className="metric-badge" title="Complexidade Ciclomática AST">
-            <dt className="sr-only">Complexidade</dt>
+          <div className="metric-badge" title="AST Cyclomatic Complexity">
+            <dt className="sr-only">Complexity</dt>
             <dd>[CPX] {metrics.complexity}</dd>
           </div>
         </dl>
@@ -316,7 +316,7 @@ export function CustomMetricNode({ data }: NodeProps) {
             onInspect?.(filePath);
           }}
         >
-          Inspecionar Nó
+          Inspect Node
         </button>
       </div>
       <Handle type="source" position={Position.Bottom} />
@@ -327,7 +327,7 @@ export function CustomMetricNode({ data }: NodeProps) {
 
 ---
 
-## 4. Servidor `WebSocket` + `Chokidar` com Lote de 150ms e Telemetria Real (`server/metrics_watcher.ts`)
+## 4. `WebSocket` + `Chokidar` Server with `150ms` Batching & Real Telemetry (`server/metrics_watcher.ts`)
 
 ```typescript
 import chokidar from 'chokidar';

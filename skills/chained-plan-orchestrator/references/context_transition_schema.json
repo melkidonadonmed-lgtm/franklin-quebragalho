@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ContextTransitionPayload",
+  "description": "Structured v3.0.0 isolated context transition contract (Context Fork) across DAG waves and nodes in chained-plan-orchestrator",
+  "type": "object",
+  "required": [
+    "phase_id",
+    "wave_index",
+    "sequence_index",
+    "target_skill",
+    "isolated_state_key",
+    "input_payload",
+    "expected_outputs",
+    "status"
+  ],
+  "properties": {
+    "phase_id": {
+      "type": "string",
+      "description": "Unique node or phase identifier (e.g., step_01_react_discovery)"
+    },
+    "wave_index": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Topological parallel wave index compiled via Kahn's algorithm"
+    },
+    "sequence_index": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Deterministic dispatch sequence index"
+    },
+    "target_skill": {
+      "type": "string",
+      "description": "Canonical slug of the target skill or declarative subagent"
+    },
+    "cognitive_pattern": {
+      "type": "string",
+      "enum": ["CoT", "ReAct", "ToT", "Self-Refine"],
+      "description": "Active non-linear cognitive pattern for this node"
+    },
+    "isolated_state_key": {
+      "type": "string",
+      "description": "Isolated state slot key where the worker writes results without fan-out collisions"
+    },
+    "input_payload": {
+      "type": "object",
+      "description": "Minimal scoped payload strictly required by this node (raw conversation history forbidden)"
+    },
+    "active_rules": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "string"
+      },
+      "description": "Up to 5 operational rules active in this step (Prompt Complexity Wall Shield)"
+    },
+    "target_files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Files modified by this node, checked for parallel write collisions within the same wave"
+    },
+    "expected_outputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Concrete output artifacts expected upon node completion"
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Falsifiable verification checks required for Go transition"
+    },
+    "fallback_branch": {
+      "type": ["string", "null"],
+      "description": "Non-linear contingency node triggered on recoverable failure"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "RETRYING",
+        "FALLBACK_ROUTED",
+        "BLOCKED_HITL",
+        "FAILED"
+      ],
+      "description": "Current finite-state status of the node"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,20 +1,44 @@
-[
-  {
-    "eval_id": "TC-SENTINEL-01-CHECKPOINT-EXTRACAO",
-    "category": "should-trigger",
-    "prompt": "Gere um checkpoint estruturado de estado após 5 turnos de desenvolvimento intenso em pipeline multiagente.",
-    "expected_behavior": "Retorna o payload JSON StateCheckpointSchema validado com Pydantic v2 contendo fatos classificados ([FATO], [PENDENCIA], [LACUNA]) e status context_health."
-  },
-  {
-    "eval_id": "TC-SENTINEL-02-CONTEXT-ROT-PRUNING",
-    "category": "should-trigger",
-    "prompt": "Audite a janela de contexto desta sessão que já consumiu 75% do token budget com logs repetidos.",
-    "expected_behavior": "Identifica blocos redundantes em noise_detected, sinaliza pruning_recommended: true sem descartar dados silenciosamente e recomenda checkpoint em .context/."
-  },
-  {
-    "eval_id": "TC-SENTINEL-03-NEAR-MISS-SINGLE-TURN",
-    "category": "should-not-trigger",
-    "prompt": "Qual é a sintaxe do comando Get-ChildItem no PowerShell 7?",
-    "expected_behavior": "Não aciona o Context Sentinel para uma dúvida trivial de turno único; responde diretamente."
-  }
-]
+{
+  "skill_name": "context-sentinel",
+  "version": "1.1.0",
+  "evals": [
+    {
+      "eval_id": "TC-SENTINEL-01-CHECKPOINT-EXTRACTION",
+      "should_trigger": true,
+      "prompt": "Generate a structured state checkpoint after 6 consecutive turns of multi-agent pipeline debugging and save to SQLite or JSON.",
+      "expected_behavior": "Emits a Pydantic v2 validated StateCheckpointSchema JSON payload classifying verified items as [FACT], [PENDING], and [GAP] with context_health status.",
+      "expected_assertions": [
+        "Validates against StateCheckpointSchema with extra='forbid'",
+        "Tags verified disk actions as [FACT], remaining tasks as [PENDING], and missing params as [GAP]"
+      ]
+    },
+    {
+      "eval_id": "TC-SENTINEL-02-CONTEXT-ROT-PRUNING",
+      "should_trigger": true,
+      "prompt": "Audit this session's context window after consuming 75% of the token budget with repeated schemas and truncated tool logs.",
+      "expected_behavior": "Populates noise_detected, sets pruning_recommended: true without silently deleting logs, and recommends persisting a checkpoint in .context/context.md.",
+      "expected_assertions": [
+        "Detects duplicated blocks in noise_detected",
+        "Flags pruning_recommended without destructive deletion"
+      ]
+    },
+    {
+      "eval_id": "TC-SENTINEL-03-SINGLE-TURN-SYNTAX",
+      "should_trigger": false,
+      "prompt": "What is the exact syntax for Get-ChildItem -LiteralPath in PowerShell 7?",
+      "expected_behavior": "Does not activate context-sentinel for an atomic single-turn syntax lookup; answers directly.",
+      "expected_assertions": [
+        "Avoids creating unnecessary StateCheckpointSchema artifacts for single-turn Q&A"
+      ]
+    },
+    {
+      "eval_id": "TC-SENTINEL-04-DAG-PLANNING-OR-CODE",
+      "should_trigger": false,
+      "prompt": "Decompose this new FastAPI authentication feature into a Phase 0 execution DAG and implement the OAuth middleware.",
+      "expected_behavior": "Does not invoke context-sentinel for DAG planning or application coding; routes to high-level-context-planner.",
+      "expected_assertions": [
+        "Respects negative boundary against DAG planning and code authoring"
+      ]
+    }
+  ]
+}

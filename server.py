@@ -2,7 +2,7 @@
 
 Registra de forma concisa as 13 ferramentas (`@mcp.tool`), os recursos passivos (`@mcp.resource`)
 e os 2 prompts (`@mcp.prompt`), delegando toda a lógica de domínio aos módulos em `shared/`:
-- `shared.catalog_service`: Descoberta, busca, leitura em 3 Tiers e validação das 29 Agent Skills.
+- `shared.catalog_service`: Discovery, search, 3-Tier loading, and validation of the 28 Canonical Agent Skills.
 - `shared.compass_topology`: Bússola Zero-LLM (`franklin_smart_compass`), 8 Personas e 10 Subagentes.
 - `shared.execution_orchestrator`: Execução confinada de scripts, motor DAG Kahn, Harness HITL e A2A v1.0.
 """
@@ -320,7 +320,7 @@ def get_harness_checkpoints_resource() -> str:
 
 @mcp.resource("skills://catalog")
 def get_catalog_resource() -> str:
-    """Catálogo consolidado das 29 Agent Skills em JSON."""
+    """Consolidated JSON catalog of all 28 Canonical Agent Skills."""
     return json.dumps(_get_all_skills_data(), indent=2, ensure_ascii=False)
 
 
@@ -370,13 +370,13 @@ def activate_skill_prompt(skill_name: str, user_intent: str) -> str:
 
 @mcp.prompt("tactile_frontend_audit")
 def tactile_frontend_audit_prompt(component_or_url: str) -> str:
-    """Prompt conciso para auditoria Frontend/UI-Architect acoplado ao SSOT (`rules/diretrizes-frontend-9-eixos.md`)."""
+    """Concise UI-Architect frontend audit prompt bound to the 9-axis SSOT (`rules/frontend-9-axes-guidelines.md`)."""
     return (
-        f"Atue como UI-Architect e audite `{component_or_url}` contra `DESIGN.md` e os 9 Eixos do SSOT:\n"
-        "1. Regra 60-30-10 em `OKLCH` + `light-dark()` e tokens em 3 camadas (`--bg-canvas`, `--surface-card`, `--surface-elevated`, `--surface-sunken`).\n"
-        "2. Sombras Multi-Camadas em 3 Níveis (`--shadow-elevation-1..3` + `--shadow-inset`: Umbra + Penumbra + Luz Zenital `inset 0 1px 0 0`).\n"
-        "3. Navegação em 3 Camadas, `@container`, 4 Variantes de Cards, nitidez `tabular-nums`/`font-synthesis: none` e Engenharia Real-State.\n"
-        "Execute `audit_tactile_ui.py`, `ui_ux_frontend_auditor.py` e `deterministic_scorer.py` (`auditoria-projetos-sistema`).\n"
+        f"Act as UI-Architect and audit `{component_or_url}` against `DESIGN.md` and the 9-Axis SSOT:\n"
+        "1. 60-30-10 rule in `OKLCH` + `light-dark()` and 3-layer tokens (`--bg-canvas`, `--surface-card`, `--surface-elevated`, `--surface-sunken`).\n"
+        "2. 3-level multi-layer shadows (`--shadow-elevation-1..3` + `--shadow-inset`: Contact Umbra + Penumbra + Zenith Catch-Light `inset 0 1px 0 0`).\n"
+        "3. 3-layer navigation, `@container`, 4 Card variants, `tabular-nums`/`font-synthesis: none`, and Real-State Engineering.\n"
+        "Run `audit_tactile_ui.py`, `ui_ux_frontend_auditor.py`, and `deterministic_scorer.py` (`system-project-auditor`).\n"
     )
 
 

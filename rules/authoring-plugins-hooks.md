@@ -1,26 +1,26 @@
 ---
 trigger: model_decision
-description: "Diretrizes oficiais do Google Antigravity para criar e validar Plugins (plugin.json JSONC, namespaces, assets) e Lifecycle Hooks (hooks.json, contratos camelCase PreToolUse, PostToolUse, SessionStart, PreInvocation, PostInvocation e Stop)."
+description: "Official guidelines for authoring and validating Antigravity Plugins (plugin.json JSONC, namespaces, assets) and Lifecycle Hooks (hooks.json, camelCase contracts PreToolUse, PostToolUse, SessionStart, PreInvocation, PostInvocation, and Stop)."
 ---
 
-# Regras Oficiais para Plugins (`plugin.json`) e Hooks (`hooks.json`)
+# Official Rules for Plugins (`plugin.json`) & Lifecycle Hooks (`hooks.json`)
 
 ## 1. Plugins (`plugins/<plugin-dir>/plugin.json`)
 
-- **Identidade & Deduplicação:** `plugin.json` (JSONC) aceita exclusivamente os campos top-level: `name` (kebab-case globalmente único — colisão de `name` faz o segundo plugin ser **descartado silenciosamente**), `description`, `logo`, `suggestedPrompts` (máx. `3`), `displayName`, `version`, `author`, `homepage`, `repository` e `disabled`. **Campos desconhecidos são ignorados em silêncio** pelo loader.
-- **Logo & Assets:** `logo` deve ser caminho relativo ao diretório do plugin (`.png`, `.svg`, `.jpg`, `.jpeg` ou `.webp`, quadrado `>= 128x128` com ~10% de margem); URLs externas e caminhos absolutos falham silenciosamente.
-- **Staging de Hooks no Plugin:** Runtime nativo de plugins carrega `hooks.json` **diretamente na raiz do plugin** (`<plugin_dir>/hooks.json`); extensões convertidas via `agy plugin install` usam staging, mas bundles nativos com `plugin.json` devem garantir `hooks.json` na raiz do pacote instalado (`agy plugin validate <dir> --strict --json`).
-- **Habilitação:** `config.json` (`plugins.<dir>.enabled`) sempre vence `disabled` do `plugin.json`. `README.md` na raiz é ignorado pelo agente.
+- **Identity & Deduplication:** `plugin.json` (JSONC) accepts strictly these top-level keys: `name` (globally unique kebab-case — `name` collisions cause the second plugin to be **silently dropped**), `description`, `logo`, `suggestedPrompts` (max `3`), `displayName`, `version`, `author`, `homepage`, `repository`, and `disabled`. **Unknown fields are silently ignored** by the loader.
+- **Logo & Assets:** `logo` must be a relative path inside the plugin directory (`.png`, `.svg`, `.jpg`, `.jpeg`, or `.webp`, square `>= 128x128` with ~10% margin); external URLs and absolute paths fail silently.
+- **Hook Placement:** The native plugin runtime loads `hooks.json` **directly at the plugin root** (`<plugin_dir>/hooks.json`); verify bundles with `agy plugin validate <dir> --strict --json`.
+- **Enablement:** `config.json` (`plugins.<dir>.enabled`) always overrides `disabled` in `plugin.json`. Root `README.md` is ignored by the agent runtime.
 
 ## 2. Lifecycle Hooks (`hooks.json`)
 
-- **Formato:** Objeto JSON mapeando `<hook-name>` para `enabled` (`bool`) e arrays de eventos:
-  - **Agrupados por `matcher` regex + `hooks[]`:** `PreToolUse` e `PostToolUse` (`"matcher": "*"`, `"run_command"`, `"run_command|edit_file"`, `"browser_.*"` — nomes derivados do `CORTEX_STEP_TYPE_*` em minúsculas).
-  - **Planos (array direto de handlers):** `SessionStart`, `PreInvocation`, `PostInvocation` e `Stop`.
-- **Handlers (`type: "command"` único suportado):** Campos `type`, `command` (`sh -c` Unix / `cmd /c` Windows; CWD é o diretório de `hooks.json`) e `timeout` (padrão `30s`). Plugins expõem env vars `PLUGIN_ROOT` e `PLUGIN_DATA`; execução é sempre síncrona e bloqueante.
-- **Contrato I/O em `camelCase` (`stdin` $\to$ `stdout` JSON puro):**
-  - Input comum traz `conversationId`, `workspacePaths`, `transcriptPath`, `artifactDirectoryPath`, `modelName`, `lastUserInput`, `hookEventName` e `cwd` (diretório do agente, diferente do CWD do hook).
-  - **`PreToolUse`:** retorna `{"decision": "allow"|"deny"|"ask"|"force_ask", "reason"?: "...", "permissionOverrides"?: [...], "overwrite"?: {...}}` (`overwrite` faz merge raso nos argumentos de `toolCall`).
-  - **`PostToolUse`:** recebe `"toolCall"` e `"error"` opcional; **DEVE imprimir exatamente `{}`** em `stdout` (nunca envie campo `"result"` não suportado!).
-  - **`SessionStart` / `PreInvocation` / `PostInvocation`:** retorna `{"injectSteps": [{"systemMessage": {"systemMessage": "...", "metadata": {"user_markdown"?: "..."}}}], "terminationBehavior"?: ""|"terminate"|"force_continue"}` (`systemMessage` exige objeto aninhado; `ephemeralMessage` é depreciado; `errorMessage` requer `{"userMessage": "..."}` e só interrompe com `"terminationBehavior": "terminate"`).
-  - **`Stop`:** cheque `continuationActive` antes de continuar para evitar loop infinito; retorne `{"decision": "continue", "reason": "..."}` para reentrar no loop.
+- **Schema:** JSON object mapping `<hook-name>` to `enabled` (`bool`) and event arrays:
+  - **Grouped by `matcher` regex + `hooks[]`:** `PreToolUse` and `PostToolUse` (`"matcher": "*"`, `"run_command"`, `"run_command|edit_file"`, `"browser_.*"` — lowercase `CORTEX_STEP_TYPE_*` names).
+  - **Flat arrays:** `SessionStart`, `PreInvocation`, `PostInvocation`, and `Stop`.
+- **Handlers (`type: "command"` only):** Fields `type`, `command` (`sh -c` Unix / `cmd /c` Windows; CWD is `hooks.json`'s directory), and `timeout` (default `30s`). Plugins expose `PLUGIN_ROOT` and `PLUGIN_DATA`; execution is always synchronous and blocking.
+- **`camelCase` I/O Contract (`stdin` -> pure JSON `stdout`):**
+  - Common input provides `conversationId`, `workspacePaths`, `transcriptPath`, `artifactDirectoryPath`, `modelName`, `lastUserInput`, `hookEventName`, and `cwd` (agent working directory).
+  - **`PreToolUse`:** return `{"decision": "allow"|"deny"|"ask"|"force_ask", "reason"?: "...", "permissionOverrides"?: [...], "overwrite"?: {...}}` (`overwrite` shallow-merges into `toolCall` arguments).
+  - **`PostToolUse`:** receives `"toolCall"` and optional `"error"`; **MUST print exactly `{}`** to `stdout` (never emit unsupported `"result"` keys).
+  - **`SessionStart` / `PreInvocation` / `PostInvocation`:** return `{"injectSteps": [{"systemMessage": {"systemMessage": "...", "metadata": {"user_markdown"?: "..."}}}], "terminationBehavior"?: ""|"terminate"|"force_continue"}` (`systemMessage` requires a nested object; `ephemeralMessage` is deprecated; `errorMessage` requires `{"userMessage": "..."}` and stops only with `"terminationBehavior": "terminate"`).
+  - **`Stop`:** check `continuationActive` before continuing to avoid infinite loops; return `{"decision": "continue", "reason": "..."}` to re-enter the loop.

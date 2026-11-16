@@ -1,51 +1,53 @@
 ---
 name: code-acceptability-auditor
-description: "Audita estaticamente arquivos Python via AST contra eval/exec, shell=True, ausência de type hints e funções longas >60 linhas. Use para calcular o Quality Score; não use para dúvidas teóricas."
+description: "Audit Python modules statically via AST against eval/exec, shell=True, hardcoded secrets, missing type hints, silenced exceptions, and functions >60 lines. Use to compute the Quality Score (>=75) before commits. Do NOT use for theoretical questions, test suites, or 3D physics."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 metadata:
   version: "1.1.0"
-  updated_at: "2026-11-13"
-  author: "Gemini Notebook AI Engineering & Melki"
-  category: "Auditoria e Qualidade de Código"
-  tags: ["ast", "python-audit", "security", "type-hints", "pre-commit", "quality-gate", "cyclomatic-complexity"]
+  updated_at: "2026-11-16"
+  author: "Franklin"
+  category: "Python AST Code Quality & Security Gatekeeping"
+  tags: ["code-acceptability-auditor", "ast", "python", "python-audit", "auditar", "estaticamente", "arquivos", "eval", "exec", "shell", "type", "hints", "type-hints", "funcoes", "longas", "linhas", "qualidade", "acceptability", "security", "pre-commit", "quality-gate", "cyclomatic-complexity"]
 ---
 
-# Code Acceptability Auditor (`code-acceptability-auditor`)
+# `code-acceptability-auditor` (`v1.1.0`) — Python AST Quality Gate
 
-## 1. Propósito e Gatilhos (Portão 1 da Esteira de Qualidade)
+## 1. Overview & Scope
 
-Audita estaticamente módulos/scripts Python via **AST** (*Abstract Syntax Tree*) contra segurança, tipagem, tratamento de erros e complexidade sem executar código não confiável:
+Performs static Python **AST** (*Abstract Syntax Tree*) auditing as **Gate 1** of the quality pipeline without executing untrusted code:
+- Validates Python files/directories prior to `git commit` or PR against `eval`/`exec`, `shell=True`, hardcoded secrets, missing type hints, functions `> 60` lines, nesting `> 3`, and McCabe $M > 10$.
+- Computes the **Quality Score** (`0.0–100.0`) requiring `APPROVED` status (`score >= 75.0`, `critical_count == 0`, `passed_syntax == True`).
+- **When NOT to Use:** Do NOT use for theoretical Python Q&A, greenfield scaffolding, test-suite AAA grading (`test-quality-auditor`), runtime RCA (`gap-analyzer-auditor`), or 3D/WebGL physics (`code-quality-audit-3d-physics`).
 
-- Validar arquivos/diretórios Python antes de `git commit` ou PR (`eval`/`exec`, `shell=True`, segredos, type hints, `<= 60` linhas, aninhamento `<= 3`, McCabe $M \le 10$).
-- Calcular o **Quality Score** (`0.0` a `100.0`) exigindo aprovação (`Score >= 75.0`, zero críticos).
+## 2. Inputs & Prerequisites
 
-## 2. Entradas e Pré-requisitos
+- **`--file` / `--dir` (required):** Target Python file or directory root under audit.
+- **`min_quality_score` (`75.0` default) & `max_critical_violations` (`0`).**
+- **Runtime:** Python `3.12+` with `pydantic>=2.0`.
 
-- **`--file` / `--dir` (obrigatório):** Arquivo Python ou diretório raiz sob auditoria.
-- **`min_quality_score` (padrão `75.0`) e `max_critical_violations` (`0`).**
-- **Ambiente:** Python `3.12+` + `pydantic>=2.0`.
+## 3. Step-by-Step Procedure
 
-## 3. Processamento, Regras e Quality Gate
+Consult the 12-rule matrix (`SEC001..003`, `SYN001`, `ERR001..003`, `TYP001..002`, `ARCH001..003`) and 7 CLI modes in [`references/rules_12_matrix_and_cli.md`](references/rules_12_matrix_and_cli.md) and [`references/security_rules_spec.md`](references/security_rules_spec.md):
 
-Consulte a tabela das 12 regras (`SEC001..003`, `SYN001`, `ERR001..003`, `TYP001..002`, `ARCH001..003`) e os 7 modos CLI em [`references/matriz_12_regras_e_cli.md`](references/matriz_12_regras_e_cli.md):
-
-$$\text{Quality Score} = \max\left(0.0, 100.0 - \sum \text{Penalidades}\right)$$
-
-- **Aprovação (`APPROVED`):** `critical_count == 0`, `quality_score >= 75.0` e `passed_syntax == True`; qualquer desvio gera `REJECTED`.
-
+1. Run static AST scanning against the target file or directory:
 ```powershell
 uv run python skills/code-acceptability-auditor/scripts/code_acceptability_auditor.py --dir shared --json
 uv run python skills/code-acceptability-auditor/scripts/code_acceptability_auditor.py --self-test
 ```
+2. Compute the deterministic score:
+$$\text{Quality Score} = \max\left(0.0, 100.0 - \sum \text{Penalties}\right)$$
+3. Enforce the pre-commit gate: reject any artifact where `not passed_syntax`, `critical_count > 0`, or `quality_score < 75.0`.
 
-**Gotchas do Parser:** `except:` (`ERR001`, `-10`) difere de `except Exception:` (`ERR002`, `-5`), ambos viram `ERR003` (`-25`) com `pass`/`...`/`continue`; `SEC003` isenta `os.getenv`/`os.environ.get` e placeholders (`YOUR_API_KEY`); `self`/`cls` são isentos em `TYP001` e `__init__` em `TYP002`.
+## 4. Gotchas & Edge Cases
 
-## 4. Saídas e Entregáveis
+- Bare `except:` (`ERR001`, `-10`) differs from `except Exception:` (`ERR002`, `-5`); both escalate to `ERR003` (`-25`) when the handler body contains only `pass`, `...`, or `continue`.
+- `SEC003` exempts `os.getenv`/`os.environ.get` and documentation placeholders (`YOUR_API_KEY`); `self`/`cls` are exempt in `TYP001`, and `__init__` is exempt in `TYP002`.
+- Keep [`references/trigger_matrix_queries.json`](references/trigger_matrix_queries.json) intact for `trigger_eval_runner.py`.
 
-Relatório Pydantic (`FileAuditReport` / `DirectoryAuditSummary`, ver [`references/criterios_de_aceite.md`](references/criterios_de_aceite.md), [`references/security_rules_spec.md`](references/security_rules_spec.md) e [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md)): `status`, `quality_score`, `passed_syntax`, `violations` e `[PASS]`/`[FAIL: <RULE_ID>]`.
+## 5. Output Schema & Validation Criteria
 
-## 5. Exceções, Limites e Quando NÃO Usar
+Emit a Pydantic-validated report (`FileAuditReport` / `DirectoryAuditSummary`) matching [`references/acceptance_criteria.md`](references/acceptance_criteria.md) and [`rules/audit_criteria.md`](rules/audit_criteria.md), including `status` (`APPROVED`/`REJECTED`), `quality_score`, `passed_syntax`, `violations`, and `[PASS]` / `[FAIL: <RULE_ID>]` verdicts.
 
-- **Portão 2 (Testes & Evals):** Para `pytest`, `vitest`, `*_test.go`, MCP e Harness AAA, use `test-quality-auditor`.
-- **Portão 3 (RCA & Convergência):** Para causa raiz em runtime e `/speckit-converge`, use `gap-analyzer-auditor`.
-- **Teoria / Scaffolding / Física 3D:** Não use para dúvidas conceituais Python, criação do zero ou motores WebGL/3D (`code-quality-audit-3d-physics`).
+## 6. User Communication Rule
+
+All direct responses, violation breakdowns, clarifying questions, and delivery summaries addressed to the end user MUST be written in **Portuguese (Brazil / `pt-BR`)**, unless the user explicitly requests otherwise.

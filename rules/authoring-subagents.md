@@ -1,23 +1,24 @@
 ---
 trigger: model_decision
-description: "Diretrizes oficiais do Google Antigravity para definir subagentes declarativos (agents/*.md, Menor Privilégio, tools explícitos, guardrails max_steps/HITL, Context Fork e Swarm)."
+description: "Official guidelines for defining declarative Antigravity subagents (agents/*.md in Technical English, Least Privilege, explicit native tools, max_steps/HITL guardrails, Context Fork, and Swarm)."
 ---
 
-# Regras Oficiais para Subagentes Declarativos (`agents/*.md`) e Orquestração
+# Official Guidelines for Declarative Subagents (`agents/*.md`) & Orchestration
 
-1. **Locais de Descoberta & Nomes Seguros:**
+1. **Discovery Paths & Safe Names:**
    - Workspace: `.agents/agents/<name>.md`; Global: `~/.gemini/config/agents/<name>.md`; Plugin: `plugins/<plugin>/agents/<name>.md`.
-   - Evite colisão de `name` com agentes integrados (`self`, `research`, `browser`, `deepagent`, `review-agent`) ou subagentes já registrados no manifesto do plugin.
+   - Never collide `name` with built-in agents (`self`, `research`, `browser`, `deepagent`, `review-agent`) or existing manifest subagents.
 
-2. **Frontmatter & Menor Privilégio (`Least Privilege`):**
-   - Campos canônicos: `name`, `description` (obrigatório — guia quando o coordenador delega), `subagent: true`, `mainAgent: false`.
-   - **Declaração Explícita de Ferramentas (`tools`):** Especifique sempre `tools: [...]` (omissão cai em conjunto mínimo somente-leitura) com nomes nativos (`read_file`, `edit_file`, `write_file`, `run_command`, `manage_task`, `search_web`, `invoke_subagent`); ferramentas MCP devem ser vinculadas via `mcpServers`/`inheritMcp` (não liste `call_mcp_tool` em `tools:`). **É proibido usar `tools: ["*"]` ou `call_mcp_tool` em `tools:`** (`validate_skills.py` / `sync_gemini_ecosystem.py`).
-   - **Auditores / Observadores / Gatekeepers:** Exija explicitamente perfil somente-leitura (`enable_write_tools: false` ou ausência de `write_file`/`edit_file`/`run_command` mutável) e `enable_subagent_tools: false` salvo quando o papel for coordenador.
-   - **Modelo & Política:** Use `model: inherit` (nunca fixe modelos depreciados como `gemini-2.5-flash`/`2.5-pro`, `antigravity-preview-05-2026` ou `3.1-flash-live-preview`; o host/Orchestrator roteia entre `Gemini 4 Carbon`/`Argon` para plano e `Gemini 4 Hydrogen` para execução) e defina `commandExecutionPolicy: sandbox | auto | off`, `inheritMcp` e `inheritCustomizations` conforme necessidade real.
+2. **Frontmatter, Language & Least Privilege:**
+   - Write all subagent manifests and instructions in **Technical English**, adding `## User Communication Rule` so user-facing summaries remain in **Portuguese (`pt-BR`)**.
+   - Canonical fields: `name`, `description` (required — guides coordinator delegation), `subagent: true`, `mainAgent: false`.
+   - **Explicit Native Tools (`tools: [...]` MANDATORY):** Always declare `tools` explicitly using native Antigravity 2.0 tool names (`read_file`, `edit_file`, `write_file`, `run_command`, `manage_task`, `search_web`, `invoke_subagent`, `send_message`), because omitting `tools:` falls back to a minimal read-only toolset. Bind MCP tools via `mcpServers`/`inheritMcp` — **do not list `call_mcp_tool` in `tools:`**. **Strictly forbid** `tools: ["*"]`, `call_mcp_tool`, and legacy Antigravity 1.x tool names (`view_file`, `list_dir`, `find_by_name`, `grep_search`, `write_to_file`, `replace_file_content`, `multi_replace_file_content`). Never emit legacy keys (`enable_write_tools`, `enable_mcp_tools`, `enable_subagent_tools`, `wave`, `parent_persona`, `covered_modules`).
+   - **Auditors / Observers / Gatekeepers:** Enforce read-only least privilege by omitting `write_file` and `edit_file` from `tools:` (`tools: [read_file, run_command, send_message]` or `[read_file, send_message]`), setting `commandExecutionPolicy: sandbox` or `"off"`, and omitting `invoke_subagent` unless the subagent is an explicit coordinator.
+   - **Model & Policy:** Use `model: inherit` (never hardcode deprecated models such as `gemini-2.5-flash`/`2.5-pro`, `antigravity-preview-05-2026`, or `3.1-flash-live-preview`; the host/Orchestrator routes between `Gemini 4 Carbon`/`Argon` for planning and `Gemini 4 Hydrogen` for execution), and set `commandExecutionPolicy: auto | sandbox | "off"`, `inheritMcp`, and `inheritCustomizations` accurately.
 
-3. **Contenção, Loops & Portões HITL:**
-   - Todo subagente com loop ou ferramentas deve declarar limites determinísticos (`max_steps`, `max_turns` ou `recursion_limit`), `stop_condition` verificável e parada HITL antes de mutações destrutivas, alteração de `.env`/segredos ou efeitos externos.
+3. **Containment, Loops & HITL Gates:**
+   - Subagents operating loops or tools must define deterministic limits (`max_steps`, `max_turns`, or `recursion_limit`), a verifiable `stop_condition`, and mandatory HITL pause before destructive mutations, `.env`/secret changes, or external side effects.
 
-4. **Isolamento de Contexto (*Context Fork*) & Anti-Colisão Paralela (`[P]`):**
-   - Nunca repasse transcrições brutas entre coordenador e subagentes; injete apenas envelope enxuto do estado necessário e `<= 5` regras operacionais.
-   - Em ondas paralelas (`invoke_subagent` ou `swarm` com `workspace: "share"` para múltiplos autores e `"inherit"` para leitores/verificadores), proíba escrita simultânea de dois subagentes no mesmo arquivo e execute sempre verificação **Read-After-Write** ao consolidar o resultado.
+4. **Context Fork & Parallel Collision Prevention (`[P]`):**
+   - Never pass raw chat transcripts between coordinator and subagents; inject only a compact state envelope and `<= 5` operational rules.
+   - In parallel waves (`invoke_subagent` or `swarm` with `workspace: "share"` for concurrent authors and `"inherit"` for readers/verifiers), forbid concurrent writes to the same file and always perform **Read-After-Write** verification upon fan-in.

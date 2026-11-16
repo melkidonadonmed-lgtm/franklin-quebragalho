@@ -1,6 +1,6 @@
-# Templates Base Canônicos (`frontend-code-architect` v7.0.0)
+# Canonical Base Templates (`frontend-code-architect` v7.0.0)
 
-## A. Fundação CSS: Tokens OKLCH em 3 Camadas, Sombras, `@container` e Breadcrumbs (`src/styles/globals.css`)
+## A. CSS Foundation: 3-Layer `OKLCH` Tokens, Shadows, `@container` & Breadcrumbs (`src/styles/globals.css`)
 
 ```css
 @layer tokens, reset, layouts, components, utilities;
@@ -22,7 +22,7 @@ html, body {
 :root {
   color-scheme: light dark;
 
-  /* 1. TOKENS PRIMITIVOS */
+  /* 1. PRIMITIVE TOKENS */
   --primitive-blue-500: oklch(0.62 0.21 258);
   --primitive-emerald-500: oklch(0.70 0.17 160);
   --primitive-neutral-50: oklch(0.985 0.004 255);
@@ -50,7 +50,7 @@ html, body {
   --step-1:  clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
   --step-2:  clamp(1.5625rem, 1.4rem + 0.8vw, 2rem);
 
-  /* 2. TOKENS SEMÂNTICOS (Aliases duplos --bg-*/--surface-* e --text-*/--ink-*) */
+  /* 2. SEMANTIC TOKENS (Dual aliases --bg-*/--surface-* and --text-*/--ink-*) */
   --brand-primary: var(--primitive-blue-500);
   --brand-accent: var(--primitive-emerald-500);
 
@@ -79,7 +79,7 @@ html, body {
   --border-subtle: light-dark(oklch(0.2 0.02 255 / 0.08), oklch(1 0 0 / 0.12));
   --catch-light: inset 0px 1px 0px 0px light-dark(oklch(1 0 0 / 0.85), oklch(1 0 0 / 0.12));
 
-  /* Primitivas e Semânticas de Sombras em 3 Camadas Ópticas (Umbra + Penumbra Spread Negativo + Catch-Light) */
+  /* 3-Layer Optical Shadow Primitives & Semantics (Umbra + Negative-Spread Penumbra + Catch-Light) */
   --shadow-layer-sm:
     0px 1px 2px 0px oklch(0.2 0.03 255 / 0.05),
     0px 2px 4px -1px oklch(0.2 0.03 255 / 0.04),
@@ -220,7 +220,7 @@ html, body {
 }
 ```
 
-## B. Componente Polimórfico de Superfície com 4 Variantes e FSM (`src/components/ui/SurfaceCard.tsx`)
+## B. Polymorphic Surface Component with 4 Variants & FSM (`src/components/ui/SurfaceCard.tsx`)
 
 ```tsx
 import React, { useState } from 'react';
@@ -249,7 +249,7 @@ export const SurfaceCard: React.FC<SurfaceCardProps> = ({
   interactive = false,
   isLoading = false,
   isEmpty = false,
-  emptyActionLabel = 'Restaurar dados',
+  emptyActionLabel = 'Reset filters',
   onEmptyAction,
   error = null,
   className = '',
@@ -287,7 +287,7 @@ export const SurfaceCard: React.FC<SurfaceCardProps> = ({
       </header>
       {isLoading ? (
         <div role="status" aria-busy="true" aria-live="polite" className="p-4 rounded-lg">
-          Sincronizando estado...
+          Syncing state...
         </div>
       ) : error ? (
         <div role="alert" aria-live="assertive" className="p-4 rounded-lg font-medium">
@@ -295,7 +295,7 @@ export const SurfaceCard: React.FC<SurfaceCardProps> = ({
         </div>
       ) : isEmpty ? (
         <div className="p-4 rounded-lg flex items-center justify-between">
-          <span>Nenhum registro encontrado para o filtro atual.</span>
+          <span>No records match the active filter.</span>
           {onEmptyAction && (
             <button type="button" className="btn-action" onClick={onEmptyAction}>
               {emptyActionLabel}

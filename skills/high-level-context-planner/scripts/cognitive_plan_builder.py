@@ -108,7 +108,7 @@ class CognitiveAdaptivePlan(BaseModel):
 
     plan_id: str
     version: str = "3.0.0"
-    target_orchestrator: str = "skill-orquestrador-planos-encadeados"
+    target_orchestrator: str = "chained-plan-orchestrator"
     strategic_goal: str
     intencao: IntentDiagnosis
     frameworks_selecionados: SelectedFrameworks
@@ -223,7 +223,7 @@ def _build_core_discovery_nodes() -> List[ExecutionNode]:
         ExecutionNode(
             etapa_id="step_01_exploracao_react",
             nome="Fase 1: Coleta de Evidências e Interação com Ferramentas",
-            responsible_skill="auditoria-projetos-sistema",
+            responsible_skill="system-project-auditor",
             tipo_execucao="tool_io",
             padrao_cognitivo="ReAct",
             regras_ativas_count=3,
@@ -264,7 +264,7 @@ def build_default_nodes(intent: IntentDiagnosis) -> List[ExecutionNode]:
             ExecutionNode(
                 etapa_id="step_02_hitl_gate",
                 nome="Fase 2.5: Portão de Aprovação Humana Obrigatória (HITL)",
-                responsible_skill="skill-orquestrador-planos-encadeados",
+                responsible_skill="chained-plan-orchestrator",
                 tipo_execucao="hitl_gate",
                 padrao_cognitivo="ReAct",
                 regras_ativas_count=2,

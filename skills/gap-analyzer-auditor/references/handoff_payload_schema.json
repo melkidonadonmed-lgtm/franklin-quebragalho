@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HandoffPayload",
+  "description": "Structured feedback contract emitted by gap-analyzer-auditor for high-level-context-planner or chained-plan-orchestrator",
+  "type": "object",
+  "properties": {
+    "handoff_target": {
+      "type": "string",
+      "enum": ["high-level-context-planner", "chained-plan-orchestrator"],
+      "description": "Canonical target skill receiving the corrective hand-off payload"
+    },
+    "incident_id": {
+      "type": "string",
+      "pattern": "^AUDIT-[0-9]{4}-[0-9]{2}-[0-9]{2}-[A-Z0-9]+$",
+      "description": "Unique audit incident identifier"
+    },
+    "recommended_option": {
+      "type": "string",
+      "enum": ["Option 1", "Option 2", "Option 1 (Surgical)", "Option 2 (Architectural)"],
+      "description": "Recommended resolution branch from the Option 1 vs. Option 2 matrix"
+    },
+    "required_adjustments": {
+      "type": "array",
+      "description": "Atomic graph adjustments (each patch <= 5 active rules)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step": {
+            "type": "string",
+            "description": "Targeted phase or node identifier"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "REFACTOR",
+              "INSERT_GUARDRAIL",
+              "REMOVE_DEPENDENCY",
+              "ADD_RETRY",
+              "HITL_BLOCK",
+              "APPEND_CONVERGENCE_TASKS"
+            ],
+            "description": "Deterministic graph patch operation"
+          },
+          "patch_instructions": {
+            "type": "string",
+            "description": "Atomic, testable mitigation instructions (<= 5 active rules)"
+          }
+        },
+        "required": ["step", "action", "patch_instructions"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "contingency_trigger": {
+      "type": "string",
+      "description": "Deterministic fallback condition if mitigation fails at runtime"
+    }
+  },
+  "required": [
+    "handoff_target",
+    "incident_id",
+    "recommended_option",
+    "required_adjustments",
+    "contingency_trigger"
+  ],
+  "additionalProperties": false
+}

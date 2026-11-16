@@ -223,10 +223,10 @@ def _evaluate_axis_3_graph_and_ast(
 
 
 def _bridge_nav_x_func_score(root_dir: Path | None) -> Dict[str, Any]:
-    """Aciona o motor `deterministic_scorer.py` da skill unificada `auditoria-projetos-sistema` para consolidar SGA + TIF."""
+    """Aciona o motor `deterministic_scorer.py` da skill unificada `system-project-auditor` para consolidar SGA + TIF."""
     if root_dir is None or not root_dir.exists():
         return {"bridged": False}
-    nav_script_dir = SCRIPT_DIR.parent.parent / "auditoria-projetos-sistema" / "scripts"
+    nav_script_dir = SCRIPT_DIR.parent.parent / "system-project-auditor" / "scripts"
     if not (nav_script_dir / "deterministic_scorer.py").exists():
         return {"bridged": False}
     if str(nav_script_dir) not in sys.path:

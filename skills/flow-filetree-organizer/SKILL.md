@@ -1,0 +1,51 @@
+---
+name: flow-filetree-organizer
+description: "Transform raw app ideas and operational requirements into valid Mermaid flowcharts and commented ASCII directory trees with literal prompt preservation, MVP scope isolation, and .md/.pdf export options. Use when mapping visual workflows and folder structures. Do NOT use for AST security audits, full repo refactoring, or standalone HTML-to-PDF conversion."
+compatibility: "Antigravity 2.0, Markdown GFM, Mermaid, Edge Headless"
+metadata:
+  author: "Franklin"
+  version: "1.2.0"
+  updated_at: "2026-11-16"
+  category: "Visual Planning & Directory Tree Diagramming"
+  tags: ["flow-filetree-organizer", "fluxo", "fluxos", "arvore", "mermaid", "diagramas", "diretorios", "ideias", "flowchart", "filetree", "markdown"]
+---
+
+# `flow-filetree-organizer` (`v1.2.0`) — Mermaid Flowcharts & File Trees
+
+## 1. Overview & Scope
+
+Converts raw app drafts, feature specs, and operational workflows into syntactically safe **Mermaid flowcharts** (`flowchart TD`/`LR`) and **commented ASCII directory trees**, preserving semantic version history and offering direct `.md` or `.pdf` export.
+
+### When NOT to Use
+- **Static AST Security Audits:** Use `code-acceptability-auditor` or `system-project-auditor`.
+- **Full Repo Restructuring, Code Scaffolding, or MCP Sync:** Use `project-idea-organizer`.
+- **Standalone Markdown/HTML to PDF Rendering:** Delegate standalone `.pdf` conversion to `html-pdf-converter`.
+
+## 2. Inputs & Prerequisites
+
+- **`idea_text` (required):** Raw user request, app idea, or workflow specification.
+- **`previous_output` (optional):** Prior version used to compute semantic changelog deltas.
+- **`export_format` (optional):** `chat` (default), `md`, or `pdf`.
+
+## 3. Step-by-Step Procedure
+
+Follow the formatting rules and output template in [`references/mermaid_and_filetree_patterns.md`](references/mermaid_and_filetree_patterns.md):
+
+1. **Phase 0 — Literal Capture & Ambiguity Gate:** Copy the exact user text into `Original request:` verbatim (never paraphrase or summarize it). If essential parameters are absent, tag `[GAP]` and ask at most 1–2 concise HITL questions without inventing scope.
+2. **Phase & MVP Scoping:** Order stages sequentially (`Input -> Processing -> Output`), keep only core MVP modules inside the main flow, and isolate extras under `Optional Suggestions`.
+3. **Mermaid & Commented ASCII Tree:** Use double-quoted node labels whenever text contains `()`, `[]`, `/`, or `:`; attach `# <purpose>` comments to every folder and file node.
+4. **Direct Export (`.md` / `.pdf`):** Write `.md` via `write_file` or delegate `.pdf` export to `html-pdf-converter` when requested.
+
+## 4. Gotchas & Edge Cases
+
+- **No Paraphrased Prompts or Scope Bloat:** Never rewrite `Original request:` or inflate the core MVP with unrequested services.
+- **Mermaid Parser Safety:** Never embed raw HTML tags (`<br>`, `<b>`, `<div>`) or unquoted parentheses inside node labels.
+- **No Secrets & HITL Overwrite Guard:** Reference `.env.example` only in trees and ask human confirmation before overwriting existing `.md`/`.pdf` files.
+
+## 5. Output Schema & Validation Criteria
+
+Deliver the 6-section template defined in [`references/mermaid_and_filetree_patterns.md`](references/mermaid_and_filetree_patterns.md) (Metadata Header, Literal `Original request`, Flow Steps, Changelog, Mermaid Diagram, Commented ASCII Tree, Execution Mode, Optional Suggestions, and Export Prompt), audited with `[PASS]`/`[FAIL]`/`[UNVERIFIED]` against [`rules/audit_criteria.md`](rules/audit_criteria.md).
+
+## 6. User Communication Rule
+
+All internal Mermaid syntax standards, tree conventions, and audit rules MUST remain in Technical English; however, **all user-facing workflow descriptions, tree comments tailored to the user's request, clarification questions, and `.md`/`.pdf` export prompts MUST be communicated in Portuguese (Brazil / `pt-BR`)**, unless the user explicitly requests otherwise.

@@ -1,13 +1,14 @@
-# Engenharia de Espaçamento UX/UI, Tokens Semânticos (Google Stitch & Tailwind v4), Hierarquia Visual e Matriz de Cores OKLCH
+# UX/UI Spacing Engineering, Semantic Tokens (Google Stitch & Tailwind v4), Visual Hierarchy & OKLCH Color Matrix
 
-> **Referência Canônica Tier-3 (`design-md`)** — Sintetiza `html-spacing-skill.md`, `color-quality-matrix-skill.md`, `TOKENS OKLHC`, `Design Tokens na Prática`, `frontend-best-pratics.md`, `modern-web-guidance` (`fluid-scaling`, `design-token-reactivity`), **Google Stitch (`DESIGN.md`)** e **Tailwind CSS v4 (`@theme`)**.
+> **Tier-3 Canonical Reference (`design-md`)** — Synthesizes `html-spacing`, `color-quality-matrix`, `OKLCH` tokens, `fluid-scaling`, `design-token-reactivity`, **Google Stitch (`DESIGN.md`)**, and **Tailwind CSS v4 (`@theme`)**.
 
 ---
 
-## 1. Fundamentos do Box Model e Propriedades Lógicas Internacionais
+## 1. Box Model Foundations & International Logical Properties
 
-### 1.1. Dimensionamento Previsível (`box-sizing: border-box`)
-Por padrão, os navegadores utilizam `box-sizing: content-box`, somando `padding` e `border` à largura/altura declaradas e provocando quebras involuntárias de layout. Todo contrato `DESIGN.md` exige o reset universal no `@layer base`:
+### 1.1. Predictable Sizing (`box-sizing: border-box`)
+
+By default, browsers use `box-sizing: content-box`, adding `padding` and `border` onto declared dimensions and causing unexpected layout overflow. Every `DESIGN.md` contract mandates the universal reset inside `@layer base`:
 
 ```css
 *, *::before, *::after {
@@ -17,59 +18,60 @@ Por padrão, os navegadores utilizam `box-sizing: content-box`, somando `padding
 }
 ```
 
-### 1.2. Propriedades Lógicas de Espaçamento (LTR / RTL Ready)
-Proíbe-se o uso de propriedades físicas direcionais (`left`, `right`, `top`, `bottom`, `width`, `height`) em componentes reutilizáveis. Utilize exclusivamente propriedades lógicas baseadas nos eixos *inline* (fluxo de leitura) e *block* (fluxo de empilhamento):
+### 1.2. Logical Spacing Properties (LTR / RTL Ready)
 
-| Propriedade Física Legada (Proibida) | Propriedade Lógica Canônica (`DESIGN.md`) | Função Espacial |
+Physical directional properties (`left`, `right`, `top`, `bottom`, `width`, `height`) are forbidden in reusable components. Use logical properties anchored to the *inline* (reading flow) and *block* (stacking flow) axes:
+
+| Legacy Physical Property (Forbidden) | Canonical Logical Property (`DESIGN.md`) | Spatial Role |
 | :--- | :--- | :--- |
-| `padding-left` + `padding-right` | `padding-inline` (`start` / `end`) | Isolamento interno horizontal do componente |
-| `padding-top` + `padding-bottom` | `padding-block` (`start` / `end`) | Isolamento interno vertical do componente |
-| `margin-left` + `margin-right` | `margin-inline` (`auto` para centralizar) | Amortecimento externo horizontal |
-| `margin-top` + `margin-bottom` | `margin-block` (`start` / `end`) | Amortecimento externo vertical |
-| `width` / `height` | `inline-size` / `block-size` | Dimensões intrínsecas nos eixos de fluxo |
-| `min-width` / `max-width` | `min-inline-size` / `max-inline-size` | Limites de leitura (ex.: `60ch`) e toque (`48px`) |
-| `border-left` / `border-bottom` | `border-inline-start` / `border-block-end` | Indicadores ativos em sidebars e abas |
+| `padding-left` + `padding-right` | `padding-inline` (`start` / `end`) | Internal horizontal isolation |
+| `padding-top` + `padding-bottom` | `padding-block` (`start` / `end`) | Internal vertical isolation |
+| `margin-left` + `margin-right` | `margin-inline` (`auto` to center) | External horizontal buffering |
+| `margin-top` + `margin-bottom` | `margin-block` (`start` / `end`) | External vertical buffering |
+| `width` / `height` | `inline-size` / `block-size` | Intrinsic flow-axis dimensions |
+| `min-width` / `max-width` | `min-inline-size` / `max-inline-size` | Reading (`60ch`) and touch (`48px`) bounds |
+| `border-left` / `border-bottom` | `border-inline-start` / `border-block-end` | Active indicators on sidebars and tabs |
 
 ---
 
-## 2. Arquitetura de Tokens de Espaçamento: Primitivos (`4px/8px`) + Semânticos (Google Stitch)
+## 2. Spacing Token Architecture: `4px/8px` Primitives + Semantic Intent (Google Stitch)
 
-Para evitar que agentes geradores de UI (como **Google Stitch** e LLMs) inventem pixels arbitrários (`13px`, `27px`), o contrato `DESIGN.md` deve declarar **duas camadas de tokens de espaçamento**:
-1. **Escala Primitiva (`4px/8px` Grid):** Ritmo matemático base.
-2. **Tokens Semânticos de Intenção (`--space-*`):** Traduzem a **Lei da Proximidade de Gestalt** ($\text{Gap Interno de Item} < \text{Padding do Card} \le \text{Gap da Grade} < \text{Inset de Seção}$).
+To prevent UI agents and LLMs from inventing arbitrary pixel numbers (`13px`, `27px`), `DESIGN.md` must declare **two spacing token layers**:
+1. **Primitive Scale (`4px/8px` Grid):** Mathematical baseline rhythm.
+2. **Semantic Intent Tokens (`--space-*`):** Express the **Gestalt Law of Proximity** ($\text{Inner Item Gap} < \text{Card Padding} \le \text{Grid Gap} < \text{Section Inset}$).
 
-### 2.1. Declaração Canônica CSS + Reatividade de Densidade (`design-token-reactivity`)
+### 2.1. Canonical CSS Declaration & Zero-JS Density Reactivity (`design-token-reactivity`)
 
 ```css
 :root {
-  /* 1. ESCALA PRIMITIVA DE ESPAÇAMENTO (Grade 8px com submúltiplos de 4px) */
-  --space-0-5: 0.125rem; /* 2px  - Micro-ajuste óptico / borda fina */
-  --space-1:   0.25rem;  /* 4px  - Gap entre badge e ícone */
-  --space-2:   0.5rem;   /* 8px  - Gap padrão ícone-texto / controles densos */
-  --space-3:   0.75rem;  /* 12px - Gap interno entre regiões de um Card */
-  --space-4:   1rem;     /* 16px - Padding padrão de Card compacto / gap de lista */
-  --space-6:   1.5rem;   /* 24px - Padding padrão de Card amplo / gap de Grid */
-  --space-8:   2rem;     /* 32px - Separação entre subseções */
-  --space-12:  3rem;     /* 48px - Separação entre grandes blocos de página */
-  --space-16:  4rem;     /* 64px - Inset vertical de seções Hero/Macro */
+  /* 1. PRIMITIVE SPACING SCALE (8px Grid with 4px Sub-multiples) */
+  --space-0-5: 0.125rem; /* 2px  - Optical micro-adjustment / hairline */
+  --space-1:   0.25rem;  /* 4px  - Gap between badge and icon */
+  --space-2:   0.5rem;   /* 8px  - Standard icon-text / dense control gap */
+  --space-3:   0.75rem;  /* 12px - Internal gap between card regions */
+  --space-4:   1rem;     /* 16px - Compact card padding / list item gap */
+  --space-6:   1.5rem;   /* 24px - Standard spacious card padding / Grid gap */
+  --space-8:   2rem;     /* 32px - Subsection separation */
+  --space-12:  3rem;     /* 48px - Major page-block separation */
+  --space-16:  4rem;     /* 64px - Hero / Macro section vertical inset */
 
-  /* 2. TOKENS SEMÂNTICOS DE INTENÇÃO (Google Stitch & Componentes Autônomos) */
+  /* 2. SEMANTIC INTENT TOKENS (Google Stitch & Autonomous Components) */
   --space-inline-icon:       var(--space-2);                      /* 8px */
   --space-component-padding: var(--space-3) var(--space-4);       /* 12px 16px */
-  --space-card-gap:          var(--space-3);                      /* 12px (interno ao card) */
+  --space-card-gap:          var(--space-3);                      /* 12px (inside card) */
   --space-card-padding:      clamp(1rem, 3cqi, 1.75rem);          /* 16px -> 28px via @container */
-  --space-grid-gap:          clamp(1rem, 2.5vw, 1.5rem);          /* 16px -> 24px entre cards */
-  --space-section-inset:     clamp(1.5rem, 4vw, 3rem);            /* 24px -> 48px entre seções */
-  --space-flow:              1.25em;                              /* Ritmo de prosa (.prose > * + *) */
+  --space-grid-gap:          clamp(1rem, 2.5vw, 1.5rem);          /* 16px -> 24px between cards */
+  --space-section-inset:     clamp(1.5rem, 4vw, 3rem);            /* 24px -> 48px between sections */
+  --space-flow:              1.25em;                              /* Prose rhythm (.prose > * + *) */
 
-  /* 3. RAIOS DE BORDA E CONCÊNTRICOS */
+  /* 3. BORDER & CONCENTRIC RADII */
   --radius-sm:   0.375rem; /* 6px */
   --radius-md:   0.5rem;   /* 8px */
   --radius-lg:   0.75rem;  /* 12px */
   --radius-card: 1rem;     /* 16px */
 }
 
-/* Reatividade de Densidade sem JavaScript (zero especificidade via :where) */
+/* Zero-JS Density Reactivity (zero specificity via :where) */
 :where([data-density="compact"]) {
   --space-card-gap:     var(--space-2);
   --space-card-padding: clamp(0.75rem, 2cqi, 1.125rem);
@@ -83,42 +85,45 @@ Para evitar que agentes geradores de UI (como **Google Stitch** e LLMs) inventem
 }
 ```
 
-### 2.2. A Tríade do Espaçamento (`Padding` vs. `Margin` vs. `Gap`) e Margin Collapse
-- **`padding` (Isolamento Interno):** Aplica respiro dentro da borda do elemento e **expande a área clicável/tátil** de botões e links.
-- **`gap` (Espaçamento Inter-Elementos):** Mecanismo primário em contêineres **Flexbox** e **CSS Grid** (`row-gap` / `column-gap`), definindo o espaço exato entre irmãos sem vazar margens nas bordas externas.
-- **`margin` (Amortecimento Externo) e Colapso de Margem ($M_{\text{res}} = \max(M_1, M_2)$):**
-  - No fluxo normal de bloco, margens verticais adjacentes colapsam para o maior valor.
-  - **Onde o colapso NÃO ocorre:** (1) Eixo horizontal (`inline`), (2) Filhos de **Flexbox** ou **CSS Grid**, (3) Contêineres com `padding` ou `border`, e (4) Contêineres com **Contexto de Formatação de Bloco (BFC)** via `display: flow-root`.
-  - **Padrões Obrigatórios Anti-Vazamento:**
+### 2.2. The Spacing Triad (`Padding` vs. `Margin` vs. `Gap`) & Margin Collapse
+
+- **`padding` (Internal Isolation):** Applies breathing room inside the border and **expands the hit/touch area** of buttons and links.
+- **`gap` (Inter-Element Spacing):** Primary spacing mechanism in **Flexbox** and **CSS Grid** (`row-gap` / `column-gap`), setting exact sibling spacing without leaking margins onto outer edges.
+- **`margin` (External Buffering) & Margin Collapse ($M_{\text{res}} = \max(M_1, M_2)$):**
+  - In normal block flow, adjacent vertical margins collapse to the larger value.
+  - **Where collapse does NOT occur:** (1) Horizontal (`inline`) axis, (2) **Flexbox** or **CSS Grid** children, (3) Containers with `padding` or `border`, and (4) Containers establishing a **Block Formatting Context (BFC)** via `display: flow-root`.
+  - **Mandatory Anti-Leak Patterns:**
     ```css
-    /* Isola margens internas sem usar overflow: hidden (que cortaria box-shadow) */
+    /* Isolates internal margins without overflow: hidden (which would clip box-shadow) */
     .section-container {
       display: flow-root;
     }
 
-    /* Coruja Lobotomizada: ritmo vertical uniforme em blocos de texto/artigos */
+    /* Lobotomized Owl: uniform vertical rhythm in prose/articles */
     .prose > * + * {
       margin-block-start: var(--space-flow, 1.25em);
     }
     ```
 
-### 2.3. Geometria Óptica de Raios Concêntricos em Cards
-Quando um elemento interno (imagem de capa, bloco de métrica `.metric-item` ou botão de largura total) está aninhado dentro de um card arredondado com `padding` $P$, usar o mesmo `border-radius` em ambos gera uma dissonância visual nos cantos. Calcule o raio interno pela fórmula:
-$$R_{\text{interno}} = \max(4\text{px}, R_{\text{externo}} - P_{\text{padding}})$$
-- **Exemplo Canônico:** Se o `.card` tem `--radius-card: 16px` e `padding: 6px` no wrapper de mídia, o `.card-media` usa `border-radius: calc(var(--radius-card) - 6px)` (`10px`).
+### 2.3. Optical Geometry of Concentric Radii in Cards
+
+When an inner element (cover image, `.metric-item`, or full-width button) is nested inside a rounded card with padding $P$, reusing the identical `border-radius` causes optical corner dissonance. Compute the inner radius via:
+$$R_{\text{inner}} = \max(4\text{px}, R_{\text{outer}} - P_{\text{padding}})$$
+- **Canonical Example:** If `.card` has `--radius-card: 16px` and `padding: 6px` on its media wrapper, `.card-media` uses `border-radius: calc(var(--radius-card) - 6px)` (`10px`).
 
 ---
 
-## 3. Integração Tailwind CSS v4 (`@theme`) vs. Style Dictionary
+## 3. Tailwind CSS v4 (`@theme`) vs. Style Dictionary
 
-### 3.1. Configuração CSS-First no Tailwind CSS v4 (`app.css`)
-O Tailwind CSS v4 elimina `tailwind.config.js` e adota `@import "tailwindcss";` combinado com a diretiva `@theme`:
+### 3.1. CSS-First Configuration in Tailwind CSS v4 (`app.css`)
+
+Tailwind CSS v4 replaces `tailwind.config.js` with `@import "tailwindcss";` paired with `@theme`:
 
 ```css
 @import "tailwindcss";
 
 @theme {
-  /* Cores Semânticas OKLCH mapeadas para utilitários bg-app, bg-surface, bg-card, text-primary */
+  /* Semantic OKLCH colors mapped to bg-app, bg-surface, bg-card, text-primary utilities */
   --color-app:           var(--bg-app);
   --color-surface:       var(--bg-surface);
   --color-card:          var(--bg-card);
@@ -126,31 +131,31 @@ O Tailwind CSS v4 elimina `tailwind.config.js` e adota `@import "tailwindcss";` 
   --color-text-muted:    var(--text-secondary);
   --color-brand:         var(--brand-primary);
 
-  /* Sombras em Camadas mapeadas para shadow-elevation-low / medium / high */
+  /* Layered shadows mapped to shadow-elevation-low / medium / high */
   --shadow-elevation-low:    var(--elevation-low);
   --shadow-elevation-medium: var(--elevation-medium);
   --shadow-elevation-high:   var(--elevation-high);
 
-  /* Raios e Espaçamentos Semânticos */
+  /* Semantic radii and spacing */
   --radius-card: 1rem;
   --radius-inner: calc(var(--radius-card) - 0.375rem);
 }
 ```
 
-### 3.2. Matriz de Decisão: Tailwind v4 (`@theme`) vs. Style Dictionary (`tokens.json`)
+### 3.2. Decision Matrix: Tailwind v4 (`@theme`) vs. Style Dictionary (`tokens.json`)
 
-| Critério | Tailwind CSS v4 (`@theme`) | Style Dictionary (JSON Multi-Plataforma) |
+| Criterion | Tailwind CSS v4 (`@theme`) | Style Dictionary (Cross-Platform JSON) |
 | :--- | :--- | :--- |
-| **Escopo do Projeto** | Aplicações Web React 19 / Next.js 15 focadas em velocidade e CSS nativo. | Design Systems multiplataforma compartilhados entre **Web, Android (Kotlin/Compose) e iOS**. |
-| **Fonte da Verdade** | Diretamente no CSS global (`tokens.css` / `app.css`) com variáveis OKLCH. | Arquivos neutros `tokens.json` sincronizados com Figma (Tokens Studio). |
-| **Build Pipeline** | Zero etapa extra de compilação de tokens. | Compila `variables.css`, `tokens.ts` e XML/Kotlin via `npx style-dictionary build`. |
+| **Project Scope** | React 19 / Next.js 15 web apps prioritizing velocity and native CSS. | Multi-platform Design Systems shared across **Web, Android (Kotlin/Compose), and iOS**. |
+| **Source of Truth** | Directly in global CSS (`tokens.css` / `app.css`) with OKLCH variables. | Platform-neutral `tokens.json` synced with Figma (Tokens Studio). |
+| **Build Pipeline** | Zero extra token compilation step. | Compiles `variables.css`, `tokens.ts`, and XML/Kotlin via `npx style-dictionary build`. |
 
 ---
 
-## 4. Os 4 Pilares da Hierarquia Visual e Tipografia Fluida (`clamp()`)
+## 4. The 4 Pillars of Visual Hierarchy & Fluid Typography (`clamp()`)
 
-1. **Pilar 1 — Escalonamento Fluido (`clamp()`) com Conformidade WCAG 1.4.4 (Zoom 200%):**
-   - Nunca use `vw` ou `cqi` puros em `font-size` (bloqueia o zoom de navegador). Some sempre uma base em `rem` (`1rem + 2cqi`) e garanta que o valor máximo seja **$\le 2.5\times$ o valor mínimo**:
+1. **Pillar 1 — Fluid Scaling (`clamp()`) with WCAG 1.4.4 Compliance (200% Zoom):**
+   - Never use raw `vw` or `cqi` alone in `font-size` (breaks browser text zoom). Always sum a `rem` base (`1rem + 2cqi`) and ensure the maximum is **$\le 2.5\times$ the minimum**:
      ```css
      h1 {
        font-size: clamp(1.75rem, 1.2rem + 2.5vw, 3rem); /* 28px -> 48px (ratio 1.71x <= 2.5x) */
@@ -167,19 +172,19 @@ O Tailwind CSS v4 elimina `tailwind.config.js` e adota `@import "tailwindcss";` 
      p, .card-text {
        font-size: clamp(0.9375rem, 0.88rem + 0.5cqi, 1.0625rem);
        line-height: 1.55;
-       max-inline-size: 60ch; /* Limite ergonômico de 45 a 75 caracteres por linha */
+       max-inline-size: 60ch; /* Ergonomic 45-75 character line measure */
        text-wrap: pretty;
      }
      .metric-value, td[data-numeric="true"] {
-       font-variant-numeric: tabular-nums; /* Alinhamento vertical perfeito de dígitos */
+       font-variant-numeric: tabular-nums; /* Exact vertical digit alignment */
      }
      ```
-2. **Pilar 2 — Proporção Cromática `60-30-10` em Espaço Perceptual `OKLCH`:**
-   - **60% Superfície Dominante (`--bg-app`):** Fundo neutro dessaturado (`oklch(0.98 0.005 250)` no Light; `oklch(0.14 0.02 260)` no Dark — **proibido `#000000` puro**).
-   - **30% Superfície Estrutural (`--bg-surface` / `--bg-card`):** Painéis, sidebars e cartões (`oklch(0.18 0.02 260)` a `oklch(0.22 0.03 260)` no Dark Mode, comunicando altura $Z$ pelo clareamento de $L$).
-   - **10% Ponto Focal (`--brand-primary`):** Reservado estritamente para CTAs primários, indicadores ativos (`aria-current="page"`) e anéis `:focus-visible`.
-3. **Pilar 3 — Derivação Dinâmica de Cores (RCS + `color-mix(in oklab)` + `light-dark()`):**
-   - Gere estados `:hover`, `:active` e superfícies translúcidas matematicamente a partir de `--brand-primary`:
+2. **Pillar 2 — `60-30-10` Chromatic Ratio in Perceptual `OKLCH`:**
+   - **60% Dominant Surface (`--bg-app`):** Desaturated neutral canvas (`oklch(0.98 0.005 250)` in Light; `oklch(0.14 0.02 260)` or `0.16` in Dark — **pure `#000000` forbidden**).
+   - **30% Structural Surface (`--bg-surface` / `--bg-card`):** Panels, sidebars, and cards (`oklch(0.18 0.02 260)` to `oklch(0.22 0.03 260)` in Dark Mode, signaling $Z$-elevation via lightness $L$).
+   - **10% Focal Accent (`--brand-primary`):** Reserved strictly for primary CTAs, active navigation markers (`aria-current="page"`), and `:focus-visible` rings.
+3. **Pillar 3 — Dynamic Color Derivation (RCS + `color-mix(in oklab)` + `light-dark()`):**
+   - Derive `:hover`, `:active`, and translucent surface states mathematically from `--brand-primary`:
      ```css
      :root {
        color-scheme: light dark;
@@ -188,9 +193,9 @@ O Tailwind CSS v4 elimina `tailwind.config.js` e adota `@import "tailwindcss";` 
        --btn-primary-active: oklch(from var(--brand-primary) calc(l - 0.14) c h);
        --badge-bg:           color-mix(in oklab, var(--brand-primary) 15%, transparent);
        --border-subtle:      light-dark(oklch(0.20 0.02 255 / 0.08), oklch(1.0 0 0 / 0.12));
-       --text-primary:       light-dark(oklch(0.18 0.02 255), oklch(0.96 0.01 250)); /* Evita #FFF puro */
+       --text-primary:       light-dark(oklch(0.18 0.02 255), oklch(0.96 0.01 250)); /* Avoids pure #FFF */
      }
      ```
-4. **Pilar 4 — Matriz de Cores SVG (`feColorMatrix` $5\times 4$) e Gradientes em `oklch`:**
-   - Sempre interpole gradientes com `linear-gradient(in oklch, var(--brand-primary), var(--brand-accent))` para eliminar a "zona cinza morta" do sRGB.
-   - Use `<feColorMatrix type="matrix">` isolado em SVG oculto para filtros *duotone* de identidade visual e simulação/correção de daltonismo (Protanopia/Deuteranopia) sem recriar assets rasterizados.
+4. **Pillar 4 — SVG Color Matrices (`feColorMatrix` $5\times 4$) & `oklch` Gradients:**
+   - Always interpolate gradients with `linear-gradient(in oklch, var(--brand-primary), var(--brand-accent))` to eliminate sRGB muddy gray midpoints.
+   - Use isolated hidden SVG `<feColorMatrix type="matrix">` filters for duotone visual effects and Protanopia/Deuteranopia color-vision verification without duplicating raster assets.

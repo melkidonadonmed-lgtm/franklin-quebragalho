@@ -1,49 +1,52 @@
-# Arquitetura de Layout (Flexbox vs. Grid vs. Subgrid), Cards Dinâmicos, Navegação Adaptável e Fluidez (React 19 / Next.js 15 / Tailwind v4)
+# Layout Architecture (Flexbox vs. Grid vs. Subgrid), Dynamic Cards, Adaptive Navigation & Fluidity (React 19 / Next.js 15 / Tailwind v4)
 
-> **Referência Canônica Tier-3 (`frontend-code-architect`)** — Sintetiza `Card UI Analytics`, `Cartões CSS Dinâmicos`, `BARRA DE NAVEGAÇÃO ADAPTAVEL`, `usabilidade e fluidez`, `adaptabilidade`, `Design Responsivo Moderno`, `melhores práticas de acessibilidade` e os 7 guias do `modern-web-guidance` (`css-layout`, `card`, `navbar`, `motion`, `interactions-in-complex-layouts`, `fluid-scaling`, `design-token-reactivity`).
+> **Tier-3 Canonical Reference (`frontend-code-architect`)** — Synthesizes `css-layout`, `card`, `navbar`, `motion`, `interactions-in-complex-layouts`, `fluid-scaling`, and `design-token-reactivity`.
 
 ---
 
-## 1. Árvore de Decisão Espacial: Macrolayout (Grid) vs. Microlayout (`@container` + Flex/Subgrid)
+## 1. Spatial Decision Tree: Macrolayout (Grid) vs. Microlayout (`@container` + Flex/Subgrid)
 
-### 1.1. Macrolayouts (Estrutura Global da Página / App Shell)
-- **Mecanismo:** **CSS Grid** aliado a **Media Queries (`@media`)** e unidades de viewport dinâmicas (`100dvh`).
-- **Responsabilidade:** Coordenar a casca global (`header`, `aside` / barra de navegação de `240px`, `<main>` e painel inspetor).
-- **Padrão RAM (Repeat, Auto, Minmax) sem Overflow Horizontal:**
+### 1.1. Macrolayouts (Global Page Shell)
+
+- **Mechanism:** **CSS Grid** paired with **Media Queries (`@media`)** and dynamic viewport units (`100dvh`).
+- **Responsibility:** Coordinate the global shell (`header`, `aside` / `240px` navigation rail, `<main>`, and inspector pane).
+- **RAM Pattern (Repeat, Auto, Minmax) without Horizontal Overflow:**
   ```css
   .macro-card-grid {
     display: grid;
-    /* min(100%, 280px) evita barra de rolagem horizontal em telas menores que 280px */
+    /* min(100%, 280px) prevents horizontal scrollbars on viewports narrower than 280px */
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
     gap: var(--space-grid-gap, clamp(1rem, 2.5vw, 1.5rem));
   }
   ```
 
-### 1.2. Microlayouts (Componentes Autônomos Independentes do Viewport)
-- **Mecanismo:** **Container Queries (`container-type: inline-size`)** + unidades `cqi`/`cqw`.
-- **Regra de Ouro:** Um componente reutilizável (Card, Widget, Toolbar) **nunca consulta `@media`** para reorganizar suas colunas internas; ele responde à largura real do seu próprio contêiner (`@container card (min-width: 340px)`).
+### 1.2. Microlayouts (Viewport-Independent Autonomous Components)
 
-### 1.3. Regras Críticas de Flexbox (1D) vs. CSS Grid (2D) (`modern-web-guidance: css-layout`)
+- **Mechanism:** **Container Queries (`container-type: inline-size`)** + `cqi`/`cqw` units.
+- **Golden Rule:** A reusable component (Card, Widget, Toolbar) **never queries `@media`** to reorganize its internal columns; it adapts to the actual width of its own container (`@container card (min-width: 340px)`).
 
-| Cenário | Mecanismo Correto | Regras Técnicas Obrigatórias |
+### 1.3. Critical Flexbox (1D) vs. CSS Grid (2D) Rules
+
+| Scenario | Correct Mechanism | Mandatory Technical Rules |
 | :--- | :--- | :--- |
-| **Linha de tags, pílulas, filtros ou botões** | **Flexbox (1D)** | Usar `display: flex; flex-wrap: wrap; flex-wrap: balance; gap: var(--space-2);` (evita linha órfã com 1 item isolado). |
-| **Centralização de barra ou modal** | **Flexbox / Grid** | Usar `align-items: safe center; justify-content: safe center;` (impede que o topo/início de elementos focáveis seja cortado fora da tela em viewports estreitos). |
-| **Filhos Flex/Grid com texto longo ou truncado** | **Flexbox / Grid** | Declarar `min-inline-size: 0` no filho (o padrão `min-inline-size: auto` impede `text-overflow: ellipsis` e estoura o contêiner). |
-| **Dimensionamento intrínseco Flex** | **Flexbox (1D)** | Usar shorthand `flex: 1 1 250px`. **Proibido** declarar `width` ou `inline-size` junto com `flex-basis`. |
-| **Alinhamento vertical entre Cards irmãos** | **CSS Grid + `subgrid`** | Usar `grid-row: span 4; grid-template-rows: auto auto 1fr auto; grid-template-rows: subgrid;` para alinhar `Media`, `Header`, `Content` e `Footer` entre colunas. |
+| **Row of tags, pills, filters, or buttons** | **Flexbox (1D)** | Use `display: flex; flex-wrap: wrap; flex-wrap: balance; gap: var(--space-2);` (prevents single-item orphan lines). |
+| **Toolbar or modal centering** | **Flexbox / Grid** | Use `align-items: safe center; justify-content: safe center;` (prevents top/start clipping of focusable controls on narrow viewports). |
+| **Flex/Grid children with long or truncated text** | **Flexbox / Grid** | Declare `min-inline-size: 0` on the child (default `min-inline-size: auto` blocks `text-overflow: ellipsis` and overflows the container). |
+| **Intrinsic Flex sizing** | **Flexbox (1D)** | Use shorthand `flex: 1 1 250px`. **Forbidden** to declare `width` or `inline-size` alongside `flex-basis`. |
+| **Vertical alignment across sibling Cards** | **CSS Grid + `subgrid`** | Use `grid-row: span 4; grid-template-rows: auto auto 1fr auto; grid-template-rows: subgrid;` to align `Media`, `Header`, `Content`, and `Footer` across columns. |
 
 ---
 
-## 2. Anatomia Canônica de Cards Dinâmicos (`<article>`, `subgrid`, `:has()` e React 19)
+## 2. Canonical Dynamic Card Anatomy (`<article>`, `subgrid`, `:has()`, and React 19)
 
-### 2.1. As 4 Regiões Semânticas e Alinhamento por `subgrid`
-Todo cartão de conteúdo ou analytics deve usar `<article>` como raiz semântica, dividido em até 4 regiões (`Media`, `Header`, `Content`, `Footer`).
-- **Isolamento `@container` vs. `subgrid`:** Nunca aplique `container-type: inline-size` no exato mesmo elemento DOM que declara `grid-template-rows: subgrid` (pois a contenção de tamanho desativa a herança das tracks do Grid pai). Aplique `container-type: inline-size` em um wrapper ou no `.card-body`.
-- **Escopo Condicional de Mídia via `:has()`:** Em layouts horizontais (`@container card (min-width: 380px)`), crie a coluna de imagem **apenas quando a mídia existir**, evitando colunas vazias fantasmas:
+### 2.1. The 4 Semantic Regions & `subgrid` Alignment
+
+Every content or analytics card should use `<article>` as its semantic root, divided into up to 4 regions (`Media`, `Header`, `Content`, `Footer`).
+- **Isolating `@container` vs. `subgrid`:** Never apply `container-type: inline-size` on the exact DOM element that declares `grid-template-rows: subgrid` (size containment disables parent Grid track inheritance). Place `container-type: inline-size` on an outer wrapper or `.card-body`.
+- **Conditional Media Column via `:has()`:** In horizontal layouts (`@container card (min-width: 340px)`), create the media column **only when media exists**, avoiding empty ghost tracks:
 
 ```css
-/* Wrapper de Contêiner + Card com 4 Regiões e Subgrid */
+/* Container Wrapper + 4-Region Subgrid Card */
 .card-shell {
   container-type: inline-size;
   container-name: card;
@@ -67,7 +70,7 @@ Todo cartão de conteúdo ou analytics deve usar `<article>` como raiz semântic
     border-color 0.2s ease;
 }
 
-/* Elevação Tridimensional no Hover e Retorno Tátil no Active */
+/* Tactile Hover Lift & Active Return */
 .ui-card.is-interactive:hover {
   transform: translateY(-4px);
   box-shadow: var(--elevation-medium);
@@ -81,15 +84,15 @@ Todo cartão de conteúdo ou analytics deve usar `<article>` como raiz semântic
   outline-offset: 2px;
 }
 
-/* Subgrid para alinhar Media, Header, Body e Footer entre cartões lado a lado */
+/* Subgrid aligning Media, Header, Body, and Footer across sibling cards */
 .card-grid-aligned > .ui-card {
   grid-row: span 4;
   display: grid;
-  grid-template-rows: auto auto 1fr auto; /* Fallback obrigatório na mesma cascata */
+  grid-template-rows: auto auto 1fr auto; /* Mandatory fallback in same cascade */
   grid-template-rows: subgrid;
 }
 
-/* Microlayout: Grade interna de métricas vira 2 colunas quando o PRÓPRIO card >= 340px */
+/* Microlayout: Inner metrics grid switches to 2 columns when the card itself >= 340px */
 .metrics-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -99,7 +102,7 @@ Todo cartão de conteúdo ou analytics deve usar `<article>` como raiz semântic
   .metrics-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  /* Só divide em coluna lateral de mídia se o card realmente tiver imagem/mídia */
+  /* Split into side media column only when card actually contains media */
   .ui-card:has(> .card-media, > img, > picture) {
     display: grid;
     grid-template-columns: minmax(140px, 35%) 1fr;
@@ -107,7 +110,7 @@ Todo cartão de conteúdo ou analytics deve usar `<article>` como raiz semântic
   }
 }
 
-/* Raio Concêntrico nos itens internos: R_inner = max(4px, R_outer - Padding) */
+/* Concentric Radius on nested items: R_inner = max(4px, R_outer - Padding) */
 .metric-item {
   background-color: var(--bg-surface);
   padding: var(--space-3) var(--space-4);
@@ -122,8 +125,9 @@ Todo cartão de conteúdo ou analytics deve usar `<article>` como raiz semântic
 }
 ```
 
-### 2.2. Clickable Cards (`::after` Stretch) e Choice Cards (`:has(> :checked)`)
-1. **Clickable Card Acessível:** Jamais envolva todo o `<article>` em uma tag `<a>` (faz leitores de tela anunciarem todo o parágrafo como um único nome de link gigante). Coloque o `<a class="card-link">` dentro do `<h3>` e expanda sua área de clique via `::after`, mantendo botões secundários clicáveis acima com `z-index: 1`:
+### 2.2. Clickable Cards (`::after` Stretch) & Choice Cards (`:has(> :checked)`)
+
+1. **Accessible Clickable Card:** Never wrap an entire `<article>` in an `<a>` tag (screen readers announce the entire card body as a single giant link name). Place `<a class="card-link">` inside `<h3>` and stretch its hit target via `::after`, lifting secondary actions via `z-index: 1`:
    ```css
    .ui-card:has(a.card-link) { position: relative; }
    .ui-card a.card-link::after {
@@ -138,10 +142,11 @@ Todo cartão de conteúdo ou analytics deve usar `<article>` como raiz semântic
      z-index: 1;
    }
    ```
-2. **Choice Card (Radio/Checkbox sem Layout Shift):** Em cartões de escolha (`<label class="ui-card">`), estilize o estado selecionado com `:has(> input:checked)` alterando apenas `border-color`, `outline` ou `box-shadow` (**nunca altere `border-width` ou `padding`**, o que causaria salto de layout / CLS).
+2. **Choice Card (Radio/Checkbox without Layout Shift):** On `<label class="ui-card">` choice cards, style checked state via `:has(> input:checked)` mutating only `border-color`, `outline`, or `box-shadow` (**never alter `border-width` or `padding`**, avoiding CLS).
 
-### 2.3. Componente Canônico React 19 + TypeScript (`ElevatedCard.tsx` — Sem `forwardRef` Legado)
-No **React 19**, `ref` é passado diretamente como prop padrão sem `React.forwardRef`:
+### 2.3. Canonical React 19 + TypeScript Component (`ElevatedCard.tsx` — No Legacy `forwardRef`)
+
+In **React 19**, `ref` is passed directly as a standard prop without `React.forwardRef`:
 
 ```tsx
 import React from 'react';
@@ -190,29 +195,30 @@ export function ElevatedCard({
 
 ---
 
-## 3. Navegação Adaptável (Bottom Bar $\leftrightarrow$ Sidebar Rail `240px` + Popover Intrínseco)
+## 3. Adaptive Navigation (Bottom Bar $\leftrightarrow$ `240px` Sidebar Rail + Intrinsic Popover)
 
-### 3.1. Arquitetura de Único DOM (Transição Mobile Bottom Nav $\to$ Desktop Sidebar Rail)
-Em vez de duplicar marcação HTML entre mobile e desktop (ou usar `order` para inverter a sequência de `Tab`), um único `<nav class="adaptive-nav" aria-label="Navegação Principal">` transiciona perfeitamente da base da tela (zona do polegar no mobile) para uma barra lateral esquerda de `240px` no desktop (`>= 48em` / `768px`):
+### 3.1. Single-DOM Architecture (Mobile Bottom Nav $\to$ Desktop Sidebar Rail)
+
+Instead of duplicating HTML markup between mobile and desktop (or using `order` to invert `Tab` sequence), a single `<nav class="adaptive-nav" aria-label="Primary navigation">` transitions from the bottom thumb zone on mobile to a `240px` left rail on desktop (`>= 48em` / `768px`):
 
 ```html
 <div class="app-shell">
-  <nav class="adaptive-nav" aria-label="Navegação Principal">
+  <nav class="adaptive-nav" aria-label="Primary navigation">
     <div class="nav-brand">
       <span class="brand-logo" aria-hidden="true">◆</span>
       <span class="brand-name">Analytics Workspace</span>
     </div>
     <ul class="nav-list" role="list">
       <li class="nav-item">
-        <a href="/visao-geral" class="nav-link" aria-current="page">
+        <a href="/overview" class="nav-link" aria-current="page">
           <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-          <span class="nav-label">Visão Geral</span>
+          <span class="nav-label">Overview</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="/relatorios" class="nav-link">
+        <a href="/reports" class="nav-link">
           <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
-          <span class="nav-label">Relatórios</span>
+          <span class="nav-label">Reports</span>
         </a>
       </li>
     </ul>
@@ -222,7 +228,7 @@ Em vez de duplicar marcação HTML entre mobile e desktop (ou usar `order` para 
 ```
 
 ```css
-/* Mobile-First: Bottom Navigation Bar na Zona do Polegar (< 48em) */
+/* Mobile-First: Thumb-Zone Bottom Navigation Bar (< 48em) */
 .app-shell {
   display: grid;
   grid-template-columns: 1fr;
@@ -231,7 +237,7 @@ Em vez de duplicar marcação HTML entre mobile e desktop (ou usar `order` para 
 
 .main-content {
   padding: clamp(1rem, 3vw, 2.5rem);
-  /* Compensa a barra fixa inferior + Safe Area do iOS/Android */
+  /* Compensate for fixed bottom bar + iOS/Android Safe Area */
   padding-block-end: calc(72px + env(safe-area-inset-bottom, 0px));
 }
 
@@ -276,14 +282,14 @@ Em vez de duplicar marcação HTML entre mobile e desktop (ou usar `order` para 
   transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Indicador Ativo Não-Cor (>= 3:1): Pílula de fundo + barra/peso 600 */
+/* Non-Color Active Indicator (>= 3:1): Tinted pill + font-weight 600 */
 .nav-link[aria-current="page"] {
   color: var(--brand-primary);
   font-weight: 600;
   background-color: color-mix(in oklab, var(--brand-primary) 14%, transparent);
 }
 
-/* Desktop (>= 48em / 768px): Transição para Sidebar Rail Esquerda (240px) */
+/* Desktop (>= 48em / 768px): Transition to Left Sidebar Rail (240px) */
 @media (min-width: 48em) {
   .app-shell {
     grid-template-columns: 240px 1fr;
@@ -330,18 +336,20 @@ Em vez de duplicar marcação HTML entre mobile e desktop (ou usar `order` para 
 }
 ```
 
-### 3.2. Navbar Superior Intrínseca (`ResizeObserver` + HTML Popover API Nativa)
-Quando uma barra horizontal superior precisa colapsar links em um menu compacto sem chutar um breakpoint fixo (pois traduções i18n alteram o comprimento dos textos):
-1. Use `ResizeObserver` comparando `navLinks.scrollWidth <= nav.clientWidth` (aplicando temporariamente `.is-measuring` para medir a largura intrínseca).
-2. Acione o menu compacto via **Popover API nativa** (`<button popovertarget="mobile-nav">`, `<div id="mobile-nav" popover="auto">`), estilizando `[popover]:is(:popover-open, .\:popover-open)` e `@starting-style`.
+### 3.2. Intrinsic Top Navbar (`ResizeObserver` + Native HTML Popover API)
 
-### 3.3. Breadcrumbs Acessíveis com Separadores Silenciosos (`::before`)
+When a horizontal top bar must collapse overflowing links into a compact menu without guessing fixed breakpoints (e.g., when i18n translations alter label widths):
+1. Use `ResizeObserver` comparing `navLinks.scrollWidth <= nav.clientWidth` (temporarily applying `.is-measuring` to measure intrinsic width).
+2. Trigger the compact drawer via the **native Popover API** (`<button popovertarget="mobile-nav">`, `<div id="mobile-nav" popover="auto">`), styling `[popover]:is(:popover-open, .\:popover-open)` alongside `@starting-style`.
+
+### 3.3. Accessible Breadcrumbs with Silent Separators (`::before`)
+
 ```html
-<nav aria-label="Caminho de navegação">
+<nav aria-label="Breadcrumb">
   <ol role="list" class="breadcrumb-list">
-    <li><a href="/">Início</a></li>
-    <li><a href="/painel">Painel</a></li>
-    <li><a href="/painel/relatorios" aria-current="page">Relatórios</a></li>
+    <li><a href="/">Home</a></li>
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li><a href="/dashboard/reports" aria-current="page">Reports</a></li>
   </ol>
 </nav>
 ```
@@ -356,19 +364,21 @@ Quando uma barra horizontal superior precisa colapsar links em um menu compacto 
 
 ---
 
-## 4. Usabilidade, Fluidez Perceptual (60–120fps), Core Web Vitals e Next.js 15
+## 4. Usability, Perceptual Fluidity (60–120fps), Core Web Vitals & Next.js 15
 
-### 4.1. Lei de Fitts, Apontadores (`any-pointer: coarse`) e Máquina de 4 Estados (FSM)
-- **Lei de Fitts:** Todo controle interativo em `@media (any-pointer: coarse)` exige área mínima de **`48 × 48 px`**, espaçamento mínimo de **`8 px`** entre alvos adjacentes, `touch-action: manipulation` (elimina atraso de `300ms`) e `user-select: none`.
-- **4 Estados Finitos Obrigatórios (Zero Mocks/Placebos):**
-  1. `loading`: Skeleton `shimmer` com **exatamente a mesma geometria** do card real (`aspect-ratio` e `min-block-size`) para garantir **CLS $= 0$**.
-  2. `empty`: Mensagem explicativa clara + botão CTA primário para criar o primeiro registro.
-  3. `error`: Alerta semântico (`role="alert"` / `aria-live="assertive"`) traduzindo o erro técnico + botão de retentativa (`onRetry`).
-  4. `populated`: Dados reais renderizados com `tabular-nums`.
+### 4.1. Fitts' Law, Coarse Pointers (`any-pointer: coarse`) & 4-State FSM
 
-### 4.2. Animações no Compositor GPU, `allow-discrete`, View Transitions e Predictive Back
-- **Propriedades Permitidas:** Anime exclusivamente `transform` e `opacity`. Jamais anime `top`, `left`, `width`, `height` ou `margin`.
-- **Animação de Elementos Discretos (`<dialog>`, `[popover]`):** Declare `transition-behavior: allow-discrete` **como propriedade separada após `transition`** (incluí-lo no shorthand `transition` quebra o parsing em navegadores mais antigos):
+- **Fitts' Law:** Every interactive control under `@media (any-pointer: coarse)` requires a minimum **`48 × 48 px`** target, at least **`8 px`** gap between adjacent targets, `touch-action: manipulation` (eliminates `300ms` tap delay), and `user-select: none`.
+- **4 Mandatory Finite States (Zero Mocks/Placebos):**
+  1. `loading`: Shimmer skeleton with the **exact same geometry** as the real card (`aspect-ratio` and `min-block-size`) to guarantee **CLS $= 0$**.
+  2. `empty`: Clear explanatory message + primary CTA button to create or restore data.
+  3. `error`: Semantic alert (`role="alert"` / `aria-live="assertive"`) translating the technical error + retry button (`onRetry`).
+  4. `populated`: Real data rendered with `tabular-nums`.
+
+### 4.2. GPU-Composited Animations, `allow-discrete`, View Transitions & Predictive Back
+
+- **Allowed Properties:** Animate strictly `transform` and `opacity`. Never animate `top`, `left`, `width`, `height`, or `margin`.
+- **Animating Discrete Elements (`<dialog>`, `[popover]`):** Declare `transition-behavior: allow-discrete` **as a separate property after `transition`** (placing it inside the `transition` shorthand breaks parsing in older engines):
   ```css
   .popover-panel {
     opacity: 0;
@@ -387,19 +397,20 @@ Quando uma barra horizontal superior precisa colapsar links em um menu compacto 
     }
   }
   ```
-- **Movimento Reduzido Caso-a-Caso (`prefers-reduced-motion`):** Envolva animações contínuas/decorativas em `@media (prefers-reduced-motion: no-preference)` e, em `@media (prefers-reduced-motion: reduce)`, substitua deslocamentos espaciais (`translateY`, `scale`) por transições rápidas de `opacity`/`background-color`.
-- **View Transitions API & Predictive Back:** Envolva mudanças de estado/rota que reordenam o DOM em `if (document.startViewTransition) document.startViewTransition(() => updateState())` e suporte preview de retorno preditivo (`transform: scale(0.90)`).
+- **Case-by-Case Reduced Motion (`prefers-reduced-motion`):** Wrap continuous/decorative motion in `@media (prefers-reduced-motion: no-preference)`, and under `@media (prefers-reduced-motion: reduce)` replace spatial shifts (`translateY`, `scale`) with subtle `opacity`/`background-color` transitions.
+- **View Transitions API & Predictive Back:** Wrap DOM-reordering state updates in `if (document.startViewTransition) document.startViewTransition(() => updateState())` and support predictive-back previews (`transform: scale(0.90)`).
 
-### 4.3. Fluidez sob Carga (INP $\le 200\text{ms}$, LCP $\le 2.5\text{s}$) e Next.js 15 Async Params
-1. **Isolamento de Renderização (`content-visibility: auto`):** Em listas extensas, feeds ou colunas Kanban, aplique:
+### 4.3. Fluidity Under Load (INP $\le 200\text{ms}$, LCP $\le 2.5\text{s}$) & Next.js 15 Async Params
+
+1. **Rendering Isolation (`content-visibility: auto`):** On long feeds, lists, or Kanban columns, apply:
    ```css
    .heavy-feed-section, .kanban-column {
      content-visibility: auto;
      contain-intrinsic-size: auto 320px auto 640px;
    }
    ```
-2. **Batching de Eventos (`150ms`):** Atualizações de WebSocket/streaming ou sliders em tempo real devem ser agrupadas em janelas de `150ms` (`requestAnimationFrame` / throttle) para não bloquear a Main Thread.
-3. **Next.js 15 App Router (Async `params` & `searchParams`):** Em páginas e layouts do Next.js 15, `params` e `searchParams` são `Promise` e exigem `await`:
+2. **Event Batching (`150ms`):** Throttle or coalesce WebSocket/streaming updates and live sliders in `150ms` windows (`requestAnimationFrame` / timer batch) so the Main Thread stays unblocked.
+3. **Next.js 15 App Router (Async `params` & `searchParams`):** In Next.js 15 pages and layouts, `params` and `searchParams` are `Promise` objects requiring `await`:
    ```tsx
    export default async function ReportDetailPage({
      params,

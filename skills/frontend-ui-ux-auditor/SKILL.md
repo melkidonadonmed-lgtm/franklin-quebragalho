@@ -1,53 +1,46 @@
 ---
 name: frontend-ui-ux-auditor
-description: "Audita com precisão matemática densidade de nós DOM, contraste WCAG 2.1 AA, luz zenital 90-120, elevação por sombras, espaçamento e camadas. Use para diagnóstico visual de frontend; não use para backend."
-compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+description: "Use this skill when mathematically auditing DOM node density, WCAG 2.1 AA contrast, 90-120 zenithal light, 3-layer elevation shadows, spacing, and @layer rules via ui_ux_frontend_auditor.py. Do NOT use for refactoring code, backend audits, or runtime CDP."
 metadata:
+  author: "Franklin"
   version: "3.1.0"
-  updated_at: "2026-11-13"
-  author: "UI-Architect & Melki"
-  category: "Frontend UI/UX Mathematical Auditing, OKLCH Design Tokens, Logical Box Model & Optical Physics"
-  tags: ["ui-ux-audit", "oklch", "wcag-contrast", "zenithal-light", "dom-density", "container-queries"]
+  updated_at: "2026-11-16"
+  tags: ["frontend-ui-ux-auditor", "ui-ux", "oklch", "wcag", "contraste", "luz-zenital", "densidade-dom", "sombras-elevacao", "container-queries", "divsoup", "precisao-matematica"]
 ---
 
-# Frontend UI/UX Auditor (`frontend-ui-ux-auditor`)
+# `frontend-ui-ux-auditor` — Mathematical UI/UX & Optical Physics Auditor
 
-## 1. Propósito e Gatilhos (Quando Usar)
+## 1. Overview & Scope
 
-Executa auditoria matemática e visual de componentes/layouts frontend alinhada aos **9 Eixos da SSOT** ([`../../rules/diretrizes-frontend-9-eixos.md`](../../rules/diretrizes-frontend-9-eixos.md)) via motor determinístico `scripts/ui_ux_frontend_auditor.py`:
+Performs deterministic mathematical and visual audits on `.html`, `.css`, `.jsx`, `.tsx`, and `.vue` files via [scripts/ui_ux_frontend_auditor.py](scripts/ui_ux_frontend_auditor.py), scoring the **9-Axis SSOT** (`rules/frontend-9-axes-guidelines.md`) across 6 weighted dimensions.
 
-- Inspecionar telas, menus, cards e layouts quanto a Tokens OKLCH em 3 camadas e escala `4px/8px` (`DESIGN.md`).
-- Validar Box Model lógico, anti-colapso (`display: flow-root`), contraste WCAG 2.1 AA, nitidez GPU, `@container`, sombras com luz zenital (90°–120°), DOM e navegação em 3 camadas.
+- **When NOT to Use:** Read-only diagnostic skill; do not use for editing/refactoring UI code (`frontend-code-architect`), authoring `DESIGN.md` (`design-md`), backend/SQL audits (`agent-server-auditor`), or live browser CDP testing (`complex-zero` / `system-project-auditor`).
 
-## 2. Entradas e Pré-requisitos
+## 2. Inputs & Prerequisites
 
-- **`target_path` (obrigatório):** Arquivo `.html`, `.css`, `.jsx`, `.tsx`, `.vue` ou diretório frontend.
-- **Motor Determinístico:** `scripts/ui_ux_frontend_auditor.py` (CLI ou `franklin_run_skill_script`).
-- **`DESIGN.md` (opcional):** Contrato de tokens na raiz do projeto.
+- **`target_path` (required):** Frontend file (`.html`, `.css`, `.jsx`, `.tsx`, `.vue`) or directory.
+- **Engine & Contract:** [scripts/ui_ux_frontend_auditor.py](scripts/ui_ux_frontend_auditor.py) (`--target`, `--json`, `--self-test`) and optional `<project_root>/DESIGN.md`.
 
-## 3. Processamento: As 6 Dimensões da Auditoria Frontend
+## 3. Step-by-Step Procedure
 
-Consulte [`references/rubrica_6_dimensoes_ui_ux.md`](references/rubrica_6_dimensoes_ui_ux.md), [`references/tactile_elevation_and_shadows.md`](references/tactile_elevation_and_shadows.md), [`../design-md/references/spacing_tokens_and_stitch_hierarchy.md`](../design-md/references/spacing_tokens_and_stitch_hierarchy.md) e [`../frontend-code-architect/references/layout_grid_cards_and_navigation.md`](../frontend-code-architect/references/layout_grid_cards_and_navigation.md):
+Consult [references/ui_ux_6_dimensions_rubric.md](references/ui_ux_6_dimensions_rubric.md) and [references/tactile_elevation_and_shadows.md](references/tactile_elevation_and_shadows.md):
 
-| Dimensão Auditada | Peso ($W_j$) | Critério Central de Avaliação |
-| :--- | :---: | :--- |
-| **1. Design Tokens 3 Camadas & OKLCH** | `0.20` | Escala `4px/8px`, `--bg-canvas`/`--text-primary`, `oklch`/`light-dark`, Dark $L = 0.16 \to 0.27$, zero arbitrários. |
-| **2. Tipografia Fluida & WCAG AA** | `0.20` | `clamp()`, `65ch`, `balance/pretty`, `antialiased`, `font-synthesis: none`, zero `scale()` fracionário, $CR \ge 4.5:1$. |
-| **3. Box Lógico, DOM & Nav 3 Camadas** | `0.15` | `border-box`, `flow-root`, DOM $\le 12$, `divsoup <= 0.45`, Breadcrumbs (`>= 3` níveis) e Ordem DOM = `Tab`. |
-| **4. Iconografia 1:1 & Zero Emojis** | `0.15` | Ícones 1:1 (`16/20/24px`), família vetorial única (`stroke-width: 1.75`) e zero emojis. |
-| **5. Luz Zenital, 3 Sombras & Isolation** | `0.15` | Umbra + Penumbra negativa + Catch-Light (`inset 0 1px 0 0`), Ambient Glow e `isolation: isolate`. |
-| **6. `@container`, Cards & Motion** | `0.15` | Grid RAM, `@container`/`subgrid`, 4 variantes, `cubic-bezier(0.22, 1, 0.36, 1)`, `any-pointer: coarse` $\ge 48\text{px}$. |
+1. **Run Static Auditor:** Execute `uv run python skills/frontend-ui-ux-auditor/scripts/ui_ux_frontend_auditor.py --target "<target_path>" --json`.
+2. **Dim 1 — Tokens & `4px/8px` Scale (`0.20`):** Check `--bg-canvas`/`--surface-canvas`, `oklch()`, `light-dark()`, Dark Mode $L = 0.16 \to 0.27$, concentric radii, and zero off-scale values (`p-[13px]`).
+3. **Dim 2 — Fluid Type & WCAG AA (`0.20`):** Check viewport meta, `clamp()`, `65ch`, `balance/pretty`, `antialiased`, `font-synthesis: none`, zero fractional `scale()` on text, and $CR \ge 4.5:1$.
+4. **Dim 3 — Box, DOM & Nav (`0.15`):** Verify `border-box`, `flow-root`, DOM depth `<= 12`, `divsoup_ratio <= 0.45`, HTML5 landmarks, `:focus-visible`, Breadcrumbs (`>= 3` levels), and DOM = Tab order.
+5. **Dims 4–6 — Icons (`0.15`), `[LOCK-02]` Shadows (`0.15`) & Motion (`0.15`):** Check 1:1 SVGs (`16/20/24px`), zero emojis, Umbra + negative Penumbra + `--catch-light`, `isolation: isolate`, `@container`, `cubic-bezier(0.22, 1, 0.36, 1)`, zero reflow animations, `any-pointer: coarse` (`>= 48px`), and `prefers-reduced-motion`.
 
-```powershell
-uv run python skills/frontend-ui-ux-auditor/scripts/ui_ux_frontend_auditor.py --target "<arquivo_ou_diretorio>"
-```
+## 4. Gotchas & Edge Cases
 
-## 4. Saídas e Entregáveis
+- **Defaults Over Menus:** Pass `--json` by default; reserve `--self-test` for engine checks.
+- **Optical & CSS Traps:** Flag single-pass `rgba(0,0,0)` shadows, `#000000`, `transition: ... allow-discrete` inside shorthands, and `width`/`height`/`margin` animations.
+- **Stop Criteria:** Stop and report `[UNVERIFIED]` if `target_path` is missing or contains no eligible frontend files.
 
-- **Score Ponderado ($\text{Score}_{\text{UI/UX}} = \sum_{j=1}^{6} W_j \cdot S_j$):** Laudo estruturado por dimensão (`0..100`) e achados conforme [`rules/criterios_auditoria.md`](rules/criterios_auditoria.md).
+## 5. Output Schema & Validation Criteria
 
-## 5. Exceções, Limites e Quando NÃO Usar
+Emit $\text{Score}_{\text{UI/UX}} = \sum_{j=1}^{6} W_j \cdot S_j$ (`0..100`), grade, dimension scores, and violations per [rules/audit_criteria.md](rules/audit_criteria.md) (`PASS` requires `final_score >= 85.0`, zero contrast errors, and `zero_reflow_motion == true`).
 
-- **Somente Backend ou Algoritmos:** Não use para queries SQL, gRPC ou testes unitários sem camada visual.
-- **Estático vs. DOM Renderizado / Browser:** `ui_ux_frontend_auditor.py` é estático; para `take_snapshot`, `a11y` ou `chrome-devtools` / `agent-browser` `@eX` em runtime, combine com `auditoria-projetos-sistema` ou `complex-zero`.
-- **Somente Leitura:** Apenas diagnostica e pontua; refatorações pertencem a `frontend-code-architect`.
+## 6. User Communication Rule
+
+Always formulate all direct user-facing conversation, explanations, clarifying questions, status reports, and deliverables in Portuguese (Brazil / pt-BR), unless the user explicitly requests otherwise.

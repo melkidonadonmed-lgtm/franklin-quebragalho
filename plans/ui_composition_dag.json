@@ -1,16 +1,16 @@
 {
-  "objective": "Orquestração Determinística de Composição Frontend nos 9 Eixos do SSOT (Box Lógico, Tipografia Fluida, OKLCH 3 Camadas, Sombras 3 Níveis, @container, 4 Cards, Navegação 3 Camadas e 3 Níveis de Complexidade) em 3 Ondas (Topologia 3+1: ui-shell-navigator -> ui-controls-data + ui-motion-interaction -> ui-deterministic-observer)",
+  "objective": "Deterministic Frontend Composition Orchestration across the 9-Axis SSOT (Logical Box Model, Fluid Typography, 3-Layer OKLCH Tokens, 3-Level Shadows, @container, 4 Card Variants, 3-Layer Navigation, 3 Complexity Levels) in 3 Waves (3+1 Topology)",
   "acceptance_criteria": [
-    "Onda 1 (ui-shell-navigator): Diagnosticar propósito e Nível de Complexidade (1/2/3), aplicar Box Lógico + flow-root/gap, definir tokens em 3 camadas OKLCH (--bg-canvas/--surface-canvas, light-dark()), selecionar um dos 6 Arquétipos + @container e estruturar Navegação Semântica em 3 Camadas (Global, Local e Breadcrumbs <ol role='list'> + aria-current='page')",
-    "Onda 2A (ui-controls-data): Implementar as 4 Variantes de Cards (Elevated, Outlined, Filled, Interactive), luz zenital (90°-120°), 3 tipos/níveis de sombra (--shadow-elevation-1..3 + isolation: isolate), tipografia fluida (clamp, 65ch, balance/pretty, antialiased, font-synthesis: none, tabular-nums) e Engenharia Real-State (FSM executável)",
-    "Onda 2B (ui-motion-interaction): Calibrar transições físicas (cubic-bezier(0.22, 1, 0.36, 1) e cubic-bezier(0.4, 0, 0.2, 1)), feedback mecânico sem scale() fracionário (translateY(-1px) / translateY(0px)), pointer: coarse >= 44px, PWA standalone, :focus-visible e prefers-reduced-motion",
-    "Onda 3 (ui-deterministic-observer): Auditar matematicamente os 9 Eixos do SSOT via scripts/audit_tactile_ui.py v5.0, ui_ux_frontend_auditor.py v3.0 e deterministic_scorer.py v5.0 (Readiness Score >= 90/100)"
+    "Wave 1 (ui-shell-navigator): Diagnose purpose and Complexity Level (1/2/3), apply Logical Box Model + flow-root/gap, define 3-layer OKLCH tokens (--bg-canvas/--surface-canvas, light-dark()), select 1 of 6 Archetypes + @container, and structure 3-Layer Semantic Navigation (Global, Local, Breadcrumbs <ol role='list'> + aria-current='page')",
+    "Wave 2A (ui-controls-data): Implement 4 Card Variants (Elevated, Outlined, Filled, Interactive), zenith lighting (90-120 deg), 3 shadow types/levels (--shadow-elevation-1..3 + isolation: isolate), fluid typography (clamp, 65ch, balance/pretty, antialiased, font-synthesis: none, tabular-nums), and Real-State Engineering (executable FSM)",
+    "Wave 2B (ui-motion-interaction): Calibrate physical transitions (cubic-bezier(0.22, 1, 0.36, 1) and cubic-bezier(0.4, 0, 0.2, 1)), integer tactile feedback without fractional scale(), pointer: coarse >= 44px, PWA standalone, :focus-visible, and prefers-reduced-motion",
+    "Wave 3 (ui-deterministic-observer): Mathematically audit the 9-Axis SSOT via scripts/audit_tactile_ui.py, ui_ux_frontend_auditor.py, and deterministic_scorer.py (Readiness Score >= 90/100)"
   ],
   "tasks": [
     {
       "id": "wave1_shell_navigator",
       "group_id": "ui_shell_navigator",
-      "description": "Onda 1: Diagnóstico do propósito e Nível de Complexidade (1/2/3), Box Lógico, tokens em 3 camadas OKLCH (--bg-*/--surface-*), 6 Arquétipos + @container e Navegação em 3 Camadas",
+      "description": "Wave 1: Purpose & Complexity Level (1/2/3) diagnosis, Logical Box Model, 3-layer OKLCH tokens (--bg-*/--surface-*), 6 Archetypes + @container, and 3-Layer Navigation",
       "criticality": "HIGH",
       "payload": {
         "agent_spec": "agents/ui-shell-navigator.md",
@@ -23,7 +23,7 @@
     {
       "id": "wave2_controls_data",
       "group_id": "ui_controls_data",
-      "description": "Onda 2A: 4 Variantes de Cards, luz zenital (90°-120°), sombras em 3 níveis (--shadow-elevation-1..3), tipografia fluida (clamp, 65ch, balance/pretty, font-synthesis: none, tabular-nums) e Engenharia Real-State",
+      "description": "Wave 2A: 4 Card Variants, zenith lighting (90-120 deg), 3-level shadows (--shadow-elevation-1..3), fluid typography (clamp, 65ch, balance/pretty, font-synthesis: none, tabular-nums), and Real-State Engineering",
       "dependencies": [
         "wave1_shell_navigator"
       ],
@@ -42,7 +42,7 @@
     {
       "id": "wave2_motion_interaction",
       "group_id": "ui_motion_interaction",
-      "description": "Onda 2B: Física de movimento (cubic-bezier(0.22, 1, 0.36, 1)), feedback mecânico sem scale() fracionário (translateY(-1px) / translateY(0px)), pointer: coarse >= 44px, PWA standalone, :focus-visible e prefers-reduced-motion",
+      "description": "Wave 2B: Motion physics (cubic-bezier(0.22, 1, 0.36, 1)), tactile feedback without fractional scale(), pointer: coarse >= 44px, PWA standalone, :focus-visible, and prefers-reduced-motion",
       "dependencies": [
         "wave1_shell_navigator"
       ],
@@ -60,7 +60,7 @@
     {
       "id": "wave3_deterministic_observer",
       "group_id": "ui_deterministic_observer",
-      "description": "Onda 3 (Gatekeeper): Auditoria determinística integrada (frontend-testing-auditor v5.0 + frontend-ui-ux-auditor v3.0 + auditoria-projetos-sistema v6.0) validando os 9 Eixos do SSOT via scripts/audit_tactile_ui.py",
+      "description": "Wave 3 (Gatekeeper): Integrated deterministic audit (frontend-testing-auditor + frontend-ui-ux-auditor + system-project-auditor) validating the 9-Axis SSOT via scripts/audit_tactile_ui.py",
       "dependencies": [
         "wave1_shell_navigator",
         "wave2_controls_data",

@@ -1,50 +1,49 @@
 ---
 name: agent-server-auditor
-description: "Audita sistemas agênticos, servidores MCP 2026-07-28 STDIO stdout, nós A2A agent-card JWS, binários, max_steps e memories/audit_report.json. Use para auditar agentes e MCP; não use para UI."
+description: "Audit agentic architectures, MCP 2026-07-28 STDIO stdout hygiene, A2A v1.0 JWS agent-cards, binary hygiene, max_steps loop guards, and persist memories/audit_report.json. Use for auditing agents, MCP/A2A tooling, and WebSockets/JSON-RPC. Do NOT use for frontend UI or unit-test suites."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, TypeScript 5+, Go 1.24+"
 metadata:
   version: "1.2.0"
-  updated_at: "2026-11-13"
-  author: "SkillCraft, Franklin-Main & Melki"
-  category: "Agent Architecture, Protocol Compliance & Static Code Auditing"
-  tags: ["agent-server-auditor", "mcp-2026-07-28", "a2a-protocol", "least-privilege", "agent-card-jws", "stdio-hygiene", "max-steps", "audit-report"]
+  updated_at: "2026-11-16"
+  author: "Franklin"
+  category: "Agent Architecture, MCP/A2A Protocol & Static Auditing"
+  tags: ["agent-server-auditor", "auditar", "sistemas", "agenticos", "servidores", "agente", "skills", "mcp", "mcp-2026-07-28", "stdio", "stdout", "stdio-hygiene", "a2a", "a2a-protocol", "agent-card", "agent-card-jws", "jws", "binarios", "max_steps", "max-steps", "least-privilege", "audit_report", "audit-report"]
 ---
 
-# `agent-server-auditor` — Auditoria de Agentes, MCP, WS/JSON-RPC e A2A
+# `agent-server-auditor` (`v1.2.0`) — Agent, MCP, WS/JSON-RPC & A2A Auditor
 
-## 1. Objetivo, Gatilhos e Pre-Flight Condicional
+## 1. Overview & Scope
 
-Executa inspeção estática e contratual determinística de projetos agênticos (**Python, TypeScript, Go**):
+Runs deterministic static and contractual audits across **Python, TypeScript, and Go** agentic projects, serving also as the architectural auditor for **MCP/A2A agent tooling** (legacy `audit-skills-antigravity` retired into `scripts/validate_skills.py`):
+- Audits **MCP (`2026-07-28`)** servers, subagents (`agents/*.md`), **A2A v1.0 JWS** (`/.well-known/agent-card.json`), and binaries.
+- **Pre-Flight:** Ground Gemini/ADK checks via `google-developer-knowledge`, `gemini_get_doc` (`chunk_id`), `aistudio.google.com/llms.txt`, or [`references/protocol_matrix.md`](references/protocol_matrix.md) (never disabled aliases); apply [`references/audit-websocket-jsonrpc.md`](references/audit-websocket-jsonrpc.md) for `ws://`/`wss://` or JSON-RPC 2.0.
+- **When NOT to Use:** Do NOT use for UI/OKLCH (`frontend-testing-auditor`, `complex-zero`), test AAA grading (`test-quality-auditor`), or Python AST gates (`code-acceptability-auditor`).
 
-- Auditar repositórios agênticos, servidores **MCP (`2026-07-28` SDK + Comportamento STDIO/HTTP)**, subagentes (`agents/*.md`), **A2A v1.0 JWS** (`/.well-known/agent-card.json`) e higiene de binários.
-- **Pre-Flight Condicional:** Antes de auditar **Gemini API / Google ADK**, consulte `google-developer-knowledge` (`search_documents`/`get_documents`), `gemini_get_doc` (`chunk_id`), `aistudio.google.com/llms.txt` ou [`references/protocol_matrix.md`](references/protocol_matrix.md) (nunca use `gemini_search_docs`, desabilitada no servidor local); havendo **WebSockets (`ws://`/`wss://`) ou JSON-RPC 2.0**, aplique [`references/audit-websocket-jsonrpc.md`](references/audit-websocket-jsonrpc.md).
+## 2. Inputs & Prerequisites
 
-## 2. Entradas e Parâmetros CLI
+- **`--root`** (default `.`), **`--persist` / `--output`** (`memories/audit_report.json`), **`--self-test`**.
 
-- **`--root` / `target_root` (obrigatório):** Raiz do projeto agêntico (padrão: `.`).
-- **`--persist` / `--output` (opcional):** Grava snapshot em `<target_root>/memories/audit_report.json` ou caminho alvo.
-- **`--self-test` (opcional):** Executa auto-validação `APPROVED` vs. `REJECTED`.
+## 3. Step-by-Step Procedure
 
-## 3. Processamento nas 4 Dimensões e Execução
-
-Consulte a árvore canônica e requisitos detalhados em [`references/estrutura_projeto_agentico.md`](references/estrutura_projeto_agentico.md):
-
-1. **D1 — Binários (`AUD-BIN-01`):** `.gitignore`, `.env.example` limpo e `.exe`/`.so`/`.asar` confinados a `bin/`, `dist/` ou `build/`.
-2. **D2 — Agentes & Skills (`AUD-AGT-01` / `AUD-SKL-01`):** Sintaxe real, zero placebos, SDKs/modelos vigentes (`google-genai>=3.3.0`, `@google/genai>=3.3.0`, `com.google.genai>=2.3.0`, `kotlin-genai>=2.1.0`, `Google.GenAI>=2.1.0`, `google.golang.org/genai>=1.77.0` — exigindo `api_version="v1beta"` para `decisions`/`interactions` desde `3.0`/`2.0` que mudaram Developer API padrão para `v1` — e Gemini 4 `hydrogen`/`argon`/`carbon`, bloqueando `gemini-2.5-*`, `3.1-*tts-preview`, `3.1-flash-live-preview` e `antigravity-preview-05-2026`), `max_steps`/HITL, menor privilégio (auditores `commandExecutionPolicy: "readOnly"`, zero `tools: ["*"]`/`call_mcp_tool`, sem `enable_write_tools` legado) e Skills com Progressive Disclosure (`<= 1.200t` L2).
-3. **D3 — MCP, WS/JSON-RPC & A2A (`AUD-MCP-01` / `AUD-A2A-01`):** SDK real no manifesto + STDIO `stdout` puro + schemas estritos (`extra="forbid"` / `.strict()`) + A2A `supportedInterfaces` / `skills[].id` únicos / JWS RFC 7515.
-4. **D4 — Execução (`AUD-CNT-01` / `AUD-MEM-01`):**
-
+Consult [`references/agentic_project_structure.md`](references/agentic_project_structure.md) and [`references/protocol_matrix.md`](references/protocol_matrix.md):
+1. **D1 — Binaries (`AUD-BIN-01`):** Check `.gitignore`, clean `.env.example`, and isolate binaries in `bin/`/`dist/`/`build/`.
+2. **D2 — Agents & Skills (`AUD-AGT-01` / `AUD-SKL-01`):** Verify valid syntax, zero placebos, active SDKs (`google-genai>=3.3.0`, `@google/genai>=3.3.0`, `google.golang.org/genai>=1.77.0`, `api_version='v1beta'` for `decisions`/`interactions`), Gemini 4 (`hydrogen` w/ `xhigh`, `argon`, `carbon`, `max_output_tokens` on `generateContent`/`interactions.create`), block retired `gemini-2.5-flash`/`2.5-pro`/`3.1-flash-live-preview`/`antigravity-preview-05-2026`, enforce `max_steps`, Least Privilege (`readOnly`, no `tools: ["*"]`/`call_mcp_tool`), and L3 disclosure.
+3. **D3 — MCP & A2A (`AUD-MCP-01` / `AUD-A2A-01`):** Verify MCP SDK, clean STDIO `stdout`, strict schemas (`extra="forbid"` / `.strict()`), unique `skills[].id`, and JWS signatures.
+4. **D4 — Run (`AUD-CNT-01` / `AUD-MEM-01`):**
 ```powershell
 uv run python skills/agent-server-auditor/scripts/agent_server_auditor.py --root . --persist --json
 uv run python skills/agent-server-auditor/scripts/agent_server_auditor.py --self-test
 ```
 
-## 4. Saídas e Entregáveis
+## 4. Gotchas & Edge Cases
 
-Diagnóstico JSON validado por Pydantic (`extra="forbid"`) e persistido em `memories/audit_report.json` conforme [`references/audit_report_schema.md`](references/audit_report_schema.md).
+- `agent_server_auditor.py` is static; live WebSocket latency ($RTT_{\text{avg}} < 150\text{ ms}$) requires a live endpoint.
+- STDIO `stdout` pollution (`AUD-MCP-01`), loose binaries (`AUD-BIN-01`), or missing `max_steps` (`AUD-AGT-01`) yields `REJECTED`.
 
-## 5. Exceções, Limites e Quando NÃO Usar
+## 5. Output Schema & Validation Criteria
 
-- **Fora de Escopo:** Suítes de testes (`test-quality-auditor`) ou UI/DOM/OKLCH (`frontend-testing-auditor`, `complex-zero`).
-- **Estático vs. Dinâmico:** `agent_server_auditor.py` é estático; latência viva ($RTT_{\text{avg}}$) requer endpoint explícito.
-- **Reprovação Imediata ([`rules/criterios_auditoria.md`](rules/criterios_auditoria.md)):** Poluição de `stdout` em STDIO (`AUD-MCP-01`), binário fora de `bin/dist/build` (`AUD-BIN-01`) ou loop sem `max_steps` (`AUD-AGT-01`) geram `REJECTED`.
+Emit Pydantic-validated (`extra="forbid"`) JSON in `memories/audit_report.json` per [`references/audit_report_schema.md`](references/audit_report_schema.md) and [`rules/audit_criteria.md`](rules/audit_criteria.md) with `[PASS]` / `[FAIL: <RULE_ID>]`.
+
+## 6. User Communication Rule
+
+All direct responses, audit findings, clarifying questions, and summaries presented to the user MUST be written in **Portuguese (Brazil / `pt-BR`)**, unless explicitly requested otherwise.

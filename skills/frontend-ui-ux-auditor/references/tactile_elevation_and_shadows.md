@@ -1,19 +1,19 @@
-# Referência Técnica: Elevação Óptica Zenital (90°–120°), Sombras em 3 Camadas (`OKLCH`) e Tailwind CSS v4 (`@theme`)
+# Technical Reference: Zenithal Optical Elevation (`90°–120°`), 3-Layer Shadows (`OKLCH`) & Tailwind CSS v4 (`@theme`)
 
-Esta referência substitui declarações legadas em `#HEX`/`rgba()` e configs `tailwind.config.js` (v3) pelo padrão vigente **CSS OKLCH + `light-dark()` + Tailwind v4 CSS-First (`@theme`)**.
-
----
-
-## 1. Modelo Óptico de Luz Zenital (90°–120°) e 3 Camadas Reais
-
-1. **Umbra de Contato:** Deslocamento curto (`1px`–`4px`) e baixo desfoque (`2px`–`8px`), ancorando o componente à superfície subjacente.
-2. **Penumbra Difusa com `spread` Negativo (`-1px` a `-8px`):** Contrai o perímetro antes da difusão, concentrando a massa gravitacional na base sem sujar as laterais.
-3. **Borda Especular Zenital (`--catch-light`):** Realce interno superior (`inset 0 1px 0 0`) simulando luz incidente de cima (`90°–120°`).
-4. **Dinâmica Tátil sem Borrão GPU:** Repouso (`--shadow-elevation-1`) $\to$ Hover (`translateY(-2px)` + `--shadow-elevation-2`) $\to$ Active (`translateY(0px)` + `--shadow-inset` ou retorno ao Nível 1; **proibido `scale()` fracionário em textos**).
+This reference replaces legacy `#HEX`/`rgba()` declarations and `tailwind.config.js` (v3) configurations with the modern **CSS `OKLCH` + `light-dark()` + Tailwind v4 CSS-First (`@theme`)** standard.
 
 ---
 
-## 2. Tokens Semânticos `OKLCH` + `light-dark()` + Tailwind CSS v4 (`@theme`)
+## 1. Zenithal Light Optical Model (`90°–120°`) & 3 Real Shadow Layers (`[LOCK-02]`)
+
+1. **Contact Umbra:** Short vertical offset (`1px`–`4px`) and tight blur (`2px`–`8px`), anchoring the surface to the underlying plane.
+2. **Diffuse Penumbra with Negative `spread` (`-1px` to `-8px`):** Contracts the perimeter prior to diffusion, concentrating gravitational weight beneath the base without muddying lateral edges.
+3. **Zenithal Specular Rim (`--catch-light`):** Top internal highlight (`inset 0 1px 0 0`) simulating overhead light incident at `90°–120°`.
+4. **Tactile Feedback without GPU Blur:** Rest (`--shadow-elevation-1`) $\to$ Hover (`translateY(-2px)` + `--shadow-elevation-2`) $\to$ Active (`translateY(0px)` + `--shadow-inset` or Level 1 return; **fractional `scale()` on text forbidden**).
+
+---
+
+## 2. Semantic Tokens `OKLCH` + `light-dark()` + Tailwind CSS v4 (`@theme`)
 
 ```css
 @import "tailwindcss";
@@ -32,7 +32,7 @@ Esta referência substitui declarações legadas em `#HEX`/`rgba()` e configs `t
   --border-subtle: light-dark(oklch(0.20 0.02 255 / 0.08), oklch(1 0 0 / 0.12));
   --catch-light: inset 0 1px 0 0 light-dark(oklch(1 0 0 / 0.85), oklch(1 0 0 / 0.12));
 
-  /* Primitivas e Semânticas em 3 Camadas Ópticas (Umbra + Penumbra Spread Negativo + Catch-Light) */
+  /* 3-Layer Optical Shadow Primitives & Semantics (Umbra + Negative-Spread Penumbra + Catch-Light) */
   --shadow-layer-sm:
     0 1px 2px 0 light-dark(oklch(0.20 0.03 255 / 0.06), oklch(0 0 0 / 0.45)),
     0 2px 4px -1px light-dark(oklch(0.20 0.03 255 / 0.04), oklch(0 0 0 / 0.35)),
@@ -94,15 +94,15 @@ Esta referência substitui declarações legadas em `#HEX`/`rgba()` e configs `t
 
 ---
 
-## 3. Tabela Diagnóstica de Camadas (Checklist do Auditor)
+## 3. Diagnostic Layer Table (Auditor Checklist)
 
-| Camada / Regra | Assinatura Esperada | Falha Comum (`[FAIL]`) |
+| Layer / Rule | Expected Signature | Common Failure (`[FAIL]`) |
 | :--- | :--- | :--- |
-| **Umbra + Penumbra** | 2+ declarações em `box-shadow` com `spread` negativo (`-1px`..`-8px`) | Sombra única borrada (`0 4px 12px rgba(0,0,0,0.4)`) |
-| **Luz Zenital (`90°–120°`)** | `inset 0 1px 0 0` (`--catch-light` / `--specular-rim`) | Superfície chapada sem separação no Dark Mode |
-| **Elevação Dark Mode** | Luminosidade progressiva `OKLCH` ($L = 0.16 \to 0.22 \to 0.27$) | Fundo `#000000` puro ou sombra preta invisível |
-| **Resposta Motora** | `transform: translateY(-1px/-2px)` + `:focus-visible` + `prefers-reduced-motion` | Animação em `width`/`height`/`margin` (reflow) ou `scale(0.97)` em texto |
-| **Espaçamento & Proximidade** | Escala `4px/8px` (`--space-*`) + Semânticos (`--space-card-padding`, `--space-grid-gap`) + Raios Concêntricos ($R_{\text{in}} = \max(4\text{px}, R_{\text{out}} - P)$) | Valores mágicos (`13px`), `padding` maior que `gap` externo ou vazamento de margem sem `display: flow-root` |
-| **Flexbox, Grid & Cards** | Macrolayout Grid `RAM` (`minmax(min(100%, 280px), 1fr)`) + Microlayout `@container` + `subgrid` 4 regiões + `flex-wrap: balance` + `safe center` | Card consultando `@media`, coluna de mídia vazia sem `:has(> img)` ou `container-type` no mesmo nó do `subgrid` |
-| **Hierarquia & Tipografia** | `clamp()` com $\max \le 2.5\times \min$ + `max-inline-size: 60ch` + `tabular-nums` + `text-wrap: balance/pretty` | `font-size` em `vw` puro (quebra zoom 200%), linhas $> 80\text{ch}$ ou números dançando sem `tabular-nums` |
-| **Navegação & Fluidez** | Único DOM Bottom Nav (`env(safe-area-inset-bottom)`) $\leftrightarrow$ Sidebar Rail (`240px`, `100dvh`) + `aria-current="page"` ($\ge 3:1$) + `any-pointer: coarse` (`48x48px`) + `content-visibility: auto` | HTML duplicado mobile/desktop, `transition: ... allow-discrete` no shorthand ou alvos $< 48\text{px}$ no touch |
+| **Umbra + Penumbra** | 2+ `box-shadow` layers with negative `spread` (`-1px`..`-8px`) | Flat single blurred shadow (`0 4px 12px rgba(0,0,0,0.4)`) |
+| **Zenithal Light (`90°–120°`)** | `inset 0 1px 0 0` (`--catch-light` / `--specular-rim`) | Flat surface lacking separation in Dark Mode |
+| **Dark Mode Elevation** | Progressive `OKLCH` lightness ($L = 0.16 \to 0.22 \to 0.27$) | Pure `#000000` background or invisible black shadow |
+| **Motor Response** | `transform: translateY(-1px/-2px)` + `:focus-visible` + `prefers-reduced-motion` | Animating `width`/`height`/`margin` (reflow) or `scale(0.97)` on text |
+| **Spacing & Proximity** | `4px/8px` scale (`--space-*`) + Semantics (`--space-card-padding`, `--space-grid-gap`) + Concentric Radii ($R_{\text{in}} = \max(4\text{px}, R_{\text{out}} - P)$) | Magic values (`13px`), inner padding larger than outer gap, or margin collapse without `display: flow-root` |
+| **Flexbox, Grid & Cards** | Macrolayout Grid `RAM` (`minmax(min(100%, 280px), 1fr)`) + Microlayout `@container` + 4-region `subgrid` + `flex-wrap: balance` + `safe center` | Card querying `@media`, ghost media column without `:has(> img)`, or `container-type` on the `subgrid` node |
+| **Hierarchy & Typography** | `clamp()` with $\max \le 2.5\times \min$ + `max-inline-size: 60ch` + `tabular-nums` + `text-wrap: balance/pretty` | Pure `vw` `font-size` (breaks 200% zoom), lines `> 80ch`, or jittering numbers without `tabular-nums` |
+| **Navigation & Fluidity** | Single DOM Bottom Nav (`env(safe-area-inset-bottom)`) $\leftrightarrow$ Sidebar Rail (`240px`, `100dvh`) + `aria-current="page"` ($\ge 3:1$) + `any-pointer: coarse` (`48x48px`) + `content-visibility: auto` | Duplicated mobile/desktop HTML, `transition: ... allow-discrete` in shorthand, or touch targets `< 48px` |

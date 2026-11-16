@@ -1,0 +1,44 @@
+{
+  "skill_name": "technical-markdown-writer",
+  "version": "1.3.0",
+  "evals": [
+    {
+      "eval_id": "TC-MARKDOWN-WRITER-01-BLANK-LINE-YAML",
+      "should_trigger": true,
+      "prompt": "Write a technical note in Markdown documenting our in-memory ingestion pipeline architecture with valid YAML frontmatter and strict Blank-Line Law formatting.",
+      "expected_behavior": "Produces a UTF-8 Markdown document starting with lowercase YAML frontmatter (title, date, tags) and enforcing blank lines around every heading, list, code fence, and table.",
+      "expected_assertions": [
+        "Includes lowercase YAML frontmatter with ISO YYYY-MM-DD date",
+        "Enforces Blank-Line Law and typed language fences"
+      ]
+    },
+    {
+      "eval_id": "TC-MARKDOWN-WRITER-02-GITHUB-ALERTS",
+      "should_trigger": true,
+      "prompt": "Author an installation and security hardening guide in Markdown covering SQL injection defenses with GitHub alert callouts and zero raw HTML.",
+      "expected_behavior": "Uses canonical GitHub alert syntax (> [!CAUTION], > [!IMPORTANT]) without raw <div class='alert'> HTML or nested callouts.",
+      "expected_assertions": [
+        "Uses canonical GFM alert callouts",
+        "Contains zero unsanitized HTML alert divs or scripts"
+      ]
+    },
+    {
+      "eval_id": "TC-MARKDOWN-WRITER-03-PDF-CONVERSION",
+      "should_trigger": false,
+      "prompt": "Convert an already finalized report.html file into an A4 PDF using headless Microsoft Edge.",
+      "expected_behavior": "Does not run Markdown authoring; delegates HTML-to-PDF rendering to html-pdf-converter.",
+      "expected_assertions": [
+        "Routes binary PDF rendering to html-pdf-converter"
+      ]
+    },
+    {
+      "eval_id": "TC-MARKDOWN-WRITER-04-BULK-VAULT-CURATION",
+      "should_trigger": false,
+      "prompt": "Scan the entire Obsidian vault at C:/Users/melki/dev/notes for broken Wikilinks, oversized monoliths, and orphaned attachments.",
+      "expected_behavior": "Does not invoke technical-markdown-writer for vault-wide hygiene; routes to obsidian-vault-curator.",
+      "expected_assertions": [
+        "Routes bulk vault auditing to obsidian-vault-curator"
+      ]
+    }
+  ]
+}

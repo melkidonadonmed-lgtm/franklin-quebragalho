@@ -1,0 +1,82 @@
+{
+  "description": "Canonical Google Drive numbered folder taxonomy preserving exact folder names on disk.",
+  "drive_root": "G:/Meu Drive",
+  "buckets": [
+    {
+      "code": "[01]Projetos",
+      "description": "Active project workspaces and app folders (always use -LiteralPath in PowerShell due to square brackets).",
+      "allowed_extensions": ["*"]
+    },
+    {
+      "code": "01_Modelos_Rapidos",
+      "description": "Quick clinical templates for prescriptions, medical certificates, and rapid care workflows.",
+      "allowed_extensions": [".md", ".docx", ".pdf", ".gdoc"]
+    },
+    {
+      "code": "02_Protocolos_e_Medicamentos",
+      "description": "Pharmacological guides, clinical protocols, and medication dosing references.",
+      "allowed_extensions": [".pdf", ".md", ".docx", ".gdoc"]
+    },
+    {
+      "code": "03_Medicina_Faculdade",
+      "description": "Medical school coursework, lecture slides, study guides, and academic references.",
+      "allowed_extensions": [".pdf", ".pptx", ".gslides", ".docx", ".gdoc"]
+    },
+    {
+      "code": "04_Workspace_e_Banco_de_Dados",
+      "description": "Applications, technical datasets, project briefings, Colab notebooks, and AppSheet tables.",
+      "allowed_extensions": [".md", ".json", ".ipynb", ".py", ".gdoc", ".gsheet"]
+    },
+    {
+      "code": "05_Banco_dados_apoio_backup",
+      "description": "Supporting database dumps, reference exports, and structured archival backups.",
+      "allowed_extensions": ["*"]
+    },
+    {
+      "code": "07_Gemini_Gems",
+      "description": "System prompts, Gemini Gems definitions, and custom AI persona specs.",
+      "allowed_extensions": [".md", ".txt", ".gdoc", ".json"]
+    },
+    {
+      "code": "09_ui_web_kits",
+      "description": "UI kits, Tactile Design System references, web mockups, and skill dossiers.",
+      "allowed_extensions": [".html", ".css", ".json", ".md", ".png", ".svg"]
+    },
+    {
+      "code": "10_Pessoal",
+      "description": "Personal records, certificates, contracts, personal medical reports, and financial files.",
+      "allowed_extensions": [".pdf", ".docx", ".jpg", ".png", ".xlsx", ".gdoc", ".gsheet"]
+    },
+    {
+      "code": "11_Salvo_do_Chrome",
+      "description": "Web downloads, clipped articles, and browser-saved PDFs pending triage.",
+      "allowed_extensions": ["*"]
+    },
+    {
+      "code": "12_MCP_Servers",
+      "description": "Model Context Protocol server specifications, schemas, and integration artifacts.",
+      "allowed_extensions": [".md", ".json", ".py", ".ts", ".go", ".pdf"]
+    },
+    {
+      "code": "16_Documentos_comp_SUS",
+      "description": "Official Brazilian SUS forms and spreadsheets (APAC, LME, SISREG, GAL, SISCAN).",
+      "allowed_extensions": [".pdf", ".xlsx", ".gsheet", ".docx", ".png"]
+    },
+    {
+      "code": "99_Arquivo_Historico",
+      "description": "Historical archive of completed projects and retired documents organized by year/version.",
+      "allowed_extensions": ["*"]
+    },
+    {
+      "code": "Franklin_Skills_Docs_2026",
+      "description": "Documentation, specs, and exported PDFs for the Franklin Quebra-Galho skill ecosystem.",
+      "allowed_extensions": [".md", ".pdf", ".json", ".html"]
+    }
+  ],
+  "protected_folders": [
+    "15_chaves_api",
+    "Outros computadores"
+  ],
+  "date_format": "YYYY-MM-DD",
+  "forbidden_characters": ["#", "%", "&", "{", "}", "\\", "<", ">", "*", "?", "/", "$", "!", "'", "\"", ":", "@"]
+}

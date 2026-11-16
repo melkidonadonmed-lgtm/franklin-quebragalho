@@ -1,13 +1,13 @@
-# Referência Mestre de Arquitetura, Design System em 3 Camadas (`OKLCH`), Física Óptica e Modelos por Complexidade (`v7.0.0`)
+# Master Architecture Reference: 3-Layer Design System (`OKLCH`), Optical Physics & Complexity Tiers (`v8.2.0`)
 
-Esta referência consolida os **9 Eixos + Matriz de Decisão** da Fonte Única de Verdade (SSOT) em [`../../../rules/diretrizes-frontend-9-eixos.md`](../../../rules/diretrizes-frontend-9-eixos.md) para consulta direta das skills `design-md`, `frontend-code-architect`, `frontend-ui-ux-auditor`, `frontend-testing-auditor` e `auditoria-projetos-sistema`.
+This reference consolidates the **9 Axes + Decision Matrix** from the Single Source of Truth (`rules/frontend-9-axes-guidelines.md`) for direct consultation by `design-md`, `frontend-code-architect`, `frontend-ui-ux-auditor`, `frontend-testing-auditor`, and `system-project-auditor`.
 
 ---
 
-## 1. Eixo 1 e 2: Box Model Lógico, Anti-Colapso de Margem e Tipografia Fluida
+## 1. Axes 1 & 2: Logical Box Model, Margin Collapse Prevention & Fluid Typography
 
 ```css
-/* Reset Base com Box Model Previsível e Propriedades Lógicas */
+/* Base Reset with Predictable Box Model and Logical Properties */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -23,7 +23,7 @@ html, body {
 }
 
 :root {
-  /* Escala Tipográfica Fluida com clamp(mínimo, ideal, máximo) */
+  /* Fluid Typographic Scale using clamp(min, preferred, max) */
   --step--1: clamp(0.8125rem, 0.78rem + 0.16vw, 0.9rem);
   --step-0:  clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
   --step-1:  clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
@@ -31,7 +31,7 @@ html, body {
   --step-3:  clamp(1.953rem, 1.7rem + 1.25vw, 2.665rem);
 }
 
-/* Prevenção de Colapso de Margem: BFC limpo e Coruja Lobotomizada */
+/* Margin Collapse Prevention: Clean BFC and Lobotomized Owl */
 .section-wrapper {
   display: flow-root;
 }
@@ -55,7 +55,7 @@ p, li {
   color: var(--text-secondary);
 }
 
-/* Alinhamento numérico obrigatório */
+/* Mandatory Tabular Numeric Alignment */
 .tabular-data, .tabular-metric, table td, input[type="number"], .metric-value {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -64,13 +64,13 @@ p, li {
 
 ---
 
-## 2. Eixos 3, 4 e 5: Tokens em 3 Camadas (`OKLCH`), `light-dark()`, `color-mix()`, RCS e Sombras Multi-Camadas (`tokens.css`)
+## 2. Axes 3, 4 & 5: 3-Layer Tokens (`OKLCH`), `light-dark()`, `color-mix()`, RCS & Multi-Layer Shadows (`tokens.css`)
 
 ```css
 :root {
   color-scheme: light dark;
 
-  /* 1. TOKENS PRIMITIVOS (Catálogo Bruto) */
+  /* 1. PRIMITIVE TOKENS (Raw Palette & Rhythm Catalog) */
   --primitive-blue-500: oklch(0.62 0.21 258);
   --primitive-emerald-500: oklch(0.70 0.17 160);
   --primitive-neutral-50: oklch(0.985 0.004 255);
@@ -98,7 +98,7 @@ p, li {
   --radius-card: 1rem;
   --radius-full: 9999px;
 
-  /* 2. TOKENS SEMÂNTICOS (Reativos via light-dark, color-mix e RCS from) */
+  /* 2. SEMANTIC TOKENS (Reactive via light-dark, color-mix, and RCS from) */
   --brand-primary: var(--primitive-blue-500);
   --brand-accent: var(--primitive-emerald-500);
 
@@ -109,7 +109,7 @@ p, li {
     oklch(from var(--primitive-neutral-800) calc(l + 0.05) c h)
   );
 
-  /* Aliases de compatibilidade SSOT (--surface-* e --ink-*) */
+  /* SSOT Compatibility Aliases (--surface-* and --ink-*) */
   --surface-canvas: var(--bg-canvas);
   --surface-sunken: var(--bg-surface-2);
   --surface-card: var(--bg-surface-1);
@@ -129,11 +129,11 @@ p, li {
   --border-subtle: light-dark(oklch(0.2 0.02 255 / 0.08), oklch(1 0 0 / 0.12));
   --catch-light: inset 0px 1px 0px 0px light-dark(oklch(1 0 0 / 0.85), oklch(1 0 0 / 0.12));
 
-  /*Derivação por Relative Color Syntax (RCS) */
+  /* Relative Color Syntax (RCS) State Derivation */
   --btn-hover: oklch(from var(--brand-primary) calc(l - 0.08) c h);
   --badge-bg: oklch(from var(--brand-primary) l c h / 0.12);
 
-  /* SOMBRAS EM CAMADAS: Primitivas (--shadow-layer-*) + Semânticas (Umbra + Penumbra spread negativo + Catch-Light) */
+  /* LAYERED SHADOWS: Primitives (--shadow-layer-*) + Semantics (Umbra + Negative-Spread Penumbra + Catch-Light) */
   --shadow-layer-sm:
     0px 1px 2px 0px oklch(0.2 0.03 255 / 0.05),
     0px 2px 4px -1px oklch(0.2 0.03 255 / 0.04),
@@ -159,7 +159,7 @@ p, li {
     inset 0px 3px 6px -1px light-dark(oklch(0.15 0.02 255 / 0.16), oklch(0 0 0 / 0.55)),
     inset 0px 1px 2px 0px light-dark(oklch(0.15 0.02 255 / 0.22), oklch(0 0 0 / 0.70));
 
-  /* Aliases Semânticos e Compatibilidade Tailwind v4 (@theme) */
+  /* Semantic Aliases & Tailwind CSS v4 (@theme) Compatibility */
   --elevation-flat: none;
   --elevation-1: var(--shadow-elevation-1);
   --elevation-2: var(--shadow-elevation-2);
@@ -221,58 +221,58 @@ p, li {
 
 ---
 
-## 3. Eixos 6, 7, 8 e 9: 6 Arquétipos Espaciais, `@container`, 4 Cards, Navegação em 3 Camadas e 3 Níveis de Complexidade
+## 3. Axes 6, 7, 8 & 9: 6 Spatial Archetypes, `@container`, 4 Cards, 3-Layer Navigation & 3 Complexity Tiers
 
-| Arquétipo Espacial | Domínio / Natureza do Problema | Composição Macro (`@media`) e Micro (`@container`) |
+| Spatial Archetype | Domain / Problem Nature | Macro (`@media`) & Micro (`@container`) Composition |
 | :--- | :--- | :--- |
-| **1. Workbench Split-View** | Ferramentas de criação, editores, geradores e simuladores. | Painel lateral de parâmetros (`overflow-y: auto`) + canvas principal ao vivo. |
-| **2. Bento Grid Assimétrico (12 col)** | Visões gerais, portfólios técnicos, resumos executivos. | CSS Grid 12 colunas (`col-span-4`, `col-span-8`, `gap: var(--space-6)`); cards com `@container`. |
-| **3. Command Center / Data Grid** | Sistemas analíticos, FinTech, monitoramento e triagem. | Cabeçalhos `sticky`, linhas `nowrap` com `tabular-nums`, barra `Cluster` e *Slide-over Drawer*. |
-| **4. Canvas Editorial & Leitura** | Documentação técnica, artigos interativos, relatórios. | Coluna central `max-inline-size: 65ch`, `.prose > * + *`, *Table of Contents* local e Breadcrumbs. |
-| **5. HUD Espacial com Dock Flutuante** | Visualizadores 3D, mapas, lousas infinitas. | Viewport `100vw / 100vh`, docks flutuantes `--surface-glass` (`backdrop-filter: blur(16px)`) + `--shadow-elevation-3`. |
-| **6. Folha Vetorial de Impressão A4** | Exportação/visualização de documentos formais (`@media print`). | Folha `210mm × 297mm` em **100% CSS Grid vetorial e SVG** (zero bitmaps Base64 pesados). |
+| **1. Workbench Split-View** | Creation tools, editors, generators, simulators. | Parameter sidebar (`overflow-y: auto`) + live primary canvas. |
+| **2. Asymmetric Bento Grid (12 col)** | Overviews, technical portfolios, executive summaries. | 12-column CSS Grid (`col-span-4`, `col-span-8`, `gap: var(--space-6)`); cards with `@container`. |
+| **3. Command Center / Data Grid** | Analytics, FinTech, monitoring, incident triage. | `sticky` headers, `nowrap` rows with `tabular-nums`, `Cluster` toolbar, and Slide-over Drawer. |
+| **4. Editorial & Reading Canvas** | Technical docs, interactive essays, reports. | Center column `max-inline-size: 65ch`, `.prose > * + *`, local Table of Contents, and Breadcrumbs. |
+| **5. Spatial HUD with Floating Dock** | 3D viewers, maps, infinite whiteboards. | `100vw / 100vh` viewport, floating `--surface-glass` docks (`backdrop-filter: blur(16px)`) + `--shadow-elevation-3`. |
+| **6. Vector A4 Print Sheet** | Formal document preview/export (`@media print`). | `210mm × 297mm` sheet in **100% vector CSS Grid & SVG** (zero heavy Base64 bitmaps). |
 
-### Checklist Rápido de Qualidade (`Self-Refine`)
+### Quick Quality Checklist (`Self-Refine`)
 
-- [ ] **Box Model Lógico e BFC:** Usa `inline-size`, `padding-inline`, `margin-block`, `display: flow-root` e `gap` no pai?
-- [ ] **Tokens em 3 Camadas OKLCH:** Primitivos, Semânticos (`light-dark()`, `color-mix()`, RCS `from`) e Componente definidos com Dark Mode em elevação progressiva ($L = 0.16 \to 0.22 \to 0.27$)?
-- [ ] **Sombras e Nitidez GPU:** Umbra + Penumbra + Catch-Light ativos, `antialiased` + `font-synthesis: none`, `text-wrap: balance/pretty`, `tabular-nums` e zero `scale()` fracionário em textos?
-- [ ] **Navegação Contextual e Real-State:** Global + Local (quando aplicável) + Breadcrumbs (`<ol role="list">` + `aria-current="page"` apenas em hierarquias $\ge 3$ níveis), Ordem DOM = Ordem Visual e 100% dos controles com lógica funcional real?
-
----
-
-## 4. Referências Internas para Interfaces Complexas, Grafos em Tempo Real e App Router 15+
-
-- **Macro-Micro, OKLCH e Acessibilidade AOM:** [`../../../rules/diretrizes-frontend-9-eixos.md`](../../../rules/diretrizes-frontend-9-eixos.md).
-- **Grafos Interativos (`@xyflow/react`), Chokidar/WS e Next.js 15+ Async Params:** [`../../complex-zero/SKILL.md`](../../complex-zero/SKILL.md).
+- [ ] **Logical Box Model & BFC:** Uses `inline-size`, `padding-inline`, `margin-block`, `display: flow-root`, and parent `gap`?
+- [ ] **3-Layer OKLCH Tokens:** Primitives, Semantics (`light-dark()`, `color-mix()`, RCS `from`), and Component tokens defined with progressive Dark Mode $L$ elevation ($L = 0.16 \to 0.22 \to 0.27$)?
+- [ ] **Shadows & GPU Sharpness:** Umbra + Penumbra + Catch-Light active, `antialiased` + `font-synthesis: none`, `text-wrap: balance/pretty`, `tabular-nums`, and zero fractional `scale()` on text?
+- [ ] **Contextual Navigation & Real-State:** Global + Local (when applicable) + Breadcrumbs (`<ol role="list">` + `aria-current="page"` strictly in hierarchies $\ge 3$ levels), DOM Order = Visual Order, and 100% real functional controls?
 
 ---
 
-## 5. Adendos Especializados por Escopo de Projeto (`v8.0.0` — `design.md` & Acervo Google Drive)
+## 4. Cross-References for Complex UIs, Real-Time Graphs & Next.js 15+ App Router
 
-### 5.1. Convenção de Pastas Feature-Driven & Colocalização (Next.js App Router & React)
+- **Macro-Micro, OKLCH & AOM Accessibility:** `rules/frontend-9-axes-guidelines.md`.
+- **Interactive Graphs (`@xyflow/react`), Chokidar/WS & Next.js 15+ Async Params:** `skills/complex-zero/SKILL.md`.
 
-- Agrupe rotas em `src/app/(dashboard)/` com pastas privadas `_components/` para componentes exclusivos da rota sem expô-los como rotas públicas.
-- Encapsule domínios de negócio em `src/features/<dominio>/{api,components,hooks,types}/` e componentes atômicos em `src/components/{ui,feedback}/`.
-- Mantenha colocalização estrita (`Componente.tsx`, `Componente.module.css`, `Componente.test.tsx`, `Componente.types.ts`).
+---
 
-### 5.2. Adendo A — Canvas Infinito, Geometria e Editores Visuais (`React Flow` / +1.000 Nós)
+## 5. Specialized Scope Addenda (`v8.2.0`)
 
-- **Grelha de Fundo (`.canvasPattern`):** `background-image: radial-gradient(var(--border-subtle) 1px, transparent 1px); background-size: 24px 24px;`
-- **Redimensionamento Nativo (`.nodeResizable`):** `resize: both; overflow: auto; min-width: 200px; min-height: 120px; max-width: 600px; max-height: 500px;`
-- **Sinalização Reativa (`.nodeFlashing`):** `@keyframes flashYellow` de `oklch(0.85 0.18 85)` + `scale(1.12)` para `var(--bg-card)` + `scale(1)` em `1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards`.
-- **Alta Escala (+1.000 nós):** `onlyRenderVisibleElements={true}`, Web Workers fora da *main thread* (Dagre/ELK), `React.memo`, **Batching de eventos em janela de `150ms`** e **LOD Semântico por Zoom** ($< 0.4$ Macro vs. $\ge 0.4$ Micro).
+### 5.1. Feature-Driven Folder Convention & Colocation (Next.js App Router & React)
 
-### 5.3. Adendo B & C — Matriz de Propriedades de Sombra, 4 Modos Contextuais e `<dialog>` Nativo com `@starting-style`
+- Group routes under `src/app/(dashboard)/` with private `_components/` folders for route-exclusive components without exposing them as public routes.
+- Encapsulate business domains under `src/features/<domain>/{api,components,hooks,types}/` and atomic primitives under `src/components/{ui,feedback}/`.
+- Enforce strict colocation (`Component.tsx`, `Component.module.css`, `Component.test.tsx`, `Component.types.ts`).
 
-| Propriedade | Alvo no DOM | `inset` / `spread`? | Uso Canônico |
+### 5.2. Addendum A — Infinite Canvas, Geometry & Visual Editors (`React Flow` / 1,000+ Nodes)
+
+- **Background Dot Grid (`.canvasPattern`):** `background-image: radial-gradient(var(--border-subtle) 1px, transparent 1px); background-size: 24px 24px;`
+- **Native Resizing (`.nodeResizable`):** `resize: both; overflow: auto; min-width: 200px; min-height: 120px; max-width: 600px; max-height: 500px;`
+- **Reactive Signaling (`.nodeFlashing`):** `@keyframes flashYellow` from `oklch(0.85 0.18 85)` + `scale(1.12)` to `var(--bg-card)` + `scale(1)` over `1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards`.
+- **High Scale (1,000+ nodes):** `onlyRenderVisibleElements={true}`, off-main-thread Web Workers (Dagre/ELK), `React.memo`, **`150ms` event batching**, and **Zoom-Based Semantic LOD** ($< 0.4$ Macro vs. $\ge 0.4$ Micro).
+
+### 5.3. Addenda B & C — Shadow Property Matrix, 4 Contextual Modes & Native `<dialog>` with `@starting-style`
+
+| Property | DOM Target | `inset` / `spread`? | Canonical Usage |
 | :--- | :--- | :--- | :--- |
-| **`box-shadow`** | Caixa retangular (`border-box`) | Sim / Sim | Cards, modais, inputs *sunken* (cuidado com `overflow: hidden` no pai). |
-| **`text-shadow`** | Glifos tipográficos | Não / Não | Legibilidade de títulos sobre gradientes ou imagens sem caixa. |
-| **`filter: drop-shadow()`** | Máscara Alfa (transparência real) | Não / Não | Contorno exato de ícones SVG vazados, PNGs transparentes ou `clip-path`. |
+| **`box-shadow`** | Rectangular box (`border-box`) | Yes / Yes | Cards, modals, sunken inputs (watch parent `overflow: hidden`). |
+| **`text-shadow`** | Typographic glyphs | No / No | Heading legibility over gradients or photos without box wrappers. |
+| **`filter: drop-shadow()`** | Alpha mask (true transparency) | No / No | Crisp contours on open SVGs, transparent PNGs, or `clip-path`. |
 
 ```css
-/* Modo 1 & 4: Modal Nativo <dialog> Glassmorphic + Multi-Layered Shadows + @starting-style (Zero JS Animation) */
+/* Mode 1 & 4: Native <dialog> Glassmorphic Modal + Multi-Layered Shadows + @starting-style (Zero JS Animation) */
 dialog::backdrop {
   background-color: oklch(0 0 0 / 0.55);
   backdrop-filter: blur(8px);
@@ -290,10 +290,10 @@ dialog[open]::backdrop { opacity: 1; }
   border: 1px solid oklch(1 0 0 / 0.15);
   border-radius: 20px;
   box-shadow:
-    0px 16px 32px -4px oklch(0 0 0 / 0.60),                        /* 1. Umbra escura */
-    0px 4px 12px 0px oklch(0 0 0 / 0.35),                          /* 2. Penumbra média */
+    0px 16px 32px -4px oklch(0 0 0 / 0.60),                        /* 1. Dark Umbra */
+    0px 4px 12px 0px oklch(0 0 0 / 0.35),                          /* 2. Mid Penumbra */
     0px 0px 24px 0px oklch(from var(--brand-primary) l c h / 0.20),/* 3. Ambient Glow */
-    inset 0px 1px 0px 0px oklch(1 0 0 / 0.25);                     /* 4. Bisel especular */
+    inset 0px 1px 0px 0px oklch(1 0 0 / 0.25);                     /* 4. Specular Rim */
   opacity: 0;
   transform: scale(0.92) translateY(16px);
   transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), overlay 0.3s, display 0.3s;
@@ -303,15 +303,15 @@ dialog[open]::backdrop { opacity: 1; }
 @starting-style { .glassModal[open] { opacity: 0; transform: scale(0.92) translateY(16px); } }
 ```
 
-### 5.5. Adendo D — Grid Sliders com CSS Scroll Snap e `TabControl` Acessível
+### 5.4. Addendum D — CSS Scroll Snap Sliders & Accessible `TabControl`
 
-- **Carrossel Sem JS (`.sliderGrid`):** `display: grid; grid-auto-flow: column; grid-auto-columns: clamp(260px, 40vw, 360px); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin;` com filhos `.sliderCard { scroll-snap-align: start; }`.
-- **Abas com Overflow Horizontal (`.tabsOverflowContainer`):** `role="tablist"` com `display: flex; overflow-x: auto; white-space: nowrap;` e botões `role="tab"` com `aria-selected="true|false"` e `aria-controls`.
+- **Zero-JS Carousel (`.sliderGrid`):** `display: grid; grid-auto-flow: column; grid-auto-columns: clamp(260px, 40vw, 360px); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin;` with `.sliderCard { scroll-snap-align: start; }`.
+- **Horizontally Overflowing Tabs (`.tabsOverflowContainer`):** `role="tablist"` with `display: flex; overflow-x: auto; white-space: nowrap;` and `role="tab"` buttons carrying `aria-selected="true|false"` and `aria-controls`.
 
-### 5.6. Adendos E, F, G, H e I — Seletores Modernos, Subgrid, Trigonometria, Formulários e Sistemas Agênticos
+### 5.5. Addenda E, F, G, H & I — Modern Selectors, Subgrid, Trigonometry, Forms & Agentic UI
 
-- **Seletores Modernos:** `:has()` (estilização relacional do pai), `:is()` / `:not()` (agrupamento e exclusão lógica), `:focus-visible` (foco por teclado), `::before` / `::after` (separadores silenciosos), `::selection`.
-- **CSS Subgrid (`.bentoCardSubgrid`):** `grid-row: span 3; display: grid; grid-template-rows: subgrid;` para alinhar cabeçalhos, corpos e rodapés entre colunas vizinhas.
-- **Trigonometria Nativa (`sin()`, `cos()`):** Posicionamento circular/radial sem JS via `translate(calc(cos(var(--angle)) * var(--orbit-radius)), calc(sin(var(--angle)) * var(--orbit-radius)))`.
-- **Formulários Modernos (`:user-invalid` / `:user-valid`):** Validação visual tardia (dispara somente após interação do usuário, nunca no carregamento inicial), combinada com `<dialog>`, `popover="auto"`, `<details name="...">` e `inert`.
-- **Sistemas Agênticos (AI/LLM UI):** Acordeões `<details class="reasoningAccordion">` para *Chain-of-Thought*, *Scroll Lock Override* durante streaming, Cartões de Tool Calls com `tabular-nums` e Portões HITL (`approval_token` + `idempotency_key`).
+- **Modern Selectors:** `:has()` (relational parent styling), `:is()` / `:not()` (grouping and exclusion), `:focus-visible` (keyboard focus ring), `::before` / `::after` (silent separators), `::selection`.
+- **CSS Subgrid (`.bentoCardSubgrid`):** `grid-row: span 3; display: grid; grid-template-rows: subgrid;` to align headers, bodies, and footers across adjacent columns.
+- **Native Trigonometry (`sin()`, `cos()`):** Radial/circular positioning without JS via `translate(calc(cos(var(--angle)) * var(--orbit-radius)), calc(sin(var(--angle)) * var(--orbit-radius)))`.
+- **Modern Forms (`:user-invalid` / `:user-valid`):** Deferred validation (fires only after user interaction, never on initial load), paired with `<dialog>`, `popover="auto"`, `<details name="...">`, and `inert`.
+- **Agentic Systems (AI/LLM UI):** `<details class="reasoningAccordion">` for Chain-of-Thought, *Scroll Lock Override* during streaming, Tool-Call cards with `tabular-nums`, and HITL gates (`approval_token` + `idempotency_key`).

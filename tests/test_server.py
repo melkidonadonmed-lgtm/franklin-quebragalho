@@ -22,17 +22,18 @@ def test_skills_list_all() -> None:
     """Valida se a listagem retorna todas as skills canônicas ativas no disco sem acoplamento estático frágil."""
     res = server.franklin_skills_list()
     assert "Catálogo de Skills do Franklin Quebra-Galho" in res
-    assert "arquiteto-conteudo-solucoes" in res
+    assert "solution-content-architect" in res
     assert "code-quality-audit-3d-physics" in res
     assert "test-quality-auditor" in res
-    assert "conversor-html-pdf" in res
-    assert "gdrive-auditoria-limpeza" in res
+    assert "html-pdf-converter" in res
+    assert "gdrive-cleanup-auditor" in res
     assert "design-md" in res
     assert "frontend-code-architect" in res
     assert "analise-design-tatil-frontend" not in res
     assert "organizar-gdrive" not in res
     assert "organizar-local" not in res
     assert "gerar-docs-pdf" not in res
+    assert "audit-skills-antigravity" not in res
 
     json_res = server.franklin_skills_list(format="json")
     data = json.loads(json_res)
@@ -47,25 +48,25 @@ def test_skills_list_filters() -> None:
     ui_res = server.franklin_skills_list(persona="UI-Architect")
     assert "design-md" in ui_res
     assert "frontend-code-architect" in ui_res
-    assert "gdrive-auditoria-limpeza" not in ui_res
+    assert "gdrive-cleanup-auditor" not in ui_res
 
     drive_res = server.franklin_skills_list(persona="DriveMaster")
-    assert "gdrive-auditoria-limpeza" in drive_res
+    assert "gdrive-cleanup-auditor" in drive_res
     assert "design-md" not in drive_res
 
 
 def test_skills_get_contract_and_sections() -> None:
     """Valida o carregamento granular com divulgação progressiva."""
-    contract = server.franklin_skills_get("redator-tecnico-markdown", section="contract")
+    contract = server.franklin_skills_get("technical-markdown-writer", section="contract")
     contract_upper = contract.upper()
-    assert "GATILHOS" in contract_upper or "MISSÃO" in contract_upper or "PROPÓSITO" in contract_upper
+    assert "OVERVIEW" in contract_upper or "SCOPE" in contract_upper or "PROCEDURE" in contract_upper
 
-    rules = server.franklin_skills_get("redator-tecnico-markdown", section="rules")
+    rules = server.franklin_skills_get("technical-markdown-writer", section="rules")
     assert "[PASS]" in rules
 
-    evals = server.franklin_skills_get("redator-tecnico-markdown", section="evals")
+    evals = server.franklin_skills_get("technical-markdown-writer", section="evals")
     eval_json = json.loads(evals)
-    assert isinstance(eval_json, list)
+    assert isinstance(eval_json, dict) and isinstance(eval_json.get("evals"), list) and len(eval_json["evals"]) >= 4
 
     missing = server.franklin_skills_get("redator-tecnico-inexistente")
     assert "Erro: Skill" in missing
@@ -74,13 +75,13 @@ def test_skills_get_contract_and_sections() -> None:
 def test_skills_search() -> None:
     """Valida a busca por intenção operacional e relevância."""
     pdf_res = server.franklin_skills_search("gerar relatório executivo e converter em pdf")
-    assert "conversor-html-pdf" in pdf_res or "redator-tecnico-markdown" in pdf_res
+    assert "html-pdf-converter" in pdf_res or "technical-markdown-writer" in pdf_res
 
     drive_res = server.franklin_skills_search("limpeza de arquivos duplicados no drive")
-    assert "gdrive-auditoria-limpeza" in drive_res
+    assert "gdrive-cleanup-auditor" in drive_res
 
     front_res = server.franklin_skills_search("auditar propósito do projeto contraste espaçamento tipografia e camadas")
-    assert "auditoria-projetos-sistema" in front_res or "design-md" in front_res or "frontend-code-architect" in front_res
+    assert "system-project-auditor" in front_res or "design-md" in front_res or "frontend-code-architect" in front_res
 
 
 def test_skills_validate_deterministic() -> None:
@@ -203,10 +204,10 @@ def test_harness_guard_and_checkpoint() -> None:
 def test_resources() -> None:
     """Valida a renderização dos recursos MCP passivos."""
     catalog = server.get_catalog_resource()
-    assert "arquiteto-conteudo-solucoes" in catalog
+    assert "solution-content-architect" in catalog
 
     manifest = server.get_manifest_resource()
-    assert "Minhas Skills" in manifest
+    assert "My Skills" in manifest or "Minhas Skills" in manifest
 
     agents = server.get_agents_resource()
     assert "Franklin Quebra-Galho" in agents
@@ -214,9 +215,9 @@ def test_resources() -> None:
 
 def test_prompts() -> None:
     """Valida os prompts estruturados de 2026."""
-    p_act = server.activate_skill_prompt("redator-tecnico-markdown", "Escrever ata de reunião")
+    p_act = server.activate_skill_prompt("technical-markdown-writer", "Escrever ata de reunião")
     assert "Você está assumindo o papel de executor especialista" in p_act
-    assert "redator-tecnico-markdown" in p_act
+    assert "technical-markdown-writer" in p_act
 
     p_front = server.tactile_frontend_audit_prompt("https://meuapp.com")
     assert "UI-Architect" in p_front
@@ -287,21 +288,21 @@ def test_smart_compass_and_aliases() -> None:
 
     skill_pdf = server._find_skill_dir("pdf")
     assert skill_pdf is not None
-    assert skill_pdf.name == "conversor-html-pdf"
+    assert skill_pdf.name == "html-pdf-converter"
 
     skill_org = server._find_skill_dir("organizar-projeto")
     assert skill_org is not None
-    assert skill_org.name == "organizador-projetos-ideias"
+    assert skill_org.name == "project-idea-organizer"
 
     skill_mvp = server._find_skill_dir("mvp")
     assert skill_mvp is not None
-    assert skill_mvp.name == "auditoria-projetos-sistema"
+    assert skill_mvp.name == "system-project-auditor"
 
     # Teste de descoberta por intenção livre no Smart Compass
     compass_proj = server.franklin_smart_compass("preciso organizar um projeto, revisar o README e diagnosticar o MVP")
     assert "Auditoria Integrada 3-em-1" in compass_proj
-    assert "organizador-projetos-ideias" in compass_proj
-    assert "auditoria-projetos-sistema" in compass_proj
+    assert "project-idea-organizer" in compass_proj
+    assert "system-project-auditor" in compass_proj
     assert "project_structure_and_code_auditor.py" in compass_proj
 
     compass_3d = server.franklin_smart_compass("tenho um jogo three.js com bug de colisão e física")
@@ -363,12 +364,15 @@ def test_franklin_mcp_build_advisor_2026_spec() -> None:
 
 
 def test_arquitetura_deterministic_scorer_v2() -> None:
-    """Valida a fusão 3-em-1 em auditoria-projetos-sistema v6.0.0 (deterministic_scorer.py + project_structure_and_code_auditor.py)."""
+    """Valida a fusão 3-em-1 em system-project-auditor v6.0.0 e aliases retrocompatíveis."""
     skill_dir = server._find_skill_dir("arquitetura")
-    assert skill_dir is not None and skill_dir.name == "auditoria-projetos-sistema"
+    assert skill_dir is not None and skill_dir.name == "system-project-auditor"
+    assert server._find_skill_dir("auditoria-projetos-sistema") == skill_dir
     assert server._find_skill_dir("nav-x-func") == skill_dir
     assert server._find_skill_dir("antigravity-project-auditor") == skill_dir
     assert server._find_skill_dir("arquitetura-design-implementacao-sistema") == skill_dir
+    retired_alias = server._find_skill_dir("audit-skills-antigravity")
+    assert retired_alias is not None and retired_alias.name == "agent-server-auditor"
 
     res = server.franklin_run_skill_script("nav-x-func", "deterministic_scorer.py", ["--self-test"])
     assert "[Exit Code: 0]" in res
@@ -378,7 +382,7 @@ def test_arquitetura_deterministic_scorer_v2() -> None:
     assert '"status": "PASS"' in res
 
     scan_res = server.franklin_run_skill_script(
-        "auditoria-projetos-sistema",
+        "system-project-auditor",
         "deterministic_scorer.py",
         ["--scan", str(skill_dir / "templates")],
     )
@@ -386,7 +390,7 @@ def test_arquitetura_deterministic_scorer_v2() -> None:
     assert '"icte_typography_structure": 100.0' in scan_res
 
     struct_res = server.franklin_run_skill_script(
-        "auditoria-projetos-sistema",
+        "system-project-auditor",
         "project_structure_and_code_auditor.py",
         ["--self-test"],
     )
@@ -400,18 +404,24 @@ def test_frontend_skills_and_ui_subagents_integration() -> None:
     analise_dir = server._find_skill_dir("analise-ui")
     refatorar_dir = server._find_skill_dir("refatorar-ui")
     assert ui_dir is not None and ui_dir.name == "design-md"
-    assert analise_dir is not None and analise_dir.name == "auditoria-projetos-sistema"
+    assert analise_dir is not None and analise_dir.name == "system-project-auditor"
     assert refatorar_dir is not None and refatorar_dir.name == "frontend-code-architect"
+
+    ui_dag_text = (server.ROOT_DIR / "plans" / "ui_composition_dag.json").read_text(encoding="utf-8")
+    for subagent_name in (
+        "ui-shell-navigator",
+        "ui-controls-data",
+        "ui-motion-interaction",
+        "ui-deterministic-observer",
+    ):
+        assert subagent_name in ui_dag_text
 
     for skill_name in (
         "design-md",
         "frontend-code-architect",
     ):
         contract = server.franklin_skills_get(skill_name, section="contract")
-        assert "ui-shell-navigator" in contract
-        assert "ui-controls-data" in contract
-        assert "ui-motion-interaction" in contract
-        assert "ui-deterministic-observer" in contract
+        assert "rules/frontend-9-axes-guidelines.md" in contract
 
     all_ui_agents = server.franklin_get_agents(agent_name="ui")
     assert "ui-shell-navigator" in all_ui_agents
@@ -571,8 +581,9 @@ def test_gemini_ecosystem_directories(tmp_path: Path, monkeypatch: pytest.Monkey
     assert "enable_write_tools:" not in hitl_agent
     assert 'commandExecutionPolicy: "off"' in hitl_agent
     assert not stale_rule.exists(), "sync deve podar rules/*.md removidas em ~/.gemini/config/rules"
-    assert (gemini_root / "config" / "rules" / "diretrizes-qualidade-eficiencia.md").exists()
-    assert not (gemini_root / "config" / "rules" / "diretrizes-frontend-9-eixos.md").exists()
+    assert (gemini_root / "config" / "rules" / "quality-efficiency-guidelines.md").exists()
+    assert not (gemini_root / "config" / "rules" / "frontend-9-axes-guidelines.md").exists()
+    assert not (gemini_root / "config" / "rules" / "diretrizes-qualidade-eficiencia.md").exists()
     assert (split_repo / ".agents" / "AGENTS.md").read_text(encoding="utf-8") == "# Kernel Split Preservado\n"
     assert (gemini_root / "config" / "agents" / "adk-go-operator.md").exists()
     assert not (gemini_root / "config" / "agents" / "ui-shell-navigator.md").exists()
@@ -582,8 +593,8 @@ def test_gemini_ecosystem_directories(tmp_path: Path, monkeypatch: pytest.Monkey
     plugin_root = gemini_root / "config" / "plugins" / "franklin-skills"
     assert (plugin_root / "plugin.json").exists()
     assert (plugin_root / "scripts" / "antigravity_harness_hook.py").exists()
-    assert (plugin_root / "rules" / "diretrizes-frontend-9-eixos.md").exists()
-    assert not (plugin_root / "rules" / "diretrizes-qualidade-eficiencia.md").exists()
+    assert (plugin_root / "rules" / "frontend-9-axes-guidelines.md").exists()
+    assert not (plugin_root / "rules" / "quality-efficiency-guidelines.md").exists()
     assert not (plugin_root / "mcp_config.json").exists()
     skills_json = json.loads((gemini_root / "config" / "skills.json").read_text(encoding="utf-8"))
     assert skills_json["entries"][0]["path"] == (home / ".agents" / "skills").as_posix()
@@ -622,10 +633,10 @@ def test_docs_and_catalog_truth_parity() -> None:
     my_skills_text = (server.ROOT_DIR / "MY_SKILLS.md").read_text(encoding="utf-8")
     agents_text = (server.ROOT_DIR / "AGENTS.md").read_text(encoding="utf-8")
 
-    assert f"{count} Skills Canônicas" in readme_text
+    assert f"{count} Canonical Skills" in readme_text
     assert f"{count} Agent Skills" in spec_text
     assert f"{count} Skills" in context_text
-    assert f"{count} Skills Canônicas" in my_skills_text
+    assert f"{count} Canonical Skills" in my_skills_text
     assert f"`{count}/{count}` skills" in agents_text
     assert (server.ROOT_DIR / ".env.example").exists()
 
@@ -639,27 +650,27 @@ def test_progressive_disclosure_three_tiers() -> None:
     # Nível 1: Catálogo enxuto XML
     xml_catalog = server.franklin_skills_list(format="xml")
     assert "<available_skills>" in xml_catalog
-    assert '<skill name="redator-tecnico-markdown"' in xml_catalog
+    assert '<skill name="technical-markdown-writer"' in xml_catalog
     assert "</available_skills>" in xml_catalog
     assert server.get_catalog_xml_resource() == xml_catalog
 
     # Nível 2: Ativação sem frontmatter YAML e com enumeração de recursos
-    activated = server.franklin_skills_get("redator-tecnico-markdown", section="activate")
-    assert '<skill_content name="redator-tecnico-markdown"' in activated
+    activated = server.franklin_skills_get("technical-markdown-writer", section="activate")
+    assert '<skill_content name="technical-markdown-writer"' in activated
     assert "<available_resources>" in activated
-    assert "<resource_file>rules/criterios_auditoria.md</resource_file>" in activated
+    assert "<resource_file>rules/audit_criteria.md</resource_file>" in activated
     assert not activated.splitlines()[1].startswith("---")
 
     # Nível 3: Leitura de recurso sob demanda e bloqueio contra Path Traversal
     resource_ok = server.franklin_skills_get(
-        "redator-tecnico-markdown",
-        section="resource:rules/criterios_auditoria.md",
+        "technical-markdown-writer",
+        section="resource:rules/audit_criteria.md",
     )
-    assert '<resource_content skill="redator-tecnico-markdown" file="rules/criterios_auditoria.md">' in resource_ok
+    assert '<resource_content skill="technical-markdown-writer" file="rules/audit_criteria.md">' in resource_ok
     assert "[PASS]" in resource_ok
 
     traversal_blocked = server.franklin_skills_get(
-        "redator-tecnico-markdown",
+        "technical-markdown-writer",
         section="resource:../../server.py",
     )
     assert "Erro de segurança: Acesso negado" in traversal_blocked
@@ -690,7 +701,7 @@ def test_modular_six_role_orchestrator_and_cross_project_execution(tmp_path: Pat
     res_research = json.loads(
         orchestrator.execute_turn_sync(
             "Analisar e auditar arquitetura do repositório",
-            skill_name="auditoria-projetos-sistema",
+            skill_name="system-project-auditor",
             persona="Franklin-Main",
             target_dir=str(tmp_path),
         )
@@ -704,7 +715,7 @@ def test_modular_six_role_orchestrator_and_cross_project_execution(tmp_path: Pat
     res_mutation = json.loads(
         orchestrator.execute_turn_sync(
             "Deletar e excluir pastas temporárias do banco",
-            skill_name="manutencao-disco-windows",
+            skill_name="windows-disk-maintenance",
             session_id="sess-hitl-6roles",
         )
     )
@@ -732,10 +743,10 @@ def test_modular_six_role_orchestrator_and_cross_project_execution(tmp_path: Pat
 
 
 def test_cognitive_planner_and_dag_chain_validator_scripts() -> None:
-    """Valida a integração do motor intent-cognitive-planner e do compilador Kahn de ondas DAG."""
+    """Valida a integração do motor intent-cognitive-planner, compilador Kahn e validador determinístico do ecossistema."""
     contract = server.franklin_skills_get("intent-cognitive-planner", section="contract")
     assert "high-level-context-planner" in contract
-    assert "Parede de Complexidade" in contract
+    assert "Complexity Wall" in contract or "Parede de Complexidade" in contract
 
     cog_out = server.franklin_run_skill_script(
         skill_name="high-level-context-planner",
@@ -746,7 +757,7 @@ def test_cognitive_planner_and_dag_chain_validator_scripts() -> None:
     assert '"max_rules_per_node_enforced": 5' in cog_out
 
     dag_out = server.franklin_run_skill_script(
-        skill_name="skill-orquestrador-planos-encadeados",
+        skill_name="chained-plan-orchestrator",
         script_name="dag_chain_validator.py",
         args=["--self-test"],
     )
@@ -754,14 +765,15 @@ def test_cognitive_planner_and_dag_chain_validator_scripts() -> None:
     assert '"kahn_waves_verified": true' in dag_out
     assert '"collision_detection_verified": true' in dag_out
 
-    rea_out = server.franklin_run_skill_script(
-        skill_name="audit-skills-antigravity",
-        script_name="skill_auditor_rea.go",
-        args=[str(server.SKILLS_ROOT)],
-    )
-    assert "[Exit Code: 0]" in rea_out
-    assert "[MANTIDA]" in rea_out
-    assert "[RECOMENDAÇÃO: OTIMIZAR YAML]" not in rea_out
+    import scripts.validate_skills as vs
+
+    skill_dirs = [d for d in server.SKILLS_ROOT.iterdir() if d.is_dir() and (d / "SKILL.md").exists()]
+    assert len(skill_dirs) >= 24
+    assert not (server.SKILLS_ROOT / "audit-skills-antigravity").exists()
+    for sd in skill_dirs:
+        assert vs.validate_skill_dir(sd, strict_mode=True) == []
+    assert vs.validate_ecosystem(server.ROOT_DIR) == []
+    assert server._find_skill_dir("audit-skills-antigravity") == server.SKILLS_ROOT / "agent-server-auditor"
 
 
 

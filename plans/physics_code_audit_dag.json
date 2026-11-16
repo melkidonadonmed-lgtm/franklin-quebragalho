@@ -1,17 +1,17 @@
 {
-  "objective": "Orquestração Determinística de Auditoria de Código & Física 3D em 3 Ondas (Topologia 3+1+1: 3 Auditores Estáticos AST -> 1 Runner Determinístico Pass@10 -> 1 State Checker Observer Snorm)",
+  "objective": "Deterministic 3D Physics & Code Quality Audit Orchestration in 3 Waves (3+1+1 Topology: 3 Static AST Auditors -> 1 Deterministic Pass@10 Runner -> 1 State Checker Observer Snorm)",
   "acceptance_criteria": [
-    "Onda 1A (static_sanitization_auditor): Detectar ALLOC_IN_LOOP (-30), DUPLICATE_FUNCTION (-20), DEAD_CODE_FUNCTION (-10) e UNUSED_VARIABLE (-5) com cálculo de s1 (peso 20%)",
-    "Onda 1B (architecture_hardcoded_auditor): Detectar PHYSICS_RENDER_COUPLING (-35), RIGID_CONSTRUCTOR (-15) e HARDCODED_MAGIC_NUMBER (-10) com cálculo de s2 (peso 15%)",
-    "Onda 1C (physics_3d_math_auditor): Auditar as 5 sub-dimensões S1..S5 (Integração dt, Quaternions/Normalize, Conservação/Damping, Colisão/CCD, Robustez Float EPSILON) com cálculo de s3 (peso 25%)",
-    "Onda 2 (deterministic_tests_auditor): Executar as 5 baterias dinâmicas em physics_test_runner.py (60Hz vs 120Hz, Conservação de Energia, Imunidade NaN, Anti-Tunneling CCD e Pass@10) com cálculo de s4 (peso 20%)",
-    "Onda 3 (state_checker_observer): Realizar validação cruzada anti-alucinação no código-fonte, descartar falsos positivos, calcular Snorm (0 a 100) e emitir Relatório Final padronizado"
+    "Wave 1A (static_sanitization_auditor): Detect ALLOC_IN_LOOP (-30), DUPLICATE_FUNCTION (-20), DEAD_CODE_FUNCTION (-10), and UNUSED_VARIABLE (-5) computing s1 (weight 20%)",
+    "Wave 1B (architecture_hardcoded_auditor): Detect PHYSICS_RENDER_COUPLING (-35), RIGID_CONSTRUCTOR (-15), and HARDCODED_MAGIC_NUMBER (-10) computing s2 (weight 15%)",
+    "Wave 1C (physics_3d_math_auditor): Audit all 5 S1..S5 sub-dimensions (dt Integration, Quaternions/Normalize, Energy/Damping, Collision/CCD, Float EPSILON Robustness) computing s3 (weight 25%)",
+    "Wave 2 (deterministic_tests_auditor): Execute all 5 dynamic test suites in physics_test_runner.py (60Hz vs 120Hz, Energy Conservation, NaN Immunity, Anti-Tunneling CCD, Pass@10) computing s4 (weight 20%)",
+    "Wave 3 (state_checker_observer): Perform anti-hallucination AST cross-validation, discard false positives, compute global Snorm (0 to 100), and emit standardized Final Report"
   ],
   "tasks": [
     {
       "id": "wave1_static_sanitization",
       "group_id": "static_sanitization_auditor",
-      "description": "Varredura estática AST para detectar código morto, funções duplicadas, variáveis não lidas e alocações de memória no laço 3D (w1 = 20%)",
+      "description": "Static AST scan for dead code, duplicate functions, unread variables, and allocations inside 3D hot loops (w1 = 20%)",
       "criticality": "MEDIUM",
       "payload": {
         "subskill": "static-sanitization-auditor",
@@ -26,7 +26,7 @@
     {
       "id": "wave1_architecture_hardcoded",
       "group_id": "architecture_hardcoded_auditor",
-      "description": "Auditoria de modularidade, separação entre motor físico e camada de renderização/DOM, injeção de parâmetros e caça a números mágicos (w2 = 15%)",
+      "description": "Modularity audit verifying separation of physics engine from rendering/DOM layer, constructor injection, and magic-number removal (w2 = 15%)",
       "criticality": "MEDIUM",
       "payload": {
         "subskill": "architecture-hardcoded-auditor",
@@ -41,7 +41,7 @@
     {
       "id": "wave1_physics_3d_math",
       "group_id": "physics_3d_math_auditor",
-      "description": "Auditoria matemática das 5 sub-dimensões de Física 3D (S1: Delta Time 25%, S2: Quaternions/Normalize 25%, S3: Conservação/Damping 20%, S4: Colisão/CCD 15%, S5: Robustez IEEE 754 15%) (w3 = 25%)",
+      "description": "Mathematical audit across 5 3D Physics sub-dimensions (S1: Delta Time 25%, S2: Quaternions/Normalize 25%, S3: Energy/Damping 20%, S4: Collision/CCD 15%, S5: IEEE 754 Robustness 15%) (w3 = 25%)",
       "criticality": "HIGH",
       "payload": {
         "subskill": "physics-3d-math-auditor",
@@ -56,7 +56,7 @@
     {
       "id": "wave2_deterministic_tests",
       "group_id": "deterministic_tests_auditor",
-      "description": "Execução da suíte de 5 testes dinâmicos determinísticos (FPS Independence, Conservação de Energia, NaN Immunity, Anti-Tunneling CCD e Pass@10) (w4 = 20%)",
+      "description": "Execute 5 deterministic dynamic test suites (FPS Independence, Energy Conservation, NaN Immunity, Anti-Tunneling CCD, Pass@10) (w4 = 20%)",
       "dependencies": [
         "wave1_static_sanitization",
         "wave1_architecture_hardcoded",
@@ -78,7 +78,7 @@
     {
       "id": "wave3_state_checker_observer",
       "group_id": "state_checker_observer",
-      "description": "Validação cruzada anti-alucinação na AST/código-fonte, eliminação de falsos positivos, consolidação do Escore Normalizado Global Snorm e geração do Relatório Final (w5 = 20%)",
+      "description": "AST/source cross-validation against hallucinations, false-positive pruning, global Snorm consolidation, and Final Report generation (w5 = 20%)",
       "dependencies": [
         "wave1_static_sanitization",
         "wave1_architecture_hardcoded",

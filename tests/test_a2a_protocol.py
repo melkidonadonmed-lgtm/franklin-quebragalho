@@ -93,7 +93,7 @@ def test_a2a_task_manager_state_machine_and_zero_trust_context(tmp_path: Path) -
     # Act 2: Tarefa destrutiva -> TASK_STATE_INPUT_REQUIRED (HITL Checkpoint)
     critical_task = manager.submit_task(
         query="Executar Remove-Item -Recurse -Force C:\\temp\\arquivos_antigos",
-        skill_id="manutencao-disco-windows",
+        skill_id="windows-disk-maintenance",
         context_id="ctx-hitl-01",
     )
 

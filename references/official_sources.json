@@ -86,7 +86,7 @@
       "url": "https://aistudio.google.com/docs/models.md",
       "target_rules": [
         "rules/authoring-rules-and-google-apis.md",
-        "rules/diretrizes-qualidade-eficiencia.md"
+        "rules/quality-efficiency-guidelines.md"
       ],
       "required_invariants": [
         "gemini-4-hydrogen",
@@ -175,7 +175,7 @@
       "target_rules": [
         "rules/authoring-rules-and-google-apis.md",
         "rules/authoring-subagents.md",
-        "rules/diretrizes-qualidade-eficiencia.md"
+        "rules/quality-efficiency-guidelines.md"
       ],
       "required_invariants": [
         "gemini-2.5-flash-lite",

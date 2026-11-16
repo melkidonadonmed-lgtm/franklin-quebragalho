@@ -29,8 +29,8 @@ CONFIG_PLUGIN_ROOT = GEMINI_ROOT / "config" / "plugins" / "franklin-skills"
 CONFIG_SKILLS_ROOT = GEMINI_ROOT / "config" / "skills"
 
 GLOBAL_CORE_FRANKLIN_SKILLS: tuple[str, ...] = (
-    "auditoria-projetos-sistema", "audit-skills-antigravity", "code-acceptability-auditor",
-    "test-quality-auditor", "gap-analyzer-auditor", "organizador-projetos-ideias",
+    "system-project-auditor", "code-acceptability-auditor",
+    "test-quality-auditor", "gap-analyzer-auditor", "project-idea-organizer",
 )
 GLOBAL_CORE_USER_SKILLS: tuple[str, ...] = (
     "adk-go-mcp-router", "agent-0meia", "agent-browser", "find-skills",
@@ -58,7 +58,7 @@ MIRRORED_AGENTS_REPOS: tuple[str, ...] = (
     "scoreboard",
 )
 
-GLOBAL_ONLY_RULES: tuple[str, ...] = ("diretrizes-qualidade-eficiencia.md",)
+GLOBAL_ONLY_RULES: tuple[str, ...] = ("quality-efficiency-guidelines.md",)
 
 
 def _remove_dir_or_link(target: Path) -> None:
@@ -158,7 +158,7 @@ def _prepare_and_clean_dirs() -> None:
 
 
 def _sync_global_core_plugin_skills(skills_src: Path, plugin_skills_dst: Path) -> int:
-    """Sincroniza apenas as 6 skills core universais para o plugin global franklin-skills."""
+    """Sincroniza apenas as 5 skills core universais para o plugin global franklin-skills."""
     if not skills_src.exists():
         return 0
     plugin_skills_dst.mkdir(parents=True, exist_ok=True)
@@ -290,11 +290,14 @@ def _mirror_context_to_root(repo_dir: Path) -> list[str]:
 
 def _cleanup_ssot_home_duplicates() -> None:
     """Remove duplicatas SSOT em ~/AGENTS.md, ~/.agents/AGENTS.md e franklin/.agents/AGENTS.md."""
-    ssot_marker = "Kernel Operacional, Criação de Projetos e Governança"
+    ssot_markers = (
+        "Kernel Operacional, Criação de Projetos e Governança",
+        "Operational Kernel, Project Bootstrapping, and Governance",
+    )
     for dup_agents in (USER_HOME / "AGENTS.md", USER_HOME / ".agents" / "AGENTS.md"):
         if dup_agents.is_file():
             content = dup_agents.read_text(encoding="utf-8", errors="ignore")
-            if ssot_marker in content:
+            if any(m in content for m in ssot_markers):
                 dup_agents.unlink(missing_ok=True)
     repo_dup = ROOT_DIR / ".agents" / "AGENTS.md"
     if repo_dup.is_file() and (ROOT_DIR / "AGENTS.md").is_file() and ROOT_DIR.name not in MIRRORED_AGENTS_REPOS:
@@ -373,7 +376,7 @@ def _sync_docs_and_agent_card() -> int:
         ROOT_DIR / "SPEC.md",
         ROOT_DIR / "CONTEXT.md",
         ROOT_DIR / "CURRENT_STATE.md",
-        ROOT_DIR / "skills" / "auditoria-projetos-sistema" / "references" / "taxonomia_subagentes_ui_6_camadas.md",
+        ROOT_DIR / "skills" / "system-project-auditor" / "references" / "ui_subagent_taxonomy_6_layers.md",
     )
     allowed_doc_names = {df.name for df in doc_files} | {"agent_card.json"}
     for doc_dir in (GEMINI_ROOT / "doc", CONFIG_PLUGIN_ROOT / "doc"):
@@ -474,7 +477,7 @@ def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
     """Retorna o mapa de skills e subagentes específicos de cada repositório em dev/repos."""
     ui_f = ["design-md", "frontend-code-architect", "frontend-testing-auditor", "frontend-ui-ux-auditor", "plan-uiux", "complex-zero"]
     ui_u = ["vercel-react-best-practices", "web-design-guidelines", "ai-sdk", "live-api-function-auditor"]
-    mcp_f = ["agent-server-auditor", "audit-skills-antigravity", "high-level-context-planner", "skill-orquestrador-planos-encadeados", "refine-prompt", "context-sentinel"]
+    mcp_f = ["agent-server-auditor", "high-level-context-planner", "chained-plan-orchestrator", "refine-prompt", "context-sentinel"]
     mcp_u = ["api-auditor", "build-mcp-server", "build-mcp-app", "build-mcpb", "mcp-use-app-builder", "live-api-function-auditor"]
     adk_local_skills = ["backend-architecture-skill", "backfront-stress", "code-quality-validation", "context-architecture-skill", "estante", "gatekeeper-eval", "temperea"]
     ui_profile = {"franklin_skills": ui_f, "user_skills": ui_u, "subagents": UI_SUBAGENTS}
@@ -499,7 +502,7 @@ def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
             "subagents": (*UI_SUBAGENTS, *GOV_SUBAGENTS),
         },
         "PCM": {
-            "franklin_skills": ["design-interface-medica-minimalista", "conversor-html-pdf", "redator-tecnico-markdown", *ui_f],
+            "franklin_skills": ["clinical-minimalist-ui", "html-pdf-converter", "technical-markdown-writer", *ui_f],
             "user_skills": ["clinical-change-safety", "ui-pdf-validation", *ui_u],
             "plugin_skills": [("firebase", ["firebase_firestore", "firebase_auth_basics", "firebase_hosting_basics", "firestore_rules_creation", "firebase_security_rules_auditor"])],
             "subagents": (*UI_SUBAGENTS, "review-squad.md"),
@@ -524,7 +527,7 @@ def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
             "subagents": (*UI_SUBAGENTS, *GOV_SUBAGENTS, *GLOBAL_CORE_SUBAGENTS),
         },
         "adk-py-agents": {
-            "franklin_skills": [*mcp_f, "design-interface-medica-minimalista", "design-md", "frontend-testing-auditor"],
+            "franklin_skills": [*mcp_f, "clinical-minimalist-ui", "design-md", "frontend-testing-auditor"],
             "user_skills": [*mcp_u, "adk-go-mcp-router", "agent-0meia", "google-agents-cli-adk-code", "google-agents-cli-deploy", "google-agents-cli-eval", "google-agents-cli-observability", "google-agents-cli-workflow"],
             "plugin_skills": [("data-agent-kit-plugin", ["bigquery-ai-ml", "bigquery-observability", "building-data-apps", "enforcing-resource-attribution"])],
             "local_skills": [("skills", ["weather-skill"])],
@@ -539,21 +542,22 @@ def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
         "franklin-quebragalho": {
             "franklin_skills": all_franklin,
             "user_skills": ["agent-skill-evaluator", "skill-repair", "build-mcp-server", "api-auditor", "live-api-function-auditor", "adk-go-mcp-router", "agent-0meia", "code-analysis-causal-review-team"],
-            "local_skills": [("../adk-go-mcp/skills", adk_local_skills)],
             "subagents": (*UI_SUBAGENTS, *GOV_SUBAGENTS),
         },
-        "workspace-mcp": {"franklin_skills": [*mcp_f, "gdrive-auditoria-limpeza", "gdrive-taxonomia-organizacao"], "user_skills": mcp_u, "subagents": GOV_SUBAGENTS},
+        "workspace-mcp": {"franklin_skills": [*mcp_f, "gdrive-cleanup-auditor", "gdrive-taxonomy-organizer"], "user_skills": mcp_u, "subagents": GOV_SUBAGENTS},
         "genkit-app": {"franklin_skills": mcp_f, "user_skills": [*mcp_u, "developing-genkit-js", "developing-genkit-go", "developing-genkit-python"], "subagents": GOV_SUBAGENTS},
     })
     return profiles
 
 
 def _sync_project_scoped_customizations(agents_src: Path) -> int:
-    """Gera .agents/skills.json e .agents/agents/*.md sob medida dentro de cada repositório de dev/repos."""
+    """Gera .agents/skills.json e .agents/agents/*.md sob medida sem duplicar skills core globais."""
     profiles = _build_project_customization_profiles()
     franklin_skills_path = (ROOT_DIR / "skills").as_posix()
     user_skills_path = (USER_HOME / ".agents" / "skills").as_posix()
     plugins_base = (GEMINI_ROOT / "config" / "plugins").as_posix()
+    global_franklin = set(GLOBAL_CORE_FRANKLIN_SKILLS)
+    global_user = set(GLOBAL_CORE_USER_SKILLS)
     configured_repos = 0
 
     for repo_name, profile in profiles.items():
@@ -563,10 +567,13 @@ def _sync_project_scoped_customizations(agents_src: Path) -> int:
         dot_agents = repo_dir / ".agents"
         dot_agents.mkdir(parents=True, exist_ok=True)
         entries: list[dict[str, Any]] = []
-        if profile.get("franklin_skills"):
-            entries.append({"path": franklin_skills_path, "include_only": profile["franklin_skills"]})
-        if profile.get("user_skills"):
-            entries.append({"path": user_skills_path, "include_only": profile["user_skills"]})
+        f_skills = [s for s in profile.get("franklin_skills", []) if s not in global_franklin]
+        u_skills = [s for s in profile.get("user_skills", []) if s not in global_user]
+        if f_skills:
+            f_path = "skills" if repo_name == ROOT_DIR.name else franklin_skills_path
+            entries.append({"path": f_path, "include_only": f_skills})
+        if u_skills:
+            entries.append({"path": user_skills_path, "include_only": u_skills})
         for plugin_name, p_skills in profile.get("plugin_skills", []):
             entries.append({"path": f"{plugins_base}/{plugin_name}/skills", "include_only": p_skills})
         for rel_dir, l_skills in profile.get("local_skills", []):
