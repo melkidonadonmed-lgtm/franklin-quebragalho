@@ -69,13 +69,14 @@ ALLOWED_RULE_TRIGGERS = frozenset({"always_on", "model_decision", "glob", "manua
 ALLOWED_HOOK_EVENTS = frozenset({"PreToolUse", "PostToolUse", "SessionStart", "PreInvocation", "PostInvocation", "Stop"})
 ALLOWED_PLUGIN_KEYS = frozenset({
     "$schema", "name", "displayName", "version", "description", "author",
-    "homepage", "repository", "license", "keywords", "logo", "suggestedPrompts",
+    "homepage", "repository", "license", "keywords", "logo", "suggestedPrompts", "disabled",
 })
 FORBIDDEN_AGENT_TOOLS = frozenset({
     "*", "call_mcp_tool", "view_file", "list_dir", "find_by_name",
     "grep_search", "write_to_file", "replace_file_content", "multi_replace_file_content",
 })
 ALLOWED_EXEC_POLICIES = frozenset({"auto", "sandbox", "off"})
+REQUIRED_AGENT_KEYS = ("name", "description", "subagent", "mainAgent", "model", "commandExecutionPolicy", "tools")
 
 
 def _validate_description_field(
@@ -362,8 +363,12 @@ def _validate_rules_dir(rules_dir: Path) -> List[str]:
         trig = str(meta.get("trigger", "")).strip()
         if trig not in ALLOWED_RULE_TRIGGERS:
             errors.append(f"[FAIL] Rule {rule_file.name} possui trigger inválido: '{trig}'")
-        if trig == "model_decision" and not str(meta.get("description", "")).strip():
-            errors.append(f"[FAIL] Rule model_decision {rule_file.name} exige 'description'")
+        if trig == "model_decision":
+            desc_val = str(meta.get("description", "")).strip()
+            if not desc_val:
+                errors.append(f"[FAIL] Rule model_decision {rule_file.name} exige 'description'")
+            elif "do not" not in desc_val.lower() and "don't" not in desc_val.lower():
+                errors.append(f"[FAIL] Rule model_decision {rule_file.name} exige fronteira negativa ('Do NOT load...') na description")
         if trig == "glob" and (not isinstance(meta.get("globs"), str) or not meta.get("globs", "").strip()):
             errors.append(f"[FAIL] Rule glob {rule_file.name} exige 'globs' como string")
     if total_chars // 4 > 20000:
@@ -389,11 +394,40 @@ def _validate_hooks_manifest(hooks_file: Path, repo_root: Path) -> List[str]:
             if key not in ALLOWED_HOOK_EVENTS:
                 errors.append(f"[FAIL] Evento hook inválido/não-Antigravity '{key}' em '{hook_name}'")
     serialized = json.dumps(data)
-    if "C:\\\\" in serialized or "/Users/" in serialized:
+    if "C:\\\\" in serialized or "/Users/" in serialized or "C:/Users/" in serialized:
         errors.append("[FAIL] hooks.json contém caminho absoluto hardcoded em vez de ./scripts/...")
     if "antigravity_harness_hook.py" in serialized and not (repo_root / "hooks" / "antigravity_harness_hook.py").is_file():
         errors.append("[FAIL] Script hooks/antigravity_harness_hook.py referenciado não existe")
     return errors
+
+
+def _validate_single_agent_manifest(af: Path, errors: List[str]) -> None:
+    """Valida frontmatter completo de um arquivo declarativo agents/*.md."""
+    legacy_agent_keys = {"enable_write_tools", "enable_mcp_tools", "enable_subagent_tools", "wave", "parent_persona", "covered_modules"}
+    meta, _ = parse_frontmatter(af.read_text(encoding="utf-8"))
+    if not meta.get("name") or not meta.get("description"):
+        errors.append(f"[FAIL] Agente {af.name} sem 'name' ou 'description'")
+    missing_req = [k for k in REQUIRED_AGENT_KEYS if k not in meta]
+    if missing_req:
+        errors.append(f"[FAIL] Agente {af.name} sem chaves obrigatórias: {missing_req}")
+    bad_keys = sorted(legacy_agent_keys & set(meta))
+    if bad_keys:
+        errors.append(f"[FAIL] Agente {af.name} usa chaves legadas não-Antigravity: {bad_keys}")
+    raw_pol = meta.get("commandExecutionPolicy")
+    policy = "false" if raw_pol is False else str(raw_pol or "").strip()
+    if policy not in ALLOWED_EXEC_POLICIES:
+        errors.append(f"[FAIL] Agente {af.name} com commandExecutionPolicy inválido: '{policy}'")
+    if "inheritCustomizations" not in meta:
+        errors.append(f"[FAIL] Agente {af.name} exige 'inheritCustomizations' explícito")
+    if meta.get("subagent") is True and (not meta.get("max_steps") or not meta.get("stop_condition")):
+        errors.append(f"[FAIL] Subagente {af.name} exige 'max_steps' e 'stop_condition'")
+    tools = meta.get("tools")
+    if not isinstance(tools, list) or not tools:
+        errors.append(f"[FAIL] Agente {af.name} exige lista explícita não-vazia em 'tools'")
+    else:
+        bad_tools = sorted(str(t) for t in tools if str(t) in FORBIDDEN_AGENT_TOOLS)
+        if bad_tools:
+            errors.append(f"[FAIL] Agente {af.name} declara tools proibidas/legadas em tools: {bad_tools}")
 
 
 def _validate_plugin_and_agents(repo_root: Path) -> List[str]:
@@ -411,26 +445,32 @@ def _validate_plugin_and_agents(repo_root: Path) -> List[str]:
         if logo and not (repo_root / logo).is_file():
             errors.append(f"[FAIL] Logo do plugin inexistente: {logo}")
 
-    legacy_agent_keys = {"enable_write_tools", "enable_mcp_tools", "enable_subagent_tools", "wave", "parent_persona", "covered_modules"}
     agents_dir = repo_root / "agents"
     if agents_dir.is_dir():
         for af in sorted(agents_dir.glob("*.md")):
-            meta, _ = parse_frontmatter(af.read_text(encoding="utf-8"))
-            if not meta.get("name") or not meta.get("description"):
-                errors.append(f"[FAIL] Agente {af.name} sem 'name' ou 'description'")
-            bad_keys = sorted(legacy_agent_keys & set(meta))
-            if bad_keys:
-                errors.append(f"[FAIL] Agente {af.name} usa chaves legadas não-Antigravity: {bad_keys}")
-            policy = str(meta.get("commandExecutionPolicy", "sandbox")).strip()
-            if policy not in ALLOWED_EXEC_POLICIES:
-                errors.append(f"[FAIL] Agente {af.name} com commandExecutionPolicy inválido: '{policy}'")
-            tools = meta.get("tools")
-            if not isinstance(tools, list) or not tools:
-                errors.append(f"[FAIL] Agente {af.name} exige lista explícita não-vazia em 'tools'")
-            else:
-                bad_tools = sorted(str(t) for t in tools if str(t) in FORBIDDEN_AGENT_TOOLS)
-                if bad_tools:
-                    errors.append(f"[FAIL] Agente {af.name} declara tools proibidas/legadas em tools: {bad_tools}")
+            _validate_single_agent_manifest(af, errors)
+    return errors
+
+
+def validate_global_agents() -> List[str]:
+    """Valida todos os subagentes instalados globalmente e no repositório irmão shredded-shape."""
+    errors: List[str] = []
+    home = Path.home()
+    candidate_dirs = (
+        home / ".gemini" / "config" / "agents",
+        home / ".gemini" / "agents",
+        ROOT_DIR.parent / "shredded-shape" / "agents",
+        home / ".gemini" / "config" / "plugins" / "shredded-shape" / "agents",
+    )
+    for d in candidate_dirs:
+        if d.is_dir():
+            for af in sorted(d.glob("*.md")):
+                _validate_single_agent_manifest(af, errors)
+    cfg_agents = home / ".gemini" / "config" / "agents"
+    if cfg_agents.is_dir():
+        leaked_ui = sorted(p.name for p in cfg_agents.glob("ui-*.md"))
+        if leaked_ui:
+            errors.append(f"[FAIL] Drift 3-vias em ~/.gemini/config/agents/: {leaked_ui}")
     return errors
 
 
@@ -459,6 +499,7 @@ def main() -> int:
     parser.add_argument("--external", action="store_true", help="Modo agentskills.io enxuto para skills externas.")
     parser.add_argument("--strict", action="store_true", help="Reprova chaves duplicadas no topo e exige SemVer em metadata.version.")
     parser.add_argument("--ecosystem", action="store_true", help="Valida rules/, hooks/hooks.json, plugin.json e agents/.")
+    parser.add_argument("--global-agents", action="store_true", help="Valida subagentes em ~/.gemini e shredded-shape.")
     args = parser.parse_args()
 
     skills_root = Path(args.root).expanduser().resolve() if args.root else ROOT_DIR / "skills"
@@ -485,6 +526,8 @@ def main() -> int:
     extra_errors = check_jaccard_overlaps(skill_dirs) if not args.targets else []
     if args.ecosystem:
         extra_errors.extend(validate_ecosystem(ROOT_DIR))
+    if args.global_agents:
+        extra_errors.extend(validate_global_agents())
     for err in extra_errors:
         print(err)
 

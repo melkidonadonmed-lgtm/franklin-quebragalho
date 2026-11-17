@@ -27,7 +27,7 @@ Performs static Python **AST** (*Abstract Syntax Tree*) auditing as **Gate 1** o
 
 ## 3. Step-by-Step Procedure
 
-Consult the 12-rule matrix (`SEC001..003`, `SYN001`, `ERR001..003`, `TYP001..002`, `ARCH001..003`) and 7 CLI modes in [`references/rules_12_matrix_and_cli.md`](references/rules_12_matrix_and_cli.md) and [`references/security_rules_spec.md`](references/security_rules_spec.md):
+Consult the 13-rule matrix (`SEC001..003`, `SYN001`, `ERR001..003`, `TYP001..002`, `ARCH001..003`, `STUB001`) and 7 CLI modes in [`references/rules_12_matrix_and_cli.md`](references/rules_12_matrix_and_cli.md) and [`references/security_rules_spec.md`](references/security_rules_spec.md):
 
 1. Run static AST scanning against the target file or directory:
 ```powershell
@@ -42,6 +42,7 @@ $$\text{Quality Score} = \max\left(0.0, 100.0 - \sum \text{Penalties}\right)$$
 
 - Bare `except:` (`ERR001`, `-10`) differs from `except Exception:` (`ERR002`, `-5`); both escalate to `ERR003` (`-25`) when the handler body contains only `pass`, `...`, or `continue`.
 - `SEC003` exempts `os.getenv`/`os.environ.get` and documentation placeholders (`YOUR_API_KEY`); `self`/`cls` are exempt in `TYP001`, and `__init__` is exempt in `TYP002`.
+- Enforce Google Python Style Guide (`pyguide.md`, `[tool.ruff.lint.pydocstyle] convention = "google"`) for docstrings (`Args:`, `Returns:`, `Raises:`).
 - Keep [`references/trigger_matrix_queries.json`](references/trigger_matrix_queries.json) intact for `trigger_eval_runner.py`.
 
 ## 5. Output Schema & Validation Criteria

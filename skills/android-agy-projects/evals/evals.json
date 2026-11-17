@@ -52,7 +52,7 @@
     "prompt": "Refatore os componentes desta dashboard web em Next.js 15 App Router usando Tailwind CSS e tokens OKLCH.",
     "expected_behavior": {
       "triggers_android_agy_projects": false,
-      "delegate_to": "frontend-code-architect"
+      "delegate_to": "ui-clean-worker"
     }
   },
   {

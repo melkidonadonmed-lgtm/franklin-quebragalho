@@ -293,6 +293,31 @@ CANONICAL_TRIGGER_EVAL_CASES: List[TriggerEvalCase] = [
         near_miss_skills=["gdrive-taxonomy-organizer", "windows-disk-maintenance"],
         rationale="English query must route Drive cleanup to gdrive-cleanup-auditor.",
     ),
+    TriggerEvalCase(
+        case_id="TRG-35",
+        cluster="Cross-Skill Boundary Alignment",
+        query="Implement minimal strictly typed FastAPI OpenAPI 3.1 endpoints, RFC 9457 errors, and PostgreSQL EXPLAIN ANALYZE keyset pagination",
+        expected_skill="solution-content-architect",
+        near_miss_skills=["project-idea-organizer", "system-project-auditor"],
+        rationale="In-repo concrete implementation and API/SQL contract design routes to solution-content-architect.",
+    ),
+    TriggerEvalCase(
+        case_id="TRG-36",
+        cluster="Cross-Skill Boundary Alignment",
+        query="Bootstrap a raw CLI app idea from scratch into a right-sized runnable v1.0.0 MVP and sync README.md 1:1 with disk",
+        expected_skill="project-idea-organizer",
+        near_miss_skills=["solution-content-architect", "system-project-auditor"],
+        rationale="Greenfield idea-to-MVP bootstrapping and 1:1 README sync routes to project-idea-organizer.",
+    ),
+    TriggerEvalCase(
+        case_id="TRG-37",
+        cluster="Cross-Skill Boundary Alignment",
+        query="Run a read-only 0-100 AST repository audit, Docs-vs-Disk parity check, and causal MVP blocker diagnosis without writing code or greenfield scaffolding",
+        expected_skill="system-project-auditor",
+        near_miss_skills=["project-idea-organizer", "solution-content-architect"],
+        case_type="negative_clause_near_miss",
+        rationale="Read-only repository AST/parity/MVP audit routes to system-project-auditor.",
+    ),
 ]
 
 

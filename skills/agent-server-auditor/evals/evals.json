@@ -60,7 +60,7 @@
     "eval_id": "EVAL-ASA-06-NEAR-MISS-FRONTEND-UI",
     "should_trigger": false,
     "prompt": "Audite o contraste WCAG 2.1 AA, sombras em 3 camadas e tokens OKLCH da minha página React.",
-    "expected_behavior": "Abstain from agent-server-auditor; route frontend visual inspection to frontend-ui-ux-auditor.",
+    "expected_behavior": "Abstain from agent-server-auditor; route frontend visual inspection to ui-quality-judge.",
     "assertions": [
       "should_trigger == false",
       "Do not invoke agent_server_auditor.py for pure UI/CSS requests"

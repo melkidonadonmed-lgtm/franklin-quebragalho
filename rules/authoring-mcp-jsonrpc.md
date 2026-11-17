@@ -1,6 +1,6 @@
 ---
 trigger: model_decision
-description: "Official guidelines for configuring and implementing MCP servers (mcp_config.json, STDIO stdout reserved exclusively for JSON-RPC, Streamable HTTP without legacy SSE) and JSON-RPC 2.0 / WebSockets (wss:// TLS 1.3, strict validation, and backoff)."
+description: "Load when configuring, building, auditing, or debugging MCP servers (FastMCP, mcp_config.json, mcp-registry.json, stdio stdout hygiene, PYTHONUTF8=1, Streamable HTTP /mcp), A2A endpoints, JSON-RPC 2.0 envelopes (-32600..-32603, extra='forbid', z.strictObject, DisallowUnknownFields), or WebSocket (wss:// TLS 1.3) connections. Do NOT load when merely calling existing MCP tools."
 ---
 
 # Official Rules for MCP (`mcp_config.json`), JSON-RPC 2.0 & WebSockets
@@ -8,13 +8,14 @@ description: "Official guidelines for configuring and implementing MCP servers (
 ## 1. `mcp_config.json` Governance in Antigravity
 
 - **Sources & Naming:** Global config at `~/.gemini/config/mcp_config.json` (synced via Single Source `dev/tools/mcp-registry.json` -> `uv run dev/tools/mcp_registry.py apply` + `check`) or plugin-scoped at `plugins/<name>/mcp_config.json` (loaded only when the plugin is active). Server names in code/APIs must match `^[a-z0-9_-]+$`; preserve extension-generated prefixes (`datacloud_*_remote`).
+- **Python MCP SDK v2 (`mcp>=2.0` vs. `fastmcp`):** In the official `mcp>=2.0` Python SDK, the built-in ergonomic server class is **`MCPServer`** (`from mcp.server.mcpserver import MCPServer` / `from mcp.server import MCPServer`), whereas `from fastmcp import FastMCP` belongs exclusively to the standalone `fastmcp` framework package (`fastmcp>=4.2.0`). Never use the retired `mcp.server.fastmcp` import path.
 - **Deterministic Binaries & Packages:** Always invoke pre-compiled local binaries (`gopls.exe`, `adk-go-mcp.exe`) — `go run ...@latest` is forbidden. `npx` packages require exact pinned versions published `>= 2` weeks ago (never `@latest`). On Windows, inject `PYTHONUTF8=1` for Python stdio subprocesses.
 - **Verified CLI Flags:** Confirm every CLI binary supports a flag before placing it in `args` (e.g., omit `--eager` if the binary does not expose it).
 
 ## 2. MCP Transports & `STDIO` Hygiene
 
 - **`stdio` (Local — `command`, `args`, `env`):** `stdout` is **100% exclusive to newline-delimited JSON-RPC 2.0 frames**. Forbid bare `print()` without `file=sys.stderr` in Python, `console.log()` in Node, and `fmt.Println()` in Go; route all logs to `stderr` or log files.
-- **`Streamable HTTP` (Remote — `url` / `serverUrl`):** Point `url` to the Streamable HTTP endpoint (`/mcp`). **Legacy HTTP+SSE (`2024-11-05` `/sse`) is not directly supported** (wrap via a stdio bridge such as `mcp-remote` only when unavoidable). Enforce OAuth 2.1 / Bearer auth on protected endpoints, `MCP-Protocol-Version`/`_meta` support, and anti-SSRF URL validation.
+- **`Streamable HTTP` (Remote — `url` / `serverUrl` / `httpUrl`):** Point `url` (or `serverUrl` in Antigravity / `httpUrl` in Gemini CLI `settings.json`) to the Streamable HTTP endpoint (`/mcp`). **Legacy HTTP+SSE (`2024-11-05` `/sse`) is not directly supported** (wrap via a stdio bridge such as `mcp-remote` only when unavoidable). Enforce OAuth 2.1 / Bearer auth on protected endpoints, `MCP-Protocol-Version`/`_meta` support, and anti-SSRF URL validation.
 
 ## 3. JSON-RPC 2.0 & WebSocket (`wss://`) Contracts
 

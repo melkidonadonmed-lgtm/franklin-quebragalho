@@ -1,6 +1,6 @@
 # DAG Engine Stages & Context Fork Architecture — `chained-plan-orchestrator`
 
-Detailed 5-stage execution reference consumed by [`SKILL.md`](../SKILL.md) and backed by [`context_transition_schema.json`](context_transition_schema.json).
+Detailed 5-stage execution reference consumed by `SKILL.md` and backed by [`context_transition_schema.json`](context_transition_schema.json).
 
 ## Compilation & Dispatch Flowchart
 

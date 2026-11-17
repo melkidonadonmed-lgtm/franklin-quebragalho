@@ -28,7 +28,7 @@ Apply the Entropy Modulation Golden Rule:
 
 ## 3. DOMAIN BOUNDARY GUARDRAILS
 - Code/Agents: Pydantic extra="forbid", max_steps, deadline_seconds, zero input(), stdout/stderr separation, actionable recovery hints, and HITL gates.
-- UI/Frontend: Refer complex UI systems to design-md; never dump CSS/OKLCH boilerplate into backend or CLI prompts.
+- UI/Frontend: Refer complex UI systems to ui-brand-ux-planner (DESIGN.md); never dump CSS/OKLCH boilerplate into backend or CLI prompts.
 - Media (Image/Video): Final generation prompts in English with 8 Visual Pillars (Image) or 1 dominant action + 1 camera movement with temporal continuity (Video).
 - Clinical/Health: Strict PII/PHI anonymization, 4-step causal chain, 6-pillar prescribing, escape tokens for absent history, and Institution + Year guideline citations.
 

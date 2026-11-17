@@ -347,7 +347,7 @@
     {
       "id": "project-idea-organizer",
       "name": "project-idea-organizer",
-      "description": "Structure raw ideas into secure v1.0.0 MVPs via guided discovery or reorganize existing repositories by syncing Triad governance docs, disk-accurate README.md, and MCP/FastAPI/RPC contracts with dry-run root hygiene. Use when bootstrapping an idea or aligning repo structure. Do NOT use for OS disk cleanup, 0-100 AST scoring, or standalone Mermaid diagrams.",
+      "description": "Bootstrap raw ideas into right-sized, runnable v1.0.0 MVPs via guided discovery, or sync existing repositories across Triad v2.1 governance docs, 1:1 disk-accurate README.md, active MCP/FastAPI/RPC contracts, and dry-run root hygiene. Use when starting an idea or aligning repo structure. Do NOT use for 0-100 AST/SGA audits, single-module coding, OS/Drive disk maintenance, or standalone Mermaid diagrams.",
       "tags": [
         "project-idea-organizer",
         "ideia",
@@ -419,14 +419,14 @@
     {
       "id": "solution-content-architect",
       "name": "solution-content-architect",
-      "description": "Architect end-to-end technical solutions, enterprise prompt libraries, typed code, and 4-mode execution roadmaps (Modes A-D) with 7 Domain Guardrail Modules. Use when solving multi-domain engineering problems, generating structured outputs, or designing system blueprints. Do NOT use for isolated epistemic prompt audits, Socratic entropy rewriting, or DAG scheduling.",
+      "description": "Design and implement minimal, strictly typed production code, OpenAPI/JSON-RPC contracts, SQL/data optimizations, and domain blueprints. Use when solving concrete engineering problems, comparing real architectural trade-offs, or crafting structured enterprise prompts. Do NOT use for isolated epistemic prompt audits, Socratic entropy rewriting, codebase-wide AST scoring, greenfield scaffolding, or DAG scheduling.",
       "tags": [
         "solution-content-architect",
         "solucao",
         "solucoes",
         "arquiteto",
         "enterprise",
-        "roadmaps"
+        "prompts"
       ],
       "examples": [
         "Execute skill solution-content-architect in the current context"
@@ -443,7 +443,7 @@
     {
       "id": "system-project-auditor",
       "name": "system-project-auditor",
-      "description": "Audit real repository code (AST), physical structure, MVP readiness, 3-layer navigation (X activates Y / SGA), 60-30-10 OKLCH UI physics, and live DOM via agent-browser @eX (0-100 score). Use for repository, MVP, and navigation audits. Do NOT use for refactoring code, greenfield scaffolding, or README syncing.",
+      "description": "Audit existing repositories (0-100 score + SGA) across real AST code health, Docs-vs-Disk parity, causal MVP blockers, and, for UI targets, 3-layer navigation (X activates Y), 60-30-10 OKLCH physics, and live agent-browser @eX DOM. Use for repository, MVP, and navigation audits. Do NOT use for refactoring or writing code, greenfield idea scaffolding, README syncing, or APK reverse engineering.",
       "tags": [
         "system-project-auditor",
         "auditoria-projetos-sistema",
@@ -545,7 +545,7 @@
         "jku": "http://localhost:10999/public_keys.json",
         "typ": "JOSE+JSON"
       },
-      "signature": "caf2e8503056c854a6d53202dbf06df36122304d83b6094bd4cacc00fc68ebfc"
+      "signature": "c45c3908b695899d91f6e816ce05da5516d00fec11f69de5a7b477fd711113de"
     }
   ]
 }

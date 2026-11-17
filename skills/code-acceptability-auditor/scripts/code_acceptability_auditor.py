@@ -25,7 +25,7 @@ SeverityType = Literal["CRÍTICO", "ALTO", "MÉDIO", "BAIXO"]
 RuleIdType = Literal[
     "SYN001", "SEC001", "SEC002", "SEC003",
     "ERR001", "ERR002", "ERR003", "TYP001", "TYP002",
-    "ARCH001", "ARCH002", "ARCH003",
+    "ARCH001", "ARCH002", "ARCH003", "STUB001",
 ]
 
 RULE_PENALTIES: Dict[str, float] = {
@@ -41,7 +41,14 @@ RULE_PENALTIES: Dict[str, float] = {
     "ARCH001": 2.0,
     "ARCH002": 5.0,
     "ARCH003": 5.0,
+    "STUB001": 25.0,
 }
+
+EXEMPT_STUB_DUNDERS: Set[str] = {
+    "__init__", "__post_init__", "__enter__", "__exit__", "__aenter__", "__aexit__", "__del__",
+}
+EXEMPT_STUB_DECORATORS: Set[str] = {"abstractmethod", "overload", "abstractproperty"}
+EXEMPT_INTERFACE_BASES: Set[str] = {"Protocol", "ABC", "ABCMeta"}
 
 SECRET_VAR_REGEX = re.compile(
     r"(?:^|_)(api[_-]?key|secret[_-]?key|secret|password|passwd|pwd|access[_-]?token|"
@@ -141,16 +148,65 @@ def _compute_cyclomatic_complexity(fn_node: ast.FunctionDef | ast.AsyncFunctionD
     return m_score
 
 
+def _extract_ast_symbol_name(expr: ast.AST) -> str:
+    """Extrai o identificador terminal de Name, Attribute ou Subscript."""
+    if isinstance(expr, ast.Name):
+        return expr.id
+    if isinstance(expr, ast.Attribute):
+        return expr.attr
+    if isinstance(expr, ast.Subscript):
+        return _extract_ast_symbol_name(expr.value)
+    if isinstance(expr, ast.Call):
+        return _extract_ast_symbol_name(expr.func)
+    return ""
+
+
+def _is_stub_exempt_file(file_path: str) -> bool:
+    """Retorna True para arquivos .pyi ou suítes de teste onde dublês/stubs são legítimos."""
+    if not file_path or file_path == "<memory>":
+        return False
+    p = Path(file_path)
+    name = p.name.lower()
+    if name.endswith(".pyi") or name == "conftest.py" or name.startswith("test_") or name.endswith("_test.py"):
+        return True
+    return "tests" in {part.lower() for part in p.parts}
+
+
+def _is_bare_stub_body(node: ast.FunctionDef | ast.AsyncFunctionDef, in_interface: bool) -> bool:
+    """Detecta função/método vazio (pass, ..., raise NotImplementedError) fora de interfaces."""
+    if in_interface or node.name in EXEMPT_STUB_DUNDERS or node.name.startswith("visit_"):
+        return False
+    if any(_extract_ast_symbol_name(dec) in EXEMPT_STUB_DECORATORS for dec in node.decorator_list):
+        return False
+    effective = [
+        stmt for stmt in node.body
+        if not (isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant) and isinstance(stmt.value.value, str))
+    ]
+    if len(effective) != 1:
+        return False
+    stmt = effective[0]
+    if isinstance(stmt, ast.Pass):
+        return True
+    if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant) and stmt.value.value is Ellipsis:
+        return True
+    if isinstance(stmt, ast.Raise) and stmt.exc is not None:
+        return _extract_ast_symbol_name(stmt.exc) == "NotImplementedError"
+    return False
+
+
 class _ASTCodeVisitor(ast.NodeVisitor):
     def __init__(
         self,
         max_function_lines: int = 60,
         max_nesting_depth: int = 3,
         max_cyclomatic_complexity: int = 10,
+        check_stubs: bool = True,
     ) -> None:
         self.max_function_lines = max_function_lines
         self.max_nesting_depth = max_nesting_depth
         self.max_cyclomatic_complexity = max_cyclomatic_complexity
+        self.check_stubs = check_stubs
+        self._interface_class_depth = 0
         self.violations: List[CodeViolation] = []
         self._reported_secret_lines: Set[int] = set()
 
@@ -297,7 +353,7 @@ class _ASTCodeVisitor(ast.NodeVisitor):
 
         self.generic_visit(node)
 
-    def _inspect_function(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+    def _check_function_typing(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
         all_args = list(node.args.posonlyargs) + list(node.args.args) + list(node.args.kwonlyargs)
         if node.args.vararg:
             all_args.append(node.args.vararg)
@@ -305,9 +361,7 @@ class _ASTCodeVisitor(ast.NodeVisitor):
             all_args.append(node.args.kwarg)
 
         for arg in all_args:
-            if arg.arg in {"self", "cls"}:
-                continue
-            if arg.annotation is None:
+            if arg.arg not in {"self", "cls"} and arg.annotation is None:
                 self._add(
                     "TYP001", "Tipagem", "MÉDIO", arg.lineno, f"{node.name}({arg.arg})",
                     f"Parâmetro '{arg.arg}' na função '{node.name}' não possui Type Hint.",
@@ -320,6 +374,9 @@ class _ASTCodeVisitor(ast.NodeVisitor):
                 f"Função '{node.name}' não declara anotação de tipo de retorno (-> Type).",
                 f"Declare explicitamente o retorno de '{node.name}' (ex: -> None, -> dict).",
             )
+
+    def _inspect_function(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+        self._check_function_typing(node)
 
         end_line = getattr(node, "end_lineno", node.lineno) or node.lineno
         span = end_line - node.lineno + 1
@@ -346,7 +403,22 @@ class _ASTCodeVisitor(ast.NodeVisitor):
                 "Reduzir ramificações (M <= 10) usando despacho por dicionário ou subfunções.",
             )
 
+        if self.check_stubs and _is_bare_stub_body(node, self._interface_class_depth > 0):
+            self._add(
+                "STUB001", "Integridade Funcional", "CRÍTICO", node.lineno, node.name,
+                f"Função/método '{node.name}' contém apenas stub vazio ('pass', '...' ou 'NotImplementedError').",
+                "Implementar a lógica funcional completa ou decorar com @abstractmethod em classe ABC/Protocol.",
+            )
+
         self.generic_visit(node)
+
+    def visit_ClassDef(self, node: ast.ClassDef) -> None:
+        is_iface = any(_extract_ast_symbol_name(b) in EXEMPT_INTERFACE_BASES for b in node.bases)
+        if is_iface:
+            self._interface_class_depth += 1
+        self.generic_visit(node)
+        if is_iface:
+            self._interface_class_depth -= 1
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
         self._inspect_function(node)
@@ -388,7 +460,10 @@ class CodeAcceptabilityAuditor:
             )
 
         visitor = _ASTCodeVisitor(
-            self.max_function_lines, self.max_nesting_depth, self.max_cyclomatic_complexity
+            self.max_function_lines,
+            self.max_nesting_depth,
+            self.max_cyclomatic_complexity,
+            check_stubs=not _is_stub_exempt_file(file_path),
         )
         visitor.visit(tree)
 

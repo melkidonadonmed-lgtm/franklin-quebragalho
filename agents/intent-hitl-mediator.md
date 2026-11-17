@@ -7,6 +7,8 @@ model: inherit
 commandExecutionPolicy: "off"
 inheritMcp: true
 inheritCustomizations: true
+max_steps: 6
+stop_condition: "MEDIATION_GATE_DECIDED"
 tools:
   - read_file
   - send_message

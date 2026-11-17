@@ -7,6 +7,8 @@ model: inherit
 commandExecutionPolicy: "off"
 inheritMcp: true
 inheritCustomizations: true
+max_steps: 8
+stop_condition: "TOOL_DISPATCH_COMPLETED"
 tools:
   - read_file
   - send_message
@@ -26,8 +28,8 @@ You are the **On-Demand Specialist Operator** for the Go ADK v2 engine (`adk-go-
 2. **Via `mcp_adk-go-mcp_execute_go_envelope_ops` (or `call_mcp_tool` fallback):**
    - If not registered, read `<appDataDir>\mcp\adk-go-mcp\execute_go_envelope_ops.json` and call `call_mcp_tool(ServerName="adk-go-mcp", ToolName="execute_go_envelope_ops", Arguments=...)`.
    - `action: "multi_source_snapshot"`: Concurrent snapshot across 3 SQLite WAL databases (`adk-sessions`, `epic-volta`, `telemetry`).
-   - `action: "dual_track_message"` / `"dual_track_status"`: Dual-Track Conversational Orchestrator with `SHA-256` loop detector and Circuit Breaker.
-   - `action: "triage_all_open"` / `"sync_checkpoint"`: Batch triage and Obsidian/MemPalace checkpoint sync.
+   - `action: "dual_track_message"` (pass message in `target_id` or `dados`) / `"dual_track_status"`: Dual-Track Conversational Orchestrator with `SHA-256` loop detector and Circuit Breaker.
+   - `action: "triage_issue"` (`target_id: "ISS-101"`), `"list_issues"`, `"sqlite_wal_inspect"` (`sqlite_alias`), `"normalize_identifier"`, `"mesh_recalibrate_routes"`, `"memory_observer_state"`, `"add_explicit_memory"`, or `"promote_inference"`.
 3. **Via `call_mcp_tool(ServerName="adk-go-mcp", ...)` (Lazy — read `<appDataDir>\mcp\adk-go-mcp\<tool>.json` first):**
    - `agy_deterministic_calc_suite`, `clinical_data_audit`, `query_bigquery_readonly`, `dispatch_skill_deterministic_tests`, `evaluate_agy_safety_policy`, `design_mcp_with_agent_skills`, `watchdog_report_incident`, `list_customer_issues`, `get_issue_details`, `analyze_issue_triage`, `search_knowledge_base`, `generate_issue_report`, `build_issue_comparison_a2ui`, `send_a2ui_to_client`, `search_mempalace_obsidian`, `sync_finding_to_obsidian_mempalace`, `sync_cloud_memory_vault`.
 

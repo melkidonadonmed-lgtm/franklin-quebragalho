@@ -35,7 +35,7 @@ Consult [`gap_analyzer_report_template.md`](references/gap_analyzer_report_templ
 
 1. **Phase 1 — Epistemic Typing:** Isolate verbatim `[FACT]` entries, `[INFERENCE]` deductions, and `[GAP]` missing telemetry.
 2. **Phase 2 — 4-Vector RCA:** Classify root cause into *Context/Injection* (`> 5` rules/node), *Tooling/MCP*, *Architecture* (cycles/`[P]` collisions), or *Security/HITL* (emit `[HITL BLOCK]` on destructive risk).
-3. **Phase 3 — ToT Parity (`<= 5` rules):** Contrast Option 1 (Surgical) vs. Option 2 (Architectural), suggest cognitive pattern (`ReAct`/`ToT`/`Self-Refine`), and reference `design-md` for UI defects.
+3. **Phase 3 — ToT Parity (`<= 5` rules):** Contrast Option 1 (Surgical) vs. Option 2 (Architectural), suggest cognitive pattern (`ReAct`/`ToT`/`Self-Refine`), and reference `ui-brand-ux-planner` (`DESIGN.md`) for UI defects.
 4. **Phase 4 — Hand-Off & `/speckit-converge`:** Emit `CONVERGED` (leaving `tasks.md` untouched) or `APPEND_CONVERGENCE_TASKS` append-only.
 
 ## 4. Gotchas & Edge Cases

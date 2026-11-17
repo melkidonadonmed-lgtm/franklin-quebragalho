@@ -3,11 +3,11 @@ name = "franklin-quebragalho"
 version = "1.0.0"
 description = "Franklin Quebra-Galho - Servidor MCP Global e Incubadora de Skills"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
-    "a2a-sdk>=1.2.2",
-    "fastmcp==4.0.10",
-    "mcp==2.2.0",
+    "a2a-sdk>=1.3.0",
+    "fastmcp>=4.2.0",
+    "mcp>=2.3.0",
     "pyyaml>=6.0.0",
 ]
 
@@ -23,10 +23,18 @@ include = ["server.py", "shared"]
 
 [dependency-groups]
 dev = [
-    "pytest>=9.1.1",
+    "pytest>=9.2.0",
+    "pytest-cov>=7.0.0",
+    "hypothesis>=6.100.0",
+    "ruff>=0.17.0",
+    "bandit>=1.9.0",
+    "pip-audit>=2.10.0",
 ]
 
 [tool.pytest.ini_options]
 filterwarnings = [
     "ignore:'collections.abc.ByteString' is deprecated:DeprecationWarning:beartype.*",
 ]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

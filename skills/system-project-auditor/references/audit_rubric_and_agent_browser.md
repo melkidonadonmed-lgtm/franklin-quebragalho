@@ -1,6 +1,6 @@
-# `agent-browser` (@eX) Protocol, `SGA`/`TIF` Calculus & `60-30-10 OKLCH` Rubric (`system-project-auditor` v6.0.0)
+# `agent-browser` (@eX) Protocol, `SGA`/`TIF` Calculus & `60-30-10 OKLCH` Rubric (`system-project-auditor` v6.1.0)
 
-Level 3 technical reference unifying live DOM inspection via `agent-browser` / `chrome-devtools-mcp`, the mathematical `SGA` + `TIF` scoring engine (`deterministic_scorer.py`), and the **60-30-10 `OKLCH` + 3-Level Shadows** rubric.
+Level 3 technical reference unifying stack-adaptive `SGA` + `TIF` scoring (`deterministic_scorer.py`), live DOM inspection via `agent-browser` / `chrome-devtools-mcp` (UI targets only), and the **60-30-10 `OKLCH` + 3-Level Shadows** rubric (`[PASS: N/A_BACKEND_ONLY]` when `has_ui_layer == False`).
 
 ---
 

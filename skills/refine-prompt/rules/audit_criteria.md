@@ -70,7 +70,7 @@ This specification defines falsifiable validation gates for `refine-prompt` exec
 
 ### Rule 7: Clean Domain Boundary Enforcement (Zero Cross-Domain Bleed)
 
-- **Criterion**: When the refined prompt involves UI or full system engineering, does it cleanly delegate to `design-md` or `solution-content-architect` without injecting unrelated CSS/UI boilerplate into backend or CLI prompts?
+- **Criterion**: When the refined prompt involves UI or full system engineering, does it cleanly delegate to `ui-brand-ux-planner` or `solution-content-architect` without injecting unrelated CSS/UI boilerplate into backend or CLI prompts?
 - **Test**: Absence of irrelevant visual tokens in non-UI prompts and clean separation from multi-mode system engineering.
 - **Result**:
   - Domain boundaries respected -> `[PASS]`

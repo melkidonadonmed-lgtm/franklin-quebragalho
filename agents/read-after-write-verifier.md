@@ -7,6 +7,8 @@ model: inherit
 commandExecutionPolicy: sandbox
 inheritMcp: true
 inheritCustomizations: true
+max_steps: 8
+stop_condition: "POST_CONDITION_VERIFIED"
 tools:
   - read_file
   - run_command

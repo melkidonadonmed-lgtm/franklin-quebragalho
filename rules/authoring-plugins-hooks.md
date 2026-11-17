@@ -1,6 +1,6 @@
 ---
 trigger: model_decision
-description: "Official guidelines for authoring and validating Antigravity Plugins (plugin.json JSONC, namespaces, assets) and Lifecycle Hooks (hooks.json, camelCase contracts PreToolUse, PostToolUse, SessionStart, PreInvocation, PostInvocation, and Stop)."
+description: "Load when creating, editing, debugging, or validating Antigravity Plugins (plugin.json JSONC, config.json enablement, agy plugin validate, assets) or Lifecycle Hooks (hooks.json, PreToolUse, PostToolUse, SessionStart, PreInvocation, PostInvocation, Stop, CORTEX_STEP_TYPE_* matchers, and camelCase stdin/stdout contracts). Do NOT load for standard skill execution or application coding."
 ---
 
 # Official Rules for Plugins (`plugin.json`) & Lifecycle Hooks (`hooks.json`)

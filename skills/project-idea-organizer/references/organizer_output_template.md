@@ -1,42 +1,53 @@
-# Delivery Template, Mermaid Flowchart & Ideal Tree (`project-idea-organizer`)
+# Right-Sized Delivery Template (`project-idea-organizer` v1.3.0)
 
-Detailed output structure complementing [`SKILL.md`](../SKILL.md) and [`mcp_fastapi_rpc_contracts_guide.md`](mcp_fastapi_rpc_contracts_guide.md).
+Output layout complementing `SKILL.md` and [`mcp_fastapi_rpc_contracts_guide.md`](mcp_fastapi_rpc_contracts_guide.md). Pick the layout proportional to the real scope—never emit empty folders or speculative protocol layers.
 
 ````markdown
 # PROJECT METADATA & VERSION
-- **Project:** `<Name>` | **Mode:** `<Mode 1 | Mode 2>` | **Version:** `<vX.Y.Z>` | **Date:** `<YYYY-MM-DD>`
-- **Security Baseline (`.env.example` / `.gitignore` / Strict Schemas):** `[OK | Adjusted]` | **Git Remote:** `<URL | Pending>`
+- **Project:** `<Name>` | **Mode:** `<Mode 1 | Mode 2>` | **Scale:** `<Micro/CLI (1-4 files) | Service/App | Multi-Module>` | **Version:** `<vX.Y.Z>` | **Date:** `<YYYY-MM-DD>`
+- **Security Baseline (`.gitignore` / `.env.example` if needed):** `[OK | Adjusted]` | **Git Remote:** `<URL | Pending>`
 
-## 1. INTENT ANALYSIS, GLOBAL CONTEXT & SECURE FUNCTIONAL MVP
-- **Core Intent & Benchmarked Patterns:** `<Problem solved + architectural patterns applied>`
-- **Real MVP Scope (Executable + Embedded Security):**
-  - [ ] `<Module/Feature 1>` — `<Real executable behavior + boundary validation>`
+## 1. INTENT ANALYSIS & RIGHT-SIZED MVP SLICE
+- **Core Problem Solved:** `<1–2 sentences anchored in real user goal>`
+- **Runnable Vertical Slice (`v1.0.0`):**
+  - [ ] `<Core Entrypoint / Feature>` — `<Input -> Real Logic -> Verifiable Output + 1 Test>`
+- **Deferred (Post-MVP — NOT created on disk now):** `<Non-essential extras>`
 
-## 2. OPERATIONAL FLOWCHART (MERMAID)
+## 2. OPERATIONAL FLOWCHART (Include ONLY when >= 3 runtime components interact)
 ```mermaid
 flowchart TD
-    A["Validated Input"] --> B["Domain / Real Business Logic"]
-    B --> C["Typed Contracts (MCP / REST / RPC)"]
-    C --> D["Safe Persistence"]
+    A["CLI / Service Input"] --> B["Core Domain Logic"]
+    B --> C["Verified Output / Storage"]
 ```
 
-## 3. CURRENT VS. IDEAL STRUCTURE MAPPING (WITH FILE ROLES)
-- **Current State Diagnosis:** `<Summary of bottlenecks, root orphans, or missing modules>`
+## 3. CURRENT VS. TARGET STRUCTURE (WITH FILE ROLES)
+- **Diagnosis / Parity Check:** `<Current disk state, preserved working imports, or Dry-Run root cleanup table>`
+
+### Option A — Micro / Script / CLI (`1–4` source files, flat layout)
 ```text
 project/
-├── .agents/AGENTS.md        # Governance rules, auto-detected stack, and CLI commands
-├── .context/                # context.md (live state) and spec.md (technical I/O contract)
-├── src/
-│   ├── api/                 # Typed routers, auth/error middleware, and GET /health
-│   ├── domain/              # Real pre-filled business logic (zero placeholders)
-│   └── contracts/           # Strict schemas, tools.json (MCP), and JSON-RPC 2.0 methods
-├── tests/                   # Deterministic tests (happy-path + adversarial cases)
-├── .env.example             # Documented environment variable keys without real secrets
-├── .gitignore               # Ignores .env, virtualenvs, and build outputs
-└── README.md                # Documentation mirrored 1:1 with real files on disk
+├── <app>.py                 # Complete runnable vertical slice + CLI args
+├── tests/
+│   └── test_<app>.py        # Happy-path + invalid-input tests
+├── pyproject.toml           # Runtime dependencies and project metadata
+├── .gitignore               # Ignores .env, .venv/, __pycache__/
+└── README.md                # 1:1 setup and verified run commands
 ```
-- **Pre-Filled Starter Files & Synchronized Contracts:** `<Summary of generated baseline code and security checks>`
+
+### Option B — Persistent Service / MCP / Multi-Module Repo (`>= 5` source files)
+```text
+project/
+├── AGENTS.md                # Delta-only v2.1 repo rules and CLI checks (via bootstrap-project.ps1)
+├── .context/
+│   ├── context.md           # Authoritative project state, decisions, and backlog
+│   └── spec.md              # Active scope lock and I/O contracts
+├── <active_pkg>/            # Stack-native modules (only active protocols; >= 2 files per subfolder)
+├── tests/                   # Automated tests (happy-path + adversarial boundary rejections)
+├── .env.example             # Present only if env vars are used (zero real secrets)
+├── .gitignore               # Credential and artifact ignores
+└── README.md                # 1:1 mirror with real paths and verified commands
+```
 
 ## 4. INTERACTIVE HITL NEXT STEP
-- `<Clear confirmation prompt before creating v1.0.0 files or executing dry-run root moves>`
+- `<Confirmation prompt before writing v1.0.0 files or executing Dry-Run root moves>`
 ````

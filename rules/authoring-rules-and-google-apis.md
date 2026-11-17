@@ -1,6 +1,6 @@
 ---
 trigger: model_decision
-description: "Official guidelines for authoring Antigravity Rules (GEMINI.md, AGENTS.md, rules/*.md with trigger and 24KB/20k token budgets) and using active Google APIs (GenAI SDK, Antigravity SDK, ADK v2, and Interactions API) in Technical English."
+description: "Load when writing or debugging code calling Google Gemini APIs/SDKs (google-genai, @google/genai, google.golang.org/genai, google-adk, @google/adk, google-antigravity, Vertex AI, MCP Toolbox), selecting active Gemini 4 (hydrogen/argon/carbon), 3.8 Live/TTS, or Decisions API (gemini-decision-1) models vs. retired 2.5/3.1 models, handling v1 vs. v1beta or Managed Agent generation_config constraints, or authoring GEMINI.md, AGENTS.md, and rules/*.md. Do NOT load for unrelated non-AI code."
 ---
 
 # Official Guidelines for Rule Authoring & Active Google APIs

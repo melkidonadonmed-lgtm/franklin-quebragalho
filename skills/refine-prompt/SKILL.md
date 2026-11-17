@@ -19,7 +19,7 @@ Standalone prompt auditor (`SKILL_REFINE_PROMPT_V3_MASTER`) applying feasibility
 ### When NOT to Use
 - **Full System Architecture & Roadmaps:** Delegate coding blueprints to `solution-content-architect`.
 - **Local / Repo Maintenance:** Use `windows-disk-maintenance`, `gdrive-cleanup-auditor`, or `project-idea-organizer`.
-- **UI Contracts:** Defer CSS/OKLCH specs to `design-md`.
+- **UI Contracts:** Defer CSS/OKLCH specs to `ui-brand-ux-planner` (`DESIGN.md`).
 
 ## 2. Inputs & Prerequisites
 

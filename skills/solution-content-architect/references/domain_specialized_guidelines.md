@@ -1,24 +1,25 @@
-# Domain-Specialized Guidelines & Negative Guardrails (`v2.5.0`)
+# Domain-Specialized Guidelines & Negative Guardrails (`v2.6.0`)
 
-Quick reference for the **7 Domain Guardrail Modules (`M1..M7`)** enforced by `solution-content-architect` alongside ecosystem contracts (`design-md`).
+Quick reference for the **Domain Guardrail Modules (`M1..M7`)** enforced selectively by `solution-content-architect` alongside federated ecosystem contracts (`shredded-shape` / `ui-brand-ux-planner` / `DESIGN.md`).
 
 ---
 
 ## 1. Execution, Automation & Operational Code (`Module 1`)
 - **DO NOT use stochastic reasoning for deterministic computation**: Delegate math, rigid transforms, and parsers to typed scripts (`Pydantic v2 extra="forbid"`, `Zod .strict()`, Go structs).
-- **DO NOT create interactive TTY prompts (`input()`)**: Blocking stdin stalls autonomous loops; use non-interactive CLI flags (`argparse`).
+- **DO NOT create dead abstractions**: Ban single-implementation interfaces, pass-through wrappers, speculative `AbstractFactory` layers, or unrequested third-party packages when stdlib or direct functions suffice.
+- **DO NOT create interactive TTY prompts (`input()`)**: Blocking stdin stalls autonomous loops; use non-interactive CLI flags (`argparse`) when building CLI tools.
 - **DO NOT emit opaque errors**: Raise actionable exceptions specifying the bad field, expected schema, and `recovery_hint`; separate structured `stdout` from diagnostic `stderr`.
-- **DO NOT run unbounded loops**: Enforce `max_steps`, `deadline_seconds`, `--dry-run`, and HITL gates on risky mutations.
+- **DO NOT run unbounded loops**: Enforce `max_steps`, `deadline_seconds`, `--dry-run`, and HITL gates on agent loops and risky mutations.
 
 ## 2. Visual Design & Information Architecture (`Module 2`)
 - **DO NOT jump to styling before information hierarchy**: Define core message, logical hierarchy, and layout blocks before selecting colors.
 - **DO NOT overload visual density**: Cap slide/card copy at `<= 35` words per block and `6..10` blocks per screen.
 - **DO NOT use decorative noise**: Every icon or vector must convey state, hierarchy, or comparison.
 
-## 3. Frontend, Visual Physics & Real-State Engineering (`Module 3` — `design-md`)
+## 3. Frontend, Visual Physics & Real-State Engineering (`Module 3` — `ui-brand-ux-planner` / `DESIGN.md`)
 - **DO NOT emit `divsoup`**: Use semantic HTML5 (`<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<footer>`, `<button>`).
 - **DO NOT inject unsanitized HTML**: Ban raw `innerHTML` or unescaped `dangerouslySetInnerHTML`.
-- **DO NOT hardcode neon palettes or placebo controls**: Align tokens (`--surface-canvas/sunken/card/elevated/glass`), zenith rim light (`90-120 deg`, `inset 0 1px 0 0`), 3-level layered shadows, anti-blur font locks, `tabular-nums`, Spatial Archetypes, and real 4-state FSMs with `design-md`.
+- **DO NOT hardcode neon palettes or placebo controls**: Align tokens (`--surface-canvas/sunken/card/elevated/glass`), zenith rim light (`90-120 deg`, `inset 0 1px 0 0`), 3-level layered shadows, anti-blur font locks, `tabular-nums`, Spatial Archetypes, and real 4-state FSMs with `ui-brand-ux-planner` (`DESIGN.md`).
 
 ## 4. Investigation, Research & RAG (`Module 4`)
 - **DO NOT treat agent memory as authoritative truth**: Verify against disk AST, manifests, or primary official documentation first.

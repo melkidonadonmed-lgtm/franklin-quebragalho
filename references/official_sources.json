@@ -467,6 +467,61 @@
         "Streamable HTTP",
         "2024-11-05"
       ]
+    },
+    {
+      "id": "google_styleguide_python",
+      "kind": "remote",
+      "title": "Google Python Style Guide (pyguide.md)",
+      "url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/pyguide.md",
+      "target_rules": [
+        "rules/quality-efficiency-guidelines.md"
+      ],
+      "required_invariants": [
+        "Google Python Style Guide",
+        "Args:",
+        "Returns:",
+        "Raises:"
+      ]
+    },
+    {
+      "id": "google_styleguide_typescript",
+      "kind": "remote",
+      "title": "Google TypeScript Style Guide (tsguide.html)",
+      "url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/tsguide.html",
+      "target_rules": [
+        "rules/quality-efficiency-guidelines.md"
+      ],
+      "required_invariants": [
+        "Google TypeScript Style Guide",
+        "import type",
+        "unknown"
+      ]
+    },
+    {
+      "id": "google_styleguide_shell",
+      "kind": "remote",
+      "title": "Google Shell Style Guide (shellguide.md)",
+      "url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/shellguide.md",
+      "target_rules": [
+        "rules/quality-efficiency-guidelines.md"
+      ],
+      "required_invariants": [
+        "Shell Style Guide",
+        "readonly"
+      ]
+    },
+    {
+      "id": "google_styleguide_docguide",
+      "kind": "remote",
+      "title": "Google Markdown & Documentation Style Guide (docguide/style.md)",
+      "url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/docguide/style.md",
+      "target_rules": [
+        "rules/authoring-skills.md",
+        "rules/quality-efficiency-guidelines.md"
+      ],
+      "required_invariants": [
+        "Markdown style guide"
+      ]
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-17T01:50:25Z",
+  "timestamp": "2026-11-17T19:55:14Z",
   "audit_version": "1.0.0",
   "target_root": "C:/Users/melki/dev/repos/franklin-quebragalho",
   "summary": {
@@ -9,7 +9,7 @@
       "Python",
       "TypeScript"
     ],
-    "total_agents": 16,
+    "total_agents": 14,
     "total_skills": 21,
     "total_mcp_servers": 2,
     "total_a2a_cards": 2
@@ -35,17 +35,6 @@
       {
         "name": "intent-hitl-mediator",
         "file": ".agents/agents/intent-hitl-mediator.md",
-        "language": "Markdown",
-        "framework": "Antigravity Declarative Subagent",
-        "reasoning_pattern": "Wave / Subagent Contract",
-        "has_max_steps": true,
-        "has_stop_condition": true,
-        "type_safety": true,
-        "missing_elements": []
-      },
-      {
-        "name": "review-squad",
-        "file": ".agents/agents/review-squad.md",
         "language": "Markdown",
         "framework": "Antigravity Declarative Subagent",
         "reasoning_pattern": "Wave / Subagent Contract",
@@ -134,17 +123,6 @@
       {
         "name": "read-after-write-verifier",
         "file": "agents/read-after-write-verifier.md",
-        "language": "Markdown",
-        "framework": "Antigravity Declarative Subagent",
-        "reasoning_pattern": "Wave / Subagent Contract",
-        "has_max_steps": true,
-        "has_stop_condition": true,
-        "type_safety": true,
-        "missing_elements": []
-      },
-      {
-        "name": "review-squad",
-        "file": "agents/review-squad.md",
         "language": "Markdown",
         "framework": "Antigravity Declarative Subagent",
         "reasoning_pattern": "Wave / Subagent Contract",

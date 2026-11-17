@@ -34,7 +34,7 @@ GLOBAL_CORE_FRANKLIN_SKILLS: tuple[str, ...] = (
 )
 GLOBAL_CORE_USER_SKILLS: tuple[str, ...] = (
     "adk-go-mcp-router", "agent-0meia", "agent-browser", "find-skills",
-    "obsidian-vault", "reverse-engineer-anything", "review-squad",
+    "obsidian-vault", "reverse-engineer-anything",
 )
 GLOBAL_CORE_SUBAGENTS: tuple[str, ...] = (
     "adk-go-operator.md", "read-after-write-verifier.md", "vault-memory-retriever.md",
@@ -43,20 +43,7 @@ UI_SUBAGENTS: tuple[str, ...] = (
     "ui-analyst.md", "ui-planner.md", "ui-worker.md", "ui-judge.md",
 )
 GOV_SUBAGENTS: tuple[str, ...] = (
-    "review-squad.md", "intent-hitl-mediator.md", "dev-workspace-publisher.md",
-)
-MIRRORED_AGENTS_REPOS: tuple[str, ...] = (
-    "adk-go-mcp",
-    "adk-py-agents",
-    "adk-ts-agent",
-    "GoSTylo",
-    "PCM",
-    "appmy",
-    "frontcraft-studio",
-    "mcp-web-agents",
-    "mytts",
-    "scoreboard",
-    "shredded-shape",
+    "intent-hitl-mediator.md", "dev-workspace-publisher.md",
 )
 
 GLOBAL_ONLY_RULES: tuple[str, ...] = ("quality-efficiency-guidelines.md",)
@@ -150,6 +137,9 @@ def _prepare_and_clean_dirs() -> None:
         stale_patterns.extend(list(adk_bin.glob("*.exe.old")))
         stale_patterns.extend(list(adk_bin.glob("*.old.exe")))
         stale_patterns.extend(list(adk_bin.glob("*.exe~")))
+    for legacy_agent in ("review-squad.md",):
+        (GEMINI_ROOT / "agents" / legacy_agent).unlink(missing_ok=True)
+        (GEMINI_ROOT / "config" / "agents" / legacy_agent).unlink(missing_ok=True)
     for stale_bak in stale_patterns:
         if stale_bak.is_file():
             try:
@@ -214,6 +204,9 @@ def _deduplicate_config_skills(skills_src: Path) -> int:
     user_agents_skills = USER_HOME / ".agents" / "skills"
     if user_agents_skills.exists():
         canonical_names.update(p.name for p in user_agents_skills.iterdir() if p.is_dir() and (p / "SKILL.md").exists())
+    catalog_user_skills = GEMINI_ROOT / "skill-catalog" / "user-skills"
+    if catalog_user_skills.exists():
+        canonical_names.update(p.name for p in catalog_user_skills.iterdir() if p.is_dir() and (p / "SKILL.md").exists())
 
     deduplicated = 0
     for name in canonical_names:
@@ -239,10 +232,13 @@ def _clean_redundant_skill_links(user_agents_skills: Path) -> None:
 
 
 def _sync_user_agents_root() -> int:
-    """Mantém .agents/skills higienizado sem duplicar cópias em .gemini/config/skills."""
+    """Mantém .agents/skills enxuto (apenas GLOBAL_CORE_USER_SKILLS) e move demais skills para skill-catalog/user-skills."""
     user_agents_root = USER_HOME / ".agents"
     user_agents_skills = user_agents_root / "skills"
+    catalog_user_skills = GEMINI_ROOT / "skill-catalog" / "user-skills"
+    catalog_user_skills.mkdir(parents=True, exist_ok=True)
     canonical_franklin = {p.name for p in (ROOT_DIR / "skills").iterdir() if p.is_dir() and (p / "SKILL.md").exists()}
+    core_user_set = set(GLOBAL_CORE_USER_SKILLS)
 
     synced_agents_skills = 0
     if user_agents_skills.exists():
@@ -252,7 +248,14 @@ def _sync_user_agents_root() -> int:
         for s_dir in [d for d in user_agents_skills.iterdir() if d.is_dir()]:
             if s_dir.name in plugin_names:
                 _remove_dir_or_link(s_dir)
+            elif s_dir.name in core_user_set and (s_dir / "SKILL.md").exists():
+                synced_agents_skills += 1
             elif (s_dir / "SKILL.md").exists():
+                dst_cat = catalog_user_skills / s_dir.name
+                if dst_cat.exists():
+                    _remove_dir_or_link(dst_cat)
+                _copy_tree(s_dir, dst_cat)
+                _remove_dir_or_link(s_dir)
                 synced_agents_skills += 1
 
     _clean_redundant_skill_links(user_agents_skills)
@@ -307,7 +310,7 @@ def _cleanup_ssot_home_duplicates() -> None:
             if any(m in content for m in ssot_markers):
                 dup_agents.unlink(missing_ok=True)
     repo_dup = ROOT_DIR / ".agents" / "AGENTS.md"
-    if repo_dup.is_file() and (ROOT_DIR / "AGENTS.md").is_file() and ROOT_DIR.name not in MIRRORED_AGENTS_REPOS:
+    if repo_dup.is_file() and (ROOT_DIR / "AGENTS.md").is_file():
         repo_dup.unlink(missing_ok=True)
 
 
@@ -438,12 +441,18 @@ def _format_antigravity_agent_markdown(item: Path) -> str:
     skills_block = "skills:\n" + "\n".join(f"  - {s}" for s in skills_list) + "\n" if skills_list else ""
     raw_policy = str(spec.get("commandExecutionPolicy", "sandbox"))
     policy_yaml = '"off"' if raw_policy == "off" else raw_policy
+    guardrails = spec.get("guardrails") or {}
+    max_steps_val = spec.get("max_steps") or guardrails.get("max_steps", 10)
+    stop_cond_val = spec.get("stop_condition") or guardrails.get("stop_condition", "TASK_STATE_COMPLETED")
+    stop_escaped = json.dumps(str(stop_cond_val), ensure_ascii=False)
     return (
         f"---\nname: {spec['name']}\ndescription: {desc_escaped}\nsubagent: true\nmainAgent: false\n"
         f"model: {spec.get('model', 'inherit')}\n"
         f"commandExecutionPolicy: {policy_yaml}\n"
         f"inheritMcp: {str(bool(spec.get('inheritMcp', True))).lower()}\n"
         f"inheritCustomizations: {str(bool(spec.get('inheritCustomizations', True))).lower()}\n"
+        f"max_steps: {int(max_steps_val)}\n"
+        f"stop_condition: {stop_escaped}\n"
         f"{tools_block}{skills_block}---\n\n{body}\n"
     )
 
@@ -494,7 +503,7 @@ def _sync_shredded_shape_plugin() -> tuple[int, int]:
     if plugin_dst.exists():
         shutil.rmtree(plugin_dst)
     copied = 0
-    for sub in ("skills", "rules", "plans", "assets"):
+    for sub in ("skills", "rules", "plans", "assets", "agents"):
         copied += _copy_tree(shredded_dir / sub, plugin_dst / sub)
     for fname in ("plugin.json", "README.md"):
         src_f = shredded_dir / fname
@@ -521,12 +530,28 @@ def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
     all_franklin = sorted(p.name for p in (ROOT_DIR / "skills").iterdir() if p.is_dir() and (p / "SKILL.md").exists())
 
     profiles: dict[str, dict[str, Any]] = {
-        name: dict(ui_profile) for name in ("frontcraft-studio", "scoreboard", "mytts", "astral-pet-assist", "android-auto-first-app", "shredded-shape")
+        name: dict(ui_profile) for name in ("frontcraft-studio", "scoreboard", "shredded-shape")
     }
-    profiles["skills-web"] = {
-        "franklin_skills": ["android-agy-projects"],
+    profiles["mytts"] = {
+        "franklin_skills": [],
+        "user_skills": ui_u,
+        "local_skills": [(".agents/skills", ["gemini-tts-expressive-audio"])],
+        "subagents": UI_SUBAGENTS,
+    }
+    profiles["astral-pet-assist"] = {
+        "franklin_skills": ["android-agy-projects", "code-quality-audit-3d-physics"],
         "user_skills": ui_u,
         "subagents": UI_SUBAGENTS,
+    }
+    profiles["android-auto-first-app"] = {
+        "franklin_skills": ["android-agy-projects", "re-a-ndroid"],
+        "user_skills": [*ui_u, "android-for-cars-parked-apps"],
+        "subagents": UI_SUBAGENTS,
+    }
+    profiles["skills-web"] = {
+        "franklin_skills": ["technical-markdown-writer", "refine-prompt", "flow-filetree-organizer"],
+        "user_skills": ["agent-skill-evaluator", "skill-repair"],
+        "subagents": GOV_SUBAGENTS,
     }
     for name in ("mcp-web-agents", "webmcp", "google-auth-mcp", "caveman-agent", "epic-volta"):
         profiles[name] = dict(mcp_profile)
@@ -541,7 +566,7 @@ def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
             "franklin_skills": ["html-pdf-converter", "technical-markdown-writer"],
             "user_skills": ["clinical-change-safety", "ui-pdf-validation", *ui_u],
             "plugin_skills": [("firebase", ["firebase_firestore", "firebase_auth_basics", "firebase_hosting_basics", "firestore_rules_creation", "firebase_security_rules_auditor"])],
-            "subagents": (*UI_SUBAGENTS, "review-squad.md"),
+            "subagents": (*UI_SUBAGENTS,),
         },
         "appmy": {
             "franklin_skills": ["android-agy-projects", "re-a-ndroid", "code-quality-audit-3d-physics"],
@@ -553,31 +578,31 @@ def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
                 "r8-analyzer", "restore-credentials", "testing-setup", "verified-email",
             ],
             "plugin_skills": [("android-cli-plugin", ["compose-preview", "device-hub"])],
-            "subagents": (*UI_SUBAGENTS, "review-squad.md"),
+            "subagents": (*UI_SUBAGENTS,),
         },
         "adk-go-mcp": {
             "franklin_skills": [*mcp_f],
-            "user_skills": [*mcp_u, "adk-go-mcp-router", "agent-0meia", "code-analysis-causal-review-team", "google-agents-cli-adk-code", "google-agents-cli-deploy", "google-agents-cli-eval", "google-agents-cli-observability", "google-agents-cli-publish", "google-agents-cli-scaffold", "google-agents-cli-workflow"],
+            "user_skills": [*mcp_u, "code-analysis-causal-review-team", "google-agents-cli-adk-code", "google-agents-cli-deploy", "google-agents-cli-eval", "google-agents-cli-observability", "google-agents-cli-publish", "google-agents-cli-scaffold", "google-agents-cli-workflow"],
             "plugin_skills": [("data-agent-kit-plugin", ["bigquery-ai-ml", "bigquery-observability", "bigquery-optimization", "bigquery-troubleshooting", "building-data-apps", "enforcing-resource-attribution"])],
             "local_skills": [("skills", adk_local_skills)],
-            "subagents": (*UI_SUBAGENTS, *GOV_SUBAGENTS, *GLOBAL_CORE_SUBAGENTS),
+            "subagents": (*UI_SUBAGENTS, *GOV_SUBAGENTS),
         },
         "adk-py-agents": {
             "franklin_skills": [*mcp_f],
-            "user_skills": [*mcp_u, "adk-go-mcp-router", "agent-0meia", "google-agents-cli-adk-code", "google-agents-cli-deploy", "google-agents-cli-eval", "google-agents-cli-observability", "google-agents-cli-workflow"],
+            "user_skills": [*mcp_u, "google-agents-cli-adk-code", "google-agents-cli-deploy", "google-agents-cli-eval", "google-agents-cli-observability", "google-agents-cli-workflow"],
             "plugin_skills": [("data-agent-kit-plugin", ["bigquery-ai-ml", "bigquery-observability", "building-data-apps", "enforcing-resource-attribution"])],
             "local_skills": [("skills", ["weather-skill"])],
-            "subagents": (*UI_SUBAGENTS, *GOV_SUBAGENTS, *GLOBAL_CORE_SUBAGENTS),
+            "subagents": (*UI_SUBAGENTS, *GOV_SUBAGENTS),
         },
         "adk-ts-agent": {
             "franklin_skills": mcp_f,
-            "user_skills": [*mcp_u, "adk-go-mcp-router", "agent-0meia", "google-agents-cli-adk-code", "google-agents-cli-eval"],
+            "user_skills": [*mcp_u, "google-agents-cli-adk-code", "google-agents-cli-eval"],
             "local_skills": [("skills", ["weather-skill"])],
-            "subagents": (*GOV_SUBAGENTS, *GLOBAL_CORE_SUBAGENTS),
+            "subagents": (*GOV_SUBAGENTS,),
         },
         "franklin-quebragalho": {
             "franklin_skills": all_franklin,
-            "user_skills": ["agent-skill-evaluator", "skill-repair", "build-mcp-server", "api-auditor", "live-api-function-auditor", "adk-go-mcp-router", "agent-0meia", "code-analysis-causal-review-team"],
+            "user_skills": ["agent-skill-evaluator", "skill-repair", "build-mcp-server", "api-auditor", "live-api-function-auditor", "code-analysis-causal-review-team"],
             "subagents": (*UI_SUBAGENTS, *GOV_SUBAGENTS),
         },
         "workspace-mcp": {"franklin_skills": [*mcp_f, "gdrive-cleanup-auditor", "gdrive-taxonomy-organizer"], "user_skills": mcp_u, "subagents": GOV_SUBAGENTS},
@@ -590,7 +615,12 @@ def _sync_project_scoped_customizations(agents_src: Path | list[Path]) -> int:
     """Gera .agents/skills.json e .agents/agents/*.md sob medida sem duplicar skills core globais."""
     profiles = _build_project_customization_profiles()
     franklin_skills_path = (ROOT_DIR / "skills").as_posix()
-    user_skills_path = (USER_HOME / ".agents" / "skills").as_posix()
+    catalog_skills_dir = GEMINI_ROOT / "skill-catalog" / "user-skills"
+    user_skills_path = (
+        catalog_skills_dir.as_posix()
+        if catalog_skills_dir.exists() and any(catalog_skills_dir.iterdir())
+        else (USER_HOME / ".agents" / "skills").as_posix()
+    )
     plugins_base = (GEMINI_ROOT / "config" / "plugins").as_posix()
     global_franklin = set(GLOBAL_CORE_FRANKLIN_SKILLS)
     global_user = set(GLOBAL_CORE_USER_SKILLS)

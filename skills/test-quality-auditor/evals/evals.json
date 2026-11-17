@@ -332,7 +332,7 @@
       "input_code": "",
       "expected_issues": [],
       "expected_status": "NEAR_MISS_IGNORED",
-      "expected_output": "Recognizes as tactile UI/UX near-miss and routes to frontend-ui-ux-auditor.",
+      "expected_output": "Recognizes as tactile UI/UX near-miss and routes to ui-quality-judge.",
       "assertions": [
         "Correctly identifies query belongs to Tactile UI/UX domain (should_trigger=false)"
       ]

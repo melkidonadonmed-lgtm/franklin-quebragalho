@@ -112,7 +112,6 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
         ["clinical-minimalist-ui", "system-project-auditor", "ui-brand-ux-planner", "ui-quality-judge"],
         [
             ("system-project-auditor", "frontiercode_maintainability_guardrail.py", "Auditoria adaptativa FrontierCode (Tipagem, Bare Except, Segurança)"),
-            ("system-project-auditor", "ai_ready_data_pipeline.py", "Sanitização e chunking SHA-256 para diretrizes clínicas/RAG"),
         ],
         "../shredded-shape/plans/ui_actor_critic_dag.json",
         "Coordenador clínico unificado (clinical_preceptor_orchestrator em adk-py-agents/py_agent/pipelines/clinical_coordinator.py) com AgentTools separados: anatomy_3d_inspector (appmy) + hexagonal_score_calculator (scoreboard) e suíte UI federada em shredded-shape.",
@@ -136,7 +135,6 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
         ["obsidian-vault-curator", "context-sentinel", "system-project-auditor"],
         [
             ("obsidian-vault-curator", "vault_hygiene_scanner.py", "Scanner determinístico de Active Drift, Open Loops, Monólitos (>25KB) e Wikilinks"),
-            ("system-project-auditor", "ai_ready_data_pipeline.py", "Sanitização de texto, deduplicação SHA-256 e chunking com byte_range"),
         ],
         "N/A (Execução direta via script)",
         "Preservação de parágrafos lógicos, metadados source_id + byte_range e proteção absoluta da pasta .obsidian/.",
@@ -165,20 +163,20 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
     ),
     (
         ("projeto", "repo", "organizar", "ideia", "mvp", "sincronizar", "readme", "estrutura", "auditar", "android", "kotlin", "compose", "gradle", "agp"),
-        "📦 Organização de Projetos, Refinamento de Ideias, Auditoria Integrada 3-em-1 (`system-project-auditor` v6.0) & Engenharia Android (`android-agy-projects`)",
+        "📦 Organização de Projetos, Refinamento de Ideias, Auditoria Integrada 3-em-1 (`system-project-auditor` v6.1) & Engenharia Android (`android-agy-projects`)",
         ["system-project-auditor", "project-idea-organizer", "android-agy-projects"],
         [
             ("system-project-auditor", "project_structure_and_code_auditor.py", "Scanner físico AST e árvore real (órfãos, paridade README/SPEC vs disco, placebos e 60-30-10 OKLCH)"),
-            ("system-project-auditor", "deterministic_scorer.py", "Scanner determinístico SGA + TIF (Ilhas Funcionais, X ativa Y, INE, ICI, IRM, IPC, ICTE)"),
+            ("system-project-auditor", "deterministic_scorer.py", "Scanner determinístico SGA + TIF (adaptativo por stack: Backend/CLI vs UI 3 Camadas)"),
             ("system-project-auditor", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (SRP, Tipagem Pydantic, Segurança)"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST pré-commit de segurança e tipagem Python (Score >= 75)"),
         ],
         "plans/distributed_agent_mediation_dag.json | ../shredded-shape/plans/ui_actor_critic_dag.json",
-        "Fluxo unificado: (1) Ideação/MVP ('project-idea-organizer' Modo 1) -> (2) Auditoria Física AST + Navegação SGA + Plano 3 Fases ('system-project-auditor' v6.0) -> (3) Saneamento & Paridade README/Contratos ('project-idea-organizer' Modo 2).",
+        "Fluxo coerente: (1) Bootstrap MVP proporcional sem pastas vazias ('project-idea-organizer' v1.3) -> (2) Implementação tipada mínima ('solution-content-architect' v2.6) -> (3) Auditoria read-only adaptativa à stack ('system-project-auditor' v6.1).",
     ),
     (
         ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra", "test", "auditor", "rca", "converge", "gap", "intencao", "cognitiv", "kahn", "a2a", "stdio"),
-        "🤖 Esteira de Qualidade (AST • Testes/Evals • Servidores MCP/A2A • RCA/Convergência), Planejamento Cognitivo Não-Linear & Orquestração DAG (28 Skills Canônicas)",
+        "🤖 Esteira de Qualidade (AST • Testes/Evals • Servidores MCP/A2A • RCA/Convergência), Planejamento Cognitivo Não-Linear & Orquestração DAG (21 Skills Canônicas + 6 UI em shredded-shape)",
         ["agent-server-auditor", "code-acceptability-auditor", "test-quality-auditor", "gap-analyzer-auditor", "high-level-context-planner", "chained-plan-orchestrator"],
         [
             ("agent-server-auditor", "agent_server_auditor.py", "Auditor arquitetural poliglota (Go/TS/Py) de agentes, higiene STDIO MCP, A2A JWS, binários e max_steps"),
@@ -186,7 +184,7 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
             ("chained-plan-orchestrator", "dag_chain_validator.py", "Compilador de Ondas DAG (Kahn), detector de colisão de arquivos [P] e validador de Context Fork"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão 1 AST + Pydantic v2 (12 regras: Segurança, Tipagem, McCabe <= 10, Score >= 75)"),
             ("test-quality-auditor", "test_quality_auditor.py", "Portão 2 de qualidade de suítes de testes em 5 módulos (Py/TS/Go/MCP/Harness + PerfKit)"),
-            ("workspace", "validate_skills.py", "Validador determinístico das 28 skills canônicas"),
+            ("workspace", "validate_skills.py", "Validador determinístico das 21 skills canônicas"),
         ],
         "../shredded-shape/plans/ui_actor_critic_dag.json | plans/physics_code_audit_dag.json | plans/distributed_agent_mediation_dag.json",
         "Planejamento Não-Linear ('high-level-context-planner' v3.0 <=5 regras/nó) -> Compilação de Ondas Kahn ('chained-plan-orchestrator' v3.0) -> Esteira em 3 Portões ('code-acceptability-auditor' -> 'test-quality-auditor' -> 'gap-analyzer-auditor').",
@@ -213,7 +211,7 @@ def _resolve_agents_dir() -> Path:
 
 
 def _render_ecosystem_topology() -> str:
-    """Renderiza a topologia interativa de agentes em 5 camadas e 28 skills."""
+    """Renderiza a topologia interativa de agentes em 5 camadas e 21 skills (+ 6 UI em shredded-shape)."""
     skills = _get_all_skills_data()
     by_persona: Dict[str, List[str]] = {}
     for s in skills:
@@ -298,7 +296,6 @@ def _resolve_compass_profile(q: str) -> Tuple[str, List[str], List[Tuple[str, st
             ("system-project-auditor", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (detecta sozinho se é código Geral ou 3D)"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST pré-commit de segurança e tipagem Python (Score >= 75)"),
             ("code-quality-audit-3d-physics", "state_checker_observer.py", "Observador Pydantic com filtro anti-alucinação AST e nota Snorm"),
-            ("system-project-auditor", "ai_ready_data_pipeline.py", "Pipeline de sanitização e chunking JSONL para RAG"),
             ("ui-quality-judge", "ui_judge_gatekeeper.py", "Juiz Read-Only WCAG 2.2 OKLCH e FSM em shredded-shape"),
         ],
         "../shredded-shape/plans/ui_actor_critic_dag.json | plans/physics_code_audit_dag.json | plans/distributed_agent_mediation_dag.json",

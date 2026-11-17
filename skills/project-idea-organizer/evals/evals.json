@@ -1,29 +1,29 @@
 {
   "skill_name": "project-idea-organizer",
-  "version": "1.2.0",
-  "description": "Evaluation suite verifying ideation-to-MVP with 'I don't know' fallback, full repository organization with Triad/README/contract sync, ambiguous-repo clarification, and near-miss boundaries.",
+  "version": "1.3.0",
+  "description": "Evaluation suite verifying right-sized ideation-to-MVP with 'I don't know' fallback, flat micro-CLI sizing without empty layers, repository organization with Triad v2.1/README/contract sync, and near-miss boundaries.",
   "evals": [
     {
       "id": "TC-01-IDEATION-TO-MVP-UNKNOWN-FALLBACK",
       "eval_id": "TC-01-IDEATION-TO-MVP-UNKNOWN-FALLBACK",
       "should_trigger": true,
       "prompt": "I want to build a system to organize my study notes and spaced-repetition reviews, but I don't know which exact features to include yet.",
-      "expected_output": "Enters Mode 1 (ideation_to_v1), investigates core objective, activates the 'I don't know' fallback proposing a minimal secure MVP feature set, presents folder layout + design options, and offers dated v1.0.0 initialization.",
+      "expected_output": "Enters Mode 1 (ideation_to_v1), investigates core objective, activates the 'I don't know' fallback proposing 1 runnable minimal vertical-slice MVP feature set, defers extras, and offers dated v1.0.0 confirmation.",
       "assertions": [
         "Activates Mode 1 (ideation_to_v1)",
-        "Triggers intelligent 'I don't know' fallback proposing a minimal MVP",
-        "Proposes modular starter tree with security baseline and asks for v1.0.0 confirmation"
+        "Triggers intelligent 'I don't know' fallback proposing a single runnable vertical slice",
+        "Proposes right-sized layout without speculative empty folders and asks for v1.0.0 confirmation"
       ]
     },
     {
       "id": "TC-02-REPO-SYNC-CONTRACTS-AND-DRY-RUN",
       "eval_id": "TC-02-REPO-SYNC-CONTRACTS-AND-DRY-RUN",
       "should_trigger": true,
-      "prompt": "Organize my existing repository end-to-end: check missing Triad docs, clean stray root scripts safely, align MCP tools.json and FastAPI schemas, and sync README.md 1:1 with disk.",
-      "expected_output": "Enters Mode 2 (project_organizer_sync), aligns AGENTS.md/.context/{spec,context}.md/README.md 1:1 with disk, structures MCP/FastAPI contracts, validates .env/.gitignore + git remote, draws Mermaid flowchart, and previews root moves via Dry-Run.",
+      "prompt": "Organize my existing repository end-to-end: align Triad v2.1 docs (AGENTS.md and .context/), clean stray root scripts safely, align active FastMCP tools and FastAPI schemas, and sync README.md 1:1 with disk.",
+      "expected_output": "Enters Mode 2 (project_organizer_sync), aligns root AGENTS.md + .context/{spec,context}.md (Triad v2.1) and README.md 1:1 with disk while preserving working imports, structures active MCP/FastAPI contracts, checks .env/.gitignore + git remote, and previews root moves via Dry-Run.",
       "assertions": [
-        "Enforces 1:1 README.md vs. disk parity and Triad v2.0 alignment",
-        "Organizes MCP tools.json and FastAPI/RPC strict schemas",
+        "Enforces 1:1 README.md vs. disk parity and Triad v2.1 alignment via bootstrap-project.ps1",
+        "Organizes only active MCP and FastAPI strict schemas without inventing unused RPC layers",
         "Requires Dry-Run preview before moving/deleting root files"
       ]
     },
@@ -58,6 +58,17 @@
       "assertions": [
         "Abstains from project restructuring when a 0-100 audit is requested",
         "Routes AST + live @eX navigation scoring to system-project-auditor"
+      ]
+    },
+    {
+      "id": "TC-06-RIGHT-SIZED-CLI-NO-EMPTY-LAYERS",
+      "eval_id": "TC-06-RIGHT-SIZED-CLI-NO-EMPTY-LAYERS",
+      "should_trigger": true,
+      "prompt": "Turn my raw idea for a local CSV-to-JSON invoice deduplicator CLI into a v1.0.0 MVP.",
+      "expected_output": "Selects Micro/CLI scale (1-4 files), proposes a flat vertical-slice layout (dedup.py, tests/test_dedup.py, pyproject.toml, .gitignore, README.md) and explicitly forbids creating src/api/, src/domain/, src/contracts/, DESIGN.md, or tools.json.",
+      "assertions": [
+        "Selects flat Micro/CLI layout (1-4 files) rather than multi-layer src/api/domain/contracts",
+        "Omits unused MCP tools.json, FastAPI, RPC, and UI DESIGN.md artifacts"
       ]
     }
   ]

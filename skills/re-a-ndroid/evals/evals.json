@@ -57,7 +57,7 @@
     "prompt": "Run frontend UI testing on our Next.js web app to verify WAI-ARIA roles, zero Base64 bloat, and 44px button targets.",
       "expected_behavior": {
         "triggers_re_a_ndroid": false,
-        "delegate_to": "frontend-testing-auditor"
+        "delegate_to": "ui-quality-judge"
       }
     }
   ]

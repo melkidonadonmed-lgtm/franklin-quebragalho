@@ -29,7 +29,7 @@
   {
     "eval_id": "TC-05-NEAR-MISS-REACT-CSS-DASHBOARD",
     "prompt": "Audit the WCAG 2.1 AA contrast, 3-level shadows, and Tailwind layout spacing of our React analytics dashboard.",
-      "expected_behavior": "Abstains from code-quality-audit-3d-physics because there is no 3D physics/shader/simulation loop; routes to frontend-ui-ux-auditor.",
+      "expected_behavior": "Abstains from code-quality-audit-3d-physics because there is no 3D physics/shader/simulation loop; routes to ui-quality-judge.",
       "should_trigger": false
     }
   ]

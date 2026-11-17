@@ -81,6 +81,10 @@ class DeclarativeAgentSpec(BaseModel):
             "de outros repositorios que declaram max_steps no topo do frontmatter."
         ),
     )
+    stop_condition: Optional[str] = Field(
+        default=None,
+        description="Atalho no topo do frontmatter para guardrails.stop_condition.",
+    )
     guardrails: AgentGuardrailsSpec = Field(default_factory=AgentGuardrailsSpec)
     mcp_servers: List[MCPServerSpec] = Field(
         default_factory=lambda: [
@@ -97,22 +101,23 @@ class DeclarativeAgentSpec(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def _hoist_legacy_max_steps(cls, data: Any) -> Any:
-        """Encaminha `max_steps` declarado no topo para `guardrails.max_steps`.
+        """Encaminha `max_steps` e `stop_condition` declarados no topo para `guardrails`.
 
-        O schema continua fechado (`extra="forbid"`); este e o unico atalho aceito.
-        Quando o manifesto ja traz `guardrails.max_steps`, o valor aninhado tem precedencia.
+        O schema continua fechado (`extra="forbid"`); quando `guardrails` ja traz a chave,
+        o valor aninhado tem precedencia.
         """
         if not isinstance(data, dict):
             return data
-        legacy = data.get("max_steps")
-        if legacy is None:
+        legacy_steps = data.get("max_steps")
+        legacy_stop = data.get("stop_condition")
+        if legacy_steps is None and legacy_stop is None:
             return data
-        guardrails = data.get("guardrails")
-        if guardrails is None:
-            return {**data, "guardrails": {"max_steps": legacy}}
-        if isinstance(guardrails, dict) and "max_steps" not in guardrails:
-            return {**data, "guardrails": {**guardrails, "max_steps": legacy}}
-        return data
+        guardrails = dict(data.get("guardrails") or {}) if isinstance(data.get("guardrails"), dict) else {}
+        if legacy_steps is not None and "max_steps" not in guardrails:
+            guardrails["max_steps"] = legacy_steps
+        if legacy_stop is not None and "stop_condition" not in guardrails:
+            guardrails["stop_condition"] = legacy_stop
+        return {**data, "guardrails": guardrails}
 
     @model_validator(mode="after")
     def _derive_effective_capabilities(self) -> "DeclarativeAgentSpec":

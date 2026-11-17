@@ -1,7 +1,7 @@
 """
 test_skill_trigger_precision.py
 Suíte de testes determinísticos para a precisão de disparo Nível 1 (Should-Trigger vs. Near-Misses)
-de todas as 28 Agent Skills Canônicas do Franklin Quebra-Galho.
+de todas as 21 Agent Skills Canônicas do Franklin Quebra-Galho.
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ from shared.trigger_eval_suite import CANONICAL_TRIGGER_EVAL_CASES, run_trigger_
 
 
 def test_all_canonical_skills_covered_in_trigger_suite() -> None:
-    """Garante que todas as 28 skills canônicas do disco possuem casos should-trigger e near-miss."""
+    """Garante que todas as 21 skills canônicas do disco possuem casos should-trigger e near-miss."""
     disk_skills = {
         d.name for d in server.SKILLS_ROOT.iterdir() if d.is_dir() and (d / "SKILL.md").exists()
     }
@@ -46,6 +46,12 @@ def test_negative_clause_penalization_on_near_misses() -> None:
     trg12 = by_id["TRG-12"]
     assert trg12.top1_skill == "windows-disk-maintenance"
     assert trg12.expected_skill_score > trg12.near_miss_scores["refine-prompt"]
+
+    # TRG-35..37: Cross-skill boundary separation between solution-content-architect, project-idea-organizer, system-project-auditor
+    for cid in ("TRG-35", "TRG-36", "TRG-37"):
+        outcome = by_id[cid]
+        assert outcome.top1_skill == outcome.expected_skill
+        assert all(outcome.expected_skill_score > score for score in outcome.near_miss_scores.values())
 
 
 def test_strict_yaml_frontmatter_and_malformed_rejection() -> None:

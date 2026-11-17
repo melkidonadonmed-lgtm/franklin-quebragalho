@@ -1,43 +1,42 @@
 {
   "skill_name": "solution-content-architect",
-  "version": "2.5.0",
-  "description": "Evaluation suite verifying 4-mode execution (Modes A-D), 7 domain guardrail modules, anti-hallucination markers, and crisp separation from refine-prompt and skill catalog auditors.",
+  "version": "2.6.0",
+  "description": "Evaluation suite verifying direct proportional implementation, blocking clarification cap, architectural fork trade-offs vs. simpler baselines, zero dead abstractions, and strict near-miss boundaries.",
   "evals": [
     {
-      "id": "TC-01-MODE-A-DIRECT-TYPED-EXECUTION",
-      "eval_id": "TC-01-MODE-A-DIRECT-TYPED-EXECUTION",
+      "id": "TC-01-DIRECT-TYPED-EXECUTION-NO-CEREMONY",
+      "eval_id": "TC-01-DIRECT-TYPED-EXECUTION-NO-CEREMONY",
       "should_trigger": true,
-      "prompt": "Implement a strictly typed Python batch compression utility with Pydantic v2 ConfigDict(extra='forbid'), CLI argparse flags, and actionable error recovery hints.",
-      "expected_output": "Enters MODE A — DIRECT EXECUTION with zero questions, produces modular <= 600-line Python code with full type hints and CLI verification commands, applies Mode D validation, and includes 1 simpler alternative.",
+      "prompt": "Implement a strictly typed Python batch compression CLI with Pydantic v2 ConfigDict(extra='forbid'), argparse flags, and actionable error recovery hints.",
+      "expected_output": "Enters Direct Execution with zero questions and no ceremonial mode banners, produces a single cohesive <= 600-line Python CLI with full type hints and real CLI verification commands, avoids dead abstractions, and applies validation silently.",
       "assertions": [
-        "Declares MODE A — DIRECT EXECUTION and asks 0 questions",
-        "Generates strictly typed Python code under Module M1 guardrails",
-        "Includes CLI verification command and 1 simpler alternative",
-        "Uses deterministic [PASS]/[FAIL]/[UNVERIFIED] Mode D checks"
+        "Delivers runnable typed Python CLI directly with 0 questions and no MODE A banner",
+        "Generates strictly typed Pydantic v2 extra='forbid' config and argparse flags under M1",
+        "Contains zero dead abstractions or pass-through wrappers and includes CLI verification commands"
       ]
     },
     {
-      "id": "TC-02-MODE-B-ITERATIVE-REFINEMENT-CAP",
-      "eval_id": "TC-02-MODE-B-ITERATIVE-REFINEMENT-CAP",
+      "id": "TC-02-IN-REPO-AMBIGUOUS-CONTRACT-CLARIFICATION",
+      "eval_id": "TC-02-IN-REPO-AMBIGUOUS-CONTRACT-CLARIFICATION",
       "should_trigger": true,
-      "prompt": "I want to build an automation suite for my local developer workflow and enterprise APIs, help me design where to start.",
-      "expected_output": "Enters MODE B — ITERATIVE REFINEMENT, asks 1 to 3 high-impact strategic questions, and supplies an initial structured draft with domain module alignment.",
+      "prompt": "We need to add webhook signature verification and idempotent replay protection to our existing FastAPI billing router, but we haven't finalized the replay TTL or failure policy yet.",
+      "expected_output": "Detects blocking schema/policy GAPs inside an existing service, asks <= 3 targeted decision questions, and provides a minimal typed Pydantic/FastAPI skeleton without scaffolding greenfield directories.",
       "assertions": [
-        "Declares MODE B — ITERATIVE REFINEMENT",
-        "Limits clarifying questions to <= 3 strategic questions",
-        "Provides a preliminary structured architecture draft"
+        "Limits clarifying questions to <= 3 high-impact contract questions",
+        "Supplies a minimal typed FastAPI/Pydantic webhook verification skeleton",
+        "Avoids greenfield project restructuring outside the requested billing module"
       ]
     },
     {
-      "id": "TC-03-MODE-C-PHASE-ZERO-TOT-BLUEPRINT",
-      "eval_id": "TC-03-MODE-C-PHASE-ZERO-TOT-BLUEPRINT",
+      "id": "TC-03-ARCHITECTURAL-FORK-TOT-SIMPLER-BASELINE",
+      "eval_id": "TC-03-ARCHITECTURAL-FORK-TOT-SIMPLER-BASELINE",
       "should_trigger": true,
-      "prompt": "Design a multi-mode technical roadmap and comparative Tree-of-Thoughts architecture for migrating a legacy REST backend to FastAPI with OpenAPI 3.1 contracts and a PostgreSQL keyset query layer.",
-      "expected_output": "Enters MODE C — STRUCTURED PLANNING, starts with Phase 0 premises, compares 2-3 ToT branches (what changes, how it changes, trade-offs), details sequential CoT phases, and applies Enterprise Prompt 3 & 5 patterns.",
+      "prompt": "Design a comparative architectural blueprint for migrating a legacy REST backend to FastAPI with OpenAPI 3.1 contracts, RFC 9457 error responses, and a PostgreSQL keyset query layer.",
+      "expected_output": "Activates Architectural Fork Blueprint, locks In-Scope vs. Non-Goals, compares 2-3 branches including a Simpler Baseline, sequences CoT stages cleanly, and applies API/SQL contract patterns from enterprise_prompt_library.md.",
       "assertions": [
-        "Declares MODE C — STRUCTURED PLANNING",
-        "Includes Phase 0 alignment before execution steps",
-        "Presents comparative ToT branch analysis with trade-offs and CoT stages"
+        "Locks In-Scope vs. Non-Goals before proposing migration steps",
+        "Compares trade-offs against a Simpler Baseline and sequences CoT steps",
+        "Applies OpenAPI 3.1 / RFC 9457 and keyset pagination SQL patterns"
       ]
     },
     {
@@ -60,6 +59,17 @@
       "assertions": [
         "Abstains from activating solution-content-architect",
         "Routes MCP/A2A/skill auditing to agent-server-auditor"
+      ]
+    },
+    {
+      "id": "TC-06-NEAR-MISS-GREENFIELD-SCAFFOLDING",
+      "eval_id": "TC-06-NEAR-MISS-GREENFIELD-SCAFFOLDING",
+      "should_trigger": false,
+      "prompt": "I have a raw idea for a study tracker app; help me pick MVP features, bootstrap the folder structure, and sync README.md 1:1 with disk.",
+      "expected_output": "Does NOT trigger solution-content-architect; routes greenfield ideation-to-MVP bootstrapping and repository alignment to project-idea-organizer.",
+      "assertions": [
+        "Abstains from activating solution-content-architect",
+        "Routes greenfield MVP discovery and repo structure sync to project-idea-organizer"
       ]
     }
   ]

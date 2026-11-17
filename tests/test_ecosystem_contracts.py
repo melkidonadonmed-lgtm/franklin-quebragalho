@@ -618,3 +618,87 @@ def test_validate_skills_rejects_parent_link_escape_and_invalid_agent_tools(
     assert "missing-tools-agent.md" in joined, f"Expected missing tools rejection, got: {eco_errs}"
 
 
+def test_pre_tool_use_contract_and_stub_gates() -> None:
+    """PreToolUse bloqueia gravação de agents/*.md sem contrato e funções stub STUB001 em produção."""
+    bad_agent = json.dumps({
+        "toolCall": {
+            "name": "write_file",
+            "args": {
+                "Path": "C:/repo/agents/broken-agent.md",
+                "Content": "---\nname: broken-agent\ndescription: Missing fields\n---\n# Body\n",
+            },
+        },
+        "stepIdx": 2,
+    })
+    rc_bad_ag, out_bad_ag = _run_hook("PreToolUse", bad_agent)
+    assert rc_bad_ag == 0 and out_bad_ag["decision"] == "deny"
+    assert "ContractGate" in str(out_bad_ag.get("reason", ""))
+
+    good_agent = json.dumps({
+        "toolCall": {
+            "name": "write_file",
+            "args": {
+                "Path": "C:/repo/agents/valid-agent.md",
+                "Content": (
+                    "---\nname: valid-agent\ndescription: \"Valid contract\"\nsubagent: true\nmainAgent: false\n"
+                    "model: inherit\ncommandExecutionPolicy: sandbox\ninheritCustomizations: true\n"
+                    "max_steps: 6\nstop_condition: \"DONE\"\ntools:\n  - read_file\n  - send_message\n---\n# Valid\n"
+                ),
+            },
+        },
+        "stepIdx": 3,
+    })
+    rc_ok_ag, out_ok_ag = _run_hook("PreToolUse", good_agent)
+    assert rc_ok_ag == 0 and out_ok_ag == {"decision": "allow"}
+
+    stub_py = json.dumps({
+        "toolCall": {
+            "name": "write_file",
+            "args": {
+                "Path": "C:/repo/src/service.py",
+                "Content": "def compute_invoice(amount: int) -> int:\n    pass\n",
+            },
+        },
+        "stepIdx": 4,
+    })
+    rc_stub, out_stub = _run_hook("PreToolUse", stub_py)
+    assert rc_stub == 0 and out_stub["decision"] == "deny"
+    assert "STUB001" in str(out_stub.get("reason", ""))
+
+
+def test_code_acceptability_auditor_stub001_detection_and_exemptions() -> None:
+    """CodeAcceptabilityAuditor reprova funções stub (STUB001) e isenta Protocol/@abstractmethod/testes."""
+    auditor_dir = ROOT_DIR / "skills" / "code-acceptability-auditor" / "scripts"
+    if str(auditor_dir) not in sys.path:
+        sys.path.insert(0, str(auditor_dir))
+    from code_acceptability_auditor import CodeAcceptabilityAuditor
+
+    auditor = CodeAcceptabilityAuditor()
+    bad_rep = auditor.audit_code(
+        "def fake_handler(x: int) -> int:\n    \"\"\"Docstring.\"\"\"\n    raise NotImplementedError('todo')\n",
+        file_path="src/prod_module.py",
+    )
+    assert bad_rep.status == "REJECTED"
+    assert any(v.rule_id == "STUB001" for v in bad_rep.violations)
+
+    exempt_src = (
+        "from abc import ABC, abstractmethod\n"
+        "from typing import Protocol\n\n"
+        "class GatewayProto(Protocol):\n"
+        "    def send(self, payload: str) -> bool:\n"
+        "        ...\n\n"
+        "class BaseWorker(ABC):\n"
+        "    def __init__(self) -> None:\n"
+        "        pass\n"
+        "    @abstractmethod\n"
+        "    def run_step(self, count: int) -> int:\n"
+        "        raise NotImplementedError\n"
+    )
+    ok_rep = auditor.audit_code(exempt_src, file_path="src/contracts.py")
+    assert ok_rep.status == "APPROVED" and ok_rep.violations == []
+
+    test_rep = auditor.audit_code("def dummy_helper(x: int) -> None:\n    pass\n", file_path="tests/test_sample.py")
+    assert test_rep.status == "APPROVED"
+
+
+

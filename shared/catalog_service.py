@@ -346,7 +346,8 @@ def _collect_skill_data(
         ref_list = [f.name for f in ref_dir.iterdir() if f.is_file()] if ref_dir.is_dir() else []
 
         tags: set[str] = set()
-        for tok in (name, skill_dir.name, description):
+        pos_desc_only, _ = _split_positive_and_negative_desc(_strip_accents(str(description)))
+        for tok in (name, skill_dir.name, pos_desc_only):
             tags.update(re.findall(r"[a-z0-9_\-]+", _strip_accents(str(tok))))
         for mtag in _extract_meta_tags(meta):
             norm_mtag = _strip_accents(mtag)
@@ -566,7 +567,8 @@ SEARCH_STOPWORDS: frozenset[str] = frozenset({
 
 def _strip_accents(text: str) -> str:
     """Remove acentos e normaliza para ASCII minúsculo."""
-    return unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii").lower()
+    cleaned = text.replace("\u2014", " ").replace("\u2013", " ")
+    return unicodedata.normalize("NFKD", cleaned).encode("ascii", "ignore").decode("ascii").lower()
 
 
 def _split_positive_and_negative_desc(desc_norm: str) -> Tuple[str, str]:
@@ -582,17 +584,32 @@ def _split_positive_and_negative_desc(desc_norm: str) -> Tuple[str, str]:
 
 
 def _score_single_term(
-    t: str, s_name: str, name_norm: str, pos_desc: str, neg_desc: str, persona_norm: str, norm_tags: set[str]
+    t: str,
+    s_name: str,
+    name_norm: str,
+    pos_desc: str,
+    neg_desc: str,
+    persona_norm: str,
+    norm_tags: set[str],
+    pos_tokens: set[str] | None = None,
+    neg_tokens: set[str] | None = None,
 ) -> int:
     """Calcula a contribuição de pontuação de um único termo significativo da consulta."""
     delta = 25 if QUICK_SKILL_ALIASES.get(t) == s_name else 0
     if t in name_norm:
         delta += 18
-    if t in norm_tags and (not neg_desc or t not in neg_desc or t in pos_desc or t in name_norm):
+    p_toks = pos_tokens if pos_tokens is not None else set(re.findall(r"[a-z0-9]+", pos_desc))
+    n_toks = neg_tokens if neg_tokens is not None else set(re.findall(r"[a-z0-9]+", neg_desc))
+    is_pos_hit = t in p_toks or (len(t) >= 4 and t in pos_desc)
+    is_neg_hit = bool(n_toks) and (
+        t in n_toks
+        or (len(t) >= 5 and any(nt.startswith(t) or t.startswith(nt) for nt in n_toks if len(nt) >= 5))
+    )
+    if t in norm_tags and (not is_neg_hit or t in p_toks or t in name_norm):
         delta += 10
-    if t in pos_desc:
+    if is_pos_hit:
         delta += 7
-    elif neg_desc and t in neg_desc:
+    elif is_neg_hit and t not in name_norm:
         delta -= 18
     if t in persona_norm:
         delta += 6
@@ -606,6 +623,8 @@ def _score_skill_query(s: Dict[str, Any], clean_q: str, terms: List[str]) -> int
     desc_norm = _strip_accents(s["description"])
     persona_norm = _strip_accents(s["persona"])
     pos_desc, neg_desc = _split_positive_and_negative_desc(desc_norm)
+    pos_tokens = set(re.findall(r"[a-z0-9]+", pos_desc)) | set(re.findall(r"[a-z0-9_\-]+", pos_desc))
+    neg_tokens = set(re.findall(r"[a-z0-9]+", neg_desc)) | set(re.findall(r"[a-z0-9_\-]+", neg_desc))
     norm_tags = {_strip_accents(tg) for tg in s.get("tags", [])}
 
     score = (60 if q_norm in name_norm else 0) + (35 if q_norm in pos_desc else 0)
@@ -615,7 +634,9 @@ def _score_skill_query(s: Dict[str, Any], clean_q: str, terms: List[str]) -> int
     short_tech = {"ui", "ux", "3d", "go", "ts", "js", "qa", "pe", "a4"}
     meaningful = [t for t in terms if t not in SEARCH_STOPWORDS and (len(t) > 2 or t in short_tech)]
     for t in meaningful:
-        score += _score_single_term(t, s["name"], name_norm, pos_desc, neg_desc, persona_norm, norm_tags)
+        score += _score_single_term(
+            t, s["name"], name_norm, pos_desc, neg_desc, persona_norm, norm_tags, pos_tokens, neg_tokens
+        )
     return score
 
 

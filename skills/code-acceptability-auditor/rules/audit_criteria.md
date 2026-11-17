@@ -62,7 +62,14 @@ Every audit performed by this skill MUST emit deterministic verdicts grounded in
   - McCabe complexity $M > 10$ -> `[FAIL: ARCH003]` (`MEDIUM` | `-5.0`).
   - All functions within limits (`<= 60` lines, `<= 3` levels, $M \le 10$) -> `[PASS]`.
 
-### Rule 8: Final Quality Gate (`Quality Gate`)
+### Rule 8: Ban Empty / Unimplemented Stub Functions (`STUB001`)
+
+- **Criterion**: Production Python functions and methods MUST NOT consist solely of `pass`, `...`, or `raise NotImplementedError(...)` outside `Protocol`/`ABC` interfaces, `@abstractmethod`/`@overload` signatures, `.pyi` stubs, or test suites (`tests/`, `test_*.py`).
+- **Deterministic Check**:
+  - Non-exempt function body (after docstring) is a bare `pass`, `...`, or `raise NotImplementedError` -> `[FAIL: STUB001]` (`CRITICAL` | `-25.0` | `REJECTED`).
+  - Concrete implementation or valid `@abstractmethod`/`Protocol` contract -> `[PASS]`.
+
+### Rule 9: Final Quality Gate (`Quality Gate`)
 
 - **Criterion**: A Python file is `APPROVED` if and only if `passed_syntax == True`, `critical_violations == 0`, and `quality_score >= 75.0`.
 - **Deterministic Check**:

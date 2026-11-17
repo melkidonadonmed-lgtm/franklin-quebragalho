@@ -21,3 +21,7 @@ Formatting and syntax guidelines for structured technical authoring:
 5. **Heading Hierarchy:**
    - Reserve Heading 1 (`#`) exclusively for the document title.
    - Use Heading 2 (`##`) for primary sections and Heading 3 (`###`) for subsections.
+
+6. **Google Style Guide Alignment (`google/styleguide` — `docguide/style.md` & `best_practices.md`):**
+   - Apply *Minimum Viable Documentation*: delete filler prose, prefer scannable tables and numbered procedures over walls of text, and keep code examples self-contained and runnable.
+   - Cross-language code snippets embedded in documentation must follow `references/google_styleguide_output_standards.md` (`pyguide.md` Google docstrings, `tsguide.html` `import type` / `unknown`, and Go `MixedCaps` / `%w` error wrapping).

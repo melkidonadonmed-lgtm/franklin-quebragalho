@@ -1,7 +1,7 @@
 {
   "skill_name": "system-project-auditor",
-  "version": "6.0.0",
-  "description": "Deterministic evaluation suite for repository AST audit, Docs-vs-Disk parity, 3-layer SGA navigation, 60-30-10 OKLCH physics, HITL browser gating, and negative near-misses.",
+  "version": "6.1.0",
+  "description": "Deterministic evaluation suite for stack-adaptive repository AST audit, Docs-vs-Disk parity, backend-only [PASS: N/A_BACKEND_ONLY] handling, 3-layer SGA navigation, 60-30-10 OKLCH physics, HITL browser gating, and negative near-misses.",
   "evals": [
     {
       "id": "TC-01-GOVERNANCE-AND-GIT-AUDIT",
@@ -21,7 +21,7 @@
       "eval_id": "TC-02-README-VS-REAL-CODE-PARITY",
       "should_trigger": true,
       "description": "Validates strict AST classification of documented vs. implemented features.",
-      "prompt": "Audit the repository and verify whether every feature promised in README.md and SPEC.md is actually implemented in AST code.",
+      "prompt": "Audit the repository and verify whether every feature promised in README.md and .context/spec.md is actually implemented in AST code.",
       "expected_behavior": {
         "classifications_used": [
           "[IMPLEMENTED_FUNCTIONAL]",
@@ -66,7 +66,7 @@
       "prompt": "Crie do zero a estrutura inicial de pastas src/ em 5 camadas de Design Atômico e implemente componentes React para um novo app.",
       "expected_behavior": {
         "triggers_system_project_auditor": false,
-        "delegate_to": "frontend-code-architect"
+        "delegate_to": "ui-clean-worker"
       }
     },
     {
@@ -78,6 +78,19 @@
       "expected_behavior": {
         "triggers_system_project_auditor": false,
         "delegate_to": "re-a-ndroid"
+      }
+    },
+    {
+      "id": "TC-07-BACKEND-ONLY-ADAPTIVE-AUDIT",
+      "eval_id": "TC-07-BACKEND-ONLY-ADAPTIVE-AUDIT",
+      "should_trigger": true,
+      "description": "Validates stack-adaptive auditing on a pure Python/Go CLI/API backend without frontend files.",
+      "prompt": "Audit this pure Python and Go CLI backend repository for real AST health, Go package orphans, Docs-vs-Disk parity, and MVP readiness.",
+      "expected_behavior": {
+        "detects_backend_only_profile": true,
+        "emits_na_backend_only_for_ui_oklch": true,
+        "forbids_hallucinated_ui_action_items": true,
+        "expected_status": "[PASS: N/A_BACKEND_ONLY]"
       }
     }
   ]

@@ -1,6 +1,6 @@
 # Enterprise Prompt Library (Code Audit, TDD, APIs, Accessible UI & DB Performance)
 
-This reference provides **5 Enterprise Solution Blueprints** used by `solution-content-architect` (`v2.5.0`) with strict typing, measurable acceptance criteria, and mandatory Human-in-the-Loop (HITL) checkpoints.
+This reference provides **5 Enterprise Solution Blueprints** loaded on demand by `solution-content-architect` (`v2.6.0`) exclusively when crafting reusable prompts or API/SQL contracts.
 
 ---
 
@@ -15,8 +15,8 @@ Inspect the submitted codebase in two passes (Macro Architecture and Micro Line-
 1. Security, Stability & Runtime Bugs:
    - Identify vulnerabilities (SQLi, XSS, SSRF, hardcoded secrets, missing error handling, race conditions, memory leaks, infinite render loops) citing exact lines (`Lx-Ly`) and severity.
 2. Frontend Modularization & Accessibility (when UI is present):
-   - Atomic Design Decomposition: Split monolithic views into Atoms, Molecules, Organisms, Templates, and Pages (`<= 300` lines), extracting network/state logic into custom hooks.
-   - Design System & Visual Physics (`design-md`): Verify semantic `--surface-*` tokens, zenith lighting (`90-120 deg` + `inset 0 1px 0 0`), 3-level layered elevation shadows, anti-blur font rendering, `tabular-nums`, and Real-State FSMs.
+   - Feature & Route Co-Location: Keep UI modules cohesive by feature/route (`<= 300` lines), extracting network/state logic into custom hooks without creating empty single-file folder hierarchies.
+   - Design System & Visual Physics (`ui-brand-ux-planner` / `DESIGN.md`): Verify semantic `--surface-*` tokens, zenith lighting (`90-120 deg` + `inset 0 1px 0 0`), 3-level layered elevation shadows, anti-blur font rendering, `tabular-nums`, and Real-State FSMs.
    - DOM Pruning: Flag redundant `divsoup` wrappers, dead inline styles, and unnecessary re-renders impacting LCP, INP, and CLS.
 3. Rooted Improvement Matrix:
    - Structure 3 options (1. Performance & Runtime, 2. Maintainability & SOLID, 3. Security & Mitigation) grounded in actual runtime mechanics.
@@ -73,17 +73,17 @@ Design deterministic, strictly typed, idempotent API contracts documented under 
 
 ---
 
-## Prompt 4: Accessible UI Component Architect (WCAG 2.1 AA & Real-State FSM)
+## Prompt 4: Accessible UI Component Architect (WCAG 2.2 AA & Real-State FSM)
 
 ```markdown
 <system_instructions>
 # ROLE: FRONTEND COMPONENT & ACCESSIBILITY ARCHITECT
-Convert the interface requirement into a decoupled, strictly typed (`React + TypeScript strict` + `Tailwind v4`), 100% accessible component aligned with `design-md`.
+Convert the interface requirement into a decoupled, strictly typed (`React + TypeScript strict` + `Tailwind v4`), 100% accessible component aligned with `ui-brand-ux-planner` (`DESIGN.md`).
 
 ## 1. TECHNICAL & VISUAL DIRECTIVES
 1. Native Semantics & Keyboard Navigation: Use native HTML5 elements (`<button>`, `<dialog>`, `<nav>`), ARIA live/state attributes (`aria-live`, `aria-expanded`, `aria-busy`), and full `Enter`, `Space`, and `Escape` support.
 2. Real-State Engineering (4-State FSM): Implement functional `idle`, `loading`, `success`, and `error` states with zero placebo controls.
-3. Surface Tokens & Ergonomics: Apply semantic tokens (`--surface-canvas`, `--surface-sunken`, `--surface-card`, `--surface-elevated`, `--surface-glass`), zenith rim light (`inset 0 1px 0 0`), 3-level elevation shadows, `tabular-nums`, crisp non-blur transforms (`translateY(-1px)` hover, zero fractional text `scale()`), and `>= 44x44px` hit targets (`flex-shrink-0 whitespace-nowrap`).
+3. Surface Tokens & Ergonomics: Apply semantic tokens (`--surface-canvas`, `--surface-sunken`, `--surface-card`, `--surface-elevated`, `--surface-glass`), zenith rim light (`inset 0 1px 0 0`), 3-level elevation shadows, `tabular-nums`, crisp non-blur transforms (`translateY(-1px)` hover, zero fractional text `scale()`), and `>= 48x48px` hit targets (`flex-shrink-0 whitespace-nowrap`).
 </system_instructions>
 ```
 

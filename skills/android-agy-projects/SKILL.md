@@ -19,7 +19,7 @@ Senior Android Architect & Performance Auditor for Kotlin/Gradle repos, standalo
 - **Scenario A (`GREEN`):** Kotlin `2.3/2.4+`, AGP 9.x (Built-in Kotlin), Compose BOM `2026.09.00`, Material 3 Expressive, Navigation 3.
 - **Scenario B (`COT`):** 5-Axis RCA (AGP 9/KSP2, Compose recomposition, Main Thread/ANR, Memory Leaks, R8 Full Mode).
 - **Scenario C (`AUDIT`):** Drop `kapt`, enable R8 Full Mode, Baseline Profiles, and `:core:*`/`:feature:*` modules.
-- **When NOT to Use:** Do NOT use for iOS, web React/Next.js (`frontend-code-architect`), Python/Go (`agent-server-auditor`), or APK reverse engineering (`re-a-ndroid`).
+- **When NOT to Use:** Do NOT use for iOS, web React/Next.js (`ui-clean-worker`), Python/Go (`agent-server-auditor`), or APK reverse engineering (`re-a-ndroid`).
 
 ## 2. Inputs & Prerequisites
 

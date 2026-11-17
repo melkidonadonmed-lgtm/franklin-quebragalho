@@ -111,7 +111,7 @@ class RecursionLedger:
 
 def assign_anonymous_ids(labels: Sequence[str], *, task_id: str, k: int, mode: str) -> Dict[str, str]:
     """Mapeia IDs anônimos (A, B, C...) para labels de candidatos via SHA-1 determinístico."""
-    seed = int(hashlib.sha1(f"{task_id}|{k}|{mode}".encode("utf-8")).hexdigest()[:12], 16)
+    seed = int(hashlib.sha1(f"{task_id}|{k}|{mode}".encode("utf-8"), usedforsecurity=False).hexdigest()[:12], 16)
     ordered = sorted(labels)
     random.Random(seed).shuffle(ordered)
     return {chr(ord("A") + i): lbl for i, lbl in enumerate(ordered)}

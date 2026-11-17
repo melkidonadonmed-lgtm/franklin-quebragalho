@@ -17,7 +17,7 @@ metadata:
 Audits Android APKs via **REA**, **ADB**, **CoT**, **ReAct**, and **Self-Refine** (coupled with `agent-server-auditor`'s `references/audit-websocket-jsonrpc.md` for WS/JSON-RPC):
 - Decompiles `.apk`/`.aab`, DEX, `lib/*.so`, engines (`Flutter`/`Dart AOT`, `Unity IL2CPP`), `v1–v3.1` signatures, and `AndroidManifest.xml`.
 - Collects ADB telemetry (`am start -W`, `uiautomator dump`, `dumpsys meminfo/gfxinfo`, `logcat *:E`), detects security placebos, checks CVEs, and validates `48x48dp` targets.
-- **When NOT to Use:** Do NOT use to scaffold Kotlin 2.4 / Compose BOM `2026.09.00` MVPs (`android-agy-projects`) or audit React/Next.js UIs (`plan-uiux`, `complex-zero`, `frontend-testing-auditor`).
+- **When NOT to Use:** Do NOT use to scaffold Kotlin 2.4 / Compose BOM `2026.09.00` MVPs (`android-agy-projects`) or audit React/Next.js UIs (`ui-frontend-analyst`, `complex-zero`, `ui-quality-judge`).
 
 ## 2. Inputs & Prerequisites
 

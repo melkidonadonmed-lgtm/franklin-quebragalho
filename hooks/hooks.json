@@ -1,9 +1,9 @@
 {
   "franklin-semantic-guard": {
-    "enabled": false,
+    "enabled": true,
     "PreToolUse": [
       {
-        "matcher": "run_command|call_mcp_tool",
+        "matcher": "write_file|edit_file|run_command|call_mcp_tool",
         "hooks": [
           {
             "type": "command",

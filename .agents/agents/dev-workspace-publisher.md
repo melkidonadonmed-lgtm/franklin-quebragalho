@@ -7,6 +7,8 @@ model: inherit
 commandExecutionPolicy: auto
 inheritMcp: true
 inheritCustomizations: true
+max_steps: 12
+stop_condition: "SYNC_OR_PUBLISH_VERIFIED"
 tools:
   - read_file
   - edit_file

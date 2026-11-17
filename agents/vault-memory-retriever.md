@@ -8,6 +8,8 @@ model: inherit
 commandExecutionPolicy: sandbox
 inheritMcp: true
 inheritCustomizations: true
+max_steps: 8
+stop_condition: "MEMORY_RETRIEVAL_COMPLETED"
 tools:
   - read_file
   - run_command

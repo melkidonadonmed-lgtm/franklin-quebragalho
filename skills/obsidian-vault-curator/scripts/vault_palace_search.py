@@ -131,7 +131,7 @@ def _resolve_canonical_header(rel_id: str, room: str, title: str, heading: str, 
         cid, proj_slug = match.group(1).upper(), match.group(2).lower()
     else:
         proj_slug = _slugify(Path(rel_id).stem if room == "projetos" else title)
-        short_hash = hashlib.sha1(f"{rel_id}:{heading}".encode("utf-8")).hexdigest()[:4].upper()
+        short_hash = hashlib.sha1(f"{rel_id}:{heading}".encode("utf-8"), usedforsecurity=False).hexdigest()[:4].upper()
         prefix = "PRJ" if room == "projetos" else ("MEM" if room == "memoria" else "SEC")
         cid = f"{prefix}-{short_hash}"
     header = f"[{cid} | {proj_slug} | {room} | {heading}]"

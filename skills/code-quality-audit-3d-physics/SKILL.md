@@ -17,7 +17,7 @@ metadata:
 Orchestrates static and dynamic auditing of 3D physics engines, WebGL/Three.js/Babylon.js renderers, shaders, and numerical simulations in **3+1+1 Envelope Topology**:
 - Detects `ALLOC_IN_LOOP`, physics-render coupling, `MISSING_DELTA_TIME`, `EULER_GIMBAL_LOCK`, `UNCHECKED_NORMALIZE`, and `STRICT_FLOAT_COMPARE`.
 - Runs AST parsers (`static_ast_parser.py` / `js_ts_ast_parser.js`), runtime tests (`physics_test_runner.py`, `Pass@10`), and Observer cross-validation (`state_checker_observer.py`).
-- **When NOT to Use:** Do NOT use for CRUD/web repos (`system-project-auditor`), pure CSS/UI (`frontend-ui-ux-auditor`, `plan-uiux`), or general unit-test AAA audits (`test-quality-auditor`).
+- **When NOT to Use:** Do NOT use for CRUD/web repos (`system-project-auditor`), pure CSS/UI (`ui-quality-judge`, `ui-frontend-analyst`), or general unit-test AAA audits (`test-quality-auditor`).
 
 ## 2. Inputs & Prerequisites
 

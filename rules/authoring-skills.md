@@ -1,6 +1,7 @@
 ---
-trigger: model_decision
-description: "Official guidelines for authoring, refactoring, and validating Agent Skills (SKILL.md in Technical English, Progressive Disclosure L1-L3, references/, evals/, and pt-BR user communication bridge)."
+trigger: glob
+globs: "**/SKILL.md, **/evals/evals.json"
+description: "Load when creating, refactoring, auditing, or validating Agent Skills (SKILL.md frontmatter, Progressive Disclosure L1-L3, references/, scripts/, evals/evals.json, skills.json, validate_skills.py, or migrating legacy .agents/workflows/*.md). Do NOT load when merely activating or running an existing skill."
 ---
 
 # Official Guidelines for Authoring Agent Skills (Antigravity / agentskills.io)

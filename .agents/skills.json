@@ -22,7 +22,7 @@
       ]
     },
     {
-      "path": "C:/Users/melki/.agents/skills",
+      "path": "C:/Users/melki/.gemini/skill-catalog/user-skills",
       "include_only": [
         "agent-skill-evaluator",
         "skill-repair",
