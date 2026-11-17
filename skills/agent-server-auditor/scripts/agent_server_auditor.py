@@ -185,7 +185,7 @@ def _audit_binary_hygiene(root: Path, files: List[Path]) -> Tuple[BinaryHygieneR
 
 
 def _audit_skills(root: Path, files: List[Path]) -> List[SkillAuditItem]:
-    """Audita pastas SKILL.md sob Progressive Disclosure oficial (apenas SKILL.md obrigatório; L3 exigido se L2 > 1.200 tokens)."""
+    """Audita pastas SKILL.md sob Progressive Disclosure oficial (apenas SKILL.md obrigatório; L3 exigido se L2 > 1.000 tokens)."""
     items: List[SkillAuditItem] = []
     skill_mds = [f for f in files if f.name == "SKILL.md"]
     for smd in skill_mds:
@@ -203,8 +203,8 @@ def _audit_skills(root: Path, files: List[Path]) -> List[SkillAuditItem]:
         missing: List[str] = []
         if not has_fm:
             missing.append("frontmatter")
-        if (len(body) // 4) > 1200 and not (has_refs or has_scripts):
-            missing.append("references/ (Progressive Disclosure L3 exigido para SKILL.md > 1200 tokens)")
+        if (len(body) // 4) > 1000 and not (has_refs or has_scripts):
+            missing.append("references/ (Progressive Disclosure L3 exigido para SKILL.md > 1000 tokens)")
         items.append(
             SkillAuditItem(
                 name=s_dir.name,

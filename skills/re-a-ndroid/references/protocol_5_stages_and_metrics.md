@@ -1,6 +1,6 @@
 # 8 Modules, 5 Stages & 6 Metrics Protocol — `re-a-ndroid`
 
-Extended operational reference consumed by [`SKILL.md`](../SKILL.md), complementing [`modules_8_matrix_and_report.md`](modules_8_matrix_and_report.md) and `agent-server-auditor`'s `references/audit-websocket-jsonrpc.md`.
+Extended operational reference consumed by `SKILL.md`, complementing [`modules_8_matrix_and_report.md`](modules_8_matrix_and_report.md) and `agent-server-auditor`'s `references/audit-websocket-jsonrpc.md`.
 
 ## 8 Specialist Modules Matrix
 

@@ -1,6 +1,6 @@
 # Deterministic Audit Criteria — `context-sentinel` (`v1.1.0`)
 
-Boolean, falsifiable audit rules (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) for context window integrity and state checkpoint extraction (Module **M1**).
+Boolean, falsifiable audit rules (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) for context window integrity and state checkpoint extraction.
 
 ---
 

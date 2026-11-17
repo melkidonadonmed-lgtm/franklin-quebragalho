@@ -1,6 +1,6 @@
 # 5-Module AAA & Quality Spectrum Breakdown (`test-quality-auditor` v1.3.0)
 
-Companion reference to [`SKILL.md`](../SKILL.md). See also [`test_quality_and_evals_dossier.md`](test_quality_and_evals_dossier.md), [`go_test_quality_module.md`](go_test_quality_module.md), [`mcp_test_quality_module.md`](mcp_test_quality_module.md), and [`harness_test_quality_module.md`](harness_test_quality_module.md).
+Companion reference to `SKILL.md`. See also [`test_quality_and_evals_dossier.md`](test_quality_and_evals_dossier.md), [`go_test_quality_module.md`](go_test_quality_module.md), [`mcp_test_quality_module.md`](mcp_test_quality_module.md), and [`harness_test_quality_module.md`](harness_test_quality_module.md).
 
 ## 1. 7-Step Diagnostic Workflow Structure
 
@@ -17,4 +17,4 @@ Companion reference to [`SKILL.md`](../SKILL.md). See also [`test_quality_and_ev
    - **Level 3 (`51–80 pts` — Rigid):** Exact happy-path, yet `os.Setenv` missing `t.Cleanup` or `tools/list` checked only by `len > 0`.
    - **Level 4 (`81–100 pts` — Deterministic):** Strict AAA, isolated teardown, adversarial error assertions, and closed contracts.
 6. **Surgical Refactoring:** Before vs. After raising to Level 4 + real runner re-execution (`pytest`, `go test ./...`, `node --test`).
-7. **Mirrored Evals:** [`scripts/eval_harness.py`](../scripts/eval_harness.py) producing `grading.json` and `benchmark.json`.
+7. **Mirrored Evals:** [`scripts/eval_harness.py`](scripts/eval_harness.py) producing `grading.json` and `benchmark.json`.

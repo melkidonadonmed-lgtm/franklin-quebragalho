@@ -1,8 +1,8 @@
-# 12 AST Rules Matrix & CLI Execution Modes — `code-acceptability-auditor`
+# 13 AST Rules Matrix & CLI Execution Modes — `code-acceptability-auditor`
 
-Complete penalty and CLI command reference consumed by [`SKILL.md`](../SKILL.md), complementing [`acceptance_criteria.md`](acceptance_criteria.md) and [`security_rules_spec.md`](security_rules_spec.md).
+Complete penalty and CLI command reference consumed by `SKILL.md`, complementing [`acceptance_criteria.md`](acceptance_criteria.md) and [`security_rules_spec.md`](security_rules_spec.md).
 
-## 12 AST Rules Matrix
+## 13 AST Rules Matrix
 
 | Rule ID | Category | Severity | Penalty | Problem Description | Action / Recommendation |
 | :--- | :--- | :--- | :---: | :--- | :--- |
@@ -18,6 +18,7 @@ Complete penalty and CLI command reference consumed by [`SKILL.md`](../SKILL.md)
 | **`ARCH001`** | Architecture | **LOW** | `-2.0` | Oversized function (`> 60` lines). | Split responsibilities (SRP). |
 | **`ARCH002`** | Cognitive Complexity | **MEDIUM** | `-5.0` | Nesting depth `> 3` levels. | Use Early Return / helper functions. |
 | **`ARCH003`** | Cyclomatic Complexity | **MEDIUM** | `-5.0` | McCabe $M = E - N + 2P > 10$. | Reduce branching ($M \le 10$) via dispatch/helpers. |
+| **`STUB001`** | Implementation | **CRITICAL** | `-25.0` | Empty stub (`pass`, `...`, `NotImplementedError`) outside ABC/Protocol/tests. | Implement concrete function logic. |
 
 ## CLI Execution Modes (`pwsh`)
 

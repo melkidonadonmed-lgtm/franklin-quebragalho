@@ -1,6 +1,6 @@
 ---
 name: android-agy-projects
-description: "Design, scaffold MVPs, and audit Android projects (Kotlin 2.4+, AGP 9 Built-in Kotlin, KSP2, Jetpack Compose, Navigation 3, R8 Full Mode, ANR, and memory leaks). Use to build or audit Android/Gradle apps. Do NOT use for iOS, web Next.js, or APK reverse engineering."
+description: "Design, scaffold MVPs, and audit Android projects (Kotlin 2.4+, AGP 9 Built-in Kotlin, KSP2, Jetpack Compose, Navigation 3, R8 Full Mode, ANR, and memory leaks). Use to build or audit Android/Gradle apps. Do NOT use for iOS, web Next.js (ui-clean-worker), or APK reverse engineering (re-a-ndroid)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 metadata:
   version: "2.1.0"
@@ -31,8 +31,8 @@ Consult [`references/android_2026_versions_and_agp9_matrix.md`](references/andro
 
 1. **Zero-Trust Checks:** Verify versions via `studio_version_lookup`/`android_docs_search`; remove `org.jetbrains.kotlin.android` and `kapt` on AGP 9.0+; ban `+` versions and deprecated flags (`android.r8.integratedResourceShrinking`, `android.enableR8.fullMode=false`).
 2. **Scenario A (`GREEN`):** Pin Kotlin `2.3.20`/`2.4.21`, KSP2 `2.3.12`, AGP `9.0.1`–`9.5.0`, `compileSdk`/`targetSdk = 36`, Compose BOM `"2026.09.00"`, Nav3 `1.2.0`, `enableEdgeToEdge()`, `WindowInsetsRulers.Ime`, UDF (`ViewModel` + `collectAsStateWithLifecycle()`), Hilt `2.60.1`, Room `2.8.5` (`androidx.room3` `3.0.3` KMP), Retrofit `3.0.0`, Coil `3.1.0`.
-3. **Scenario B (`COT`):** Define SLA (`TTFD < 1.0s`, 0 frozen frames `>700ms`) + evidence; audit all 5 Axes and present 3 options.
-4. **Scenario C (`AUDIT`):** Audit Configuration Cache, KSP2, `optimization { enable = true }`, `:baselineprofile`, `LazyColumn` (`key` + `contentType`), API 36 Intent Redirection, `PendingIntent.FLAG_IMMUTABLE`, and `secrets-gradle-plugin`.
+3. **Scenario B (`CoT + ToT`):** Define SLA (`TTFD < 1.0s`, 0 frozen frames `>700ms`) + evidence; trace root causes across all 5 Axes (`CoT`) and compare 3 `ToT` resolution branches (Internal Refactor vs. Jetpack Official vs. Mature OSS).
+4. **Scenario C (`ReAct AUDIT + RAW`):** Audit Configuration Cache, KSP2, `optimization { enable = true }`, `:baselineprofile`, `LazyColumn` (`key` + `contentType`), API 36 Intent Redirection, `PendingIntent.FLAG_IMMUTABLE`, and `secrets-gradle-plugin`; verify mutations via `./gradlew build --dry-run` (RAW).
 
 ## 4. Gotchas & Edge Cases
 

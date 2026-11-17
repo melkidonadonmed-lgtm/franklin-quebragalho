@@ -4,7 +4,7 @@ This specification defines the mandatory technical standards for approving Pytho
 
 ---
 
-## 1. Deterministic 12-Rule & Penalty Table
+## 1. Deterministic 13-Rule & Penalty Table
 
 | Rule ID | Category | Severity | Penalty | Trigger Condition | Required Remediation |
 | :--- | :--- | :--- | :---: | :--- | :--- |
@@ -20,6 +20,7 @@ This specification defines the mandatory technical standards for approving Pytho
 | **`ARCH001`** | Architecture | `LOW` | `-2.0` | Function/method exceeds `60` lines (`end_lineno - lineno + 1 > 60`). | Extract cohesive helper functions (SRP). |
 | **`ARCH002`** | Cognitive Complexity | `MEDIUM` | `-5.0` | Control nesting depth (`if/for/while`) `> 3` levels (`elif` counts at parent level). | Apply Early Returns (Guard Clauses) or split helpers. |
 | **`ARCH003`** | Cyclomatic Complexity | `MEDIUM` | `-5.0` | McCabe complexity $M = E - N + 2P > 10$. | Reduce branching ($M \le 10$) via dispatch tables or helpers. |
+| **`STUB001`** | Implementation | `CRITICAL` | `-25.0` | Non-abstract function body is bare `pass`, `...`, or `raise NotImplementedError`. | Implement real business logic before committing. |
 
 ---
 

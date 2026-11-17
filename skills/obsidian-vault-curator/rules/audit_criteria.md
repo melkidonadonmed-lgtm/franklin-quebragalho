@@ -1,6 +1,6 @@
 # Deterministic Audit Criteria — `obsidian-vault-curator` (`v1.3.0`)
 
-Falsifiable boolean rules (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) under Module **M5 (Obsidian Vault `C:\Users\melki\dev\notes` & MemPalace)**:
+Falsifiable boolean rules (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) for Obsidian Vault (`C:\Users\melki\dev\notes`) and MemPalace curation:
 
 ---
 

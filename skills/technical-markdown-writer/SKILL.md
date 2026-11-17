@@ -31,7 +31,7 @@ Author executive reports, technical notes, ADRs, roadmaps, and installation guid
    - **Blank-Line Law**: Keep one blank line before and after headings, lists, tables, blockquotes, alerts, and code fences.
    - **Canonical Alerts**: Use `> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`, or `> [!CAUTION]` without nesting or raw HTML `<div class="alert">`.
    - **Escaping & Typed Fences**: Escape table pipes (`\|`) and literal `$` (`\$`), wrap nested triple backticks in quadruple backticks, and declare fence languages (`python`, `go`, `typescript`, `json`, `powershell`, `mermaid`, `yaml`).
-3. **Persistence**: Write UTF-8 Markdown, use `file:///` forward-slash links, and validate against [`rules/audit_criteria.md`](rules/audit_criteria.md).
+3. **ReAct Persistence & RAW Verification**: Write UTF-8 Markdown via `write_file`, use `file:///` forward-slash links, and re-read the saved file (`Read-After-Write`) to confirm valid YAML frontmatter, Blank-Line Law spacing, and `[PASS]` against [`rules/audit_criteria.md`](rules/audit_criteria.md).
 
 ## 4. Gotchas & Edge Cases
 

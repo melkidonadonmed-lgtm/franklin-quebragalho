@@ -1,6 +1,6 @@
 ---
 name: code-acceptability-auditor
-description: "Audit Python modules statically via AST against eval/exec, shell=True, hardcoded secrets, missing type hints, silenced exceptions, and functions >60 lines. Use to compute the Quality Score (>=75) before commits. Do NOT use for theoretical questions, test suites, or 3D physics."
+description: "Audit Python modules statically via AST against eval/exec, shell=True, hardcoded secrets, missing type hints, silenced exceptions, stubs, and functions >60 lines. Use to compute the Quality Score (>=75) before commits. Do NOT use for theoretical Q&A, test suites (test-quality-auditor), or 3D physics (code-quality-audit-3d-physics)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 metadata:
   version: "1.1.0"
@@ -29,21 +29,21 @@ Performs static Python **AST** (*Abstract Syntax Tree*) auditing as **Gate 1** o
 
 Consult the 13-rule matrix (`SEC001..003`, `SYN001`, `ERR001..003`, `TYP001..002`, `ARCH001..003`, `STUB001`) and 7 CLI modes in [`references/rules_12_matrix_and_cli.md`](references/rules_12_matrix_and_cli.md) and [`references/security_rules_spec.md`](references/security_rules_spec.md):
 
-1. Run static AST scanning against the target file or directory:
+1. **Wave 1 (`CoT + ReAct`):** Run static AST scanning against the target file or directory:
 ```powershell
 uv run python skills/code-acceptability-auditor/scripts/code_acceptability_auditor.py --dir shared --json
 uv run python skills/code-acceptability-auditor/scripts/code_acceptability_auditor.py --self-test
 ```
-2. Compute the deterministic score:
+2. **Wave 2 (`Score`):** Compute the deterministic score:
 $$\text{Quality Score} = \max\left(0.0, 100.0 - \sum \text{Penalties}\right)$$
-3. Enforce the pre-commit gate: reject any artifact where `not passed_syntax`, `critical_count > 0`, or `quality_score < 75.0`.
+3. **Wave 3 (`RAW Gate`):** Enforce the pre-commit gate: reject any artifact where `not passed_syntax`, `critical_count > 0`, or `quality_score < 75.0`, and re-run the scanner (`Read-After-Write`) after refactoring violations.
 
 ## 4. Gotchas & Edge Cases
 
-- Bare `except:` (`ERR001`, `-10`) differs from `except Exception:` (`ERR002`, `-5`); both escalate to `ERR003` (`-25`) when the handler body contains only `pass`, `...`, or `continue`.
+- Bare `except:` (`ERR001`, `-10`) differs from `except Exception:` (`except BaseException:`, `ERR002`, `-5`); both escalate to `ERR003` (`-25`) when the handler body contains only `pass`, `...`, or `continue`.
 - `SEC003` exempts `os.getenv`/`os.environ.get` and documentation placeholders (`YOUR_API_KEY`); `self`/`cls` are exempt in `TYP001`, and `__init__` is exempt in `TYP002`.
 - Enforce Google Python Style Guide (`pyguide.md`, `[tool.ruff.lint.pydocstyle] convention = "google"`) for docstrings (`Args:`, `Returns:`, `Raises:`).
-- Keep [`references/trigger_matrix_queries.json`](references/trigger_matrix_queries.json) intact for `trigger_eval_runner.py`.
+- Keep [`references/trigger_matrix_queries.json`](references/trigger_matrix_queries.json), [`references/trigger_eval_report_baseline.json`](references/trigger_eval_report_baseline.json), and CI workflow [`assets/.github/workflows/ci.yml`](assets/.github/workflows/ci.yml) intact for `trigger_eval_runner.py` and GitHub Actions gates.
 
 ## 5. Output Schema & Validation Criteria
 

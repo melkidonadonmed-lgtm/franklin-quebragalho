@@ -2,8 +2,8 @@
 
 Registra de forma concisa as 13 ferramentas (`@mcp.tool`), os recursos passivos (`@mcp.resource`)
 e os 2 prompts (`@mcp.prompt`), delegando toda a lógica de domínio aos módulos em `shared/`:
-- `shared.catalog_service`: Discovery, search, 3-Tier loading, and validation of the 28 Canonical Agent Skills.
-- `shared.compass_topology`: Bússola Zero-LLM (`franklin_smart_compass`), 8 Personas e 10 Subagentes.
+- `shared.catalog_service`: Discovery, search, 3-Tier loading, and validation of the 21 Canonical Agent Skills (+ 6 Federated UI Skills).
+- `shared.compass_topology`: Bússola Zero-LLM (`franklin_smart_compass`), 8 Personas, 5 Local Subagents, and 4 Federated UI Subagents.
 - `shared.execution_orchestrator`: Execução confinada de scripts, motor DAG Kahn, Harness HITL e A2A v1.0.
 """
 

@@ -354,11 +354,11 @@ def _cross_check_docs_vs_disk(root: Path, code_metrics: Dict[str, int]) -> List[
             target = root / cand
             skill_matches = list((root / "skills").glob(f"*/{cand}")) if (root / "skills").is_dir() else []
             if target.exists() or skill_matches:
-                parity.append(DocParityItem(cand, "[IMPLEMENTADO_FUNCIONAL]", f"Verificado fisicamente em {doc_name} -> {cand}"))
+                parity.append(DocParityItem(cand, "[IMPLEMENTED_FUNCTIONAL]", f"Verificado fisicamente em {doc_name} -> {cand}"))
             else:
-                parity.append(DocParityItem(cand, "[INEXISTENTE_DOCUMENTADO]", f"Prometido em {doc_name}, mas ausente no disco: {cand}"))
+                parity.append(DocParityItem(cand, "[DOCUMENTED_MISSING]", f"Prometido em {doc_name}, mas ausente no disco: {cand}"))
     if not parity and code_metrics["real_functions_count"] > 0:
-        parity.append(DocParityItem("src/", "[IMPLEMENTADO_FUNCIONAL]", f"{code_metrics['real_functions_count']} funções reais verificadas via AST."))
+        parity.append(DocParityItem("src/", "[IMPLEMENTED_FUNCTIONAL]", f"{code_metrics['real_functions_count']} funções reais verificadas via AST."))
     return parity
 
 
@@ -373,7 +373,7 @@ def audit_project_structure_and_code(root_path: Path) -> ProjectStructureAuditRe
     oklch_status = _audit_oklch_and_60_30_10(root, files)
     parity = _cross_check_docs_vs_disk(root, code_metrics)
 
-    missing_docs = [p for p in parity if p.classification == "[INEXISTENTE_DOCUMENTADO]"]
+    missing_docs = [p for p in parity if p.classification in ("[DOCUMENTED_MISSING]", "[INEXISTENTE_DOCUMENTADO]")]
     for md in missing_docs:
         blockers.append({"item": f"Divergência Documental: {md.reference}", "why": md.evidence})
     if code_metrics["placebo_or_stub_functions"] > 0:
@@ -431,8 +431,8 @@ def run_self_test() -> int:
 
         rep = audit_project_structure_and_code(root)
         classifications = {p.reference: p.classification for p in rep.doc_vs_code_parity}
-        assert classifications.get("shared/core.py") == "[IMPLEMENTADO_FUNCIONAL]"
-        assert classifications.get("shared/ghost.py") == "[INEXISTENTE_DOCUMENTADO]"
+        assert classifications.get("shared/core.py") == "[IMPLEMENTED_FUNCTIONAL]"
+        assert classifications.get("shared/ghost.py") == "[DOCUMENTED_MISSING]"
         assert rep.real_code_metrics["real_functions_count"] == 1
 
         (root / "README.md").write_text("# Projeto Teste\nMódulo real em `shared/core.py`.\n", encoding="utf-8")

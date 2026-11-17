@@ -1,6 +1,6 @@
 ---
 name: code-quality-audit-3d-physics
-description: "Audit and sanitize 3D physics engines, WebGL, Three.js, Babylon.js, shaders, collision stability, and Snorm Pass@10 scores in 3+1+1 envelope topology. Use to review 3D graphics and numerical simulation loops. Do NOT use for web CRUD, CSS styling, or unit-test AAA audits."
+description: "Audit and sanitize 3D physics engines, WebGL, Three.js, Babylon.js, shaders, collision stability, and Snorm Pass@10 scores in 3+1+1 envelope topology. Use to review 3D graphics and numerical simulation loops. Do NOT use for web CRUD (system-project-auditor), CSS styling (ui-quality-judge), or unit-test AAA audits (test-quality-auditor)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 metadata:
   version: "1.0.0"
@@ -29,6 +29,7 @@ Orchestrates static and dynamic auditing of 3D physics engines, WebGL/Three.js/B
 
 Consult [`references/3d_waves_and_penalties.md`](references/3d_waves_and_penalties.md), [`references/subskill_modules_spec.md`](references/subskill_modules_spec.md), [`references/3d_code_quality_audit_dossier.md`](references/3d_code_quality_audit_dossier.md), [`references/3d_physics_scoring_structure.md`](references/3d_physics_scoring_structure.md), and [`references/observer_agent_spec.yaml`](references/observer_agent_spec.yaml):
 
+1. **Wave 1 (`CoT` Static AST) -> Wave 2 (`ReAct` Pass@10 Runtime) -> Wave 3 (`RAW` Observer Consolidation):**
 ```powershell
 uv run python skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py <file.py>
 node skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js <file.ts>

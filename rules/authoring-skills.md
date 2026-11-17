@@ -23,11 +23,11 @@ description: "Load when creating, refactoring, auditing, or validating Agent Ski
    - **L2 (`SKILL.md`):** Keep body concise (`<= 1,000` tokens, `< 100` lines, hard cap `< 500` lines) with defaults instead of ambiguous menus, concrete **Gotchas & Edge Cases**, and these 6 canonical sections:
      1. `## 1. Overview & Scope` (`When to Use` / `When NOT to Use`)
      2. `## 2. Inputs & Prerequisites`
-     3. `## 3. Step-by-Step Procedure`
+     3. `## 3. Step-by-Step Procedure` (structured into 4 explicit phases: `Phase 1: Intent & Context Decoding (CoT)` -> `Phase 2: Architecture / Branch Selection (ToT)` -> `Phase 3: Grounded Execution Loop (ReAct)` -> `Phase 4: Read-After-Write Verification & Output Gate (RAW)`)
      4. `## 4. Gotchas & Edge Cases`
      5. `## 5. Output Schema & Validation Criteria`
      6. `## 6. User Communication Rule`
-   - **L3 (`references/`, `scripts/`, `rules/`, `evals/`):** Offload heavy matrices, schemas, and checklists to `references/*.md` and deterministic code to `scripts/`. Use **one-level relative paths only** (`references/guide.md`, `scripts/run.py`, `rules/audit_criteria.md`) — parent escapes (`../` or `../../`) are strictly forbidden.
+   - **L3 (`references/`, `scripts/`, `rules/`, `evals/`):** Offload heavy matrices, schemas, and checklists to `references/*.md`, deterministic gates to `rules/audit_criteria.md`, and executable logic to `scripts/`. Use **self-contained relative paths only** (`references/guide.md`, `scripts/run.py`, `rules/audit_criteria.md`) — parent escapes (`../` or `../../`) are strictly forbidden inside both `SKILL.md` and `references/*.md`. Keep all numerical thresholds (`<= 60` lines/fn, `<= 600` lines/file, $M \le 10$, minimum pass scores) 100% identical across `SKILL.md`, `rules/audit_criteria.md`, `references/*.md`, and `scripts/*`.
    - **Third-Party Skills (`npx skills`, Orca, external plugins):** Treat as strictly **read-only**; update only via their upstream installer.
 
 5. **Evals & Deterministic Validation Gates:**

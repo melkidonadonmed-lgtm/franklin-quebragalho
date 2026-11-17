@@ -53,12 +53,12 @@
 
 ### Stage 1: Ingestion & Static Decompilation (REA)
 
-```bash
-# Structural APK summary and evidence bundle generation
-rea inspect-android-package "[APK_PATH]" --detail summary --evidence_output ./apk-summary.json --json
+```text
+# Structural APK summary and evidence bundle generation (REA MCP Tools)
+inspect_android_package(apk_path="[APK_PATH]", detail="summary", evidence_output="./apk-summary.json")
 
 # Digital signature validation (v1, v2, v3, v3.1)
-rea inspect-apk-signature "[APK_PATH]" --json
+inspect_apk_signature(apk_path="[APK_PATH]")
 ```
 
 ### Stage 2: Real-Time Dynamic & Visual Inspection (ADB)

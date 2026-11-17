@@ -100,7 +100,7 @@ class TestQualityASTVisitor(ast.NodeVisitor):
         if self.mutates_shared_state and not self.has_try_finally:
             self.add_issue(
                 "GLOBAL_STATE_LEAKAGE", "Mutação de Estado Compartilhado sem Bloco try/finally",
-                "Isolamento de Estado (AAA)", "Média", node.lineno, node.col_offset, 18,
+                "Isolamento de Estado (AAA)", "Alta", node.lineno, node.col_offset, 25,
                 f"[FATO] O teste '{node.name}' cria/altera checkpoints ou estado global sem proteção 'try/finally'.",
                 "Envolva a limpeza de estado em um bloco 'try...finally' para evitar contaminação.",
             )

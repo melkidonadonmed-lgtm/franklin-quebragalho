@@ -46,8 +46,8 @@ In agentic systems, the **Harness** is the critical containment boundary prevent
 ## 4. Module 4: Harness Test Quality Spectrum (Levels 1 to 4)
 
 - **Level 1: Illusory / Placebo (`0–25 pts`)**: Supplies injection payload without expecting an exception and passes destructive commands without asserting `RiskLevel.CRITICAL`.
-- **Level 2: Superficial / Fragile (`26–55 pts`)**: Leaks checkpoints into production storage without `tmp_path` and checks only `store.create()`.
-- **Level 3: Rigid Functional (`56–80 pts`)**: Calls `run_eval_harness()` without validating `pass_rate_gain` or per-case `evidence`.
+- **Level 2: Superficial / Fragile (`26–50 pts`)**: Leaks checkpoints into production storage without `tmp_path` and checks only `store.create()`.
+- **Level 3: Rigid Functional (`51–80 pts`)**: Calls `run_eval_harness()` without validating `pass_rate_gain` or per-case `evidence`.
 - **Level 4: Deterministic & Resilient (`81–100 pts`)**: Isolates persistence in `tmp_path`, validates control-char stripping, enforces `SecurityViolationError` on injections, proves `LOW`/`MEDIUM`/`CRITICAL`, exercises full `PENDING` $\rightarrow$ `APPROVED` $\rightarrow$ `clear()`, and validates all 5 mirrors in `evals/modules/*_evals.json`.
 
 ---

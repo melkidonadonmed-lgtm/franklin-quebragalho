@@ -58,108 +58,73 @@ def _extract_go_test_blocks(lines: List[str]) -> List[Tuple[str, int, int, List[
 
 
 def _make_go_issue(
-    issue_id: str,
-    title: str,
-    category: str,
-    severity: str,
-    filename: str,
-    test_name: str,
-    line: int,
-    penalty: int,
-    desc: str,
-    rec: str,
+    issue_id: str, title: str, category: str, severity: str,
+    filename: str, test_name: str, line: int, penalty: int, desc: str, rec: str,
 ) -> AuditIssue:
     """Cria uma instância padronizada de AuditIssue para testes Go."""
     return AuditIssue(
-        id=issue_id,
-        title=title,
-        category=category,
-        severity=severity,
-        file=filename,
-        test_name=test_name,
-        line=line,
-        col=1,
-        penalty=penalty,
-        description=desc,
-        recommendation=rec,
+        id=issue_id, title=title, category=category, severity=severity,
+        file=filename, test_name=test_name, line=line, col=1,
+        penalty=penalty, description=desc, recommendation=rec,
     )
 
 
 def _check_go_error_and_tautology_line(
-    clean_ln: str,
-    idx_l: int,
-    block_lines: List[str],
-    filename: str,
-    test_name: str,
-    start_line: int,
+    clean_ln: str, idx_l: int, block_lines: List[str],
+    filename: str, test_name: str, start_line: int,
 ) -> List[AuditIssue]:
     """Verifica asserções tautológicas e erros silenciados em uma linha Go."""
     found: List[AuditIssue] = []
     line_no = start_line + max(0, idx_l)
     if re.search(r"if\s+false\s*\{|(?:assert|require)\.True\s*\(\s*t\s*,\s*true\s*\)|if\s+1\s*==\s*2\s*\{", clean_ln):
-        found.append(
-            _make_go_issue(
-                "TAUTOLOGICAL_ASSERT", "Asserção Tautológica em Go (if false / assert.True(t, true))",
-                "Qualidade da Asserção (Go)", "Crítica", filename, test_name, line_no, 80,
-                f"[FATO] O teste '{test_name}' contém condição tautológica na linha {line_no} que nunca falha.",
-                "Valide o estado real ou valor de retorno do SUT contra o contrato esperado.",
-            )
-        )
+        found.append(_make_go_issue(
+            "TAUTOLOGICAL_ASSERT", "Asserção Tautológica em Go (if false / assert.True(t, true))",
+            "Qualidade da Asserção (Go)", "Crítica", filename, test_name, line_no, 80,
+            f"[FATO] O teste '{test_name}' contém condição tautológica na linha {line_no} que nunca falha.",
+            "Valide o estado real ou valor de retorno do SUT contra o contrato esperado.",
+        ))
     if re.search(r"^\w+\s*,\s*_\s*:?=\s*\w+", clean_ln) and not any(
         safe in clean_ln for safe in ("os.ReadDir", "t.Cleanup", "defer ", ".Close(")
     ):
-        found.append(
-            _make_go_issue(
-                "SILENCED_ERROR_IN_TEST", "Erro Descartado com Blank Identifier (_) em Teste Go",
-                "Tratamento de Erros & Robustez (Go)", "Crítica", filename, test_name, line_no, 65,
-                f"[FATO] O teste '{test_name}' descarta o erro retornado com '_' na linha {line_no}, mascarando falhas do SUT.",
-                "Capture 'err' explicitamente e valide com 'if err != nil { t.Fatalf(\"unexpected error: %v\", err) }' ou 'errors.Is'.",
-            )
-        )
+        found.append(_make_go_issue(
+            "SILENCED_ERROR_IN_TEST", "Erro Descartado com Blank Identifier (_) em Teste Go",
+            "Tratamento de Erros & Robustez (Go)", "Crítica", filename, test_name, line_no, 65,
+            f"[FATO] O teste '{test_name}' descarta o erro retornado com '_' na linha {line_no}, mascarando falhas do SUT.",
+            "Capture 'err' explicitamente e valide com 'if err != nil { t.Fatalf(\"unexpected error: %v\", err) }' ou 'errors.Is'.",
+        ))
     if re.match(r"^if\s+err\s*!=\s*nil\s*\{", clean_ln):
         err_window = "\n".join(block_lines[idx_l : min(idx_l + 5, len(block_lines))])
         if not re.search(r"t\.(?:Fatal|Fatalf|Error|Errorf|Fail|FailNow)|return|panic", err_window):
-            found.append(
-                _make_go_issue(
-                    "SILENCED_ERROR_IN_TEST", "Bloco 'if err != nil' Sem Falhar o Teste (t.Log ou Vazio)",
-                    "Tratamento de Erros & Robustez (Go)", "Crítica", filename, test_name, line_no, 70,
-                    f"[FATO] O teste '{test_name}' intercepta 'if err != nil' na linha {line_no} sem acionar t.Fatalf/t.Errorf.",
-                    "Substitua logs passivos em 'if err != nil' por 't.Fatalf(\"unexpected error: %v\", err)'.",
-                )
-            )
+            found.append(_make_go_issue(
+                "SILENCED_ERROR_IN_TEST", "Bloco 'if err != nil' Sem Falhar o Teste (t.Log ou Vazio)",
+                "Tratamento de Erros & Robustez (Go)", "Crítica", filename, test_name, line_no, 65,
+                f"[FATO] O teste '{test_name}' intercepta 'if err != nil' na linha {line_no} sem acionar t.Fatalf/t.Errorf.",
+                "Substitua logs passivos em 'if err != nil' por 't.Fatalf(\"unexpected error: %v\", err)'.",
+            ))
     return found
 
 
 def _check_go_concurrency_and_state_line(
-    clean_ln: str,
-    idx_l: int,
-    block_text: str,
-    filename: str,
-    test_name: str,
-    start_line: int,
-    in_goroutine_depth: int,
+    clean_ln: str, idx_l: int, block_text: str, filename: str,
+    test_name: str, start_line: int, in_goroutine_depth: int,
 ) -> List[AuditIssue]:
     """Verifica chamadas t.Fatal em goroutines e mutação de ambiente sem cleanup."""
     found: List[AuditIssue] = []
     line_no = start_line + max(0, idx_l)
     if in_goroutine_depth > 0 and re.search(r"\bt\.(?:Fatal|Fatalf|FailNow)\s*\(", clean_ln):
-        found.append(
-            _make_go_issue(
-                "UNSAFE_GOROUTINE_FATAL", "Chamada Ilegal a t.Fatal/t.FailNow Dentro de Goroutine",
-                "Concorrência & Segurança (Go)", "Alta", filename, test_name, line_no, 40,
-                f"[FATO] O teste '{test_name}' chama t.Fatal/t.FailNow dentro de uma goroutine na linha {line_no}, violando o contrato de runtime.Goexit do pacote testing.",
-                "Use t.Errorf(...) combinado com canal de erro ou errgroup na goroutine principal.",
-            )
-        )
+        found.append(_make_go_issue(
+            "UNSAFE_GOROUTINE_FATAL", "Chamada Ilegal a t.Fatal/t.FailNow Dentro de Goroutine",
+            "Concorrência & Segurança (Go)", "Alta", filename, test_name, line_no, 40,
+            f"[FATO] O teste '{test_name}' chama t.Fatal/t.FailNow dentro de uma goroutine na linha {line_no}, violando o contrato de runtime.Goexit do pacote testing.",
+            "Use t.Errorf(...) combinado com canal de erro ou errgroup na goroutine principal.",
+        ))
     if re.search(r"\bos\.(?:Setenv|Chdir)\s*\(", clean_ln) and "t.Cleanup" not in block_text and "defer " not in block_text:
-        found.append(
-            _make_go_issue(
-                "GLOBAL_STATE_LEAKAGE", "Mutação de Ambiente Global (os.Setenv/os.Chdir) sem t.Setenv ou t.Cleanup",
-                "Isolamento de Estado (Go AAA)", "Alta", filename, test_name, line_no, 25,
-                f"[FATO] O teste '{test_name}' muta o processo com os.Setenv/os.Chdir na linha {line_no} sem restauração garantida.",
-                "Substitua os.Setenv por t.Setenv(k, v) e use t.TempDir() / t.Cleanup() para isolamento automático.",
-            )
-        )
+        found.append(_make_go_issue(
+            "GLOBAL_STATE_LEAKAGE", "Mutação de Ambiente Global (os.Setenv/os.Chdir) sem t.Setenv ou t.Cleanup",
+            "Isolamento de Estado (Go AAA)", "Alta", filename, test_name, line_no, 25,
+            f"[FATO] O teste '{test_name}' muta o processo com os.Setenv/os.Chdir na linha {line_no} sem restauração garantida.",
+            "Substitua os.Setenv por t.Setenv(k, v) e use t.TempDir() / t.Cleanup() para isolamento automático.",
+        ))
     return found
 
 

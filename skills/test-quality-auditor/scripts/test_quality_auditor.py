@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 test_quality_auditor.py
-Orquestrador e CLI do Auditor Determinístico de Qualidade de Testes & Esteira de Evals (v1.2.0).
+Orquestrador e CLI do Auditor Determinístico de Qualidade de Testes & Esteira de Evals (v1.3.0).
 Suporta 5 domínios modulares (<300 linhas por módulo) espelhados em evals/modules/*_evals.json:
   1. Python (Pytest / Unittest AST) -> python_ast_auditor.py   <-> python_evals.json
   2. TypeScript / JavaScript        -> ts_js_auditor.py        <-> ts_js_evals.json
@@ -102,7 +102,7 @@ def format_markdown_report(reports: List[FileAuditReport]) -> str:
     global_status = "[PASS]" if total_issues == 0 and global_score >= 81.0 else "[FAIL]"
 
     lines = [
-        "# 🛡️ Relatório Determinístico — `test-quality-auditor` (`v1.2.0`)",
+        "# 🛡️ Relatório Determinístico — `test-quality-auditor` (`v1.3.0`)",
         "",
         f"- **Status Global da Suíte:** `{global_status}`",
         f"- **Pontuação Média Global:** `{global_score:.1f}/100` (**{global_level}**)",

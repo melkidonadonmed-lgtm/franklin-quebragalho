@@ -1,6 +1,6 @@
 # Detailed Playbook — 5 Android 2026 Axes, COT Options & AUDIT Matrix (`android-agy-projects`)
 
-Technical Level 3 companion to [`SKILL.md`](../SKILL.md) for deep diagnostics (Scenarios B and C). See also [`android_2026_versions_and_agp9_matrix.md`](android_2026_versions_and_agp9_matrix.md).
+Technical Level 3 companion to `SKILL.md` for deep diagnostics (Scenarios B and C). See also [`android_2026_versions_and_agp9_matrix.md`](android_2026_versions_and_agp9_matrix.md).
 
 ## 1. Scenario B (`COT Mode`) — The 5 Root-Cause Axes (Android 2026)
 

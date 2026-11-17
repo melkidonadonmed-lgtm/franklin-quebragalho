@@ -19,7 +19,7 @@ In multi-agent orchestration (Google ADK / LangGraph / Antigravity), decoupled r
                                     ▼
         ┌────────────────────────────────────────────────────────┐
         │   GATE 1: CODE-ACCEPTABILITY-AUDITOR                   │
-        │   (AST + Pydantic v2: 12 Rules, Score >= 75.0, 0 Crit) │
+        │   (AST + Pydantic v2: 13 Rules, Score >= 75.0, 0 Crit) │
         └───────────────────────────┬────────────────────────────┘
                                     │
                                     ▼
@@ -52,7 +52,7 @@ In multi-agent orchestration (Google ADK / LangGraph / Antigravity), decoupled r
 
 1. **Stateless Analyzer:** `gap-analyzer-auditor` holds no persistent cross-turn memory. It evaluates only the immediate evidence payload and verified disk state, keeping diagnostics purely factual.
 2. **Separation of Concerns (SoC) Across the 3 Gates:**
-   - **Gate 1 (`code-acceptability-auditor`):** Static AST inspection of production Python code (`SYN001`, `SEC001..003`, `ERR001..003`, `TYP001..002`, `ARCH001..003`).
+   - **Gate 1 (`code-acceptability-auditor`):** Static AST inspection of production Python code (`SYN001`, `SEC001..003`, `ERR001..003`, `TYP001..002`, `ARCH001..003`, `STUB001`).
    - **Gate 2 (`test-quality-auditor`):** Test suite and `evals/` inspection (`python`, `ts_js`, `go`, `mcp`, `harness`, `perfkit_stats.py`) preventing Green Build Illusion.
    - **Gate 3 (`gap-analyzer-auditor`):** Root-cause diagnostics on runtime failures and Spec-to-Code drift, Option 1 vs. Option 2 parity, and YAML hand-off emission.
    - **Planner (`high-level-context-planner`):** Consumes adjustments append-only without altering completed history.

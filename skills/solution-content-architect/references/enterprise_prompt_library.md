@@ -82,7 +82,7 @@ Convert the interface requirement into a decoupled, strictly typed (`React + Typ
 
 ## 1. TECHNICAL & VISUAL DIRECTIVES
 1. Native Semantics & Keyboard Navigation: Use native HTML5 elements (`<button>`, `<dialog>`, `<nav>`), ARIA live/state attributes (`aria-live`, `aria-expanded`, `aria-busy`), and full `Enter`, `Space`, and `Escape` support.
-2. Real-State Engineering (4-State FSM): Implement functional `idle`, `loading`, `success`, and `error` states with zero placebo controls.
+2. Real-State Engineering (5-State FSM): Implement functional `idle`, `loading`, `empty`, `error`, and `success` states with zero placebo controls.
 3. Surface Tokens & Ergonomics: Apply semantic tokens (`--surface-canvas`, `--surface-sunken`, `--surface-card`, `--surface-elevated`, `--surface-glass`), zenith rim light (`inset 0 1px 0 0`), 3-level elevation shadows, `tabular-nums`, crisp non-blur transforms (`translateY(-1px)` hover, zero fractional text `scale()`), and `>= 48x48px` hit targets (`flex-shrink-0 whitespace-nowrap`).
 </system_instructions>
 ```

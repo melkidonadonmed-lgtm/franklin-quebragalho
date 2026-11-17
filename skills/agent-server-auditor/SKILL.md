@@ -1,6 +1,6 @@
 ---
 name: agent-server-auditor
-description: "Audit agentic architectures, MCP 2026-07-28 STDIO stdout hygiene, A2A v1.0 JWS agent-cards, binary hygiene, max_steps loop guards, and persist memories/audit_report.json. Use for auditing agents, MCP/A2A tooling, and WebSockets/JSON-RPC. Do NOT use for frontend UI or unit-test suites."
+description: "Audit agentic architectures, MCP 2026-07-28 STDIO stdout hygiene, A2A v1.0 JWS agent-cards, binary hygiene, max_steps loop guards, and persist memories/audit_report.json. Use for auditing agents, MCP/A2A servers, and WebSockets/JSON-RPC. Do NOT use for UI (ui-quality-judge), test suites (test-quality-auditor), or single-file Python AST (code-acceptability-auditor)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, TypeScript 5+, Go 1.24+"
 metadata:
   version: "1.2.0"
@@ -27,9 +27,9 @@ Runs deterministic static and contractual audits across **Python, TypeScript, an
 
 Consult [`references/agentic_project_structure.md`](references/agentic_project_structure.md) and [`references/protocol_matrix.md`](references/protocol_matrix.md):
 1. **D1 — Binaries (`AUD-BIN-01`):** Check `.gitignore`, clean `.env.example`, and isolate binaries in `bin/`/`dist/`/`build/`.
-2. **D2 — Agents & Skills (`AUD-AGT-01` / `AUD-SKL-01`):** Verify valid syntax, zero placebos, active SDKs (`google-genai>=3.3.0`, `@google/genai>=3.3.0`, `google.golang.org/genai>=1.77.0`, `api_version='v1beta'` for `decisions`/`interactions`), Gemini 4 (`hydrogen` w/ `xhigh`, `argon`, `carbon`, `max_output_tokens` on `generateContent`/`interactions.create`), block retired `gemini-2.5-flash`/`2.5-pro`/`3.1-flash-live-preview`/`antigravity-preview-05-2026`, enforce `max_steps`, Least Privilege (`readOnly`, no `tools: ["*"]`/`call_mcp_tool`), and L3 disclosure.
+2. **D2 — Agents & Skills (`AUD-AGT-01` / `AUD-SKL-01`, CoT):** Verify valid syntax, zero placebos, active SDKs (`google-genai>=3.3.0`, `@google/genai>=3.3.0`, `google.golang.org/genai>=1.77.0`, `api_version='v1beta'` for `decisions`/`interactions`), Gemini 4 (`hydrogen` w/ `xhigh`, `argon`, `carbon`, `max_output_tokens` on `generateContent`/`interactions.create`), block retired `gemini-2.5-flash`/`2.5-pro`/`3.1-flash-live-preview`/`antigravity-preview-05-2026`, enforce `max_steps`, Least Privilege (`commandExecutionPolicy: sandbox | "off"`, no `tools: ["*"]`/`call_mcp_tool`), and L3 disclosure (`L2 <= 1,000` tokens).
 3. **D3 — MCP & A2A (`AUD-MCP-01` / `AUD-A2A-01`):** Verify MCP SDK, clean STDIO `stdout`, strict schemas (`extra="forbid"` / `.strict()`), unique `skills[].id`, and JWS signatures.
-4. **D4 — Run (`AUD-CNT-01` / `AUD-MEM-01`):**
+4. **D4 — ReAct Execution & RAW Verification (`AUD-CNT-01` / `AUD-MEM-01`):** Run the scanner and verify `memories/audit_report.json` on disk:
 ```powershell
 uv run python skills/agent-server-auditor/scripts/agent_server_auditor.py --root . --persist --json
 uv run python skills/agent-server-auditor/scripts/agent_server_auditor.py --self-test

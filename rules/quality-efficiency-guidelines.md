@@ -36,6 +36,7 @@ description: "Core operational kernel (v2.1 SSOT): Command-First execution, Tria
 - **Ban "Happy-Path Only" Tests at Zero-Trust Boundaries (Anti-Green-Build-Illusion):** Every test for authenticated routes, OAuth/OIDC, HITL Gates, signed Webhooks, or SQL/MCP Guardrails must include at least 1 adversarial case per vector proving deterministic rejection (`400`/`401`/`403` without leaking secrets).
 - **MemPalace Vector Unification (`~/.config/mempalace`) & Windows UTF-8:** Keep `vault_sections_index.json` in `~/.config/mempalace` and `chroma.sqlite3` in `~/.config/mempalace/palace`, query via SQLite `mode=ro` (`< 25ms`), and enforce `PYTHONUTF8=1` on Python stdio subprocesses on Windows.
 - **Pre-Compiled MCP Binaries & Decoupled Models:** Invoke compiled binaries (`gopls.exe mcp`, `adk-go-mcp.exe`) instead of `go run ...@latest`, pin `npx` packages (`>= 2` weeks old, synced via `uv run dev/tools/mcp_registry.py apply`), and block retired models (`gemini-2.5-flash`/`2.5-pro`, `3.1-*tts-preview`, `3.1-flash-live-preview`, `antigravity-preview-05-2026`, `gemini-omni-1.1-flash`; `gemini-2.5-flash-lite` remains active).
+- **Discovery Budget, Hook Hygiene & Sync Idempotency (`f(x) == x`):** Cap `~/.agents/skills` at the 6 core skills (offload domain skills to `~/.gemini/skill-catalog/user-skills`), forbid per-turn shell/Python hooks on `PreInvocation`/`Stop`, and keep declarative `agents/*.md` byte-identical to `_format_antigravity_agent_markdown()` so multi-repo sync scripts stay idempotent in any execution order.
 
 ---
 

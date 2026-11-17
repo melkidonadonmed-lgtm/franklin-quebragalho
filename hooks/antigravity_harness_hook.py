@@ -127,6 +127,22 @@ def _ast_term_name(expr: ast.AST) -> str:
     return ""
 
 
+def _is_docstring_stmt(stmt: ast.stmt) -> bool:
+    """Retorna True se o statement for uma docstring literal."""
+    return isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant) and isinstance(stmt.value.value, str)
+
+
+def _is_stub_stmt(stmt: ast.stmt) -> bool:
+    """Retorna True se o statement for pass, Ellipsis (...) ou raise NotImplementedError."""
+    if isinstance(stmt, ast.Pass):
+        return True
+    if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant):
+        return stmt.value.value is Ellipsis
+    if isinstance(stmt, ast.Raise) and stmt.exc is not None:
+        return _ast_term_name(stmt.exc) == "NotImplementedError"
+    return False
+
+
 def _is_fn_stub_violation(fn: ast.FunctionDef | ast.AsyncFunctionDef, lines: list[str]) -> bool:
     """Verifica se uma função concreta fora de interface consiste apenas em stub vazio."""
     if fn.name in _EXEMPT_STUB_DUNDERS or fn.name.startswith("visit_"):
@@ -135,18 +151,8 @@ def _is_fn_stub_violation(fn: ast.FunctionDef | ast.AsyncFunctionDef, lines: lis
         return False
     if 1 <= fn.lineno <= len(lines) and "noqa: STUB001" in lines[fn.lineno - 1]:
         return False
-    eff = [
-        s for s in fn.body
-        if not (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant) and isinstance(s.value.value, str))
-    ]
-    if len(eff) != 1:
-        return False
-    stmt = eff[0]
-    if isinstance(stmt, ast.Pass):
-        return True
-    if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant) and stmt.value.value is Ellipsis:
-        return True
-    return isinstance(stmt, ast.Raise) and stmt.exc is not None and _ast_term_name(stmt.exc) == "NotImplementedError"
+    eff = [s for s in fn.body if not _is_docstring_stmt(s)]
+    return len(eff) == 1 and _is_stub_stmt(eff[0])
 
 
 def _collect_interface_fn_ids(tree: ast.AST) -> set[int]:
@@ -178,32 +184,31 @@ def _find_python_stub_violation(source: str, fname: str) -> str | None:
     return None
 
 
+def _is_production_python_path(norm: str, fname: str) -> bool:
+    """Retorna True se o caminho apontar para um módulo Python de produção (não-teste)."""
+    low_name = fname.lower()
+    if not low_name.endswith(".py") or low_name == "conftest.py":
+        return False
+    if low_name.startswith("test_") or low_name.endswith("_test.py"):
+        return False
+    return "/tests/" not in f"/{norm.lower()}/"
+
+
 def _check_write_edit_gates(tool_name: str, args: Dict[str, Any]) -> str | None:
     """Aplica o portão rápido de contrato em agents/*.md e STUB001 em *.py de produção."""
-    if tool_name not in ("write_file", "edit_file"):
-        return None
-    raw_path = str(args.get("Path") or args.get("TargetFile") or "").strip()
+    raw_path = str(args.get("Path") or args.get("TargetFile") or "").strip() if tool_name in ("write_file", "edit_file") else ""
     if not raw_path:
         return None
     norm = raw_path.replace("\\", "/")
     fname = Path(norm).name
-    is_agent_md = bool(re.search(r"(?:^|/)agents/[^/]+\.md$", norm)) and "/skills/" not in norm and "/docs/" not in norm
-    low_name = fname.lower()
-    is_prod_py = (
-        low_name.endswith(".py")
-        and not low_name.startswith("test_")
-        and not low_name.endswith("_test.py")
-        and low_name != "conftest.py"
-        and "/tests/" not in f"/{norm.lower()}/"
-    )
+    is_agent_md = bool(re.search(r"(?:^|/)agents/[^/]+\.md$", norm)) and not any(x in norm for x in ("/skills/", "/docs/"))
+    is_prod_py = _is_production_python_path(norm, fname)
     if not is_agent_md and not is_prod_py:
         return None
     text = _reconstruct_mutated_text(tool_name, args, raw_path)
     if not text:
         return None
-    if is_agent_md:
-        return _validate_agent_markdown_contract(text, fname)
-    return _find_python_stub_violation(text, fname)
+    return _validate_agent_markdown_contract(text, fname) if is_agent_md else _find_python_stub_violation(text, fname)
 
 
 def handle_pre_tool_use(payload: Dict[str, Any]) -> Dict[str, Any]:

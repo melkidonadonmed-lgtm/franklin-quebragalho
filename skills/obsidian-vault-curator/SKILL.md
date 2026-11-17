@@ -1,6 +1,6 @@
 ---
 name: obsidian-vault-curator
-description: "Audit and curate the Obsidian vault (C:\\Users\\melki\\dev\\notes) for broken Wikilinks, YAML frontmatter repair, orphaned attachments, repo parity, and MemPalace batch indexing (wing notes). Use for bulk vault hygiene; do NOT use for quick single-note CRUD (obsidian-vault), authoring docs from scratch (technical-markdown-writer), or Windows/Drive disk cleanup."
+description: "Audit and curate the Obsidian vault (C:\\Users\\melki\\dev\\notes) for broken Wikilinks, YAML frontmatter repair, orphaned attachments, repo parity, and MemPalace batch indexing (wing notes). Use for bulk vault hygiene; do NOT use for single-note CRUD (obsidian-vault), authoring docs from scratch (technical-markdown-writer), or Windows/Drive cleanup (windows-disk-maintenance, gdrive-cleanup-auditor)."
 compatibility: "Windows 11, Python 3.12+, pwsh 7+, MemPalace MCP"
 metadata:
   author: "Franklin"
@@ -30,6 +30,7 @@ Audit bulk structural hygiene of `C:\Users\melki\dev\notes\`: broken `[[Wikilink
 1. **Hygiene Scan & Parity**: Set `$env:PYTHONUTF8 = "1"`, run [`scripts/vault_hygiene_scanner.py`](scripts/vault_hygiene_scanner.py) (`--json`), and execute `pwsh "C:\Users\melki\dev\tools\check-vault-projects.ps1"`. Use [`scripts/text_sanitizer_and_chunker.py`](scripts/text_sanitizer_and_chunker.py) for chunking.
 2. **Frontmatter, Links & Orphans**: Require `title`, `date: YYYY-MM-DD`, and `tags` (plus `type`, `status`, `repo`, `github`, `stack` in `Projetos/Ativos/`). Prove zero `![[...]]` / `![](...)` links before proposing dry-run quarantine to `Arquivo/_anexos_orfaos/`. Apply temporal invalidation (`< 25 KB` split) per [`references/memory_governance_protocol_2026.md`](references/memory_governance_protocol_2026.md).
 3. **Reindex & MemPalace Sync**: Rebuild index via [`scripts/vault_palace_search.py`](scripts/vault_palace_search.py) (`--rebuild-index`) and hydrate SQLite via [`scripts/vault_kg_hydrator.py`](scripts/vault_kg_hydrator.py). Call MCP `mempalace_sync` / `mempalace_mine` (`wing="notes"`) instead of a concurrent CLI subprocess.
+4. **ReAct Verification (`Read-After-Write`)**: Re-run `vault_hygiene_scanner.py --json` and `check-vault-projects.ps1` after edits to prove zero YAML regressions or broken `[[Wikilinks]]`.
 
 ## 4. Gotchas & Edge Cases
 

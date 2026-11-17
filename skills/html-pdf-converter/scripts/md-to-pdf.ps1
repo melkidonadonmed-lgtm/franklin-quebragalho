@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Converte um arquivo Markdown (.md) em PDF profissional usando Microsoft Edge headless no Windows 11.
 .EXAMPLE
@@ -14,12 +14,12 @@ param (
     [switch]$KeepHtml
 )
 
-if (-not (Test-Path $InputFile)) {
-    Write-Error "Arquivo de entrada no encontrado: $InputFile"
+if (-not (Test-Path -LiteralPath $InputFile)) {
+    Write-Error "Arquivo de entrada não encontrado: $InputFile"
     exit 1
 }
 
-$fullInputPath = (Resolve-Path $InputFile).Path
+$fullInputPath = (Resolve-Path -LiteralPath $InputFile).Path
 if (-not $OutputFile) {
     $OutputFile = [System.IO.Path]::ChangeExtension($fullInputPath, ".pdf")
 } else {
@@ -27,10 +27,10 @@ if (-not $OutputFile) {
 }
 
 $tempHtmlPath = [System.IO.Path]::ChangeExtension($fullInputPath, ".tmp.html")
-$rawContent = Get-Content -Path $fullInputPath -Raw -Encoding UTF8
+$rawContent = Get-Content -LiteralPath $fullInputPath -Raw -Encoding UTF8
 
-# Converso simples e elegante de Markdown bsico para HTML (ou preserva se j tiver tags)
-# Utiliza formatao moderna com CSS profissional
+# Conversão simples e elegante de Markdown básico para HTML (ou preserva se já tiver tags)
+# Utiliza formatação moderna com CSS profissional
 $htmlBody = $rawContent
 # Headers
 $htmlBody = [regex]::Replace($htmlBody, '^### (.*?)$', '<h3>$1</h3>', [System.Text.RegularExpressions.RegexOptions]::Multiline)
@@ -76,12 +76,13 @@ $htmlDocument = @"
         margin: 0;
         padding: 0;
     }
-    h1, h2, h3, h4 {
+    h1, h2, h3, h4, h5, h6 {
         color: #0f172a;
         margin-top: 1.5em;
         margin-bottom: 0.5em;
         font-weight: 600;
         page-break-after: avoid;
+        break-after: avoid;
     }
     h1 { font-size: 20pt; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3em; }
     h2 { font-size: 15pt; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.2em; }
@@ -102,12 +103,14 @@ $htmlDocument = @"
         padding: 12px;
         overflow-x: auto;
         page-break-inside: avoid;
+        break-inside: avoid;
     }
     table {
         border-collapse: collapse;
         width: 100%;
         margin-bottom: 1.5em;
         page-break-inside: avoid;
+        break-inside: avoid;
     }
     th, td {
         border: 1px solid #cbd5e1;
@@ -125,6 +128,7 @@ $htmlDocument = @"
         border-left: 4px solid #3b82f6;
         background: #f8fafc;
         page-break-inside: avoid;
+        break-inside: avoid;
     }
 </style>
 </head>
@@ -134,9 +138,9 @@ $finalBody
 </html>
 "@
 
-Set-Content -Path $tempHtmlPath -Value $htmlDocument -Encoding UTF8
+Set-Content -LiteralPath $tempHtmlPath -Value $htmlDocument -Encoding UTF8
 
-# Caminhos dos executveis Edge / Chrome
+# Caminhos dos executáveis Edge / Chrome
 $browserPath = ""
 if (Test-Path "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe") {
     $browserPath = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
@@ -162,11 +166,11 @@ $processArgs = @(
 
 $process = Start-Process -FilePath $browserPath -ArgumentList $processArgs -NoNewWindow -PassThru -Wait
 
-if (-not $KeepHtml -and (Test-Path $tempHtmlPath)) {
-    Remove-Item -Path $tempHtmlPath -Force
+if (-not $KeepHtml -and (Test-Path -LiteralPath $tempHtmlPath)) {
+    Remove-Item -LiteralPath $tempHtmlPath -Force
 }
 
-if (Test-Path $OutputFile) {
+if ((Test-Path -LiteralPath $OutputFile) -and ((Get-Item -LiteralPath $OutputFile).Length -gt 0)) {
     Write-Host "PDF gerado com sucesso em: $OutputFile"
 } else {
     Write-Error "Falha ao gerar o PDF."

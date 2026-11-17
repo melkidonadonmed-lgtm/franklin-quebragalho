@@ -120,6 +120,21 @@ _CRITICAL_PATTERNS: List[Tuple[re.Pattern[str], str]] = [
         re.compile(r"\b(deletar\s+permanentemente|exclus[aã]o\s+definitiva|expurgo|apagar\s+tudo)\b", re.IGNORECASE),
         "Intenção de descarte ou exclusão permanente requer confirmação HITL e Dry-Run",
     ),
+    (
+        re.compile(r"\b(git\s+push\b|gh\s+repo\s+create\b|git\s+reset\s+--hard\b|git\s+clean\s+-[a-z]*f)", re.IGNORECASE),
+        "Publicação remota ou reescrita destrutiva de histórico Git requer confirmação HITL",
+    ),
+    (
+        re.compile(r"\b(15_chaves_api|gcloud\s+run\s+deploy|firebase\s+deploy|terraform\s+destroy)\b", re.IGNORECASE),
+        "Acesso a cofre de chaves ou deploy/destruição em produção requer confirmação HITL",
+    ),
+]
+
+_MEDIUM_PATTERNS: List[Tuple[re.Pattern[str], str]] = [
+    (
+        re.compile(r"\b(move-item|rename-item|git\s+commit|_quarentena_descarte|_instaladores)\b", re.IGNORECASE),
+        "Mutação local reversível / quarentena (requer preview Dry-Run -WhatIf e verificação Read-After-Write)",
+    ),
 ]
 
 
@@ -128,6 +143,9 @@ def evaluate_action_risk(action_text: str) -> Tuple[RiskLevel, str]:
     for pattern, reason in _CRITICAL_PATTERNS:
         if pattern.search(action_text):
             return RiskLevel.CRITICAL, reason
+    for pattern, reason in _MEDIUM_PATTERNS:
+        if pattern.search(action_text):
+            return RiskLevel.MEDIUM, reason
     return RiskLevel.LOW, "Operação de leitura, diagnóstico ou mutação reversível segura."
 
 

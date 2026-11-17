@@ -1,6 +1,6 @@
 ---
 name: chained-plan-orchestrator
-description: "Compile execution plans into topological DAG waves using Kahn's algorithm, prevent parallel file-write collisions, isolate worker state via Context Fork (<= 5 rules), and dispatch sequential waves with HITL checkpoints. Use when orchestrating multi-skill DAG pipelines. Do NOT use for single-turn tasks or initial Phase 0 planning from scratch."
+description: "Compile execution plans into topological DAG waves using Kahn's algorithm, prevent parallel file-write collisions, isolate worker state via Context Fork (<= 5 rules), and dispatch sequential waves with HITL checkpoints. Use when orchestrating multi-skill DAG pipelines. Do NOT use for single-turn tasks, Phase 0 planning (high-level-context-planner), or trace RCA (gap-analyzer-auditor)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 metadata:
   author: "Franklin"
@@ -31,16 +31,16 @@ Executive engine for **Kahn Topological Wave Compilation**, strict **Context For
 
 Consult [`dag_stages_and_context_fork.md`](references/dag_stages_and_context_fork.md) and [`context_transition_schema.json`](references/context_transition_schema.json):
 
-1. **Stage 1 — Kahn & Guards:** Block unresolved `[GAP]`s, reject cycles (`CYCLE_DETECTED`), block same-wave `target_files` collisions (`PARALLEL_FILE_COLLISION`), and verify skill slugs.
+1. **Stage 1 (`CoT`) — Kahn & Guards:** Block unresolved `[GAP]`s, reject cycles (`CYCLE_DETECTED`), block unknown dependencies (`UNKNOWN_DEPENDENCY`), block same-wave `target_files` collisions (`PARALLEL_FILE_COLLISION` — prune via `ToT` serialization), and verify skill slugs.
 2. **Stage 2 — Context Fork (`<= 5` rules):** Build lean `ContextTransitionEnvelope` payloads with unique `isolated_state_key` (never pass raw history).
-3. **Stage 3 — Pre-Flight CLI Validation:** Run before dispatching waves:
+3. **Stage 3 (`ReAct`) — Pre-Flight CLI Validation:** Run before dispatching waves:
 
 ```powershell
 uv run python skills/chained-plan-orchestrator/scripts/dag_chain_validator.py --self-test
 uv run python skills/chained-plan-orchestrator/scripts/dag_chain_validator.py --plan plans/distributed_agent_mediation_dag.json
 ```
 
-4. **Stages 4–5 — Dispatch, HITL & Read-After-Write:** Execute `Wave 0..N`, hold `hitl_gate` nodes in `BLOCKED_HITL` via `franklin_harness_guard` / `franklin_harness_checkpoint`, route faults to `fallback_branch`, and verify post-conditions.
+4. **Stages 4–5 (`RAW`) — Dispatch, HITL & Read-After-Write:** Execute `Wave 0..N`, hold `hitl_gate` nodes in `BLOCKED_HITL` via `franklin_harness_guard` / `franklin_harness_checkpoint`, route faults to `fallback_branch`, and verify post-conditions (`Read-After-Write`).
 
 ## 4. Gotchas & Edge Cases
 

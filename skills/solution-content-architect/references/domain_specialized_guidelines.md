@@ -19,7 +19,7 @@ Quick reference for the **Domain Guardrail Modules (`M1..M7`)** enforced selecti
 ## 3. Frontend, Visual Physics & Real-State Engineering (`Module 3` — `ui-brand-ux-planner` / `DESIGN.md`)
 - **DO NOT emit `divsoup`**: Use semantic HTML5 (`<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<footer>`, `<button>`).
 - **DO NOT inject unsanitized HTML**: Ban raw `innerHTML` or unescaped `dangerouslySetInnerHTML`.
-- **DO NOT hardcode neon palettes or placebo controls**: Align tokens (`--surface-canvas/sunken/card/elevated/glass`), zenith rim light (`90-120 deg`, `inset 0 1px 0 0`), 3-level layered shadows, anti-blur font locks, `tabular-nums`, Spatial Archetypes, and real 4-state FSMs with `ui-brand-ux-planner` (`DESIGN.md`).
+- **DO NOT hardcode neon palettes or placebo controls**: Align tokens (`--surface-canvas/sunken/card/elevated/glass`), zenith rim light (`90-120 deg`, `inset 0 1px 0 0`), 3-level layered shadows, anti-blur font locks, `tabular-nums`, Spatial Archetypes, and real 5-state FSMs (`idle`, `loading`, `empty`, `error`, `success`) with `ui-brand-ux-planner` (`DESIGN.md`).
 
 ## 4. Investigation, Research & RAG (`Module 4`)
 - **DO NOT treat agent memory as authoritative truth**: Verify against disk AST, manifests, or primary official documentation first.

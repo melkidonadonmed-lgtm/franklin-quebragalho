@@ -572,7 +572,7 @@ def test_gemini_ecosystem_directories(tmp_path: Path, monkeypatch: pytest.Monkey
     _seed(shredded_tmp / "skills" / "ui-brand-ux-planner" / "SKILL.md", "---\nname: ui-brand-ux-planner\ndescription: \"Use when planning UI. Do NOT use for backend.\"\n---\n")
     for ui_ag in ("ui-analyst.md", "ui-planner.md", "ui-worker.md", "ui-judge.md"):
         _seed(shredded_tmp / "agents" / ui_ag, f"---\nname: {ui_ag[:-3]}\ndescription: UI agent\nsubagent: true\nmainAgent: false\nmodel: inherit\ncommandExecutionPolicy: sandbox\ntools:\n  - read_file\n---\n# Body\n")
-    repo = tmp_path / "repos" / "scoreboard"
+    repo = tmp_path / "repos" / "PCM"
     _seed(repo / ".context" / "context.md", "estado canônico\n")
     _seed(repo / "CONTEXT.md", "raiz desatualizada\n")
     split_repo = tmp_path / "repos" / "epic-volta"

@@ -31,14 +31,17 @@ ExecutionType = Literal["model_reasoning", "tool_io", "decision_gate", "determin
 HITL_KEYWORDS: Tuple[str, ...] = (
     "deletar", "apagar", "excluir", "remove-item", "rm -rf", "drop table",
     "truncate", "deploy", "produção", "producao", "pagar", "transferir", "formatar",
+    "delete", "purge", "production", "git push",
 )
 AMBIGUOUS_KEYWORDS: Tuple[str, ...] = (
     "tenho uma ideia", "me ajude a pensar", "como posso criar", "explorar",
     "brainstorm", "do zero", "sugira", "o que acha",
+    "have an idea", "from scratch", "explore", "suggest",
 )
 STRUCTURED_KEYWORDS: Tuple[str, ...] = (
     "refatorar", "migrar", "implementar", "arquitetura", "pipeline", "fases",
     "múltiplos", "multiplos", "sistema", "auditar", "suíte", "suite", "integrar",
+    "refactor", "migrate", "implement", "architecture", "phases", "audit", "integrate",
 )
 
 

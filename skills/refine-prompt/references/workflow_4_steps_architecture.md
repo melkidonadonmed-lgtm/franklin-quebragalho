@@ -1,6 +1,6 @@
 # 4-Step Architecture & Operational Modules — `refine-prompt`
 
-Complete processing flow consumed by [`SKILL.md`](../SKILL.md), complementing [`zero_trust_owasp_guidelines.md`](zero_trust_owasp_guidelines.md), [`epistemic_taxonomy.md`](epistemic_taxonomy.md), [`fluidity_and_low_entropy_engineering.md`](fluidity_and_low_entropy_engineering.md), [`modules_io_contracts.md`](modules_io_contracts.md), and [`master_system_prompt.md`](master_system_prompt.md).
+Complete processing flow consumed by `SKILL.md`, complementing [`zero_trust_owasp_guidelines.md`](zero_trust_owasp_guidelines.md), [`epistemic_taxonomy.md`](epistemic_taxonomy.md), [`fluidity_and_low_entropy_engineering.md`](fluidity_and_low_entropy_engineering.md), [`modules_io_contracts.md`](modules_io_contracts.md), and [`master_system_prompt.md`](master_system_prompt.md).
 
 ## Epistemic & Entropy Audit Flowchart
 

@@ -36,7 +36,10 @@ class AgentGuardrailsSpec(BaseModel):
     timeout_seconds: int = 60
     stop_condition: str = "TASK_STATE_COMPLETED"
     human_in_the_loop_on: List[str] = Field(
-        default_factory=lambda: ["delete_record", "remove_item", "send_external_email", "drop_table"]
+        default_factory=lambda: [
+            "delete_record", "remove_item", "send_external_email", "drop_table",
+            "git_push", "gh_repo_create", "write_env_secret", "production_deploy",
+        ]
     )
 
 
@@ -57,8 +60,8 @@ class DeclarativeAgentSpec(BaseModel):
     model: str = Field(
         default_factory=lambda: os.getenv("ADK_MODEL") or os.getenv("GEMINI_MODEL") or "inherit"
     )
-    role: str = "Especialista Autônomo"
-    parent_persona: str = "UI-Architect"
+    role: str = "Autonomous Specialist Subagent"
+    parent_persona: str = "Franklin-Main"
     wave: int = 1
     workspace: str = "inherit"
     enable_write_tools: Optional[bool] = None
@@ -126,14 +129,11 @@ class DeclarativeAgentSpec(BaseModel):
             "write_to_file", "replace_file_content", "multi_replace_file_content", "write_file", "edit_file"
         }
         if self.enable_write_tools is None:
-            if self.tools:
-                self.enable_write_tools = any(t in write_tool_names for t in self.tools)
-            else:
-                self.enable_write_tools = self.commandExecutionPolicy != "off"
+            self.enable_write_tools = bool(self.tools) and any(t in write_tool_names for t in self.tools) and self.commandExecutionPolicy != "off"
         if self.enable_mcp_tools is None:
             self.enable_mcp_tools = self.inheritMcp
         if self.enable_subagent_tools is None:
-            self.enable_subagent_tools = (not self.tools) or ("invoke_subagent" in self.tools)
+            self.enable_subagent_tools = "invoke_subagent" in self.tools
         return self
 
 

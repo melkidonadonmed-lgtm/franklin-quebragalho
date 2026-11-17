@@ -1,6 +1,6 @@
 # Mermaid Pipeline, RCA Vectors & Canonical Report Template — `gap-analyzer-auditor`
 
-Visual workflow reference and report contract consumed by [`SKILL.md`](../SKILL.md). See also [`closed_loop_architecture.md`](closed_loop_architecture.md), [`rca_failure_taxonomy.md`](rca_failure_taxonomy.md), and [`handoff_payload_schema.json`](handoff_payload_schema.json).
+Visual workflow reference and report contract consumed by `SKILL.md`. See also [`closed_loop_architecture.md`](closed_loop_architecture.md), [`rca_failure_taxonomy.md`](rca_failure_taxonomy.md), and [`handoff_payload_schema.json`](handoff_payload_schema.json).
 
 ## Closed-Loop Audit Flowchart
 

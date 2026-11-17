@@ -1,6 +1,6 @@
 # Deterministic Audit Criteria — `gdrive-cleanup-auditor` (`v1.2.0`)
 
-Falsifiable boolean rules (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) under Module **M4 (Google Drive `G:\Meu Drive`)**:
+Falsifiable boolean rules (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) for Google Drive (`G:\Meu Drive`) storage audit and quarantine:
 
 ---
 

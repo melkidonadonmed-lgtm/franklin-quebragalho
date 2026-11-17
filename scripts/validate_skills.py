@@ -24,7 +24,7 @@ SEMVER_RE = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
 DUPLICATE_META_TOP_KEYS = ("version", "updated_at", "allowed-tools")
 NEGATIVE_TRIGGER_RE = re.compile(r"\b(n[aã]o use|do not use|don't use|skip when)\b", re.IGNORECASE)
 POSITIVE_TRIGGER_RE = re.compile(r"\b(use|activate|invoke|when to use|ative|acion[ea])\b", re.IGNORECASE)
-MAX_DESC_RECOMMENDED = 450
+MAX_DESC_RECOMMENDED = 420
 MAX_DESC_HARD = 1024
 STOPWORDS = frozenset({
     "a", "an", "and", "as", "at", "by", "com", "da", "das", "de", "do", "dos", "e",
@@ -91,9 +91,11 @@ def _validate_description_field(
         errors.append(f"[FAIL] Descrição excede orçamento recomendado L1 de {MAX_DESC_RECOMMENDED} chars ({len(desc)} chars)")
     if len(desc) < 30:
         errors.append(f"[FAIL] Descrição muito curta ou rasa ({len(desc)} chars)")
-    if strict_budget and not POSITIVE_TRIGGER_RE.search(desc):
+    if not strict_budget:
+        return
+    if not POSITIVE_TRIGGER_RE.search(desc):
         errors.append("[FAIL] Descrição deve conter formulação imperativa ('Use quando...' / 'Use para...')")
-    if strict_budget and not NEGATIVE_TRIGGER_RE.search(desc) and not is_template:
+    if not is_template and not NEGATIVE_TRIGGER_RE.search(desc):
         errors.append("[FAIL] Descrição deve declarar fronteira negativa ('Não use para...' / 'Don't use for...')")
 
 
@@ -129,15 +131,26 @@ def _check_top_keys_and_semver(
     has_metadata_dict: bool,
 ) -> None:
     """Valida ausência de chaves órfãs no topo e conformidade SemVer em modo estrito."""
-    if has_metadata_dict and raw_top_keys:
-        orphan_keys = [k for k in DUPLICATE_META_TOP_KEYS if k in raw_top_keys]
-        if orphan_keys:
-            errors.append(f"[FAIL] Chaves duplicadas/órfãs no topo com 'metadata:' presente: {orphan_keys}")
-    if strict_mode and not external_mode and not has_metadata_dict:
+    orphan_keys = [k for k in DUPLICATE_META_TOP_KEYS if k in (raw_top_keys or set())] if has_metadata_dict else []
+    if orphan_keys:
+        errors.append(f"[FAIL] Chaves duplicadas/órfãs no topo com 'metadata:' presente: {orphan_keys}")
+    if not strict_mode:
+        return
+    if not external_mode and not has_metadata_dict:
         errors.append("[FAIL] Modo --strict exige bloco 'metadata:' para version/updated_at")
     ver_val = str(meta.get("version", "")).strip()
-    if strict_mode and ver_val and not SEMVER_RE.match(ver_val):
+    if ver_val and not SEMVER_RE.match(ver_val):
         errors.append(f"[FAIL] metadata.version inválido em --strict (exige SemVer X.Y.Z): '{ver_val}'")
+
+
+def _validate_skill_name_field(name_val: str, dir_name: str, is_template: bool, errors: List[str]) -> None:
+    """Valida formato kebab-case e correspondência com o nome da pasta."""
+    if not name_val:
+        return
+    if len(name_val) > 64 or not SKILL_NAME_RE.match(name_val):
+        errors.append(f"[FAIL] Nome '{name_val}' viola kebab-case estrito (^[a-z0-9]+(-[a-z0-9]+)*$, máx 64)")
+    if name_val != dir_name and not is_template:
+        errors.append(f"[FAIL] Nome no frontmatter ('{name_val}') difere da pasta ('{dir_name}')")
 
 
 def _validate_frontmatter_fields(
@@ -154,27 +167,14 @@ def _validate_frontmatter_fields(
     if not meta:
         errors.append("[FAIL] Frontmatter YAML ausente ou malformado")
     req_fields = ("name", "description") if external_mode else ("name", "description", "version")
-    for req in req_fields:
-        if not meta.get(req):
-            errors.append(f"[FAIL] Campo obrigatório '{req}' ausente no frontmatter")
-
+    errors.extend([f"[FAIL] Campo obrigatório '{req}' ausente no frontmatter" for req in req_fields if not meta.get(req)])
     _check_top_keys_and_semver(
-        meta,
-        errors,
-        external_mode=external_mode,
-        strict_mode=strict_mode,
-        raw_top_keys=raw_top_keys,
-        has_metadata_dict=has_metadata_dict,
+        meta, errors, external_mode=external_mode, strict_mode=strict_mode,
+        raw_top_keys=raw_top_keys, has_metadata_dict=has_metadata_dict,
     )
-
     name_val = str(meta.get("name", "")).strip()
     is_template = dir_name == "_template" and name_val == "template-skill"
-    if name_val:
-        if len(name_val) > 64 or not SKILL_NAME_RE.match(name_val):
-            errors.append(f"[FAIL] Nome '{name_val}' viola kebab-case estrito (^[a-z0-9]+(-[a-z0-9]+)*$, máx 64)")
-        if name_val != dir_name and not is_template:
-            errors.append(f"[FAIL] Nome no frontmatter ('{name_val}') difere da pasta ('{dir_name}')")
-
+    _validate_skill_name_field(name_val, dir_name, is_template, errors)
     _validate_description_field(
         str(meta.get("description", "")).strip(), is_template, errors, strict_budget=not external_mode
     )
@@ -196,6 +196,26 @@ def _validate_scripts_dir(skill_dir: Path, errors: List[str]) -> None:
                 errors.append(f"[FAIL] Bloqueio TTY proibido: 'input()' em scripts/{py_file.name}")
 
 
+_EVAL_PROMPT_KEYS = frozenset({"prompt", "query", "input", "scenario"})
+_EVAL_ASSERT_KEYS = frozenset({
+    "assertions", "expected_assertions", "expected_output", "expected_behavior",
+    "expected", "criteria", "expected_status", "should_trigger",
+})
+
+
+def _validate_single_eval_case(idx: int, tc: Any, errors: List[str]) -> tuple[int, int]:
+    """Valida um caso de eval individual e retorna incremento (pos, neg)."""
+    if not isinstance(tc, dict) or not ({"eval_id", "id"} & set(tc)):
+        errors.append(f"[FAIL] Test case #{idx} em evals.json requer 'eval_id' (ou 'id')")
+        return 0, 0
+    if not (_EVAL_PROMPT_KEYS & set(tc)):
+        errors.append(f"[FAIL] Test case #{idx} em evals.json requer 'prompt' (ou 'query'/'input')")
+    if not (_EVAL_ASSERT_KEYS & set(tc)):
+        errors.append(f"[FAIL] Test case #{idx} em evals.json requer critério/asserção esperada")
+    trig = tc.get("should_trigger")
+    return (1 if trig is True else 0), (1 if trig is False else 0)
+
+
 def _validate_evals_file(skill_dir: Path, errors: List[str], *, strict_mode: bool = False, external_mode: bool = False) -> None:
     """Valida a estrutura e sintaxe JSON de evals/evals.json quando presente."""
     evals_file = skill_dir / "evals" / "evals.json"
@@ -207,58 +227,45 @@ def _validate_evals_file(skill_dir: Path, errors: List[str], *, strict_mode: boo
         errors.append(f"[FAIL] Erro de sintaxe JSON em evals/evals.json: {exc}")
         return
 
-    evals_list = (
-        evals_data.get("evals", [])
-        if isinstance(evals_data, dict)
-        else (evals_data if isinstance(evals_data, list) else [])
-    )
+    evals_list = evals_data.get("evals", []) if isinstance(evals_data, dict) else evals_data
     if not isinstance(evals_list, list) or not evals_list:
         errors.append("[FAIL] evals.json deve conter uma lista não-vazia de testes")
         return
 
-    pos_triggers = 0
-    neg_triggers = 0
-    for idx, tc in enumerate(evals_list):
-        if not isinstance(tc, dict) or ("eval_id" not in tc and "id" not in tc):
-            errors.append(f"[FAIL] Test case #{idx} em evals.json requer 'eval_id' (ou 'id')")
-            continue
-        if not any(k in tc for k in ("prompt", "query", "input", "scenario")):
-            errors.append(f"[FAIL] Test case #{idx} em evals.json requer 'prompt' (ou 'query'/'input')")
-        if not any(
-            k in tc
-            for k in ("assertions", "expected_assertions", "expected_output", "expected_behavior", "expected", "criteria", "expected_status", "should_trigger")
-        ):
-            errors.append(f"[FAIL] Test case #{idx} em evals.json requer critério/asserção esperada")
-        if tc.get("should_trigger") is True:
-            pos_triggers += 1
-        elif tc.get("should_trigger") is False:
-            neg_triggers += 1
-
-    if strict_mode and not external_mode and (pos_triggers < 1 or neg_triggers < 1):
+    counts = [_validate_single_eval_case(idx, tc, errors) for idx, tc in enumerate(evals_list)]
+    pos_triggers = sum(p for p, _ in counts)
+    neg_triggers = sum(n for _, n in counts)
+    if strict_mode and not external_mode and min(pos_triggers, neg_triggers) < 1:
         errors.append(
             f"[FAIL] evals/evals.json em modo --strict exige ao menos 1 should_trigger=true e 1 should_trigger=false (+{pos_triggers}/-{neg_triggers})"
         )
 
 
-def _validate_markdown_links(skill_dir: Path, body: str, errors: List[str]) -> None:
-    """Valida que links Markdown em SKILL.md respeitam 1 nível relativo sem escapes '../' e existem no disco."""
-    no_fences = re.sub(r"```.*?```", "", body, flags=re.DOTALL)
-    clean_md = re.sub(r"`[^`\n]+`", "", no_fences)
+def _is_relative_file_link(rel_path: str) -> bool:
+    """Retorna True se o link parecer um caminho relativo de arquivo verificável."""
+    return bool(rel_path) and not any(ch in rel_path for ch in "<>{}[]") and any(sep in rel_path for sep in (".", "/", "\\"))
+
+
+def _validate_markdown_links(
+    skill_dir: Path, body: str, errors: List[str], *, context_dir: Path | None = None
+) -> None:
+    """Valida que links Markdown respeitam 1 nível relativo sem escapes '../' e existem no disco."""
+    clean_md = re.sub(r"`[^`\n]+`", "", re.sub(r"```.*?```", "", body, flags=re.DOTALL))
+    base_dir = context_dir or skill_dir
     for target in re.findall(r"\[[^\]]+\]\(([^)\s]+)\)", clean_md):
         if target.startswith(("http://", "https://", "file://", "mailto:", "#")):
             continue
         rel_path = target.split("#", 1)[0].split("?", 1)[0].strip()
-        if not rel_path or any(ch in rel_path for ch in "<>{}[]"):
+        if not _is_relative_file_link(rel_path):
             continue
         if ".." in Path(rel_path).parts or rel_path.startswith(("../", "..\\")):
             errors.append(f"[FAIL] Parent path escape '../' forbidden in SKILL.md: {target}")
-            continue
-        if ("." in rel_path or "/" in rel_path or "\\" in rel_path) and not (skill_dir / rel_path).exists():
+        elif not ((skill_dir / rel_path).exists() or (base_dir / rel_path).exists()):
             errors.append(f"[FAIL] Broken relative link in SKILL.md: {target}")
 
 
 def _validate_rules_and_references(skill_dir: Path, errors: List[str]) -> None:
-    """Valida marcadores determinísticos em rules/audit_criteria.md (ou fallback legado) e JSONs em references/."""
+    """Valida marcadores determinísticos em rules/audit_criteria.md (ou fallback legado) e JSONs/MDs em references/."""
     audit_file = skill_dir / "rules" / "audit_criteria.md"
     legacy_file = skill_dir / "rules" / "criterios_auditoria.md"
     rules_file = audit_file if audit_file.exists() else legacy_file
@@ -275,6 +282,10 @@ def _validate_rules_and_references(skill_dir: Path, errors: List[str]) -> None:
             json.loads(json_ref.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError, ValueError) as exc:
             errors.append(f"[FAIL] Erro no JSON de referência {json_ref.name}: {exc}")
+    for md_ref in sorted(ref_dir.glob("*.md")):
+        _validate_markdown_links(
+            skill_dir, md_ref.read_text(encoding="utf-8", errors="replace"), errors, context_dir=ref_dir
+        )
 
 
 def validate_skill_dir(
@@ -348,29 +359,32 @@ def check_jaccard_overlaps(skill_dirs: List[Path], threshold: float = 0.80) -> L
     return overlaps
 
 
+def _validate_single_rule_file(rule_file: Path, errors: List[str]) -> int:
+    """Valida frontmatter e tamanho de um arquivo rules/*.md e retorna sua contagem de caracteres."""
+    raw = rule_file.read_text(encoding="utf-8")
+    if rule_file.stat().st_size > 24 * 1024:
+        errors.append(f"[FAIL] Rule {rule_file.name} excede 24 KB")
+    meta, _ = parse_frontmatter(raw)
+    trig = str(meta.get("trigger", "")).strip()
+    if trig not in ALLOWED_RULE_TRIGGERS:
+        errors.append(f"[FAIL] Rule {rule_file.name} possui trigger inválido: '{trig}'")
+    if trig == "model_decision":
+        desc_val = str(meta.get("description", "")).strip().lower()
+        if not desc_val:
+            errors.append(f"[FAIL] Rule model_decision {rule_file.name} exige 'description'")
+        elif not any(neg in desc_val for neg in ("do not", "don't")):
+            errors.append(f"[FAIL] Rule model_decision {rule_file.name} exige fronteira negativa ('Do NOT load...') na description")
+    if trig == "glob" and not str(meta.get("globs", "")).strip():
+        errors.append(f"[FAIL] Rule glob {rule_file.name} exige 'globs' como string")
+    return len(raw)
+
+
 def _validate_rules_dir(rules_dir: Path) -> List[str]:
     """Valida frontmatter, trigger, globs e teto de tamanho em rules/*.md."""
-    errors: List[str] = []
     if not rules_dir.is_dir():
         return [f"[FAIL] Diretório rules ausente: {rules_dir}"]
-    total_chars = 0
-    for rule_file in sorted(rules_dir.glob("*.md")):
-        raw = rule_file.read_text(encoding="utf-8")
-        total_chars += len(raw)
-        if rule_file.stat().st_size > 24 * 1024:
-            errors.append(f"[FAIL] Rule {rule_file.name} excede 24 KB")
-        meta, _ = parse_frontmatter(raw)
-        trig = str(meta.get("trigger", "")).strip()
-        if trig not in ALLOWED_RULE_TRIGGERS:
-            errors.append(f"[FAIL] Rule {rule_file.name} possui trigger inválido: '{trig}'")
-        if trig == "model_decision":
-            desc_val = str(meta.get("description", "")).strip()
-            if not desc_val:
-                errors.append(f"[FAIL] Rule model_decision {rule_file.name} exige 'description'")
-            elif "do not" not in desc_val.lower() and "don't" not in desc_val.lower():
-                errors.append(f"[FAIL] Rule model_decision {rule_file.name} exige fronteira negativa ('Do NOT load...') na description")
-        if trig == "glob" and (not isinstance(meta.get("globs"), str) or not meta.get("globs", "").strip()):
-            errors.append(f"[FAIL] Rule glob {rule_file.name} exige 'globs' como string")
+    errors: List[str] = []
+    total_chars = sum(_validate_single_rule_file(rf, errors) for rf in sorted(rules_dir.glob("*.md")))
     if total_chars // 4 > 20000:
         errors.append(f"[FAIL] Orçamento agregado de rules excede 20.000 tokens (~{total_chars // 4})")
     return errors
@@ -386,26 +400,34 @@ def _validate_hooks_manifest(hooks_file: Path, repo_root: Path) -> List[str]:
         return [f"[FAIL] JSON inválido em hooks.json: {exc}"]
     errors: List[str] = []
     for hook_name, cfg in data.items():
-        if not isinstance(cfg, dict):
-            continue
-        for key in cfg:
-            if key == "enabled":
-                continue
-            if key not in ALLOWED_HOOK_EVENTS:
-                errors.append(f"[FAIL] Evento hook inválido/não-Antigravity '{key}' em '{hook_name}'")
+        if isinstance(cfg, dict):
+            errors.extend([
+                f"[FAIL] Evento hook inválido/não-Antigravity '{key}' em '{hook_name}'"
+                for key in cfg if key != "enabled" and key not in ALLOWED_HOOK_EVENTS
+            ])
     serialized = json.dumps(data)
-    if "C:\\\\" in serialized or "/Users/" in serialized or "C:/Users/" in serialized:
+    if any(abs_tok in serialized for abs_tok in ("C:\\\\", "/Users/", "C:/Users/")):
         errors.append("[FAIL] hooks.json contém caminho absoluto hardcoded em vez de ./scripts/...")
     if "antigravity_harness_hook.py" in serialized and not (repo_root / "hooks" / "antigravity_harness_hook.py").is_file():
         errors.append("[FAIL] Script hooks/antigravity_harness_hook.py referenciado não existe")
     return errors
 
 
+def _validate_agent_tools_list(af_name: str, tools: Any, errors: List[str]) -> None:
+    """Valida a lista de tools de um manifesto de subagente."""
+    if not isinstance(tools, list) or not tools:
+        errors.append(f"[FAIL] Agente {af_name} exige lista explícita não-vazia em 'tools'")
+        return
+    bad_tools = sorted(str(t) for t in tools if str(t) in FORBIDDEN_AGENT_TOOLS)
+    if bad_tools:
+        errors.append(f"[FAIL] Agente {af_name} declara tools proibidas/legadas em tools: {bad_tools}")
+
+
 def _validate_single_agent_manifest(af: Path, errors: List[str]) -> None:
     """Valida frontmatter completo de um arquivo declarativo agents/*.md."""
     legacy_agent_keys = {"enable_write_tools", "enable_mcp_tools", "enable_subagent_tools", "wave", "parent_persona", "covered_modules"}
     meta, _ = parse_frontmatter(af.read_text(encoding="utf-8"))
-    if not meta.get("name") or not meta.get("description"):
+    if not (meta.get("name") and meta.get("description")):
         errors.append(f"[FAIL] Agente {af.name} sem 'name' ou 'description'")
     missing_req = [k for k in REQUIRED_AGENT_KEYS if k not in meta]
     if missing_req:
@@ -419,15 +441,9 @@ def _validate_single_agent_manifest(af: Path, errors: List[str]) -> None:
         errors.append(f"[FAIL] Agente {af.name} com commandExecutionPolicy inválido: '{policy}'")
     if "inheritCustomizations" not in meta:
         errors.append(f"[FAIL] Agente {af.name} exige 'inheritCustomizations' explícito")
-    if meta.get("subagent") is True and (not meta.get("max_steps") or not meta.get("stop_condition")):
+    if meta.get("subagent") is True and not (meta.get("max_steps") and meta.get("stop_condition")):
         errors.append(f"[FAIL] Subagente {af.name} exige 'max_steps' e 'stop_condition'")
-    tools = meta.get("tools")
-    if not isinstance(tools, list) or not tools:
-        errors.append(f"[FAIL] Agente {af.name} exige lista explícita não-vazia em 'tools'")
-    else:
-        bad_tools = sorted(str(t) for t in tools if str(t) in FORBIDDEN_AGENT_TOOLS)
-        if bad_tools:
-            errors.append(f"[FAIL] Agente {af.name} declara tools proibidas/legadas em tools: {bad_tools}")
+    _validate_agent_tools_list(af.name, meta.get("tools"), errors)
 
 
 def _validate_plugin_and_agents(repo_root: Path) -> List[str]:
@@ -491,6 +507,16 @@ def _resolve_skill_dirs(skills_root: Path, targets_arg: str | None) -> List[Path
     return [skills_root / t for t in targets if (skills_root / t).is_dir()]
 
 
+def _collect_extra_validation_errors(skill_dirs: List[Path], args: argparse.Namespace) -> List[str]:
+    """Consolida erros de colisão Jaccard, ecossistema e subagentes globais."""
+    extra_errors = [] if args.targets else check_jaccard_overlaps(skill_dirs)
+    if args.ecosystem:
+        extra_errors.extend(validate_ecosystem(ROOT_DIR))
+    if args.global_agents:
+        extra_errors.extend(validate_global_agents())
+    return extra_errors
+
+
 def main() -> int:
     """Ponto de entrada CLI do validador determinístico de skills e ecossistema."""
     parser = argparse.ArgumentParser(description="Validador determinístico de integridade de skills e ecossistema.")
@@ -523,11 +549,7 @@ def main() -> int:
             passed_skills += 1
             print(f"[PASS] {s_dir.name:<45}")
 
-    extra_errors = check_jaccard_overlaps(skill_dirs) if not args.targets else []
-    if args.ecosystem:
-        extra_errors.extend(validate_ecosystem(ROOT_DIR))
-    if args.global_agents:
-        extra_errors.extend(validate_global_agents())
+    extra_errors = _collect_extra_validation_errors(skill_dirs, args)
     for err in extra_errors:
         print(err)
 

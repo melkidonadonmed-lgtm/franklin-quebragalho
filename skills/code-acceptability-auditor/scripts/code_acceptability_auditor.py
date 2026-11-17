@@ -142,8 +142,12 @@ def _compute_cyclomatic_complexity(fn_node: ast.FunctionDef | ast.AsyncFunctionD
         curr = stack.pop()
         if isinstance(curr, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
             continue
-        if isinstance(curr, (ast.If, ast.For, ast.AsyncFor, ast.While, ast.ExceptHandler)):
+        if isinstance(curr, (ast.If, ast.For, ast.AsyncFor, ast.While, ast.ExceptHandler, ast.IfExp)):
             m_score += 1
+        elif isinstance(curr, ast.comprehension):
+            m_score += len(curr.ifs)
+        elif isinstance(curr, ast.BoolOp):
+            m_score += max(0, len(curr.values) - 1)
         stack.extend(ast.iter_child_nodes(curr))
     return m_score
 
@@ -172,26 +176,30 @@ def _is_stub_exempt_file(file_path: str) -> bool:
     return "tests" in {part.lower() for part in p.parts}
 
 
+def _is_docstring_expr(stmt: ast.stmt) -> bool:
+    """Retorna True se o statement for uma docstring literal."""
+    return isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant) and isinstance(stmt.value.value, str)
+
+
+def _is_single_stub_stmt(stmt: ast.stmt) -> bool:
+    """Retorna True se o statement único for pass, Ellipsis (...) ou raise NotImplementedError."""
+    if isinstance(stmt, ast.Pass):
+        return True
+    if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant):
+        return stmt.value.value is Ellipsis
+    if isinstance(stmt, ast.Raise) and stmt.exc is not None:
+        return _extract_ast_symbol_name(stmt.exc) == "NotImplementedError"
+    return False
+
+
 def _is_bare_stub_body(node: ast.FunctionDef | ast.AsyncFunctionDef, in_interface: bool) -> bool:
     """Detecta função/método vazio (pass, ..., raise NotImplementedError) fora de interfaces."""
     if in_interface or node.name in EXEMPT_STUB_DUNDERS or node.name.startswith("visit_"):
         return False
     if any(_extract_ast_symbol_name(dec) in EXEMPT_STUB_DECORATORS for dec in node.decorator_list):
         return False
-    effective = [
-        stmt for stmt in node.body
-        if not (isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant) and isinstance(stmt.value.value, str))
-    ]
-    if len(effective) != 1:
-        return False
-    stmt = effective[0]
-    if isinstance(stmt, ast.Pass):
-        return True
-    if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant) and stmt.value.value is Ellipsis:
-        return True
-    if isinstance(stmt, ast.Raise) and stmt.exc is not None:
-        return _extract_ast_symbol_name(stmt.exc) == "NotImplementedError"
-    return False
+    effective = [stmt for stmt in node.body if not _is_docstring_expr(stmt)]
+    return len(effective) == 1 and _is_single_stub_stmt(effective[0])
 
 
 class _ASTCodeVisitor(ast.NodeVisitor):
@@ -237,7 +245,7 @@ class _ASTCodeVisitor(ast.NodeVisitor):
         if not isinstance(val, str):
             return False
         stripped = val.strip()
-        if len(stripped) < 4:
+        if len(stripped) < 6:
             return False
         if stripped.lower() in SAFE_PLACEHOLDERS:
             return False
@@ -245,36 +253,42 @@ class _ASTCodeVisitor(ast.NodeVisitor):
             return False
         return True
 
-    def visit_Call(self, node: ast.Call) -> None:
-        func_name = ""
-        if isinstance(node.func, ast.Name):
-            func_name = node.func.id
-        elif isinstance(node.func, ast.Attribute):
-            base = node.func.value.id if isinstance(node.func.value, ast.Name) else ""
-            func_name = f"{base}.{node.func.attr}" if base else node.func.attr
+    @staticmethod
+    def _resolve_call_name(func: ast.AST) -> str:
+        if isinstance(func, ast.Name):
+            return func.id
+        if isinstance(func, ast.Attribute):
+            base = func.value.id if isinstance(func.value, ast.Name) else ""
+            return f"{base}.{func.attr}" if base else func.attr
+        return ""
 
+    @staticmethod
+    def _has_shell_true(keywords: List[ast.keyword]) -> bool:
+        for kw in keywords:
+            if kw.arg == "shell" and isinstance(kw.value, ast.Constant) and kw.value.value is True:
+                return True
+        return False
+
+    def visit_Call(self, node: ast.Call) -> None:
+        func_name = self._resolve_call_name(node.func)
         if func_name in {"eval", "exec", "builtins.eval", "builtins.exec"}:
             self._add(
                 "SEC001", "Segurança", "CRÍTICO", node.lineno, func_name,
                 f"Chamada perigosa a '{func_name}()' permite execução arbitrária de código.",
                 "Substituir por ast.literal_eval() ou parsing estruturado com Pydantic.",
             )
-
         if func_name in {"os.system", "os.popen"}:
             self._add(
                 "SEC002", "Segurança", "CRÍTICO", node.lineno, func_name,
                 f"Execução de comando via shell com '{func_name}()'.",
                 "Usar subprocess.run([...], shell=False, check=True).",
             )
-        elif func_name.startswith("subprocess.") or func_name in {"run", "Popen", "call", "check_call", "check_output"}:
-            for kw in node.keywords:
-                if kw.arg == "shell" and isinstance(kw.value, ast.Constant) and kw.value.value is True:
-                    self._add(
-                        "SEC002", "Segurança", "CRÍTICO", node.lineno, func_name,
-                        f"Subprocesso '{func_name}' invocado com shell=True.",
-                        "Definir shell=False e passar argumentos em lista.",
-                    )
-
+        elif (func_name.startswith("subprocess.") or func_name in {"run", "Popen", "call", "check_call", "check_output"}) and self._has_shell_true(node.keywords):
+            self._add(
+                "SEC002", "Segurança", "CRÍTICO", node.lineno, func_name,
+                f"Subprocesso '{func_name}' invocado com shell=True.",
+                "Definir shell=False e passar argumentos em lista.",
+            )
         self.generic_visit(node)
 
     def _check_secret_target_and_value(self, target_name: str, value_node: Optional[ast.AST], line: int) -> None:
@@ -320,16 +334,15 @@ class _ASTCodeVisitor(ast.NodeVisitor):
                 )
         self.generic_visit(node)
 
+    @staticmethod
+    def _is_noop_handler_stmt(stmt: ast.stmt) -> bool:
+        if isinstance(stmt, (ast.Pass, ast.Continue)):
+            return True
+        return isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant) and stmt.value.value is Ellipsis
+
     def visit_ExceptHandler(self, node: ast.ExceptHandler) -> None:
-        effective_body = [
-            stmt for stmt in node.body
-            if not (isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant) and isinstance(stmt.value.value, str))
-        ]
-        is_silent = len(effective_body) > 0 and all(
-            isinstance(stmt, (ast.Pass, ast.Continue))
-            or (isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant) and stmt.value.value is Ellipsis)
-            for stmt in effective_body
-        )
+        effective_body = [stmt for stmt in node.body if not _is_docstring_expr(stmt)]
+        is_silent = bool(effective_body) and all(self._is_noop_handler_stmt(stmt) for stmt in effective_body)
 
         if node.type is None:
             self._add(
@@ -512,6 +525,30 @@ class CodeAcceptabilityAuditor:
         )
 
 
+def _print_file_report(report: FileAuditReport, as_json: bool) -> int:
+    """Imprime o relatório de um arquivo e retorna o exit code."""
+    if as_json:
+        print(report.model_dump_json(indent=2))
+    else:
+        print(f"=== AUDITORIA DE ARQUIVO: {report.file_path} ===")
+        print(f"Status: {report.status} | Quality Score: {report.quality_score}/100.0 | Críticas: {report.critical_violations}")
+        print(f"Marcadores: {', '.join(report.deterministic_markers)}")
+        for v in report.violations:
+            print(f" - [L{v.line}] [{v.rule_id}] ({v.severity}, -{v.penalty}): {v.message} -> {v.recommendation}")
+    return 0 if report.status == "APPROVED" else 1
+
+
+def _print_dir_summary(summary: DirectoryAuditSummary, as_json: bool) -> int:
+    """Imprime o resumo de diretório e retorna o exit code."""
+    if as_json:
+        print(summary.model_dump_json(indent=2))
+    else:
+        print(f"=== AUDITORIA DE DIRETÓRIO: {summary.root_dir} ===")
+        print(f"Status Geral: {summary.overall_status} | Score Médio: {summary.average_score}/100.0")
+        print(f"Arquivos: {summary.total_files} | Aprovados: {summary.approved_files} | Rejeitados: {summary.rejected_files}")
+    return 0 if summary.overall_status == "APPROVED" else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Code Acceptability Auditor (AST + Pydantic v2)")
     parser.add_argument("--file", type=str, help="Caminho de um arquivo Python específico para auditar")
@@ -520,33 +557,13 @@ def main() -> int:
     parser.add_argument("--json", action="store_true", help="Emitir saída em JSON puro")
     parser.add_argument("--self-test", action="store_true", help="Executar auto-auditoria determinística do motor AST")
     args = parser.parse_args()
-    if args.self_test and not args.file and not args.dir:
-        args.file = str(Path(__file__).resolve())
-
+    target_file = args.file or (str(Path(__file__).resolve()) if args.self_test and not args.dir else "")
     auditor = CodeAcceptabilityAuditor(min_quality_score=args.min_score)
 
-    if args.file:
-        report = auditor.audit_file(args.file)
-        if args.json:
-            print(report.model_dump_json(indent=2))
-        else:
-            print(f"=== AUDITORIA DE ARQUIVO: {report.file_path} ===")
-            print(f"Status: {report.status} | Quality Score: {report.quality_score}/100.0 | Críticas: {report.critical_violations}")
-            print(f"Marcadores: {', '.join(report.deterministic_markers)}")
-            for v in report.violations:
-                print(f" - [L{v.line}] [{v.rule_id}] ({v.severity}, -{v.penalty}): {v.message} -> {v.recommendation}")
-        return 0 if report.status == "APPROVED" else 1
-
+    if target_file:
+        return _print_file_report(auditor.audit_file(target_file), args.json)
     if args.dir:
-        summary = auditor.audit_directory(args.dir)
-        if args.json:
-            print(summary.model_dump_json(indent=2))
-        else:
-            print(f"=== AUDITORIA DE DIRETÓRIO: {summary.root_dir} ===")
-            print(f"Status Geral: {summary.overall_status} | Score Médio: {summary.average_score}/100.0")
-            print(f"Arquivos: {summary.total_files} | Aprovados: {summary.approved_files} | Rejeitados: {summary.rejected_files}")
-        return 0 if summary.overall_status == "APPROVED" else 1
-
+        return _print_dir_summary(auditor.audit_directory(args.dir), args.json)
     parser.print_help()
     return 0
 

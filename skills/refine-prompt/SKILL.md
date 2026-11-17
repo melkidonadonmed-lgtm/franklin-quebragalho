@@ -1,6 +1,6 @@
 ---
 name: refine-prompt
-description: "Audit prompt feasibility, apply [FACT]/[INFERENCE]/[GAP] epistemic taxonomy, modulate Socratic entropy (fluid vs. low-entropy contracts), and rewrite prompts with Zero-Trust XML OWASP LLM 2026 guardrails. Use when auditing, hardening, or refining a standalone prompt. Do NOT use for full system architecture, coding blueprints, or local file maintenance."
+description: "Audit prompt feasibility, apply [FACT]/[INFERENCE]/[GAP] epistemic taxonomy, modulate Socratic entropy (fluid vs. low-entropy contracts), and rewrite prompts with Zero-Trust XML OWASP LLM 2026 guardrails. Use when auditing or refining a standalone prompt. Do NOT use for coding blueprints (solution-content-architect) or local disk cleanup (windows-disk-maintenance)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 metadata:
   author: "Franklin"

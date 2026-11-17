@@ -1,6 +1,6 @@
 # Deterministic Audit Criteria — `html-pdf-converter` (`v1.2.0`)
 
-Falsifiable boolean rules (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) under Module **M5 (Executive Markdown/HTML to PDF Conversion)**:
+Falsifiable boolean rules (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) for executive Markdown/HTML to PDF conversion:
 
 ---
 

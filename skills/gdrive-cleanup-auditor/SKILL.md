@@ -33,6 +33,7 @@ Detect oversized files (`> 100 MB`), stale archives/installers defined in [`refe
    - **Phase 2**: Confirm binary identity using `Get-FileHash -LiteralPath $file -Algorithm SHA256` (never classify duplicates by filename similarity alone).
 3. **Dry-Run Impact Plan (`-WhatIf`) & HITL Gate**: Display a preview table of duplicate pairs, hashes, and reclaimable MB; await explicit human approval before moving items.
 4. **Dated Quarantine Execution (`-LiteralPath`)**: Move approved items with `Move-Item -LiteralPath $dupItem -Destination "G:\Meu Drive\_Quarentena_Descarte\$(Get-Date -Format 'yyyy-MM-dd')"` (simulated via `-WhatIf` first).
+5. **ReAct Post-Move Verification (`Read-After-Write`)**: Verify `Test-Path -LiteralPath $destPath` and matching byte `Length` inside `_Quarentena_Descarte\YYYY-MM-DD\` before reporting completion.
 
 ## 4. Gotchas & Edge Cases
 

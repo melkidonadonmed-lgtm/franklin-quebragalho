@@ -16,20 +16,10 @@ from python_ast_auditor import audit_python_test_file
 from ts_js_auditor import audit_ts_js_test_file
 
 MCP_MARKERS = (
-    "jsonrpc",
-    "tools/list",
-    "tools/call",
-    "notifications/initialized",
-    "FastMCP",
-    "StdioServer",
-    "McpStdioServer",
-    "mcpserver",
-    "probe_mcp_server",
-    "franklin_skills_",
-    "franklin_harness_",
-    "franklin_execute_dag",
-    "franklin_run_skill_script",
-    "McpBridgeAgent",
+    "jsonrpc", "tools/list", "tools/call", "notifications/initialized",
+    "FastMCP", "StdioServer", "McpStdioServer", "mcpserver",
+    "probe_mcp_server", "franklin_skills_", "franklin_harness_",
+    "franklin_execute_dag", "franklin_run_skill_script", "McpBridgeAgent",
 )
 
 
@@ -103,29 +93,14 @@ def _extract_test_blocks_generic(code_str: str, language: str) -> List[Tuple[str
 
 
 def _make_mcp_issue(
-    issue_id: str,
-    title: str,
-    severity: str,
-    filename: str,
-    test_name: str,
-    start_line: int,
-    penalty: int,
-    desc: str,
-    rec: str,
+    issue_id: str, title: str, severity: str, filename: str,
+    test_name: str, start_line: int, penalty: int, desc: str, rec: str,
 ) -> AuditIssue:
     """Cria uma instância padronizada de AuditIssue para testes MCP."""
     return AuditIssue(
-        id=issue_id,
-        title=title,
-        category="Contrato & Protocolo MCP (JSON-RPC 2.0)",
-        severity=severity,
-        file=filename,
-        test_name=test_name,
-        line=start_line,
-        col=1,
-        penalty=penalty,
-        description=desc,
-        recommendation=rec,
+        id=issue_id, title=title, category="Contrato & Protocolo MCP (JSON-RPC 2.0)",
+        severity=severity, file=filename, test_name=test_name,
+        line=start_line, col=1, penalty=penalty, description=desc, recommendation=rec,
     )
 
 

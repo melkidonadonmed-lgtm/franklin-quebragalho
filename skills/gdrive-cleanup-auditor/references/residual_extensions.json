@@ -16,8 +16,7 @@
     ".tmp",
     ".bak",
     ".old",
-    ".crdownload",
-    ".drivedownload"
+    ".crdownload"
   ],
   "quarantine_structure": {
     "base_folder": "_Quarentena_Descarte",

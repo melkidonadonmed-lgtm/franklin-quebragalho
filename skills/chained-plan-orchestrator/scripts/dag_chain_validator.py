@@ -37,7 +37,7 @@ class ContextTransitionEnvelope(BaseModel):
     wave_index: int = Field(..., ge=0)
     sequence_index: int = Field(..., ge=0)
     target_skill: str
-    cognitive_pattern: str = "CoT"
+    cognitive_pattern: Literal["CoT", "ReAct", "ToT", "Self-Refine"] = "CoT"
     isolated_state_key: str
     input_payload: Dict[str, Any] = Field(default_factory=dict)
     active_rules: List[str] = Field(default_factory=list, max_length=MAX_ACTIVE_RULES)
@@ -212,8 +212,14 @@ def audit_wave_collisions_and_context(
     for w_idx, wave in enumerate(waves):
         collisions.extend(_check_single_wave_collisions(w_idx, wave, by_id))
 
+    id_set = set(by_id.keys())
     for n in nodes:
         nid = n["id"]
+        unknown_deps = [d for d in n.get("dependencies", []) if d not in id_set]
+        if unknown_deps:
+            context_violations.append(
+                f"[FAIL: UNKNOWN_DEPENDENCY] Nó '{nid}' referencia dependências inexistentes: {unknown_deps}."
+            )
         rcount = int(n.get("rules_count", len(n.get("active_rules", []))))
         if rcount > MAX_ACTIVE_RULES or len(n.get("active_rules", [])) > MAX_ACTIVE_RULES:
             context_violations.append(

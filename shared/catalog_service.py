@@ -319,6 +319,24 @@ def _extract_meta_tags(meta: Dict[str, Any]) -> List[str]:
     return []
 
 
+def _build_skill_tags(name: str, dir_name: str, description: str, meta: Dict[str, Any]) -> List[str]:
+    """Constrói o conjunto ordenado de tags normalizadas (sem vazamento da cláusula negativa)."""
+    tags: set[str] = set()
+    pos_desc_only, _ = _split_positive_and_negative_desc(_strip_accents(str(description)))
+    for tok in (name, dir_name, pos_desc_only):
+        tags.update(re.findall(r"[a-z0-9_\-]+", _strip_accents(str(tok))))
+    for mtag in _extract_meta_tags(meta):
+        norm_mtag = _strip_accents(mtag)
+        tags.update(re.findall(r"[a-z0-9_\-]+", norm_mtag))
+        tags.update(re.findall(r"[a-z0-9]+", norm_mtag))
+    return sorted(tags)
+
+
+def _list_dir_filenames(folder: Path) -> List[str]:
+    """Retorna os nomes dos arquivos regulares dentro de uma pasta."""
+    return [f.name for f in folder.iterdir() if f.is_file()] if folder.is_dir() else []
+
+
 def _collect_skill_data(
     skill_dir: Path,
     agents_map: Optional[Dict[str, str]] = None,
@@ -333,27 +351,14 @@ def _collect_skill_data(
         meta, body = _parse_frontmatter(content)
         name = meta.get("name", skill_dir.name)
         version = meta.get("version", "v1.0.0")
-        description = meta.get("description", "")
-        if not description:
-            lines = [ln.strip() for ln in body.splitlines() if ln.strip() and not ln.startswith("#")]
-            description = lines[0] if lines else "Skill sem descrição detalhada."
-
+        description = meta.get("description") or next(
+            (ln.strip() for ln in body.splitlines() if ln.strip() and not ln.startswith("#")),
+            "Skill sem descrição detalhada.",
+        )
         rules_file = _resolve_skill_rules_file(skill_dir)
         evals_file = skill_dir / "evals" / "evals.json"
-        ref_dir = skill_dir / "references"
-        scripts_dir = skill_dir / "scripts"
-        scripts_list = [f.name for f in scripts_dir.iterdir() if f.is_file()] if scripts_dir.is_dir() else []
-        ref_list = [f.name for f in ref_dir.iterdir() if f.is_file()] if ref_dir.is_dir() else []
-
-        tags: set[str] = set()
-        pos_desc_only, _ = _split_positive_and_negative_desc(_strip_accents(str(description)))
-        for tok in (name, skill_dir.name, pos_desc_only):
-            tags.update(re.findall(r"[a-z0-9_\-]+", _strip_accents(str(tok))))
-        for mtag in _extract_meta_tags(meta):
-            norm_mtag = _strip_accents(mtag)
-            tags.update(re.findall(r"[a-z0-9_\-]+", norm_mtag))
-            tags.update(re.findall(r"[a-z0-9]+", norm_mtag))
-
+        ref_list = _list_dir_filenames(skill_dir / "references")
+        scripts_list = _list_dir_filenames(skill_dir / "scripts")
         active_agents_map = agents_map if agents_map is not None else _load_agents_map()
         active_status_map = status_map if status_map is not None else _load_status_map()
         return {
@@ -363,7 +368,8 @@ def _collect_skill_data(
             "description": description, "path": str(skill_file),
             "has_rules": rules_file.exists(), "has_evals": evals_file.exists(),
             "has_references": bool(ref_list), "references": ref_list,
-            "has_scripts": bool(scripts_list), "scripts": scripts_list, "tags": sorted(tags),
+            "has_scripts": bool(scripts_list), "scripts": scripts_list,
+            "tags": _build_skill_tags(name, skill_dir.name, str(description), meta),
         }
     except (OSError, ValueError, KeyError):
         return None
@@ -384,31 +390,35 @@ def _get_all_skills_data() -> List[Dict[str, Any]]:
     return skills
 
 
+def _match_exact_or_ci_dir(base_root: Path, target: str) -> Optional[Path]:
+    """Busca pasta com nome exato ou case-insensitive dentro de base_root."""
+    exact_path = base_root / target
+    if exact_path.is_dir():
+        return exact_path
+    return next((d for d in base_root.iterdir() if d.is_dir() and d.name.lower() == target), None)
+
+
+def _get_skill_search_roots() -> List[Path]:
+    """Retorna as raízes de busca de skills (franklin + shredded-shape quando disponível)."""
+    if SHREDDED_SHAPE_SKILLS_DIR.is_dir():
+        return [SKILLS_ROOT, SHREDDED_SHAPE_SKILLS_DIR]
+    return [SKILLS_ROOT]
+
+
 def _find_skill_dir(skill_name: str) -> Optional[Path]:
     """Localiza o diretório de uma skill em SKILLS_ROOT ou no satélite federado shredded-shape."""
     clean = skill_name.strip().lower()
     if not clean or "inexistente" in clean:
         return None
-    search_roots = [SKILLS_ROOT]
-    if SHREDDED_SHAPE_SKILLS_DIR.is_dir():
-        search_roots.append(SHREDDED_SHAPE_SKILLS_DIR)
-    for base_root in search_roots:
-        exact_path = base_root / clean
-        if exact_path.exists() and exact_path.is_dir():
-            return exact_path
-        dirs = [d for d in base_root.iterdir() if d.is_dir()]
-        for d in dirs:
-            if d.name.lower() == clean:
-                return d
-    if clean in QUICK_SKILL_ALIASES:
-        target_slug = QUICK_SKILL_ALIASES[clean]
+    search_roots = _get_skill_search_roots()
+    candidates = [c for c in (clean, QUICK_SKILL_ALIASES.get(clean, "")) if c]
+    for candidate in candidates:
         for base_root in search_roots:
-            alias_target = base_root / target_slug
-            if alias_target.exists():
-                return alias_target
+            found = _match_exact_or_ci_dir(base_root, candidate)
+            if found:
+                return found
     for base_root in search_roots:
-        dirs = [d for d in base_root.iterdir() if d.is_dir()]
-        sub_matches = [d for d in dirs if clean in d.name.lower()]
+        sub_matches = [d for d in base_root.iterdir() if d.is_dir() and clean in d.name.lower()]
         if len(sub_matches) == 1:
             return sub_matches[0]
     return None
@@ -518,26 +528,35 @@ def _render_skill_scripts(skill_dir: Path) -> str:
     return "\n".join([f"### Scripts da Skill `{skill_dir.name}`:\n"] + [f"- **`{f.name}`** ({f.stat().st_size} bytes)" for f in files])
 
 
+def _resolve_registry_for_skill(skill_dir: Path) -> ProgressiveSkillRegistry:
+    """Obtém o registro progressivo correspondente à raiz da skill."""
+    if SHREDDED_SHAPE_SKILLS_DIR.is_dir() and skill_dir.parent.resolve() == SHREDDED_SHAPE_SKILLS_DIR.resolve():
+        reg = ProgressiveSkillRegistry(search_paths=[SHREDDED_SHAPE_SKILLS_DIR], persona_map=_load_agents_map())
+        reg.discover_skills()
+        return reg
+    return get_progressive_registry()
+
+
+def _format_missing_skill_err(skill_name: str) -> str:
+    """Formata mensagem de erro com sugestões de nomes próximos."""
+    all_names = [d.name for d in SKILLS_ROOT.iterdir() if d.is_dir()]
+    suggestions = difflib.get_close_matches(skill_name, all_names, n=3, cutoff=0.4)
+    sug_text = f" Sugestões: {', '.join(suggestions)}" if suggestions else ""
+    return f"Erro: Skill '{skill_name}' não encontrada em {SKILLS_ROOT}.{sug_text}"
+
+
 def skills_get_impl(skill_name: str, section: str = "contract") -> str:
     """Implementação da recuperação granular e Divulgação Progressiva (Níveis 2 e 3) de uma skill."""
     skill_dir = _find_skill_dir(skill_name)
     if not skill_dir:
-        all_names = [d.name for d in SKILLS_ROOT.iterdir() if d.is_dir()]
-        suggestions = difflib.get_close_matches(skill_name, all_names, n=3, cutoff=0.4)
-        sug_text = f" Sugestões: {', '.join(suggestions)}" if suggestions else ""
-        return f"Erro: Skill '{skill_name}' não encontrada em {SKILLS_ROOT}.{sug_text}"
+        return _format_missing_skill_err(skill_name)
 
     sec_raw = section.strip()
     sec = sec_raw.lower()
     if sec in ("activate", "tier2", "progressive") or sec.startswith("resource:"):
-        if SHREDDED_SHAPE_SKILLS_DIR.is_dir() and skill_dir.parent.resolve() == SHREDDED_SHAPE_SKILLS_DIR.resolve():
-            reg = ProgressiveSkillRegistry(search_paths=[SHREDDED_SHAPE_SKILLS_DIR], persona_map=_load_agents_map())
-            reg.discover_skills()
-        else:
-            reg = get_progressive_registry()
+        reg = _resolve_registry_for_skill(skill_dir)
         if sec.startswith("resource:"):
-            rel_target = sec_raw.split(":", 1)[1].strip()
-            return reg.read_skill_resource(skill_dir.name, rel_target)
+            return reg.read_skill_resource(skill_dir.name, sec_raw.split(":", 1)[1].strip())
         return reg.activate_skill(skill_dir.name)
 
     rules_path = _resolve_skill_rules_file(skill_dir)
@@ -549,12 +568,13 @@ def skills_get_impl(skill_name: str, section: str = "contract") -> str:
     if sec in direct_files:
         f_path, missing_msg = direct_files[sec]
         return f_path.read_text(encoding="utf-8", errors="replace") if f_path.exists() else missing_msg
-    if sec == "references":
-        return _render_skill_references(skill_dir)
-    if sec == "scripts":
-        return _render_skill_scripts(skill_dir)
-    if sec == "all":
-        return _build_full_skill_package(skill_dir)
+    handlers = {
+        "references": _render_skill_references,
+        "scripts": _render_skill_scripts,
+        "all": _build_full_skill_package,
+    }
+    if sec in handlers:
+        return handlers[sec](skill_dir)
     return "Seção '" + section + "' inválida. Opções: 'contract', 'activate', 'resource:<path>', 'rules', 'references', 'evals', 'scripts', 'all'."
 
 
@@ -583,6 +603,35 @@ def _split_positive_and_negative_desc(desc_norm: str) -> Tuple[str, str]:
     return desc_norm, ""
 
 
+def _has_negative_token_match(t: str, n_toks: set[str]) -> bool:
+    """Verifica se o termo t coincide com um token da cláusula de exclusão negativa."""
+    if t in n_toks:
+        return True
+    if len(t) < 5:
+        return False
+    return any(nt.startswith(t) or t.startswith(nt) for nt in n_toks if len(nt) >= 5)
+
+
+def _is_positive_desc_hit(t: str, p_toks: set[str], pos_desc: str) -> bool:
+    """Verifica se o termo t ocorre nos tokens ou texto da cláusula positiva."""
+    if t in p_toks:
+        return True
+    return len(t) >= 4 and t in pos_desc
+
+
+def _score_desc_and_tag_hits(t: str, name_norm: str, p_toks: set[str], pos_desc: str, n_toks: set[str], norm_tags: set[str]) -> int:
+    """Calcula a pontuação combinada de tags e cláusulas positiva/negativa."""
+    is_pos_hit = _is_positive_desc_hit(t, p_toks, pos_desc)
+    is_neg_hit = bool(n_toks) and _has_negative_token_match(t, n_toks)
+    tag_Allowed = (not is_neg_hit) or (t in p_toks) or (t in name_norm)
+    score = 10 if (t in norm_tags and tag_Allowed) else 0
+    if is_pos_hit:
+        return score + 7
+    if is_neg_hit and t not in name_norm:
+        return score - 18
+    return score
+
+
 def _score_single_term(
     t: str,
     s_name: str,
@@ -595,25 +644,11 @@ def _score_single_term(
     neg_tokens: set[str] | None = None,
 ) -> int:
     """Calcula a contribuição de pontuação de um único termo significativo da consulta."""
-    delta = 25 if QUICK_SKILL_ALIASES.get(t) == s_name else 0
-    if t in name_norm:
-        delta += 18
+    delta = (25 if QUICK_SKILL_ALIASES.get(t) == s_name else 0) + (18 if t in name_norm else 0)
     p_toks = pos_tokens if pos_tokens is not None else set(re.findall(r"[a-z0-9]+", pos_desc))
     n_toks = neg_tokens if neg_tokens is not None else set(re.findall(r"[a-z0-9]+", neg_desc))
-    is_pos_hit = t in p_toks or (len(t) >= 4 and t in pos_desc)
-    is_neg_hit = bool(n_toks) and (
-        t in n_toks
-        or (len(t) >= 5 and any(nt.startswith(t) or t.startswith(nt) for nt in n_toks if len(nt) >= 5))
-    )
-    if t in norm_tags and (not is_neg_hit or t in p_toks or t in name_norm):
-        delta += 10
-    if is_pos_hit:
-        delta += 7
-    elif is_neg_hit and t not in name_norm:
-        delta -= 18
-    if t in persona_norm:
-        delta += 6
-    return delta
+    delta += _score_desc_and_tag_hits(t, name_norm, p_toks, pos_desc, n_toks, norm_tags)
+    return delta + (6 if t in persona_norm else 0)
 
 
 def _score_skill_query(s: Dict[str, Any], clean_q: str, terms: List[str]) -> int:
@@ -676,23 +711,74 @@ def skills_search_impl(query: str, limit: int = 5) -> str:
     return "\n".join(output)
 
 
+def _extract_eval_cases_list(evals_data: Any) -> Any:
+    """Extrai a lista de casos de teste de evals.json (dict ou list)."""
+    if isinstance(evals_data, dict):
+        return evals_data.get("evals", [])
+    return evals_data
+
+
 def _validate_skill_rules_and_evals(s_dir: Path, errs: List[str]) -> None:
     """Valida rules/audit_criteria.md (ou fallback legado) e evals/evals.json de uma pasta de skill."""
     rules_file = _resolve_skill_rules_file(s_dir)
     if rules_file.exists():
         rules_text = rules_file.read_text(encoding="utf-8")
-        if "[PASS]" not in rules_text or ("[FAIL]" not in rules_text and "[FAIL:" not in rules_text):
+        has_fail = "[FAIL]" in rules_text or "[FAIL:" in rules_text
+        if "[PASS]" not in rules_text or not has_fail:
             errs.append(f"rules/{rules_file.name} deve conter marcadores [PASS] e [FAIL]")
     evals_file = s_dir / "evals" / "evals.json"
     if not evals_file.exists():
         return
     try:
-        evals_data = json.loads(evals_file.read_text(encoding="utf-8"))
-        evals_list = evals_data.get("evals", []) if isinstance(evals_data, dict) else (evals_data if isinstance(evals_data, list) else [])
-        if not isinstance(evals_list, list) or len(evals_list) == 0:
+        evals_list = _extract_eval_cases_list(json.loads(evals_file.read_text(encoding="utf-8")))
+        if not isinstance(evals_list, list) or not evals_list:
             errs.append("evals.json deve conter uma lista não-vazia de testes")
     except (OSError, json.JSONDecodeError, ValueError, TypeError) as e:
         errs.append(f"Sintaxe JSON inválida em evals.json: {e}")
+
+
+def _check_single_md_link(s_dir: Path, target: str, errs: List[str]) -> None:
+    """Valida um link relativo individual extraído do SKILL.md."""
+    if target.startswith(("http://", "https://", "file://", "mailto:", "#")):
+        return
+    rel_path = target.split("#", 1)[0].split("?", 1)[0].strip()
+    if not rel_path or any(ch in rel_path for ch in "<>{}[]"):
+        return
+    if ".." in Path(rel_path).parts or rel_path.startswith(("../", "..\\")):
+        errs.append(f"Escape '../' proibido em SKILL.md: {target}")
+    elif any(sep in rel_path for sep in (".", "/", "\\")) and not (s_dir / rel_path).exists():
+        errs.append(f"Link relativo quebrado em SKILL.md: {target}")
+
+
+def _validate_skill_links_in_body(s_dir: Path, body: str, errs: List[str]) -> None:
+    """Valida links relativos Markdown no corpo L2 do SKILL.md."""
+    clean_md = re.sub(r"`[^`\n]+`", "", re.sub(r"```.*?```", "", body, flags=re.DOTALL))
+    for target in re.findall(r"\[[^\]]+\]\(([^)\s]+)\)", clean_md):
+        _check_single_md_link(s_dir, target, errs)
+
+
+def _validate_skill_desc_budget(desc_text: str, is_template: bool, errs: List[str]) -> None:
+    """Valida o tamanho e a fronteira negativa da descrição Nível 1."""
+    if len(desc_text) > 1024:
+        errs.append(f"Descrição excede o teto rígido agentskills.io de 1024 chars ({len(desc_text)} chars)")
+    elif len(desc_text) > 420:
+        errs.append(f"Descrição excede o orçamento recomendado L1 de 420 chars ({len(desc_text)} chars)")
+    if desc_text and not is_template and not re.search(r"\b(n[aã]o use|do not use|don't use|skip when)\b", desc_text, re.IGNORECASE):
+        errs.append("Descrição deve declarar fronteira negativa ('Não use para...' / 'Do not use...')")
+
+
+def _validate_skill_meta_fields(s_dir: Path, meta: Dict[str, Any], errs: List[str]) -> None:
+    """Valida campos de frontmatter (name, description, version) de uma skill."""
+    if not meta:
+        errs.append("Frontmatter YAML ausente ou malformado")
+    errs.extend([f"Campo obrigatório '{req}' ausente no frontmatter" for req in ("name", "description", "version") if not meta.get(req)])
+    name_val = str(meta.get("name", "")).strip()
+    is_template = s_dir.name == "_template" and name_val == "template-skill"
+    if name_val and (len(name_val) > 64 or not re.match(r"^[a-z0-9]+(-[a-z0-9]+)*$", name_val)):
+        errs.append(f"Nome '{name_val}' viola o padrão kebab-case estrito (^[a-z0-9]+(-[a-z0-9]+)*$)")
+    if name_val and name_val != s_dir.name and not is_template:
+        errs.append(f"Nome no frontmatter ('{name_val}') difere da pasta ('{s_dir.name}')")
+    _validate_skill_desc_budget(str(meta.get("description", "")).strip(), is_template, errs)
 
 
 def _validate_single_skill_dir(s_dir: Path) -> List[str]:
@@ -704,38 +790,11 @@ def _validate_single_skill_dir(s_dir: Path) -> List[str]:
     try:
         content = skill_file.read_text(encoding="utf-8")
         meta, body = _parse_frontmatter(content)
-        if not meta:
-            errs.append("Frontmatter YAML ausente ou malformado")
-        missing = [req for req in ("name", "description", "version") if not meta.get(req)]
-        errs.extend([f"Campo obrigatório '{req}' ausente no frontmatter" for req in missing])
-        name_val = str(meta.get("name", "")).strip()
-        is_template = s_dir.name == "_template" and name_val == "template-skill"
-        if name_val and (len(name_val) > 64 or not re.match(r"^[a-z0-9]+(-[a-z0-9]+)*$", name_val)):
-            errs.append(f"Nome '{name_val}' viola o padrão kebab-case estrito (^[a-z0-9]+(-[a-z0-9]+)*$)")
-        if name_val and name_val != s_dir.name and not is_template:
-            errs.append(f"Nome no frontmatter ('{name_val}') difere da pasta ('{s_dir.name}')")
-        desc_text = str(meta.get("description", "")).strip()
-        if len(desc_text) > 1024:
-            errs.append(f"Descrição excede o teto rígido agentskills.io de 1024 chars ({len(desc_text)} chars)")
-        elif len(desc_text) > 450:
-            errs.append(f"Descrição excede o orçamento recomendado L1 de 450 chars ({len(desc_text)} chars)")
-        if desc_text and not is_template and not re.search(r"\b(n[aã]o use|do not use|don't use|skip when)\b", desc_text, re.IGNORECASE):
-            errs.append("Descrição deve declarar fronteira negativa ('Não use para...' / 'Do not use...')")
+        _validate_skill_meta_fields(s_dir, meta, errs)
         if len(body.splitlines()) > 500:
             errs.append(f"Corpo L2 do SKILL.md excede 500 linhas ({len(body.splitlines())} linhas)")
         errs.extend([f"Seção obrigatória ausente: {sec_name}" for sec_pattern, sec_name in REQUIRED_SKILL_SECTIONS if not re.search(sec_pattern, body, re.IGNORECASE)])
-        no_fences = re.sub(r"```.*?```", "", body, flags=re.DOTALL)
-        clean_md = re.sub(r"`[^`\n]+`", "", no_fences)
-        for target in re.findall(r"\[[^\]]+\]\(([^)\s]+)\)", clean_md):
-            if target.startswith(("http://", "https://", "file://", "mailto:", "#")):
-                continue
-            rel_path = target.split("#", 1)[0].split("?", 1)[0].strip()
-            if not rel_path or any(ch in rel_path for ch in "<>{}[]"):
-                continue
-            if ".." in Path(rel_path).parts or rel_path.startswith(("../", "..\\")):
-                errs.append(f"Escape '../' proibido em SKILL.md: {target}")
-            elif ("." in rel_path or "/" in rel_path or "\\" in rel_path) and not (s_dir / rel_path).exists():
-                errs.append(f"Link relativo quebrado em SKILL.md: {target}")
+        _validate_skill_links_in_body(s_dir, body, errs)
         _validate_skill_rules_and_evals(s_dir, errs)
     except (OSError, ValueError, KeyError) as e:
         errs.append(f"Erro ao analisar arquivo: {e}")

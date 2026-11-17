@@ -1,6 +1,6 @@
 ---
 name: test-quality-auditor
-description: "Audit test suites across 5 modules (Python, TS/JS, Go, MCP, and Harness) to detect Green Build Illusion, AAA pattern defects, and weak assertions, emitting grading.json and benchmark.json. Use for auditing test suites and evals. Do NOT use for production source AST checks or 3D physics."
+description: "Audit test suites across 5 modules (Python, TS/JS, Go, MCP, and Harness) to detect Green Build Illusion, AAA pattern defects, and weak assertions, emitting grading.json and benchmark.json. Use for auditing test suites and evals. Do NOT use for production Python AST checks (code-acceptability-auditor) or 3D physics (code-quality-audit-3d-physics)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 metadata:
   version: "1.3.0"
@@ -34,8 +34,8 @@ uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py <targe
 uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py --run-evals --eval-module harness
 ```
 
-1. **Modular Scan:** Run `test_quality_auditor.py` (5 domain auditors + `perfkit_stats.py` for $P_{50}..P_{99.9}$, `stddev` `ddof=1`, `geomean`).
-2. **7-Module Audit & Fix:** Analyze Problem, AAA, Tautology, Persistence Factors, Levels 1–4 (`0–100`), refactor to Level 4 + re-run (`pytest`/`go test`/`node --test`), and run [`scripts/eval_harness.py`](scripts/eval_harness.py).
+1. **Modular Scan (`CoT`):** Run `test_quality_auditor.py` (5 domain auditors + `perfkit_stats.py` for $P_{50}..P_{99.9}$, `stddev` `ddof=1`, `geomean`).
+2. **7-Module Audit & Fix (`ReAct + RAW`):** Analyze Problem, AAA, Tautology, Persistence Factors, Levels 1–4 (`0–100`), refactor to Level 4 + re-run (`pytest`/`go test`/`node --test`), and run [`scripts/eval_harness.py`](scripts/eval_harness.py) (`Read-After-Write`).
 
 ## 4. Gotchas & Edge Cases
 

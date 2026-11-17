@@ -1,4 +1,4 @@
-# Go Test Quality Module (`go_test_auditor.py` — `v1.1.0`)
+# Go Test Quality Module (`go_test_auditor.py` — `v1.3.0`)
 
 Defines the **7 Sequential Modules** and **Quality Spectrum (Levels 1–4)** for **Go (`*_test.go`, `testing`, Table-Driven Tests, Concurrency, and Google ADK Go v2)** test suites.
 
@@ -9,7 +9,7 @@ Defines the **7 Sequential Modules** and **Quality Spectrum (Levels 1–4)** for
 | Dimension | Critical Analysis & Engineering Approach |
 | :--- | :--- |
 | **The Problem** | **False Sense of Security in `go test ./...` (*Green Go Test Illusion*):** Any `func TestX(t *testing.T)` exiting without calling `t.Fail()`, `t.Error()`, `t.Fatal()`, or panicking reports `PASS (ok)`. Tests frequently discard errors (`res, _ := sut()`), log errors without failing (`t.Log(err)`), or check only `if res == nil`, letting critical bugs slip through. |
-| **The Approach** | **Structural Inspection of `testing.T`, Error Handling & Concurrency:** [`scripts/go_test_auditor.py`](../scripts/go_test_auditor.py) parses each `func Test*(t *testing.T)`, counts real guards (`t.Fatalf`, `t.Errorf`, `errors.Is`, `assert.*`), flags `_` error discards, blocks `t.Fatal` inside goroutines, and enforces `t.TempDir()`, `t.Setenv()`, and `t.Cleanup()`. |
+| **The Approach** | **Structural Inspection of `testing.T`, Error Handling & Concurrency:** [`scripts/go_test_auditor.py`](scripts/go_test_auditor.py) parses each `func Test*(t *testing.T)`, counts real guards (`t.Fatalf`, `t.Errorf`, `errors.Is`, `assert.*`), flags `_` error discards, blocks `t.Fatal` inside goroutines, and enforces `t.TempDir()`, `t.Setenv()`, and `t.Cleanup()`. |
 | **Target Outcome** | **Deterministic Guardrails & Race Immunity (*High Mutation Score*):** Any business contract violation, unexpected error, or resource leak deterministically fails `go test -race ./...`. |
 
 ---

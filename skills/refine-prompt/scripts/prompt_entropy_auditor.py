@@ -48,20 +48,22 @@ XML_ISOLATION_REGEX = re.compile(
 )
 BLIND_SELF_REFINE_REGEX = re.compile(
     r"(revis\S+\s+(?:tudo\s+)?silencios\S+|auto[- ]?refin\S+\s+silencios\S+|"
-    r"silencios\S+\s+antes\s+de\s+(?:responder|escrever))",
+    r"silencios\S+\s+antes\s+de\s+(?:responder|escrever)|"
+    r"silent(?:ly)?\s+(?:self[- ]?refin\w*|review\w*)|review\s+silently\s+before)",
     re.IGNORECASE,
 )
 AUTOREGRESSIVE_BUFFER_REGEX = re.compile(
-    r"(_pre_flight_check|_internal_audit|_audit_check|<thinking>|bloco\s+de\s+pensamento|racioc[ií]nio\s+nativo)",
+    r"(_pre_flight_check|_internal_audit|_audit_check|<thinking>|bloco\s+de\s+pensamento|racioc[ií]nio\s+nativo|native\s+thinking)",
     re.IGNORECASE,
 )
 RIGID_TEMPLATE_COLLAPSE_REGEX = re.compile(
     r"(sempre\s+em\s+exatamente\s+\d+\s+t[oó]picos|no\s+m[aá]ximo\s+\d+\s+palavras\s+por\s+t[oó]pico|"
-    r"termine\s+sempre\s+com\s+conclus[aã]o:|use\s+sempre\s+os\s+cabe[cç]alhos\s+introdu[cç][aã]o:)",
+    r"termine\s+sempre\s+com\s+conclus[aã]o:|use\s+sempre\s+os\s+cabe[cç]alhos\s+introdu[cç][aã]o:|"
+    r"always\s+(?:answer|respond)\s+in\s+exact(?:ly)?\s+\d+\s+(?:bullets|points)|always\s+end\s+with\s+conclusion:)",
     re.IGNORECASE,
 )
 ESCAPE_TOKEN_REGEX = re.compile(
-    r"(\[N[AÃ]O\s+INFORMADO|\[PENDENTE|missing_required_fields|zero\s+infer[eê]ncia)",
+    r"(\[N[AÃ]O\s+INFORMADO|\[NOT\s+PROVIDED|\[PENDENTE|\[PENDING|missing_required_fields|zero\s+(?:factual\s+)?infer(?:[eê]ncia|ence))",
     re.IGNORECASE,
 )
 SCRAPE_NOISE_REGEX = re.compile(
@@ -69,7 +71,8 @@ SCRAPE_NOISE_REGEX = re.compile(
     re.IGNORECASE,
 )
 LOW_ENTROPY_HINTS_REGEX = re.compile(
-    r"(<task_contract>|baixa\s+entropia|output_schema|output_format|responda\s+exclusivamente\s+em\s+json)",
+    r"(<task_contract>|baixa\s+entropia|low[- ]entropy|output_schema|output_format|"
+    r"responda\s+exclusivamente\s+em\s+json|respond\s+exclusively\s+with\s+valid\s+json)",
     re.IGNORECASE,
 )
 
@@ -265,7 +268,7 @@ def _resolve_input_text(file_arg: Optional[str], text_arg: Optional[str]) -> tup
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Auditor Determinístico de Entropia e Fluidez de Prompts (v3.2)")
+    parser = argparse.ArgumentParser(description="Auditor Determinístico de Entropia e Fluidez de Prompts (v3.3.0)")
     parser.add_argument("--file", type=str, help="Caminho de arquivo Markdown/XML/TXT contendo o prompt")
     parser.add_argument("--text", type=str, help="Texto inline do prompt para auditar")
     parser.add_argument(

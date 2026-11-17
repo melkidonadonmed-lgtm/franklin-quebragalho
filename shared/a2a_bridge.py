@@ -123,7 +123,10 @@ def _collect_a2a_skills(skills_dir: Path, kw: str) -> List[Dict[str, Any]]:
         )
         if not tags:
             tags = [folder.name, category, "franklin-skills"]
-        if kw and kw not in name.lower() and kw not in desc.lower() and kw not in category.lower():
+        pos_desc = re.split(
+            r"\b(?:n[aã]o use|do not use|don't use|skip when)\b", desc, maxsplit=1, flags=re.IGNORECASE
+        )[0].lower()
+        if kw and kw not in name.lower() and kw not in pos_desc and kw not in category.lower():
             continue
         skills_list.append(
             {

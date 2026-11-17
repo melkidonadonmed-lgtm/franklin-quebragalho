@@ -1,6 +1,6 @@
 # Technical Specification of AST & Regex Rules (`security_rules_spec.md` — `v1.1.0`)
 
-Engineering specification for deterministic detection of all 12 rules (`SEC001`..`SEC003`, `SYN001`, `ERR001`..`ERR003`, `TYP001`..`TYP002`, and `ARCH001`..`ARCH003`).
+Engineering specification for deterministic detection of all 13 rules (`SEC001`..`SEC003`, `SYN001`, `ERR001`..`ERR003`, `TYP001`..`TYP002`, `ARCH001`..`ARCH003`, and `STUB001`).
 
 ---
 
@@ -39,10 +39,11 @@ Engineering specification for deterministic detection of all 12 rules (`SEC001`.
 
 ---
 
-## 3. Typing, Modularity & Complexity Inspection (`TYP001`, `TYP002`, `ARCH001`..`ARCH003`)
+## 3. Typing, Modularity, Complexity & Stub Inspection (`TYP001`, `TYP002`, `ARCH001`..`ARCH003`, `STUB001`)
 
 - **`TYP001`**: Inspects `args.posonlyargs`, `args.args`, `args.kwonlyargs`, `args.vararg`, and `args.kwarg`. Exempts `self` and `cls`.
 - **`TYP002`**: Checks `node.returns is None` in `FunctionDef` and `AsyncFunctionDef`. Exempts `__init__` when arguments are typed or enforces `-> None` in strict mode.
 - **`ARCH001`**: Computes `span = (node.end_lineno or node.lineno) - node.lineno + 1`. Fires when `span > 60`.
 - **`ARCH002` (Cognitive Complexity)**: Recursively traverses function body counting nesting depth for `ast.If`, `ast.For`, `ast.AsyncFor`, `ast.While`, `ast.With`, `ast.AsyncWith`, and `ast.Try` (`elif` chains stay at the parent `if` depth). Fires when `max_depth > 3`.
 - **`ARCH003` (McCabe Cyclomatic Complexity)**: Computes $M = 1 + \text{decision points}$ (`If`, `For`, `AsyncFor`, `While`, `ExceptHandler`, `IfExp`, `comprehension.ifs`, and boolean `BoolOp`). Fires when $M > 10$.
+- **`STUB001` (Zero Tolerance for Fake Functions)**: Fires (`CRITICAL`, `-25.0`) when a non-abstract function/method body (outside `ABC`, `Protocol`, `@abstractmethod`, `@overload`, dunders, `.pyi`, or `tests/`) contains only `pass`, `...`, or `raise NotImplementedError`.

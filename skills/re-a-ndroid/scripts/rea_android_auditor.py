@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Motor determinístico de auditoria Android para a skill re-a-ndroid (v2.0.0).
+"""Motor determinístico de auditoria Android para a skill re-a-ndroid (v2.2.0).
 
 Calcula as 6 métricas matemáticas formais (Pass@k, L_cold, M_rotas, A_rate, T_ratio, FNR),
 inspeciona dumps do UI Automator (window_dump.xml) para validar contentDescription e alvos
@@ -225,6 +225,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--window-dump", type=str, default="", help="Caminho para window_dump.xml do uiautomator.")
     parser.add_argument("--source-file", type=str, default="", help="Arquivo descompilado para busca de placebo.")
     parser.add_argument("--dpi", type=int, default=160, help="Densidade DPI da tela para cálculo de 48dp.")
+    parser.add_argument("--cold-start-ms", type=float, nargs="*", default=[], help="Amostras TotalTime (ms) do am start -W.")
+    parser.add_argument("--edges", type=int, default=1, help="Arestas do grafo de rotas (E).")
+    parser.add_argument("--nodes", type=int, default=1, help="Nós do grafo de rotas (N).")
+    parser.add_argument("--components", type=int, default=1, help="Componentes conexos de rotas (P).")
+    parser.add_argument("--fn", type=int, default=0, help="Falsos negativos de segurança.")
+    parser.add_argument("--tp", type=int, default=1, help="Verdadeiros positivos de segurança.")
     parser.add_argument("--json", action="store_true", help="Emite saída exclusivamente em JSON.")
     args = parser.parse_args(argv)
 
@@ -241,16 +247,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         findings.extend(xml_f)
     if args.source_file:
         src_path = Path(args.source_file)
-        findings.extend(scan_source_for_placebo_and_cleartext(src_path.read_text(encoding="utf-8"), src_path.name))
+        src_files = (
+            [p for p in sorted(src_path.rglob("*")) if p.is_file() and p.suffix.lower() in {".java", ".kt", ".smali", ".xml"}]
+            if src_path.is_dir()
+            else [src_path]
+        )
+        for sf in src_files:
+            findings.extend(scan_source_for_placebo_and_cleartext(sf.read_text(encoding="utf-8", errors="ignore"), sf.name))
 
     a_rate, t_ratio = calculate_a11y_and_touch_metrics(total_nodes, valid_lbl, valid_tch)
     report = AndroidAuditMetrics(
         pass_at_k=calculate_pass_at_k(10, 10, 1),
-        cold_start_ms=0.0,
-        route_cyclomatic_density=1,
+        cold_start_ms=calculate_cold_start_latency(args.cold_start_ms),
+        route_cyclomatic_density=calculate_route_cyclomatic_density(args.edges, args.nodes, args.components),
         a11y_compliance_rate=a_rate,
         valid_touch_ratio=t_ratio,
-        security_fnr=0.0,
+        security_fnr=calculate_security_fnr(args.fn, args.tp),
         status="[PASS]" if not findings else "[FAIL]",
         findings=findings,
     )

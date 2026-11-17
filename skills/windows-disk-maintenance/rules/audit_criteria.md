@@ -1,6 +1,6 @@
 # Deterministic Audit Criteria — `windows-disk-maintenance` (`v1.2.0`)
 
-Falsifiable boolean rules (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) under Module **M4 (Local Windows 11 / PowerShell Operations)**:
+Falsifiable boolean rules (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) for Windows 11 local disk and `C:\Users\melki\dev\` maintenance:
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: flow-filetree-organizer
-description: "Transform raw app ideas and operational requirements into valid Mermaid flowcharts and commented ASCII directory trees with literal prompt preservation, MVP scope isolation, and .md/.pdf export options. Use when mapping visual workflows and folder structures. Do NOT use for AST security audits, full repo refactoring, or standalone HTML-to-PDF conversion."
+description: "Transform raw app ideas and operational requirements into valid Mermaid flowcharts and commented ASCII directory trees with literal prompt preservation, MVP scope isolation, and .md/.pdf export options. Use when mapping visual workflows and folder structures. Do NOT use for AST audits (code-acceptability-auditor), repo scaffolding (project-idea-organizer), or standalone PDF conversion (html-pdf-converter)."
 compatibility: "Antigravity 2.0, Markdown GFM, Mermaid, Edge Headless"
 metadata:
   author: "Franklin"
@@ -32,9 +32,9 @@ Converts raw app drafts, feature specs, and operational workflows into syntactic
 Follow the formatting rules and output template in [`references/mermaid_and_filetree_patterns.md`](references/mermaid_and_filetree_patterns.md):
 
 1. **Phase 0 — Literal Capture & Ambiguity Gate:** Copy the exact user text into `Original request:` verbatim (never paraphrase or summarize it). If essential parameters are absent, tag `[GAP]` and ask at most 1–2 concise HITL questions without inventing scope.
-2. **Phase & MVP Scoping:** Order stages sequentially (`Input -> Processing -> Output`), keep only core MVP modules inside the main flow, and isolate extras under `Optional Suggestions`.
+2. **Phase & MVP Scoping (`CoT + ToT`):** Order stages sequentially (`Input -> Processing -> Output`), keep only core MVP modules inside the main flow, and prune extras under `Optional Suggestions`.
 3. **Mermaid & Commented ASCII Tree:** Use double-quoted node labels whenever text contains `()`, `[]`, `/`, or `:`; attach `# <purpose>` comments to every folder and file node.
-4. **Direct Export (`.md` / `.pdf`):** Write `.md` via `write_file` or delegate `.pdf` export to `html-pdf-converter` when requested.
+4. **ReAct Export & RAW Verification (`.md` / `.pdf`):** Write `.md` via `write_file` (or delegate `.pdf` to `html-pdf-converter`) and perform a `Read-After-Write` check confirming file existence and non-zero byte length.
 
 ## 4. Gotchas & Edge Cases
 
@@ -44,7 +44,7 @@ Follow the formatting rules and output template in [`references/mermaid_and_file
 
 ## 5. Output Schema & Validation Criteria
 
-Deliver the 6-section template defined in [`references/mermaid_and_filetree_patterns.md`](references/mermaid_and_filetree_patterns.md) (Metadata Header, Literal `Original request`, Flow Steps, Changelog, Mermaid Diagram, Commented ASCII Tree, Execution Mode, Optional Suggestions, and Export Prompt), audited with `[PASS]`/`[FAIL]`/`[UNVERIFIED]` against [`rules/audit_criteria.md`](rules/audit_criteria.md).
+Deliver the canonical template in [`references/mermaid_and_filetree_patterns.md`](references/mermaid_and_filetree_patterns.md) (Metadata Header, Verbatim `Original request`, Organization Flow, plus Sections `1..6`: Changelog, Mermaid Diagram, Commented ASCII Tree, Execution Flow, Optional Suggestions, and Export Option), audited against [`rules/audit_criteria.md`](rules/audit_criteria.md).
 
 ## 6. User Communication Rule
 

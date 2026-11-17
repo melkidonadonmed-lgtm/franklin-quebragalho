@@ -30,6 +30,7 @@ Classify loose files in `G:\Meu Drive\` into canonical numbered folders defined 
 2. **Canonical Classification**: Route files strictly into the buckets of [`references/default_drive_taxonomy.json`](references/default_drive_taxonomy.json) (`[01]Projetos`, `01_Modelos_Rapidos`..`16_Documentos_comp_SUS`, `99_Arquivo_Historico`, `Franklin_Skills_Docs_2026`), stripping forbidden characters and double spaces without altering extensions.
 3. **Dry-Run & HITL Gate**: Present a `Current Path -> Canonical Destination` preview table and require explicit approval.
 4. **Safe Relocation**: Execute moves with `Move-Item -LiteralPath $sourceFile -Destination $targetBucket -WhatIf` before confirmed execution.
+5. **ReAct Post-Move Verification (`Read-After-Write`)**: Confirm `Test-Path -LiteralPath $targetPath` and verify the original file extension and byte size remain intact.
 
 ## 4. Gotchas & Edge Cases
 

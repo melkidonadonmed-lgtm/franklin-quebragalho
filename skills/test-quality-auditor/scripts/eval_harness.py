@@ -117,7 +117,7 @@ def _build_eval_reports(
 
     grading_data = {
         "skill_name": "test-quality-auditor",
-        "version": "1.2.0",
+        "version": "1.3.0",
         "module": module_name,
         "target_script": target_script,
         "timestamp": "2026-10-15T04:15:00-04:00",
@@ -132,7 +132,7 @@ def _build_eval_reports(
     }
     benchmark_data = {
         "skill_name": "test-quality-auditor",
-        "version": "1.2.0",
+        "version": "1.3.0",
         "module": module_name,
         "target_script": target_script,
         "iteration": 3,

@@ -1,7 +1,7 @@
 # 3D Physics & Numerical Math Scoring Structure
 
 > **Canonical Reference — Subskill 3 (`physics-3d-math-auditor`)**
-> Global Weight in Normalized Score ($w_3$): **25% to 30%**
+> Global Weight in Normalized Score ($w_3$): **25%**
 
 ---
 

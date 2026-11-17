@@ -57,7 +57,7 @@ class StateCheckpointSchema(BaseModel):
   "pruning_recommended": false,
   "objective": "Deterministic audit and Technical English standardization of canonical skills",
   "facts": [
-    {"tag": "FACT", "content": "8 Frontend skills audited and verified with zero duplicate files."},
+    {"tag": "FACT", "content": "21 canonical Franklin skills and 6 federated UI skills verified with zero duplicate files."},
     {"tag": "PENDING", "content": "Complete AST verification of test-quality-auditor scripts."},
     {"tag": "GAP", "content": "Confirm maintenance window for external ecosystem sync if applicable."}
   ],

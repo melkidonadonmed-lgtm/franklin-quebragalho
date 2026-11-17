@@ -31,6 +31,7 @@ Triage loose files in `C:\Users\melki\Downloads` and `Desktop` using [`reference
 2. **Non-Destructive Diagnostics (`-LiteralPath`)**: Group `Downloads` and `Desktop` files by extension via `Get-ChildItem -LiteralPath ... -File | Group-Object Extension` and compute total MB.
 3. **Dry-Run (`-WhatIf`), Lock Checks & Shielding**: Check open process locks on `.exe`/`.msi` binaries, skip protected Desktop launchers listed in [`references/local_retention_policy.json`](references/local_retention_policy.json) (e.g., `Cockpit-Melki.html`, `FrontCraft-Studio.cmd`), and display a `Source -> Destination` table.
 4. **Safe Relocation**: Route stale installers (`.exe`, `.msi`, `.iso`, `.msix`) to `C:\Users\melki\Downloads\_Instaladores` (and documents/media to policy buckets) using `Move-Item -LiteralPath ... -WhatIf` before HITL execution.
+5. **ReAct Post-Move Verification (`Read-After-Write`)**: Verify `Test-Path -LiteralPath $destPath` for relocated items and run `pwsh "C:\Users\melki\dev\tools\check-vault-projects.ps1"` when auditing `C:\Users\melki\dev\`.
 
 ## 4. Gotchas & Edge Cases
 

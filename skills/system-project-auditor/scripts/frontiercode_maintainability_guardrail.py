@@ -475,7 +475,7 @@ def audit_code_snippet(
         penalty += 2.5 * len(advisories)
 
         linear_quality_score = round(max(0.0, 100.0 - penalty), 2)
-        aprovado = len(hard_issues) == 0 and linear_quality_score >= 70.0
+        aprovado = len(hard_issues) == 0 and linear_quality_score >= 75.0
 
         return {
             "aprovado": aprovado,

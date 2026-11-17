@@ -2,7 +2,13 @@
 
 from pathlib import Path
 
-from scripts.sync_gemini_ecosystem import _mirror_context_to_root
+from scripts.sync_gemini_ecosystem import (
+    ROOT_DIR,
+    UI_SUBAGENTS,
+    _format_antigravity_agent_markdown,
+    _mirror_context_to_root,
+    _sync_antigravity_config_agents,
+)
 
 
 def test_context_removes_divergent_root_mirror_without_overwriting(tmp_path: Path) -> None:
@@ -61,3 +67,43 @@ def test_empty_repo_creates_nothing(tmp_path: Path) -> None:
     assert not (tmp_path / ".context").exists()
     assert not (tmp_path / "CONTEXT.md").exists()
     assert not (tmp_path / "SPEC.md").exists()
+
+
+def test_agent_markdown_format_is_idempotent_across_franklin_and_shredded_shape(tmp_path: Path) -> None:
+    """Ensure _format_antigravity_agent_markdown and _sync_antigravity_config_agents preserve byte parity."""
+    assert _sync_antigravity_config_agents(tmp_path / "missing_src", tmp_path / "dst") == 0
+
+    for agent_file in sorted((ROOT_DIR / "agents").glob("*.md")):
+        raw_lf = agent_file.read_text(encoding="utf-8").replace("\r\n", "\n")
+        formatted = _format_antigravity_agent_markdown(agent_file)
+        assert formatted == raw_lf, f"{agent_file.name} drifted from canonical _format_antigravity_agent_markdown()"
+
+    shredded_agents_dir = ROOT_DIR.parent / "shredded-shape" / "agents"
+    if shredded_agents_dir.is_dir():
+        dst_dir = tmp_path / ".agents" / "agents"
+        dst_dir.mkdir(parents=True)
+        (dst_dir / "stale-agent.md").write_text("stale\n", encoding="utf-8")
+        synced = _sync_antigravity_config_agents([shredded_agents_dir], dst_dir, allowed_files=UI_SUBAGENTS)
+        assert synced == len(UI_SUBAGENTS)
+        assert not (dst_dir / "stale-agent.md").exists()
+        for fname in UI_SUBAGENTS:
+            src_lf = (shredded_agents_dir / fname).read_text(encoding="utf-8").replace("\r\n", "\n")
+            dst_lf = (dst_dir / fname).read_text(encoding="utf-8").replace("\r\n", "\n")
+            assert _format_antigravity_agent_markdown(shredded_agents_dir / fname) == src_lf
+            assert dst_lf == src_lf
+
+    repo_dir = tmp_path / "folded_repo"
+    repo_agents = repo_dir / "agents"
+    repo_dot_agents = repo_dir / ".agents" / "agents"
+    repo_agents.mkdir(parents=True)
+    folded_src = (
+        "---\nname: ui-analyst\ndescription: >-\n"
+        "  Folded YAML description for Stage 0 analyst. Do NOT use for mutating code.\n"
+        "subagent: true\nmainAgent: false\nmodel: inherit\ncommandExecutionPolicy: sandbox\n"
+        "inheritMcp: true\ninheritCustomizations: true\nmax_steps: 10\nstop_condition: \"DONE\"\n"
+        "tools:\n  - read_file\n  - send_message\n---\n\n# Folded Agent\nRespond in pt-BR.\n"
+    )
+    (repo_agents / "ui-analyst.md").write_text(folded_src, encoding="utf-8", newline="\n")
+    assert _sync_antigravity_config_agents([repo_agents], repo_dot_agents, allowed_files=("ui-analyst.md",)) == 1
+    assert (repo_dot_agents / "ui-analyst.md").read_text(encoding="utf-8") == folded_src
+

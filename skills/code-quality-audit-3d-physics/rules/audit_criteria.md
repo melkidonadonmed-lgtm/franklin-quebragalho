@@ -34,6 +34,7 @@ Every audit executed by this skill MUST emit deterministic verdicts backed by AS
   - Position/velocity increment missing `dt` multiplier -> `[FAIL: MISSING_DELTA_TIME]` (`-40 pts` in $s_3$ / `-100 pts` in $S_1$)
   - `.normalize()` without zero-magnitude guard -> `[FAIL: UNCHECKED_NORMALIZE]` (`-25 pts` in $s_3$ / `-40 pts` in $S_2$)
   - Continuous Euler angle accumulation (`rotation.x/y/z +=`) -> `[FAIL: EULER_GIMBAL_LOCK]` (`-20 pts` in $s_3$ / `-50 pts` in $S_2$)
+  - Fast rigid-body motion lacking CCD or sub-stepping -> `[FAIL: MISSING_CCD_TUNNELING]` (`-20 pts` in $s_3$ / `-40 pts` in $S_4$)
   - Strict floating-point equality (`==` / `===`) -> `[FAIL: STRICT_FLOAT_COMPARE]` (`-15 pts` in $s_3$ / `-40 pts` in $S_5$)
   - Integrator missing damping/drag -> `[FAIL: MISSING_DAMPING]` (`-15 pts` in $s_3$ / `-30 pts` in $S_3$)
   - All 5 sub-dimensions ($S_1..S_5$) mathematically compliant -> `[PASS]`

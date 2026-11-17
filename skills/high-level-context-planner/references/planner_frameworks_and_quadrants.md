@@ -1,6 +1,6 @@
 # Intent Quadrants, Frameworks & Complexity Shielding (`high-level-context-planner`)
 
-Detailed reference complementing [`SKILL.md`](../SKILL.md), [`go_no_go_decision_matrix.md`](go_no_go_decision_matrix.md), [`handoff_consumption_protocol.md`](handoff_consumption_protocol.md), and [`context_plan_schema.json`](context_plan_schema.json).
+Detailed reference complementing `SKILL.md`, [`go_no_go_decision_matrix.md`](go_no_go_decision_matrix.md), [`handoff_consumption_protocol.md`](handoff_consumption_protocol.md), and [`context_plan_schema.json`](context_plan_schema.json).
 
 ## 1. Four-Quadrant Intent Matrix
 

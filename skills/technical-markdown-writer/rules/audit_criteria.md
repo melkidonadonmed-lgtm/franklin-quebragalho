@@ -1,6 +1,6 @@
 # Deterministic Audit Criteria — `technical-markdown-writer` (`v1.3.0`)
 
-Falsifiable boolean rules (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) under Module **M5 (Technical Markdown Documentation & Layout Shielding)**:
+Falsifiable boolean rules (`[PASS]`, `[FAIL]`, `[UNVERIFIED]`) for Technical Markdown authoring and layout shielding:
 
 ---
 

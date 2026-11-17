@@ -1,4 +1,4 @@
-# MCP Test Quality Module (`mcp_test_auditor.py` — `v1.1.0`)
+# MCP Test Quality Module (`mcp_test_auditor.py` — `v1.3.0`)
 
 Defines the **7 Sequential Modules** and **Quality Spectrum (Levels 1–4)** for **MCP (Model Context Protocol — JSON-RPC 2.0, FastMCP Python, Go `StdioServer`, TypeScript MCP, and WebSockets)** test suites, operating alongside `agent-server-auditor` (`references/audit-websocket-jsonrpc.md`) and grounded via `google-developer-knowledge` / `gemini_get_doc` (`aistudio.google.com/llms.txt`; never invoke disabled doc-search aliases) when Gemini SDKs are involved.
 
@@ -9,7 +9,7 @@ Defines the **7 Sequential Modules** and **Quality Spectrum (Levels 1–4)** for
 | Dimension | Critical Analysis & Engineering Approach |
 | :--- | :--- |
 | **The Problem** | **False Sense of Security in MCP Tools (*Green MCP Tool Illusion*):** MCP server tests frequently invoke tool functions directly or send a raw string over `stdio` and assert only `assert len(res) > 0` or `assert res is not None`. This hides critical protocol breaks: failed `initialize` negotiation, malformed `notifications/initialized` containing an `id`, missing JSON-RPC `-32601` for unknown tools, corrupted JSON payloads, or Path Traversal (`../`) leaks. |
-| **The Approach** | **JSON-RPC 2.0 Contract, Schema Discovery & Zero-Trust Boundary Auditing:** [`scripts/mcp_test_auditor.py`](../scripts/mcp_test_auditor.py) inspects Python, Go, and TS/JS MCP tests, enforcing full lifecycle coverage (`initialize` $\rightarrow$ `notifications/initialized` $\rightarrow$ `tools/list` $\rightarrow$ `tools/call`), structural JSON parsing (`json.loads` / `json.Unmarshal`), `-32601` error verification, and explicit rejection of adversarial inputs. |
+| **The Approach** | **JSON-RPC 2.0 Contract, Schema Discovery & Zero-Trust Boundary Auditing:** [`scripts/mcp_test_auditor.py`](scripts/mcp_test_auditor.py) inspects Python, Go, and TS/JS MCP tests, enforcing full lifecycle coverage (`initialize` $\rightarrow$ `notifications/initialized` $\rightarrow$ `tools/list` $\rightarrow$ `tools/call`), structural JSON parsing (`json.loads` / `json.Unmarshal`), `-32601` error verification, and explicit rejection of adversarial inputs. |
 | **Target Outcome** | **Deterministic Interoperability & Zero-Trust Hardening:** Ensure any regression in `stdio`/HTTP transport, tool schemas, or `SemanticGuard`/`CheckpointStore` immediately fails the test suite. |
 
 ---

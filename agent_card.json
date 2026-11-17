@@ -35,7 +35,7 @@
     {
       "id": "agent-server-auditor",
       "name": "agent-server-auditor",
-      "description": "Audit agentic architectures, MCP 2026-07-28 STDIO stdout hygiene, A2A v1.0 JWS agent-cards, binary hygiene, max_steps loop guards, and persist memories/audit_report.json. Use for auditing agents, MCP/A2A tooling, and WebSockets/JSON-RPC. Do NOT use for frontend UI or unit-test suites.",
+      "description": "Audit agentic architectures, MCP 2026-07-28 STDIO stdout hygiene, A2A v1.0 JWS agent-cards, binary hygiene, max_steps loop guards, and persist memories/audit_report.json. Use for auditing agents, MCP/A2A servers, and WebSockets/JSON-RPC. Do NOT use for UI (ui-quality-judge), test suites (test-quality-auditor), or single-file Python AST (code-acceptability-auditor).",
       "tags": [
         "agent-server-auditor",
         "auditar",
@@ -59,7 +59,7 @@
     {
       "id": "android-agy-projects",
       "name": "android-agy-projects",
-      "description": "Design, scaffold MVPs, and audit Android projects (Kotlin 2.4+, AGP 9 Built-in Kotlin, KSP2, Jetpack Compose, Navigation 3, R8 Full Mode, ANR, and memory leaks). Use to build or audit Android/Gradle apps. Do NOT use for iOS, web Next.js, or APK reverse engineering.",
+      "description": "Design, scaffold MVPs, and audit Android projects (Kotlin 2.4+, AGP 9 Built-in Kotlin, KSP2, Jetpack Compose, Navigation 3, R8 Full Mode, ANR, and memory leaks). Use to build or audit Android/Gradle apps. Do NOT use for iOS, web Next.js (ui-clean-worker), or APK reverse engineering (re-a-ndroid).",
       "tags": [
         "android-agy-projects",
         "android",
@@ -83,7 +83,7 @@
     {
       "id": "chained-plan-orchestrator",
       "name": "chained-plan-orchestrator",
-      "description": "Compile execution plans into topological DAG waves using Kahn's algorithm, prevent parallel file-write collisions, isolate worker state via Context Fork (<= 5 rules), and dispatch sequential waves with HITL checkpoints. Use when orchestrating multi-skill DAG pipelines. Do NOT use for single-turn tasks or initial Phase 0 planning from scratch.",
+      "description": "Compile execution plans into topological DAG waves using Kahn's algorithm, prevent parallel file-write collisions, isolate worker state via Context Fork (<= 5 rules), and dispatch sequential waves with HITL checkpoints. Use when orchestrating multi-skill DAG pipelines. Do NOT use for single-turn tasks, Phase 0 planning (high-level-context-planner), or trace RCA (gap-analyzer-auditor).",
       "tags": [
         "chained-plan-orchestrator",
         "orquestracao",
@@ -107,7 +107,7 @@
     {
       "id": "code-acceptability-auditor",
       "name": "code-acceptability-auditor",
-      "description": "Audit Python modules statically via AST against eval/exec, shell=True, hardcoded secrets, missing type hints, silenced exceptions, and functions >60 lines. Use to compute the Quality Score (>=75) before commits. Do NOT use for theoretical questions, test suites, or 3D physics.",
+      "description": "Audit Python modules statically via AST against eval/exec, shell=True, hardcoded secrets, missing type hints, silenced exceptions, stubs, and functions >60 lines. Use to compute the Quality Score (>=75) before commits. Do NOT use for theoretical Q&A, test suites (test-quality-auditor), or 3D physics (code-quality-audit-3d-physics).",
       "tags": [
         "code-acceptability-auditor",
         "ast",
@@ -131,7 +131,7 @@
     {
       "id": "code-quality-audit-3d-physics",
       "name": "code-quality-audit-3d-physics",
-      "description": "Audit and sanitize 3D physics engines, WebGL, Three.js, Babylon.js, shaders, collision stability, and Snorm Pass@10 scores in 3+1+1 envelope topology. Use to review 3D graphics and numerical simulation loops. Do NOT use for web CRUD, CSS styling, or unit-test AAA audits.",
+      "description": "Audit and sanitize 3D physics engines, WebGL, Three.js, Babylon.js, shaders, collision stability, and Snorm Pass@10 scores in 3+1+1 envelope topology. Use to review 3D graphics and numerical simulation loops. Do NOT use for web CRUD (system-project-auditor), CSS styling (ui-quality-judge), or unit-test AAA audits (test-quality-auditor).",
       "tags": [
         "code-quality-audit-3d-physics",
         "3d",
@@ -179,7 +179,7 @@
     {
       "id": "flow-filetree-organizer",
       "name": "flow-filetree-organizer",
-      "description": "Transform raw app ideas and operational requirements into valid Mermaid flowcharts and commented ASCII directory trees with literal prompt preservation, MVP scope isolation, and .md/.pdf export options. Use when mapping visual workflows and folder structures. Do NOT use for AST security audits, full repo refactoring, or standalone HTML-to-PDF conversion.",
+      "description": "Transform raw app ideas and operational requirements into valid Mermaid flowcharts and commented ASCII directory trees with literal prompt preservation, MVP scope isolation, and .md/.pdf export options. Use when mapping visual workflows and folder structures. Do NOT use for AST audits (code-acceptability-auditor), repo scaffolding (project-idea-organizer), or standalone PDF conversion (html-pdf-converter).",
       "tags": [
         "flow-filetree-organizer",
         "fluxo",
@@ -203,7 +203,7 @@
     {
       "id": "gap-analyzer-auditor",
       "name": "gap-analyzer-auditor",
-      "description": "Perform stateless 4-vector Root Cause Analysis (RCA) and Spec-to-Code convergence audits over logs, traces, and artifacts, separating [FACT]/[INFERENCE]/[GAP] and emitting YAML Hand-off Payloads. Use when diagnosing pipeline failures or Spec drift. Do NOT use for initial Phase 0 planning, static AST scans, or test suite grading.",
+      "description": "Perform stateless 4-vector Root Cause Analysis (RCA) and Spec-to-Code convergence audits over logs, traces, and artifacts, separating [FACT]/[INFERENCE]/[GAP] and emitting YAML Hand-off Payloads. Use when diagnosing pipeline failures or Spec drift. Do NOT use for Phase 0 planning (high-level-context-planner), Python AST scans (code-acceptability-auditor), or test grading (test-quality-auditor).",
       "tags": [
         "gap-analyzer-auditor",
         "brechas",
@@ -275,7 +275,7 @@
     {
       "id": "high-level-context-planner",
       "name": "high-level-context-planner",
-      "description": "Decompose complex goals into cognitive Phase 0 plans with 4-quadrant intent triage, parallelizable [ID] [P?] [US#] tasks, Go/No-Go matrices, and Complexity Tracking (<= 5 rules per node). Use when planning multi-phase epics or consuming RCA hand-offs. Do NOT use for single-turn tasks, raw log RCA, or executing Kahn DAG waves.",
+      "description": "Decompose complex goals into cognitive Phase 0 plans with 4-quadrant intent triage, parallelizable [ID] [P?] [US#] tasks, Go/No-Go matrices, and Complexity Tracking (<= 5 rules per node). Use when planning multi-phase epics or consuming RCA hand-offs. Do NOT use for single-turn tasks, raw log RCA (gap-analyzer-auditor), or executing Kahn DAG waves (chained-plan-orchestrator).",
       "tags": [
         "high-level-context-planner",
         "planejamento",
@@ -323,7 +323,7 @@
     {
       "id": "obsidian-vault-curator",
       "name": "obsidian-vault-curator",
-      "description": "Audit and curate the Obsidian vault (C:\\Users\\melki\\dev\\notes) for broken Wikilinks, YAML frontmatter repair, orphaned attachments, repo parity, and MemPalace batch indexing (wing notes). Use for bulk vault hygiene; do NOT use for quick single-note CRUD (obsidian-vault), authoring docs from scratch (technical-markdown-writer), or Windows/Drive disk cleanup.",
+      "description": "Audit and curate the Obsidian vault (C:\\Users\\melki\\dev\\notes) for broken Wikilinks, YAML frontmatter repair, orphaned attachments, repo parity, and MemPalace batch indexing (wing notes). Use for bulk vault hygiene; do NOT use for single-note CRUD (obsidian-vault), authoring docs from scratch (technical-markdown-writer), or Windows/Drive cleanup (windows-disk-maintenance, gdrive-cleanup-auditor).",
       "tags": [
         "obsidian",
         "vault",
@@ -347,7 +347,7 @@
     {
       "id": "project-idea-organizer",
       "name": "project-idea-organizer",
-      "description": "Bootstrap raw ideas into right-sized, runnable v1.0.0 MVPs via guided discovery, or sync existing repositories across Triad v2.1 governance docs, 1:1 disk-accurate README.md, active MCP/FastAPI/RPC contracts, and dry-run root hygiene. Use when starting an idea or aligning repo structure. Do NOT use for 0-100 AST/SGA audits, single-module coding, OS/Drive disk maintenance, or standalone Mermaid diagrams.",
+      "description": "Bootstrap raw ideas into right-sized runnable v1.0.0 MVPs or sync repositories across Triad v2.1 docs, 1:1 disk-accurate README.md, active MCP/FastAPI/RPC contracts, and dry-run root hygiene. Use when starting an idea or aligning repo structure. Do NOT use for 0-100 AST audits (system-project-auditor), single-module coding (solution-content-architect), or Mermaid trees (flow-filetree-organizer).",
       "tags": [
         "project-idea-organizer",
         "ideia",
@@ -371,7 +371,7 @@
     {
       "id": "re-a-ndroid",
       "name": "re-a-ndroid",
-      "description": "Reverse engineer and audit Android APKs using re-a-ndroid, REA, and ADB by decompiling DEX/.so binaries, inspecting v1-v3.1 signatures, detecting placebo security checks, measuring route latency, and verifying 48dp targets. Use to audit APKs. Do NOT use to scaffold greenfield MVPs or web apps.",
+      "description": "Reverse engineer and audit Android APKs using REA and ADB by decompiling DEX/.so binaries, inspecting v1-v3.1 signatures, detecting placebo security checks, measuring route latency, and verifying 48dp targets. Use to audit compiled APKs. Do NOT use to scaffold Android MVPs (android-agy-projects) or audit web apps (ui-frontend-analyst).",
       "tags": [
         "re-a-ndroid",
         "engenharia-reversa",
@@ -395,7 +395,7 @@
     {
       "id": "refine-prompt",
       "name": "refine-prompt",
-      "description": "Audit prompt feasibility, apply [FACT]/[INFERENCE]/[GAP] epistemic taxonomy, modulate Socratic entropy (fluid vs. low-entropy contracts), and rewrite prompts with Zero-Trust XML OWASP LLM 2026 guardrails. Use when auditing, hardening, or refining a standalone prompt. Do NOT use for full system architecture, coding blueprints, or local file maintenance.",
+      "description": "Audit prompt feasibility, apply [FACT]/[INFERENCE]/[GAP] epistemic taxonomy, modulate Socratic entropy (fluid vs. low-entropy contracts), and rewrite prompts with Zero-Trust XML OWASP LLM 2026 guardrails. Use when auditing or refining a standalone prompt. Do NOT use for coding blueprints (solution-content-architect) or local disk cleanup (windows-disk-maintenance).",
       "tags": [
         "refine-prompt",
         "refinar",
@@ -419,7 +419,7 @@
     {
       "id": "solution-content-architect",
       "name": "solution-content-architect",
-      "description": "Design and implement minimal, strictly typed production code, OpenAPI/JSON-RPC contracts, SQL/data optimizations, and domain blueprints. Use when solving concrete engineering problems, comparing real architectural trade-offs, or crafting structured enterprise prompts. Do NOT use for isolated epistemic prompt audits, Socratic entropy rewriting, codebase-wide AST scoring, greenfield scaffolding, or DAG scheduling.",
+      "description": "Design and implement minimal, strictly typed production code, OpenAPI/JSON-RPC contracts, SQL optimizations, and trade-off blueprints. Use for concrete engineering solutions and enterprise prompts. Do NOT use for standalone prompt audits (refine-prompt), repo AST scoring (system-project-auditor), greenfield scaffolding (project-idea-organizer), or DAG waves (chained-plan-orchestrator).",
       "tags": [
         "solution-content-architect",
         "solucao",
@@ -443,7 +443,7 @@
     {
       "id": "system-project-auditor",
       "name": "system-project-auditor",
-      "description": "Audit existing repositories (0-100 score + SGA) across real AST code health, Docs-vs-Disk parity, causal MVP blockers, and, for UI targets, 3-layer navigation (X activates Y), 60-30-10 OKLCH physics, and live agent-browser @eX DOM. Use for repository, MVP, and navigation audits. Do NOT use for refactoring or writing code, greenfield idea scaffolding, README syncing, or APK reverse engineering.",
+      "description": "Audit existing repositories (0-100 score + SGA) across real AST code health, Docs-vs-Disk parity, causal MVP blockers, and, for UI targets, 3-layer navigation (X activates Y), 60-30-10 OKLCH physics, and live agent-browser @eX DOM. Use for repository, MVP, and navigation audits. Do NOT use for coding (solution-content-architect), scaffolding (project-idea-organizer), or APKs (re-a-ndroid).",
       "tags": [
         "system-project-auditor",
         "auditoria-projetos-sistema",
@@ -491,7 +491,7 @@
     {
       "id": "test-quality-auditor",
       "name": "test-quality-auditor",
-      "description": "Audit test suites across 5 modules (Python, TS/JS, Go, MCP, and Harness) to detect Green Build Illusion, AAA pattern defects, and weak assertions, emitting grading.json and benchmark.json. Use for auditing test suites and evals. Do NOT use for production source AST checks or 3D physics.",
+      "description": "Audit test suites across 5 modules (Python, TS/JS, Go, MCP, and Harness) to detect Green Build Illusion, AAA pattern defects, and weak assertions, emitting grading.json and benchmark.json. Use for auditing test suites and evals. Do NOT use for production Python AST checks (code-acceptability-auditor) or 3D physics (code-quality-audit-3d-physics).",
       "tags": [
         "test-quality-auditor",
         "test-quality",
@@ -545,7 +545,7 @@
         "jku": "http://localhost:10999/public_keys.json",
         "typ": "JOSE+JSON"
       },
-      "signature": "c45c3908b695899d91f6e816ce05da5516d00fec11f69de5a7b477fd711113de"
+      "signature": "848beeff3dd1734adf753cb479e4bd75d3512925b3e2a5093b2c2d8db8aafeef"
     }
   ]
 }

@@ -1,6 +1,6 @@
 ---
 name: gap-analyzer-auditor
-description: "Perform stateless 4-vector Root Cause Analysis (RCA) and Spec-to-Code convergence audits over logs, traces, and artifacts, separating [FACT]/[INFERENCE]/[GAP] and emitting YAML Hand-off Payloads. Use when diagnosing pipeline failures or Spec drift. Do NOT use for initial Phase 0 planning, static AST scans, or test suite grading."
+description: "Perform stateless 4-vector Root Cause Analysis (RCA) and Spec-to-Code convergence audits over logs, traces, and artifacts, separating [FACT]/[INFERENCE]/[GAP] and emitting YAML Hand-off Payloads. Use when diagnosing pipeline failures or Spec drift. Do NOT use for Phase 0 planning (high-level-context-planner), Python AST scans (code-acceptability-auditor), or test grading (test-quality-auditor)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 metadata:
   author: "Franklin"
@@ -34,7 +34,7 @@ Stateless **Gate 3** analyzer for closed-loop failure diagnostics and Spec-to-Co
 Consult [`gap_analyzer_report_template.md`](references/gap_analyzer_report_template.md), [`closed_loop_architecture.md`](references/closed_loop_architecture.md), and [`rca_failure_taxonomy.md`](references/rca_failure_taxonomy.md):
 
 1. **Phase 1 — Epistemic Typing:** Isolate verbatim `[FACT]` entries, `[INFERENCE]` deductions, and `[GAP]` missing telemetry.
-2. **Phase 2 — 4-Vector RCA:** Classify root cause into *Context/Injection* (`> 5` rules/node), *Tooling/MCP*, *Architecture* (cycles/`[P]` collisions), or *Security/HITL* (emit `[HITL BLOCK]` on destructive risk).
+2. **Phase 2 — Causal CoT & 4-Vector RCA:** Trace `Trigger -> Propagation -> Breakage Point` (`CoT`) and classify into *Context/Injection* (`> 5` rules/node), *Tooling/MCP*, *Architecture* (cycles/`[P]` collisions), or *Security/HITL* (emit `[HITL BLOCK]` on destructive risk).
 3. **Phase 3 — ToT Parity (`<= 5` rules):** Contrast Option 1 (Surgical) vs. Option 2 (Architectural), suggest cognitive pattern (`ReAct`/`ToT`/`Self-Refine`), and reference `ui-brand-ux-planner` (`DESIGN.md`) for UI defects.
 4. **Phase 4 — Hand-Off & `/speckit-converge`:** Emit `CONVERGED` (leaving `tasks.md` untouched) or `APPEND_CONVERGENCE_TASKS` append-only.
 

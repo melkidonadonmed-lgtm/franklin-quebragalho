@@ -64,7 +64,7 @@ High-integrity automated tests obey strict **Arrange-Act-Assert (AAA)** separati
 
 ## 4. Why Defects Persist (5 Hidden Contamination Factors)
 
-1. **Implementation Coupling & Volatile Constants:** Hardcoded catalog counts (e.g., `assert len(skills) == 24`) break whenever legitimate items are added instead of checking filesystem parity.
+1. **Implementation Coupling & Volatile Constants:** Hardcoded catalog counts (e.g., `assert len(skills) == 21`) break whenever legitimate items are added instead of checking filesystem parity.
 2. **Temporal Non-Determinism (*Flaky Tests*):** Raw `time.sleep()`, `datetime.now()`, or wall-clock delta assertions (`Date.now() - start`) fail intermittently under CI CPU contention.
 3. **Tautological Mocks:** Stubbing services to echo the exact asserted literal bypasses type and schema invariants.
 4. **Missing State Teardown (*State Leakage*):** Mutating globals or writing checkpoints to disk without `try/finally` or `tmp_path` leaves dirty state if an assertion aborts early.
@@ -118,7 +118,7 @@ test-quality-auditor/
 | **Output Format** | "Return valid JSON." | "Output is valid JSON with keys `aprovado`, `score_medio`, `nivel_espectro`, `issues`." | Python (`json.loads` + Schema) |
 | **Date Formatting** | `assert.ok(formatted.length > 5)` | `assert.match(formatted, /^\d{2}\/\d{2}\/\d{4}/)` | Deterministic Regex |
 | **Global Isolation** | Loose `globalThis.window = mockWindow` | `try { ... } finally { globalThis.window = originalWindow; }` | AST Check (`GLOBAL_STATE_LEAKAGE`) |
-| **Live Catalog** | Fixed `assert len(data) == 24` | `assert len(data) == len(expected_skill_dirs) and len(data) >= 24` | Dynamic Filesystem Parity |
+| **Live Catalog** | Fixed `assert len(data) == 21` | `assert len(data) == len(expected_skill_dirs) and len(data) >= 21` | Dynamic Filesystem Parity |
 | **Go Test (`*_test.go`)** | `res, _ := sut(); if res == nil { t.Fatal() }` | `res, err := sut(); if err != nil { t.Fatalf(...) }` + `errors.Is` + `t.TempDir()` | Go Module (`go_test_auditor.py`) |
 | **MCP Server/Tool** | `res = call_mcp(); assert len(res) > 0` | `initialize` $\rightarrow$ `tools/list` $\rightarrow$ `json.loads`/`Unmarshal` + `-32601` + `BLOCKED` | MCP Module (`mcp_test_auditor.py`) |
 | **Harness (HITL & Evals)** | `SemanticGuard.sanitize_input(inj)` without `raises` | `pytest.raises(SecurityViolationError)` + `RiskLevel.CRITICAL` + `tmp_path` + `update_status` + `pass_rate_gain` | Harness Module (`harness_test_auditor.py`) |
@@ -127,7 +127,7 @@ test-quality-auditor/
 
 ## 7. Specialist Domain Modules & Mirrored Evals (`v1.3.0`)
 
-- **[Go Test Quality Module (`go_test_quality_module.md`)](go_test_quality_module.md):** 7-Module breakdown for `*_test.go` suites (`testing.T`, Table-Driven Tests, ADK Go v2, `SILENCED_ERROR_IN_TEST`, `WEAK_NIL_ONLY_ASSERT`, `UNSAFE_GOROUTINE_FATAL`, `GLOBAL_STATE_LEAKAGE`) $\leftrightarrow$ [`evals/modules/go_evals.json`](../evals/modules/go_evals.json).
-- **[MCP Test Quality Module (`mcp_test_quality_module.md`)](mcp_test_quality_module.md):** 7-Module breakdown for **Model Context Protocol** servers and tools (JSON-RPC 2.0 `stdio`, FastMCP Python, Go `StdioServer`) $\leftrightarrow$ [`evals/modules/mcp_evals.json`](../evals/modules/mcp_evals.json).
-- **[Harness Test Quality Module (`harness_test_quality_module.md`)](harness_test_quality_module.md):** 7-Module breakdown for **Governance Harnesses (Zero-Trust / HITL)** and **Eval-Driven Harnesses** $\leftrightarrow$ [`evals/modules/harness_evals.json`](../evals/modules/harness_evals.json).
-- **Base Mirrors:** [`evals/modules/python_evals.json`](../evals/modules/python_evals.json) ($\leftrightarrow$ `python_ast_auditor.py`) and [`evals/modules/ts_js_evals.json`](../evals/modules/ts_js_evals.json) ($\leftrightarrow$ `ts_js_auditor.py`).
+- **[Go Test Quality Module (`go_test_quality_module.md`)](go_test_quality_module.md):** 7-Module breakdown for `*_test.go` suites (`testing.T`, Table-Driven Tests, ADK Go v2, `SILENCED_ERROR_IN_TEST`, `WEAK_NIL_ONLY_ASSERT`, `UNSAFE_GOROUTINE_FATAL`, `GLOBAL_STATE_LEAKAGE`) $\leftrightarrow$ [`evals/modules/go_evals.json`](evals/modules/go_evals.json).
+- **[MCP Test Quality Module (`mcp_test_quality_module.md`)](mcp_test_quality_module.md):** 7-Module breakdown for **Model Context Protocol** servers and tools (JSON-RPC 2.0 `stdio`, FastMCP Python, Go `StdioServer`) $\leftrightarrow$ [`evals/modules/mcp_evals.json`](evals/modules/mcp_evals.json).
+- **[Harness Test Quality Module (`harness_test_quality_module.md`)](harness_test_quality_module.md):** 7-Module breakdown for **Governance Harnesses (Zero-Trust / HITL)** and **Eval-Driven Harnesses** $\leftrightarrow$ [`evals/modules/harness_evals.json`](evals/modules/harness_evals.json).
+- **Base Mirrors:** [`evals/modules/python_evals.json`](evals/modules/python_evals.json) ($\leftrightarrow$ `python_ast_auditor.py`) and [`evals/modules/ts_js_evals.json`](evals/modules/ts_js_evals.json) ($\leftrightarrow$ `ts_js_auditor.py`).

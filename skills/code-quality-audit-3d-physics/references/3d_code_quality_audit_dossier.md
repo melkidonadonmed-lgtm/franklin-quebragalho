@@ -25,13 +25,13 @@ Where:
 | :--- | :--- | :---: | :--- |
 | **1. Static Sanitization & Memory Cleanup** | `static-sanitization-auditor` | **20%** | Dead code, duplicate functions, memory leaks, and allocations inside 3D loops (`render`/`update`). |
 | **2. Modularity & Anti-Hardcoding** | `architecture-hardcoded-auditor` | **15%** | Physics-render decoupling, named constants (no magic numbers), and config injection. |
-| **3. 3D Physics & Numerical Math** | `physics-3d-math-auditor` | **25% to 30%** | Framerate independence, Delta Time (`dt`), Quaternions, float tolerances, and conservation laws. |
+| **3. 3D Physics & Numerical Math** | `physics-3d-math-auditor` | **25%** | Framerate independence, Delta Time (`dt`), Quaternions, float tolerances, and conservation laws. |
 | **4. Testability & Deterministic Tests** | `deterministic-tests-auditor` | **20%** | Dynamic runtime simulation batteries and reproducibility rate $\text{Pass}@k$. |
 | **5. Observability & State Verification** | `state-checker-observer` | **20%** | Cross-validation (false-positive pruning), file coverage, and final $S_{\text{norm}}$ consolidation. |
 
 ---
 
-## 2. Dimension 3 Deep-Dive: 3D Physics & Numerical Math (25%–30%)
+## 2. Dimension 3 Deep-Dive: 3D Physics & Numerical Math (25%)
 
 Dimension 3 ($s_{\text{Physics}} \in [0, 100]$) decomposes internally into 5 sub-dimensions:
 

@@ -32,6 +32,7 @@ Audit multi-turn context window health, mitigate semantic degradation (*context 
    - **`[PENDING]`**: Planned tasks awaiting execution in upcoming turns.
    - **`[GAP]`**: Missing required parameters needing user input or further inspection.
 3. **Strict Typed Validation**: Validate the snapshot against `StateCheckpointSchema` (`extra="forbid"`) in [`references/context_sentinel_schema.md`](references/context_sentinel_schema.md) before writing.
+4. **ReAct Persistence & RAW Verification**: Persist via `write_file` (`.context/context.md` / `state_checkpoint.json`) or `franklin_harness_checkpoint`, then re-read the saved file (`Read-After-Write`) to confirm valid JSON/Markdown and zero lost `[FACT]`/`[GAP]` items.
 
 ## 4. Gotchas & Edge Cases
 

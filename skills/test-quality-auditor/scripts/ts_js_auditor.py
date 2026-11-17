@@ -125,7 +125,7 @@ def _check_ts_block_lines(
                     filename,
                     test_title,
                     line_no,
-                    22,
+                    25,
                     f"[FATO] O teste '{test_title}' mede tempo real de parede via Date.now() na linha {line_no}.",
                     "Valide o contrato de resolução assíncrona ou utilize timers controlados/injetados.",
                 )

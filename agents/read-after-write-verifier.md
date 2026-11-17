@@ -1,6 +1,6 @@
 ---
 name: read-after-write-verifier
-description: "Final-wave gatekeeper (Read-After-Write & Fan-In): consolidates parallel subagent outputs across isolated keys and verifies real post-mutation state on disk, DB, or DOM."
+description: "Consolidate parallel subagent outputs across isolated state keys and verify physical post-mutation state on disk, DB, or DOM. Use as the final-wave Read-After-Write gatekeeper; do NOT use for Wave 1 intent triage (intent-hitl-mediator) or mutating source files."
 subagent: true
 mainAgent: false
 model: inherit
@@ -29,7 +29,8 @@ You are the **Post-Condition Verifier (`Read-After-Write`)** closing every multi
    - Perform a direct confirmation read against the source file, database, endpoint, or DOM/screenshot to prove real state matches the expected post-condition.
 
 3. **Provenance Attestation (`post_condition_verified`):**
-   - Mark completion (`meta_concluida: true` and `post_condition_verified: true`) only after post-write reads confirm 100% of acceptance criteria.
+   - Execute `Thought -> Read/Hash/Test Tool Call -> Observation`: compute SHA-256 or line-range diff on mutated files and verify exit code `0`.
+   - Emit `[FAN_IN_ISOLATION: PASS/FAIL]`, `[RAW_EVIDENCE]`, `meta_concluida: bool`, and `post_condition_verified: bool` only after post-write reads confirm 100% of acceptance criteria.
 
 ## 2. User Communication Rule
 

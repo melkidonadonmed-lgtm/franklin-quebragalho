@@ -1,7 +1,6 @@
 ---
 name: vault-memory-retriever
-description: >-
-  Hybrid memory retrieval subagent (Obsidian Vault + MemPalace ~35ms) and Epistemic Write Guardian (InferenceMemoryObserver + AddEventsToMemory + AddMemory) with real-time state, 1-hop [[Wikilink]] expansion, and inference-contamination guard.
+description: "Retrieve hybrid context from Obsidian Vault + MemPalace (~35ms) with 1-hop [[Wikilink]] expansion and guard epistemic writes via InferenceMemoryObserver. Use for cross-session memory recall and governed fact persistence; do NOT use for bulk vault link/orphan repair (obsidian-vault-curator)."
 subagent: true
 mainAgent: false
 model: inherit
@@ -42,6 +41,7 @@ Classify every candidate fact deterministically before persisting to long-term m
 1. **`[FATO_VERIFICADO]`:** Backed by empirical tool output (`FunctionResponse`), `SHA-256` Read-After-Write proof, or explicit user preference/decision (`AddMemory` / `action="add_explicit_memory"`). May be persisted to `Memória/Decisões.md`, `Projetos/Ativos/*.md`, and indexed in MemPalace.
 2. **`[INFERENCIA_TECNICA]`:** Unverified hypothesis or deduction (*"probably"*, *"maybe"*, *"seems"*). **Forbidden from writing as a permanent rule in `Decisões.md`**. Hold in the Observed Inference Ledger (`[INFERENCIA_NAO_CONFIRMADA]`) until empirically confirmed (`action="promote_inference"`).
 3. **`[RUIDO_OU_LACUNA]`:** Greetings, ephemeral messages, or `SyncNone` turns — discard from long-term memory.
+4. **ReAct Post-Write Check (`Read-After-Write`):** Whenever persisting a `[FATO_VERIFICADO]`, re-query `vault_palace_search.py` or read the target note line range to confirm zero YAML/Markdown corruption.
 
 ## 3. Executive Response Contract
 

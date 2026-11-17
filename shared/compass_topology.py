@@ -67,6 +67,10 @@ UI_SUBAGENT_ALIASES: Dict[str, str] = {
     "workspace-publisher": "dev-workspace-publisher",
     "dev-publisher": "dev-workspace-publisher",
     "dev_workspace_publisher": "dev-workspace-publisher",
+    "adk-go-operator": "adk-go-operator",
+    "go-operator": "adk-go-operator",
+    "adk-operator": "adk-go-operator",
+    "adk_go_operator": "adk-go-operator",
 }
 
 PERSONA_ALIASES: Dict[str, str] = {
@@ -107,14 +111,14 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
         "Foco em zero alocação no hot-loop (GC), multiplicação por dt e guarda contra NaN (sem burocracia de docstrings em helpers matemáticos).",
     ),
     (
-        ("medic", "saude", "clin", "prontuario", "receit", "calculadora", "paciente", "appmy", "scoreboard", "atlas", "hexagonal", "sofa"),
-        "🩺 Software Médico, Atlas 3D (`appmy`) & Scoreboard Hexagonal (`clinical_preceptor_orchestrator`)",
+        ("medic", "saude", "clin", "prontuario", "receit", "calculadora", "paciente", "appmy", "pcm", "scoreboard", "atlas", "hexagonal", "sofa"),
+        "🩺 Software Médico, Atlas 3D (`appmy`) & Scoreboard Hexagonal (`PCM` / `clinical_preceptor_orchestrator`)",
         ["clinical-minimalist-ui", "system-project-auditor", "ui-brand-ux-planner", "ui-quality-judge"],
         [
             ("system-project-auditor", "frontiercode_maintainability_guardrail.py", "Auditoria adaptativa FrontierCode (Tipagem, Bare Except, Segurança)"),
         ],
         "../shredded-shape/plans/ui_actor_critic_dag.json",
-        "Coordenador clínico unificado (clinical_preceptor_orchestrator em adk-py-agents/py_agent/pipelines/clinical_coordinator.py) com AgentTools separados: anatomy_3d_inspector (appmy) + hexagonal_score_calculator (scoreboard) e suíte UI federada em shredded-shape.",
+        "Coordenador clínico unificado (clinical_preceptor_orchestrator em adk-py-agents/py_agent/pipelines/clinical_coordinator.py) com AgentTools separados: anatomy_3d_inspector (appmy) + hexagonal_score_calculator (incorporado ao PCM) e suíte UI federada em shredded-shape.",
     ),
     (
         ("ui", "ux", "front", "tela", "botao", "menu", "css", "tailwind", "react", "design", "sombra", "tatil", "tactile", "elevacao"),
@@ -141,7 +145,7 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
     ),
     (
         ("prompt", "refin", "entropia", "desengess", "fluidez", "zero-trust", "socratic", "epistem"),
-        "🎯 Engenharia de Prompts, Fluidez Cognitiva & Contratos de Baixa Entropia (`refine-prompt` v3.2)",
+        "🎯 Engenharia de Prompts, Fluidez Cognitiva & Contratos de Baixa Entropia (`refine-prompt` v3.3.0)",
         ["refine-prompt", "solution-content-architect", "context-sentinel"],
         [
             ("refine-prompt", "prompt_entropy_auditor.py", "Auditor determinístico AST/Pydantic de entropia, rigidez burocrática e ancoragem 2026"),
@@ -182,7 +186,7 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
             ("agent-server-auditor", "agent_server_auditor.py", "Auditor arquitetural poliglota (Go/TS/Py) de agentes, higiene STDIO MCP, A2A JWS, binários e max_steps"),
             ("high-level-context-planner", "cognitive_plan_builder.py", "Motor Cognitivo: 4 quadrantes, CLAREZA/CREATE + CoT/ReAct/ToT/Self-Refine e Parede <= 5 regras/nó"),
             ("chained-plan-orchestrator", "dag_chain_validator.py", "Compilador de Ondas DAG (Kahn), detector de colisão de arquivos [P] e validador de Context Fork"),
-            ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão 1 AST + Pydantic v2 (12 regras: Segurança, Tipagem, McCabe <= 10, Score >= 75)"),
+            ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão 1 AST + Pydantic v2 (13 regras: Segurança, Tipagem, STUB001, McCabe <= 10, Score >= 75)"),
             ("test-quality-auditor", "test_quality_auditor.py", "Portão 2 de qualidade de suítes de testes em 5 módulos (Py/TS/Go/MCP/Harness + PerfKit)"),
             ("workspace", "validate_skills.py", "Validador determinístico das 21 skills canônicas"),
         ],
@@ -223,7 +227,7 @@ def _render_ecosystem_topology() -> str:
         "- **Camada 1 (Orquestração & Loop Fechado)**: `Franklin-Main` (Execução Direta) e `LoopPlanner` (`high-level-context-planner` Fase 0 -> `chained-plan-orchestrator` -> `gap-analyzer-auditor`).",
         "- **Camada 2 (Esquadrão Frontend Separado — `shredded-shape` Actor-Critic)**: `UI-Architect` -> `ui-analyst` (DevTools/Slop) -> `ui-planner` (Brand/Estilos/DAG<=5) -> `ui-worker` (ReAct/RAW) <-> `ui-judge` (WCAG 2.2 OKLCH `FNR<0.001`).",
         "- **Camada 3 (Gatekeepers Determinísticos AST/Pass@k — 0 tokens)**: `SkillCraft` (`code-acceptability-auditor` Score >= 75, `test-quality-auditor`), `3D Physics Auditor` (`franklin_execute_dag('physics')`) e `dispatch_skill_deterministic_tests` (Go Eval Harness).",
-        "- **Camada 4 (Malha Multiagente Cloud/Web & Clínica)**: `adk-go-mcp` + `adk-py-agents` + `adk-ts-agent` (`mesh_hybrid_orchestrator`, `self_healing_specialist`, `customer_issue_reviewer`, `AgyCalcCluster`, `clinical_preceptor_orchestrator` -> `anatomy_3d_inspector` [`appmy`] + `hexagonal_score_calculator` [`scoreboard`]), `epic-volta` (`DAGEngine` Kahn + `MCPBridgeAgent` + `ContextSentinel`), `mcp-web-agents` (Gateway 4+1 + `watchdogBridge.ts`) e `PCM`/`scoreboard` (`prescmed-clinical-reviewer`).\n",
+        "- **Camada 4 (Malha Multiagente Cloud/Web & Clínica)**: `adk-go-mcp` + `adk-py-agents` + `adk-ts-agent` (`mesh_hybrid_orchestrator`, `self_healing_specialist`, `customer_issue_reviewer`, `AgyCalcCluster`, `clinical_preceptor_orchestrator` -> `anatomy_3d_inspector` [`appmy`] + `hexagonal_score_calculator` [`PCM`]), `epic-volta` (`DAGEngine` Kahn + `MCPBridgeAgent` + `ContextSentinel`), `mcp-web-agents` (Gateway 4+1 + `watchdogBridge.ts`) e `PCM` (`prescmed-clinical-reviewer`).\n",
         "## 2. Personas Especialistas & Skills Vinculadas (`franklin-quebragalho`)",
     ]
     for p_name, s_list in sorted(by_persona.items()):

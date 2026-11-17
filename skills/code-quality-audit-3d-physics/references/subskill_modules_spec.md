@@ -42,6 +42,7 @@ Details the **5 Subskill Modules** composing the 3D code-quality audit topology 
 | `MISSING_DELTA_TIME` | Position/velocity step missing `dt` scaling | Critical | **-40 pts** |
 | `UNCHECKED_NORMALIZE` | `.normalize()` missing $\|\vec{v}\| > \epsilon$ guard | High | **-25 pts** |
 | `EULER_GIMBAL_LOCK` | Continuous 3D rotation via Euler angles | High | **-20 pts** |
+| `MISSING_CCD_TUNNELING` | Fast motion missing CCD or sub-stepping | High | **-20 pts** |
 | `STRICT_FLOAT_COMPARE` | Direct float comparison via `==` or `===` | Medium | **-15 pts** |
 | `MISSING_DAMPING` | Missing drag/damping coefficient | Medium | **-15 pts** |
 

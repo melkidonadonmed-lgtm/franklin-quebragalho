@@ -35,8 +35,8 @@ When obsolete, verbose, or contradictory notes remain active inside high-priorit
 - **Mandatory Metadata**: Every note under `Memória/` and `Projetos/` must include YAML frontmatter with `title`, `date: YYYY-MM-DD`, `status: ativo | arquivado | desatualizado`, and `tags`.
 - **Soft Delete Invalidation**:
   - Superseded notes receive `type: historico` or `type: arquivo` and `status: desatualizado` or `status: arquivado`.
-  - The JIT search engine [`vault_palace_search.py`](../scripts/vault_palace_search.py) automatically demotes notes with `type in ("historico", "arquivo")` or `status in ("desatualizado", "obsoleto", "arquivado")` to the `"arquivo"` room (`0.55x`–`0.60x` multiplier instead of `1.35x`–`1.40x`).
-- **SQLite Graph Hygiene ([`vault_kg_hydrator.py`](../scripts/vault_kg_hydrator.py))**:
+  - The JIT search engine (`scripts/vault_palace_search.py`) automatically demotes notes with `type in ("historico", "arquivo")` or `status in ("desatualizado", "obsoleto", "arquivado")` to the `"arquivo"` room (`0.55x`–`0.60x` multiplier instead of `1.35x`–`1.40x`).
+- **SQLite Graph Hygiene (`scripts/vault_kg_hydrator.py`)**:
   - Ignore `[[Wikilinks]]` inside code blocks/inline code and generic placeholders (`wikilinks`, `nome da nota`, `projeto`).
   - Purge stale triples (`DELETE FROM triples; DELETE FROM entities;`) before rehydrating the 4 `knowledge_graph.sqlite3` mirrors.
 - **Lock-Safe Windows Synchronization**:
