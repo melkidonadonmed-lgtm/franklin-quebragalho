@@ -107,31 +107,31 @@ MUT_ANNOTATIONS = {"readOnlyHint": False, "destructiveHint": False, "idempotentH
 def franklin_skills_list(
     status: str = "all", persona: str = "all", search: str = "", format: str = "markdown"
 ) -> str:
-    """Lista todas as skills disponíveis no ecossistema Franklin Quebra-Galho."""
+    """List all canonical Agent Skills available in the Franklin Quebra-Galho ecosystem."""
     return skills_list_impl(status=status, persona=persona, search=search, format=format)
 
 
 @mcp.tool(annotations=RO_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_skills_get(skill_name: str, section: str = "contract") -> str:
-    """Obtém o contrato completo (SKILL.md) ou seções específicas de uma skill."""
+    """Retrieve the full SKILL.md contract or specific sections (rules, scripts, references) of a skill."""
     return skills_get_impl(skill_name=skill_name, section=section)
 
 
 @mcp.tool(annotations=RO_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_skills_search(query: str, limit: int = 5) -> str:
-    """Busca semântica e por palavras-chave qual skill e persona ativar para uma tarefa."""
+    """Search by semantics and keywords to identify which skill and persona to activate for a task."""
     return skills_search_impl(query=query, limit=limit)
 
 
 @mcp.tool(annotations=RO_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_skills_validate(target_skill: str = "") -> str:
-    """Valida a integridade estrutural e de segurança das skills contra o padrão de 2026."""
+    """Validate structural integrity, frontmatter contracts, and security boundaries of Agent Skills."""
     return skills_validate_impl(target_skill=target_skill)
 
 
 @mcp.tool(annotations=RO_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_get_agents(agent_name: str = "") -> str:
-    """Obtém as definições dos agentes mestres (AGENTS.md), subagentes do Epic-Volta ou Topologia 3+1 de UI."""
+    """Retrieve definitions of master agents (AGENTS.md), subagents, or UI topology roles."""
     return get_agents_impl(agent_name=agent_name)
 
 
@@ -139,7 +139,7 @@ def franklin_get_agents(agent_name: str = "") -> str:
 def franklin_smart_compass(
     intent_or_path: str = "", auto_dispatch_dag: bool = False, target_dir: str = ""
 ) -> str:
-    """Bússola Inteligente (Smart Compass) do ecossistema Franklin + Epic-Volta."""
+    """Zero-LLM Smart Compass router mapping natural intent or paths to skills, subagents, and DAG plans."""
     return smart_compass_impl(
         intent_or_path=intent_or_path,
         auto_dispatch_dag=auto_dispatch_dag,
@@ -157,7 +157,7 @@ def franklin_run_skill_script(
     target_dir: str = "",
     idempotency_key: str = "",
 ) -> str:
-    """Executa um script determinístico localizado na pasta scripts/ de uma skill (suporta target_dir cross-project)."""
+    """Execute a deterministic script located in a skill's scripts/ directory with cross-project target_dir support."""
     return execute_with_idempotency(
         SESSIONS_DIR,
         idempotency_key,
@@ -182,7 +182,7 @@ def franklin_execute_dag(
     target_dir: str = "",
     idempotency_key: str = "",
 ) -> str:
-    """Executa um plano de orquestração em Grafo Acíclico Dirigido (DAG) no motor Epic-Volta."""
+    """Execute a Directed Acyclic Graph (DAG) orchestration plan on the Epic-Volta Kahn wave engine."""
     return execute_with_idempotency(
         SESSIONS_DIR,
         idempotency_key,
@@ -202,7 +202,7 @@ def franklin_execute_dag(
 def franklin_harness_guard(
     task_intent: str, proposed_tool_or_action: str = "", session_id: str = "default"
 ) -> str:
-    """Guardrail Central do Agent Harness (Engenharia de Governança 2026)."""
+    """Evaluate a proposed tool or action through the Agent Harness semantic guard and HITL risk policy."""
     return harness_guard_impl(
         harness_store=harness_store,
         task_intent=task_intent,
@@ -221,7 +221,7 @@ def franklin_harness_checkpoint(
     approval_token: str = "",
     idempotency_key: str = "",
 ) -> str:
-    """Gerencia checkpoints de governança HITL e sub-ações recursivas Harness²."""
+    """Manage HITL governance checkpoints and recursive Harness2 execution states."""
     effective_notes = notes
     if approval_token.strip() and not notes.strip().startswith("{"):
         effective_notes = f"{notes} [approval_token={approval_token.strip()}]".strip()
@@ -243,7 +243,7 @@ def franklin_harness_checkpoint(
 
 @mcp.tool(annotations=RO_ANNOTATIONS, meta=MCP_2026_META)
 def franklin_a2a_agent_card(skill_filter: str = "", verify_signature: bool = True) -> str:
-    """Gera e assina criptograficamente (JCS + JWS HMAC-SHA256) o AgentCard oficial A2A v1.0."""
+    """Generate and cryptographically sign (JCS + JWS HMAC-SHA256) the official A2A v1.0 AgentCard."""
     return a2a_agent_card_impl(skill_filter=skill_filter, verify_signature=verify_signature)
 
 
@@ -259,7 +259,7 @@ def franklin_a2a_dispatch_task(
     approval_token: str = "",
     idempotency_key: str = "",
 ) -> str:
-    """Despacha, consulta, retoma ou cancela uma Task no protocolo Agent2Agent (A2A v1.0) acoplado ao Harness HITL."""
+    """Dispatch, inspect, resume, or cancel an Agent2Agent (A2A v1.0) task coupled with HITL governance."""
     return a2a_dispatch_task_impl(
         a2a_task_manager=a2a_task_manager,
         query=query,
@@ -284,7 +284,7 @@ def franklin_mcp_build_advisor(
     preferred_language: str = "python",
     server_name: str = "franklin-mcp-service",
 ) -> str:
-    """Consultor Arquitetural MCP 2026-07-28 (build-with-agent-skills)."""
+    """Evaluate MCP 2026-07-28 architecture options (deployment, Pattern A/B, Elicitation vs Widget, .mcpb)."""
     result = evaluate_mcp_2026_architecture(
         connects_to=connects_to,
         audience=audience,
@@ -298,73 +298,73 @@ def franklin_mcp_build_advisor(
 
 
 # -----------------------------------------------------------------------------
-# Recursos MCP (@mcp.resource) e Prompts (@mcp.prompt) — Enxutos e Sincronizados
+# MCP Resources (@mcp.resource) & Prompts (@mcp.prompt)
 # -----------------------------------------------------------------------------
 @mcp.resource("skills://mcp-2026/spec")
 def get_mcp_2026_spec_resource() -> str:
-    """Matriz arquitetural MCP 2026-07-28 e diretrizes build-with-agent-skills."""
+    """MCP 2026-07-28 architectural matrix and build-with-agent-skills guidelines."""
     return json.dumps(evaluate_mcp_2026_architecture(), indent=2, ensure_ascii=False)
 
 
 @mcp.resource("skills://a2a/agent-card")
 def get_a2a_agent_card_resource() -> str:
-    """AgentCard oficial A2A v1.0 assinado com JWS (HMAC-SHA256)."""
+    """Official A2A v1.0 AgentCard signed with JWS (HMAC-SHA256)."""
     return json.dumps(build_franklin_agent_card(skills_dir=SKILLS_ROOT, sign=True), indent=2, ensure_ascii=False)
 
 
 @mcp.resource("skills://harness/checkpoints")
 def get_harness_checkpoints_resource() -> str:
-    """Checkpoints pendentes e histórico HITL do Harness."""
+    """Pending HITL checkpoints and Harness execution history."""
     return json.dumps([r.to_dict() for r in harness_store.list()], indent=2, ensure_ascii=False)
 
 
 @mcp.resource("skills://catalog")
 def get_catalog_resource() -> str:
-    """Consolidated JSON catalog of all 28 Canonical Agent Skills."""
+    """Consolidated JSON catalog of all Canonical Agent Skills."""
     return json.dumps(_get_all_skills_data(), indent=2, ensure_ascii=False)
 
 
 @mcp.resource("skills://catalog/xml")
 def get_catalog_xml_resource() -> str:
-    """Catálogo Nível 1 (<available_skills>) em XML enxuto."""
+    """Level 1 (<available_skills>) progressive disclosure catalog in compact XML."""
     return get_progressive_registry().render_catalog_prompt()
 
 
 @mcp.resource("skills://manifest")
 def get_manifest_resource() -> str:
-    """Manifesto completo de ciclo de vida (`MY_SKILLS.md`)."""
-    return MY_SKILLS_MD_PATH.read_text(encoding="utf-8", errors="replace") if MY_SKILLS_MD_PATH.exists() else "MY_SKILLS.md não encontrado."
+    """Complete skills lifecycle manifest (`MY_SKILLS.md`)."""
+    return MY_SKILLS_MD_PATH.read_text(encoding="utf-8", errors="replace") if MY_SKILLS_MD_PATH.exists() else "MY_SKILLS.md not found."
 
 
 @mcp.resource("skills://agents")
 def get_agents_resource() -> str:
-    """Arquitetura de Personas e Subagentes (`AGENTS.md`)."""
-    return AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace") if AGENTS_MD_PATH.exists() else "AGENTS.md não encontrado."
+    """Master agents and subagent architecture (`AGENTS.md`)."""
+    return AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace") if AGENTS_MD_PATH.exists() else "AGENTS.md not found."
 
 
 @mcp.resource("skills://agent/{agent_name}")
 def get_agent_contract_resource(agent_name: str) -> str:
-    """Contrato declarativo de uma persona ou subagente (`agents/*.md`)."""
+    """Declarative contract for a persona or subagent (`agents/*.md`)."""
     return franklin_get_agents(agent_name=agent_name)
 
 
 @mcp.resource("skills://skill/{skill_name}")
 def get_skill_resource(skill_name: str) -> str:
-    """Contrato operacional `SKILL.md` (Tier 2) de uma skill."""
+    """Operational Tier 2 contract (`SKILL.md`) for a skill."""
     return franklin_skills_get(skill_name=skill_name, section="contract")
 
 
 @mcp.prompt("activate_skill")
 def activate_skill_prompt(skill_name: str, user_intent: str) -> str:
-    """Prompt estruturado de ativação de uma skill com seu contrato e regras."""
+    """Structured activation prompt for executing a skill with its contract and audit rules."""
     skill_content = franklin_skills_get(skill_name=skill_name, section="contract")
     rules_content = franklin_skills_get(skill_name=skill_name, section="rules")
     return (
-        f"Você está assumindo o papel de executor especialista da skill '{skill_name}'.\n"
-        f"Siga o contrato operacional e os critérios determinísticos abaixo:\n\n"
-        f"--- CONTRATO ({skill_name}) ---\n{skill_content}\n\n"
-        f"--- REGRAS ---\n{rules_content}\n\n"
-        f"--- INTENÇÃO ---\n{user_intent}\n"
+        f"You are assuming the specialist executor role for skill '{skill_name}'.\n"
+        f"Follow the operational contract and deterministic criteria below:\n\n"
+        f"--- CONTRACT ({skill_name}) ---\n{skill_content}\n\n"
+        f"--- AUDIT RULES ---\n{rules_content}\n\n"
+        f"--- INTENT ---\n{user_intent}\n"
     )
 
 

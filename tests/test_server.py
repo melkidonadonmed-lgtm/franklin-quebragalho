@@ -27,8 +27,8 @@ def test_skills_list_all() -> None:
     assert "test-quality-auditor" in res
     assert "html-pdf-converter" in res
     assert "gdrive-cleanup-auditor" in res
-    assert "design-md" in res
-    assert "frontend-code-architect" in res
+    assert "design-md" not in res
+    assert "frontend-code-architect" not in res
     assert "analise-design-tatil-frontend" not in res
     assert "organizar-gdrive" not in res
     assert "organizar-local" not in res
@@ -40,19 +40,19 @@ def test_skills_list_all() -> None:
     expected_dirs = [d for d in server.SKILLS_ROOT.iterdir() if d.is_dir() and (d / "SKILL.md").exists()]
     assert isinstance(data, list)
     assert len(data) == len(expected_dirs)
-    assert len(data) >= 24
+    assert len(data) >= 21
 
 
 def test_skills_list_filters() -> None:
     """Valida os filtros por persona e status."""
-    ui_res = server.franklin_skills_list(persona="UI-Architect")
-    assert "design-md" in ui_res
-    assert "frontend-code-architect" in ui_res
-    assert "gdrive-cleanup-auditor" not in ui_res
+    skill_res = server.franklin_skills_list(persona="SkillCraft")
+    assert "code-acceptability-auditor" in skill_res
+    assert "test-quality-auditor" in skill_res
+    assert "gdrive-cleanup-auditor" not in skill_res
 
     drive_res = server.franklin_skills_list(persona="DriveMaster")
     assert "gdrive-cleanup-auditor" in drive_res
-    assert "design-md" not in drive_res
+    assert "code-acceptability-auditor" not in drive_res
 
 
 def test_skills_get_contract_and_sections() -> None:
@@ -81,7 +81,7 @@ def test_skills_search() -> None:
     assert "gdrive-cleanup-auditor" in drive_res
 
     front_res = server.franklin_skills_search("auditar propósito do projeto contraste espaçamento tipografia e camadas")
-    assert "system-project-auditor" in front_res or "design-md" in front_res or "frontend-code-architect" in front_res
+    assert "system-project-auditor" in front_res
 
 
 def test_skills_validate_deterministic() -> None:
@@ -98,10 +98,10 @@ def test_get_agents() -> None:
     assert "DriveMaster" in res
     assert "DocMaker" in res
     assert "LoopPlanner" in res
-    assert "ui-shell-navigator" in res
-    assert "ui-controls-data" in res
-    assert "ui-motion-interaction" in res
-    assert "ui-deterministic-observer" in res
+    assert "ui-analyst" in res
+    assert "ui-planner" in res
+    assert "ui-worker" in res
+    assert "ui-judge" in res
 
     eco_res = server.franklin_get_agents(agent_name="ecosystem")
     assert "Topologia Interativa de Agentes Multi-Repo" in eco_res
@@ -129,9 +129,9 @@ def test_get_agents() -> None:
     architect_dir = server._find_skill_dir("code-architect")
     ui_testing_dir = server._find_skill_dir("ui-testing")
     assert getattr(code_auditor_dir, "name", "") == "code-acceptability-auditor"
-    assert getattr(design_dir, "name", "") == "design-md"
-    assert getattr(architect_dir, "name", "") == "frontend-code-architect"
-    assert getattr(ui_testing_dir, "name", "") == "frontend-testing-auditor"
+    assert getattr(design_dir, "name", "") == "ui-brand-ux-planner"
+    assert getattr(architect_dir, "name", "") == "ui-clean-worker"
+    assert getattr(ui_testing_dir, "name", "") == "ui-quality-judge"
 
     self_test_out = server.franklin_run_skill_script(
         skill_name="code-auditor",
@@ -214,9 +214,9 @@ def test_resources() -> None:
 
 
 def test_prompts() -> None:
-    """Valida os prompts estruturados de 2026."""
+    """Validate structured prompts emitted by the Franklin MCP server."""
     p_act = server.activate_skill_prompt("technical-markdown-writer", "Escrever ata de reunião")
-    assert "Você está assumindo o papel de executor especialista" in p_act
+    assert "You are assuming the specialist executor role" in p_act
     assert "technical-markdown-writer" in p_act
 
     p_front = server.tactile_frontend_audit_prompt("https://meuapp.com")
@@ -236,20 +236,18 @@ def test_franklin_execute_dag_file() -> None:
 
 
 def test_franklin_execute_ui_composition_dag() -> None:
-    """Valida a execução em 3 ondas do plano plans/ui_composition_dag.json (Topologia 3+1)."""
+    """Valida a execução federada em 4 estágios do plano shredded-shape/plans/ui_actor_critic_dag.json."""
     import uuid
-    ui_plan = server.ROOT_DIR / "plans" / "ui_composition_dag.json"
+    ui_plan = server.ROOT_DIR.parent / "shredded-shape" / "plans" / "ui_actor_critic_dag.json"
     res_str = server.franklin_execute_dag(str(ui_plan), run_id=f"test-ui-comp-{uuid.uuid4().hex[:6]}")
     data = json.loads(res_str)
     assert data["status"] == "COMPLETED"
     assert data["total_tasks"] == 4
     assert data["completed_tasks"] == 4
-    assert "wave1_shell_navigator" in data["results"]
-    assert "wave2_controls_data" in data["results"]
-    assert "wave2_motion_interaction" in data["results"]
-    assert "wave3_deterministic_observer" in data["results"]
-    observer_out = data["results"]["wave3_deterministic_observer"]
-    assert observer_out["observer_audit_report"]["audit_checklist_status"] == "9/9 PASS"
+    assert "stage0_ui_analyst" in data["results"]
+    assert "stage1_ui_planner" in data["results"]
+    assert "stage2_ui_worker" in data["results"]
+    assert "stage3_ui_judge" in data["results"]
 
 
 def test_franklin_execute_dag_inline_json() -> None:
@@ -399,42 +397,42 @@ def test_arquitetura_deterministic_scorer_v2() -> None:
 
 
 def test_frontend_skills_and_ui_subagents_integration() -> None:
-    """Valida a integração das skills de frontend com os 4 subagentes de UI (Topologia 3+1) e o loader declarativo."""
+    """Valida a integração federada das skills de UI e 4 subagentes Actor-Critic de shredded-shape."""
+    shredded_root = server.ROOT_DIR.parent / "shredded-shape"
     ui_dir = server._find_skill_dir("ui")
     analise_dir = server._find_skill_dir("analise-ui")
     refatorar_dir = server._find_skill_dir("refatorar-ui")
-    assert ui_dir is not None and ui_dir.name == "design-md"
-    assert analise_dir is not None and analise_dir.name == "system-project-auditor"
-    assert refatorar_dir is not None and refatorar_dir.name == "frontend-code-architect"
+    assert ui_dir is not None and ui_dir.name == "ui-brand-ux-planner"
+    assert analise_dir is not None and analise_dir.name == "ui-frontend-analyst"
+    assert refatorar_dir is not None and refatorar_dir.name == "ui-clean-worker"
 
-    ui_dag_text = (server.ROOT_DIR / "plans" / "ui_composition_dag.json").read_text(encoding="utf-8")
+    ui_dag_text = (shredded_root / "plans" / "ui_actor_critic_dag.json").read_text(encoding="utf-8")
     for subagent_name in (
-        "ui-shell-navigator",
-        "ui-controls-data",
-        "ui-motion-interaction",
-        "ui-deterministic-observer",
+        "ui-analyst",
+        "ui-planner",
+        "ui-worker",
+        "ui-judge",
     ):
         assert subagent_name in ui_dag_text
 
     for skill_name in (
-        "design-md",
-        "frontend-code-architect",
+        "ui-brand-ux-planner",
+        "ui-clean-worker",
     ):
         contract = server.franklin_skills_get(skill_name, section="contract")
-        assert "rules/frontend-9-axes-guidelines.md" in contract
+        assert "DESIGN.md" in contract
 
     all_ui_agents = server.franklin_get_agents(agent_name="ui")
-    assert "ui-shell-navigator" in all_ui_agents
-    assert "ui-controls-data" in all_ui_agents
-    assert "ui-motion-interaction" in all_ui_agents
-    assert "ui-deterministic-observer" in all_ui_agents
+    assert "ui-analyst" in all_ui_agents
+    assert "ui-planner" in all_ui_agents
+    assert "ui-worker" in all_ui_agents
+    assert "ui-judge" in all_ui_agents
 
-    shell_contract = server.franklin_get_agents(agent_name="shell")
-    assert "Bento Grid" in shell_contract
-    observer_contract = server.get_agent_contract_resource("observer")
-    assert "AUDIT-VIS-01" in observer_contract
+    planner_contract = server.franklin_get_agents(agent_name="planner")
+    assert "Stitch" in planner_contract
+    judge_contract = server.get_agent_contract_resource("judge")
+    assert "FNR" in judge_contract
 
-    # Valida que agent_spec_loader.py carrega arquivos Markdown com YAML frontmatter
     import importlib.util
     import pytest
 
@@ -445,14 +443,14 @@ def test_frontend_skills_and_ui_subagents_integration() -> None:
     spec.loader.exec_module(module)
 
     for agent_md in (
-        "ui-shell-navigator.md",
-        "ui-controls-data.md",
-        "ui-motion-interaction.md",
-        "ui-deterministic-observer.md",
+        "ui-analyst.md",
+        "ui-planner.md",
+        "ui-worker.md",
+        "ui-judge.md",
     ):
-        parsed_spec = module.load_agent_spec(str(server.ROOT_DIR / "agents" / agent_md), verbose=False)
+        parsed_spec = module.load_agent_spec(str(shredded_root / "agents" / agent_md), verbose=False)
         assert parsed_spec["name"] == agent_md.removesuffix(".md")
-        expected_write = agent_md != "ui-deterministic-observer.md"
+        expected_write = agent_md == "ui-worker.md"
         assert parsed_spec["enable_write_tools"] is expected_write
         assert parsed_spec["inheritMcp"] is True
         assert parsed_spec["subagent"] is True and parsed_spec["mainAgent"] is False
@@ -462,14 +460,13 @@ def test_frontend_skills_and_ui_subagents_integration() -> None:
     agents_doc = server.franklin_get_agents()
     assert "invoke_subagent" in agents_doc
 
-    # Valida que agent_spec_loader.py funciona mesmo quando PyYAML (yaml=None) não está instalado
     orig_yaml = module.yaml
     try:
         module.yaml = None
         fallback_spec = module.load_agent_spec(
-            str(server.ROOT_DIR / "agents" / "ui-shell-navigator.md"), verbose=False
+            str(shredded_root / "agents" / "ui-worker.md"), verbose=False
         )
-        assert fallback_spec["name"] == "ui-shell-navigator"
+        assert fallback_spec["name"] == "ui-worker"
         assert fallback_spec["enable_write_tools"] is True
         assert fallback_spec["commandExecutionPolicy"] == "auto"
         assert fallback_spec["inheritMcp"] is True
@@ -523,7 +520,7 @@ def test_franklin_execute_dag_aliases_and_physics_plan(tmp_path: Path) -> None:
     for res_ui in conc_results:
         assert res_ui["status"] == "COMPLETED"
         assert res_ui["completed_tasks"] == 4
-        assert res_ui["results"]["wave3_deterministic_observer"]["final_status"] == "PASS"
+        assert "stage3_ui_judge" in res_ui["results"]
 
 
 def _seed(path: Path, text: str = "x\n") -> Path:
@@ -552,8 +549,16 @@ def test_gemini_ecosystem_directories(tmp_path: Path, monkeypatch: pytest.Monkey
     _seed(gemini_root / "plugins" / "legado.txt")
     _seed(gemini_root / "docs" / "legado.txt")
     stale_rule = _seed(gemini_root / "config" / "rules" / "regra-obsoleta.md", "---\ntrigger: always_on\n---\nobsoleta\n")
-    dup_probe = _seed(gemini_root / "config" / "skills" / "design-md" / "SKILL.md", "---\nname: design-md\n---\n")
+    dup_probe = _seed(gemini_root / "config" / "skills" / "ui-brand-ux-planner" / "SKILL.md", "---\nname: ui-brand-ux-planner\n---\n")
     user_skill = _seed(home / ".agents" / "skills" / "agent-browser" / "SKILL.md")
+    shredded_tmp = tmp_path / "repos" / "shredded-shape"
+    _seed(shredded_tmp / "plugin.json", '{"name": "shredded-shape", "version": "1.0.0", "logo": "assets/logo.svg"}\n')
+    _seed(shredded_tmp / "assets" / "logo.svg", "<svg/>\n")
+    _seed(shredded_tmp / "rules" / "frontend-9-axes-guidelines.md", "---\ntrigger: glob\nglobs: \"**/*.css\"\n---\n# UI\n")
+    _seed(shredded_tmp / "plans" / "ui_actor_critic_dag.json", '{"objective": "UI", "tasks": []}\n')
+    _seed(shredded_tmp / "skills" / "ui-brand-ux-planner" / "SKILL.md", "---\nname: ui-brand-ux-planner\ndescription: \"Use when planning UI. Do NOT use for backend.\"\n---\n")
+    for ui_ag in ("ui-analyst.md", "ui-planner.md", "ui-worker.md", "ui-judge.md"):
+        _seed(shredded_tmp / "agents" / ui_ag, f"---\nname: {ui_ag[:-3]}\ndescription: UI agent\nsubagent: true\nmainAgent: false\nmodel: inherit\ncommandExecutionPolicy: sandbox\ntools:\n  - read_file\n---\n# Body\n")
     repo = tmp_path / "repos" / "scoreboard"
     _seed(repo / ".context" / "context.md", "estado canônico\n")
     _seed(repo / "CONTEXT.md", "raiz desatualizada\n")
@@ -575,7 +580,7 @@ def test_gemini_ecosystem_directories(tmp_path: Path, monkeypatch: pytest.Monkey
     assert cli_skill.exists(), "sync não pode apagar ~/.gemini/skills (diretório ativo do Gemini CLI)"
     assert cli_extension.exists(), "sync não pode apagar ~/.gemini/extensions (diretório ativo do Gemini CLI)"
     assert user_skill.exists()
-    assert (gemini_root / "agents" / "ui-shell-navigator.md").exists()
+    assert (gemini_root / "agents" / "ui-analyst.md").exists()
     hitl_agent = (gemini_root / "agents" / "intent-hitl-mediator.md").read_text(encoding="utf-8")
     assert '  - "*"' not in hitl_agent
     assert "enable_write_tools:" not in hitl_agent
@@ -584,22 +589,26 @@ def test_gemini_ecosystem_directories(tmp_path: Path, monkeypatch: pytest.Monkey
     assert (gemini_root / "config" / "rules" / "quality-efficiency-guidelines.md").exists()
     assert not (gemini_root / "config" / "rules" / "frontend-9-axes-guidelines.md").exists()
     assert not (gemini_root / "config" / "rules" / "diretrizes-qualidade-eficiencia.md").exists()
-    assert (split_repo / ".agents" / "AGENTS.md").read_text(encoding="utf-8") == "# Kernel Split Preservado\n"
+    assert not (split_repo / ".agents" / "AGENTS.md").exists()
     assert (gemini_root / "config" / "agents" / "adk-go-operator.md").exists()
-    assert not (gemini_root / "config" / "agents" / "ui-shell-navigator.md").exists()
-    assert (gemini_root / "plans" / "ui_composition_dag.json").exists()
-    assert (gemini_root / "lib" / "agent_spec_loader.py").exists()
+    assert not (gemini_root / "config" / "agents" / "ui-analyst.md").exists()
+    assert (gemini_root / "plans" / "ui_actor_critic_dag.json").exists()
+    assert not (gemini_root / "lib" / "agent_spec_loader.py").exists()
+    assert (gemini_root / "lib" / "shared" / "agent_spec_loader.py").exists()
     assert (gemini_root / "doc" / "AGENTS.md").exists() and (gemini_root / "doc" / "agent_card.json").exists()
     plugin_root = gemini_root / "config" / "plugins" / "franklin-skills"
+    shredded_plugin = gemini_root / "config" / "plugins" / "shredded-shape"
     assert (plugin_root / "plugin.json").exists()
     assert (plugin_root / "scripts" / "antigravity_harness_hook.py").exists()
-    assert (plugin_root / "rules" / "frontend-9-axes-guidelines.md").exists()
+    assert (shredded_plugin / "rules" / "frontend-9-axes-guidelines.md").exists()
+    assert not (plugin_root / "rules" / "frontend-9-axes-guidelines.md").exists()
     assert not (plugin_root / "rules" / "quality-efficiency-guidelines.md").exists()
     assert not (plugin_root / "mcp_config.json").exists()
     skills_json = json.loads((gemini_root / "config" / "skills.json").read_text(encoding="utf-8"))
     assert skills_json["entries"][0]["path"] == (home / ".agents" / "skills").as_posix()
     assert not (home / "AGENTS.md").exists() and not (home / ".agents" / "AGENTS.md").exists()
-    assert (repo / "CONTEXT.md").read_text(encoding="utf-8") == "estado canônico\n"
+    assert not (repo / "CONTEXT.md").exists()
+    assert (repo / ".context" / "context.md").read_text(encoding="utf-8") == "estado canônico\n"
     assert (repo / ".agents" / "skills.json").exists()
     assert {p: p.stat().st_mtime_ns for p in guarded} == before, "o teste escreveu no home real"
 
@@ -611,14 +620,14 @@ def test_gemini_ecosystem_directories(tmp_path: Path, monkeypatch: pytest.Monkey
     expected_skill_ids = sorted(
         d.name for d in server.SKILLS_ROOT.iterdir() if d.is_dir() and (d / "SKILL.md").exists()
     )
-    assert f"{len(expected_skill_ids)} Skills canônicas" in card_data["description"]
+    assert f"{len(expected_skill_ids)} canonical Agent Skills" in card_data["description"]
     assert len(card_data["skills"]) == len(expected_skill_ids)
 
     compass_out = server.franklin_smart_compass(
         "Refatorar UI tátil minimalista",
-        target_dir=r"C:\Users\melki\dev\repos\franklin-quebragalho\skills\design-md\references",
+        target_dir=r"C:\Users\melki\dev\repos\shredded-shape\skills\ui-brand-ux-planner\references",
     )
-    assert 'target_dir="C:\\Users\\melki\\dev\\repos\\franklin-quebragalho\\skills\\design-md\\references"' in compass_out
+    assert 'target_dir="C:\\Users\\melki\\dev\\repos\\shredded-shape\\skills\\ui-brand-ux-planner\\references"' in compass_out
 
 
 def test_docs_and_catalog_truth_parity() -> None:
@@ -768,7 +777,7 @@ def test_cognitive_planner_and_dag_chain_validator_scripts() -> None:
     import scripts.validate_skills as vs
 
     skill_dirs = [d for d in server.SKILLS_ROOT.iterdir() if d.is_dir() and (d / "SKILL.md").exists()]
-    assert len(skill_dirs) >= 24
+    assert len(skill_dirs) >= 21
     assert not (server.SKILLS_ROOT / "audit-skills-antigravity").exists()
     for sd in skill_dirs:
         assert vs.validate_skill_dir(sd, strict_mode=True) == []

@@ -144,13 +144,18 @@ def _inject_target_dir_into_plan(plan_dict: Dict[str, Any], target_dir: str) -> 
 
 def _resolve_dag_plan_file(plan_str: str, target_dir: str = "") -> Tuple[Optional[Path], Optional[Path], Optional[str]]:
     """Resolve o arquivo de plano DAG por alias, caminho existente ou JSON inline temporário."""
+    ui_dag_path = ROOT_DIR.parent / "shredded-shape" / "plans" / "ui_actor_critic_dag.json"
     plan_aliases = {
-        "ui": ROOT_DIR / "plans" / "ui_composition_dag.json",
-        "frontend": ROOT_DIR / "plans" / "ui_composition_dag.json",
-        "3+1": ROOT_DIR / "plans" / "ui_composition_dag.json",
-        "ui_composition": ROOT_DIR / "plans" / "ui_composition_dag.json",
-        "ui_composition_dag": ROOT_DIR / "plans" / "ui_composition_dag.json",
-        "ui_composition_dag.json": ROOT_DIR / "plans" / "ui_composition_dag.json",
+        "ui": ui_dag_path,
+        "frontend": ui_dag_path,
+        "actor_critic": ui_dag_path,
+        "ui_actor_critic": ui_dag_path,
+        "ui_actor_critic_dag": ui_dag_path,
+        "ui_actor_critic_dag.json": ui_dag_path,
+        "3+1": ui_dag_path,
+        "ui_composition": ui_dag_path,
+        "ui_composition_dag": ui_dag_path,
+        "ui_composition_dag.json": ui_dag_path,
         "physics": ROOT_DIR / "plans" / "physics_code_audit_dag.json",
         "3d": ROOT_DIR / "plans" / "physics_code_audit_dag.json",
         "fisica": ROOT_DIR / "plans" / "physics_code_audit_dag.json",

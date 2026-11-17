@@ -27,7 +27,7 @@
     ]
   },
   "franklin-docs-ttl-probe": {
-    "enabled": false,
+    "enabled": true,
     "SessionStart": [
       {
         "type": "command",

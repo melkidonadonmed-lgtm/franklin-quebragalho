@@ -19,6 +19,8 @@ from shared.tools.frontmatter_parser import parse_frontmatter as _parse_frontmat
 ROOT_DIR = Path(__file__).resolve().parent.parent
 CANONICAL_SKILLS_DIR = ROOT_DIR / "skills"
 GLOBAL_PLUGIN_SKILLS_DIR = Path(r"C:\Users\melki\.gemini\config\plugins\franklin-skills\skills")
+SHREDDED_SHAPE_ROOT = ROOT_DIR.parent / "shredded-shape"
+SHREDDED_SHAPE_SKILLS_DIR = SHREDDED_SHAPE_ROOT / "skills"
 
 if CANONICAL_SKILLS_DIR.exists():
     SKILLS_ROOT = CANONICAL_SKILLS_DIR
@@ -34,13 +36,12 @@ if not EPIC_VOLTA_DIR.exists():
     EPIC_VOLTA_DIR = Path(r"C:\Users\melki\dev\repos\epic-volta")
 
 CANONICAL_PERSONA_MAPPING: Dict[str, str] = {
+    "ui-frontend-analyst": "UI-Architect",
+    "ui-brand-ux-planner": "UI-Architect",
+    "ui-clean-worker": "UI-Architect",
+    "ui-quality-judge": "UI-Architect",
     "complex-zero": "UI-Architect",
-    "plan-uiux": "UI-Architect",
     "clinical-minimalist-ui": "UI-Architect",
-    "design-md": "UI-Architect",
-    "frontend-code-architect": "UI-Architect",
-    "frontend-testing-auditor": "UI-Architect",
-    "frontend-ui-ux-auditor": "UI-Architect",
     "gdrive-cleanup-auditor": "DriveMaster",
     "gdrive-taxonomy-organizer": "DriveMaster",
     "windows-disk-maintenance": "FileOpsLocal",
@@ -112,29 +113,33 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "nav-x-func": "system-project-auditor",
     "nav": "system-project-auditor",
     "ilhas": "system-project-auditor",
-    "design": "design-md",
-    "design.md": "design-md",
-    "code-architect": "frontend-code-architect",
-    "atomic-ui": "frontend-code-architect",
-    "ui-testing": "frontend-testing-auditor",
-    "frontend-auditor": "frontend-testing-auditor",
-    "ui-ux-auditor": "frontend-ui-ux-auditor",
-    "ux-auditor": "frontend-ui-ux-auditor",
-    "wcag-auditor": "frontend-ui-ux-auditor",
-    "sombra": "frontend-ui-ux-auditor",
-    "sombras": "frontend-ui-ux-auditor",
-    "tatil": "frontend-ui-ux-auditor",
-    "tactile": "frontend-ui-ux-auditor",
-    "elevacao": "frontend-ui-ux-auditor",
-    "bevel": "frontend-ui-ux-auditor",
-    "frontend": "design-md",
-    "ui": "design-md",
-    "consultor-ui": "design-md",
-    "consultor-frontend": "design-md",
-    "analise-ui": "system-project-auditor",
-    "analise-frontend": "system-project-auditor",
-    "refatorar-ui": "frontend-code-architect",
-    "refatoracao-frontend": "frontend-code-architect",
+    "design": "ui-brand-ux-planner",
+    "design.md": "ui-brand-ux-planner",
+    "design-md": "ui-brand-ux-planner",
+    "code-architect": "ui-clean-worker",
+    "atomic-ui": "ui-clean-worker",
+    "frontend-code-architect": "ui-clean-worker",
+    "ui-testing": "ui-quality-judge",
+    "frontend-auditor": "ui-quality-judge",
+    "frontend-testing-auditor": "ui-quality-judge",
+    "ui-ux-auditor": "ui-quality-judge",
+    "frontend-ui-ux-auditor": "ui-quality-judge",
+    "ux-auditor": "ui-quality-judge",
+    "wcag-auditor": "ui-quality-judge",
+    "sombra": "ui-clean-worker",
+    "sombras": "ui-clean-worker",
+    "tatil": "ui-clean-worker",
+    "tactile": "ui-clean-worker",
+    "elevacao": "ui-clean-worker",
+    "bevel": "ui-clean-worker",
+    "frontend": "ui-brand-ux-planner",
+    "ui": "ui-brand-ux-planner",
+    "consultor-ui": "ui-brand-ux-planner",
+    "consultor-frontend": "ui-brand-ux-planner",
+    "analise-ui": "ui-frontend-analyst",
+    "analise-frontend": "ui-frontend-analyst",
+    "refatorar-ui": "ui-clean-worker",
+    "refatoracao-frontend": "ui-clean-worker",
     "prompt": "refine-prompt",
     "refinar": "refine-prompt",
     "refinar-prompt": "refine-prompt",
@@ -213,8 +218,8 @@ QUICK_SKILL_ALIASES: Dict[str, str] = {
     "audit-skills": "agent-server-auditor",
     "audit-skills-antigravity": "agent-server-auditor",
     "rea-skills": "agent-server-auditor",
-    "plan-uiux": "plan-uiux",
-    "rea-uiux": "plan-uiux",
+    "plan-uiux": "ui-frontend-analyst",
+    "rea-uiux": "ui-frontend-analyst",
     "re-a-ndroid": "re-a-ndroid",
     "rea-android": "re-a-ndroid",
     "apk-auditor": "re-a-ndroid",
@@ -379,23 +384,33 @@ def _get_all_skills_data() -> List[Dict[str, Any]]:
 
 
 def _find_skill_dir(skill_name: str) -> Optional[Path]:
-    """Localiza o diretório de uma skill por correspondência exata, alias amigável ou substring unívoca."""
+    """Localiza o diretório de uma skill em SKILLS_ROOT ou no satélite federado shredded-shape."""
     clean = skill_name.strip().lower()
     if not clean or "inexistente" in clean:
         return None
-    exact_path = SKILLS_ROOT / clean
-    if exact_path.exists() and exact_path.is_dir():
-        return exact_path
-    dirs = [d for d in SKILLS_ROOT.iterdir() if d.is_dir()]
-    for d in dirs:
-        if d.name.lower() == clean:
-            return d
+    search_roots = [SKILLS_ROOT]
+    if SHREDDED_SHAPE_SKILLS_DIR.is_dir():
+        search_roots.append(SHREDDED_SHAPE_SKILLS_DIR)
+    for base_root in search_roots:
+        exact_path = base_root / clean
+        if exact_path.exists() and exact_path.is_dir():
+            return exact_path
+        dirs = [d for d in base_root.iterdir() if d.is_dir()]
+        for d in dirs:
+            if d.name.lower() == clean:
+                return d
     if clean in QUICK_SKILL_ALIASES:
-        alias_target = SKILLS_ROOT / QUICK_SKILL_ALIASES[clean]
-        if alias_target.exists():
-            return alias_target
-    sub_matches = [d for d in dirs if clean in d.name.lower()]
-    return sub_matches[0] if len(sub_matches) == 1 else None
+        target_slug = QUICK_SKILL_ALIASES[clean]
+        for base_root in search_roots:
+            alias_target = base_root / target_slug
+            if alias_target.exists():
+                return alias_target
+    for base_root in search_roots:
+        dirs = [d for d in base_root.iterdir() if d.is_dir()]
+        sub_matches = [d for d in dirs if clean in d.name.lower()]
+        if len(sub_matches) == 1:
+            return sub_matches[0]
+    return None
 
 
 def _filter_skills_catalog(skills: List[Dict[str, Any]], status: str, persona: str, search: str) -> List[Dict[str, Any]]:
@@ -513,11 +528,16 @@ def skills_get_impl(skill_name: str, section: str = "contract") -> str:
 
     sec_raw = section.strip()
     sec = sec_raw.lower()
-    if sec in ("activate", "tier2", "progressive"):
-        return get_progressive_registry().activate_skill(skill_dir.name)
-    if sec.startswith("resource:"):
-        rel_target = sec_raw.split(":", 1)[1].strip()
-        return get_progressive_registry().read_skill_resource(skill_dir.name, rel_target)
+    if sec in ("activate", "tier2", "progressive") or sec.startswith("resource:"):
+        if SHREDDED_SHAPE_SKILLS_DIR.is_dir() and skill_dir.parent.resolve() == SHREDDED_SHAPE_SKILLS_DIR.resolve():
+            reg = ProgressiveSkillRegistry(search_paths=[SHREDDED_SHAPE_SKILLS_DIR], persona_map=_load_agents_map())
+            reg.discover_skills()
+        else:
+            reg = get_progressive_registry()
+        if sec.startswith("resource:"):
+            rel_target = sec_raw.split(":", 1)[1].strip()
+            return reg.read_skill_resource(skill_dir.name, rel_target)
+        return reg.activate_skill(skill_dir.name)
 
     rules_path = _resolve_skill_rules_file(skill_dir)
     direct_files = {

@@ -40,7 +40,7 @@ GLOBAL_CORE_SUBAGENTS: tuple[str, ...] = (
     "adk-go-operator.md", "read-after-write-verifier.md", "vault-memory-retriever.md",
 )
 UI_SUBAGENTS: tuple[str, ...] = (
-    "ui-shell-navigator.md", "ui-controls-data.md", "ui-motion-interaction.md", "ui-deterministic-observer.md",
+    "ui-analyst.md", "ui-planner.md", "ui-worker.md", "ui-judge.md",
 )
 GOV_SUBAGENTS: tuple[str, ...] = (
     "review-squad.md", "intent-hitl-mediator.md", "dev-workspace-publisher.md",
@@ -56,6 +56,7 @@ MIRRORED_AGENTS_REPOS: tuple[str, ...] = (
     "mcp-web-agents",
     "mytts",
     "scoreboard",
+    "shredded-shape",
 )
 
 GLOBAL_ONLY_RULES: tuple[str, ...] = ("quality-efficiency-guidelines.md",)
@@ -169,8 +170,11 @@ def _sync_global_core_plugin_skills(skills_src: Path, plugin_skills_dst: Path) -
     copied_files = 0
     for skill_name in GLOBAL_CORE_FRANKLIN_SKILLS:
         src_dir = skills_src / skill_name
+        dst_dir = plugin_skills_dst / skill_name
         if src_dir.is_dir():
-            copied_files += _copy_tree(src_dir, plugin_skills_dst / skill_name)
+            if dst_dir.exists():
+                shutil.rmtree(dst_dir)
+            copied_files += _copy_tree(src_dir, dst_dir)
     return copied_files
 
 
@@ -269,22 +273,25 @@ def _eol_normalized(path: Path) -> bytes:
 
 
 def _mirror_context_to_root(repo_dir: Path) -> list[str]:
-    """[LOCK-03] .context/ é a fonte; CONTEXT.md/SPEC.md da raiz são espelhos sobrescritos a cada sync.
+    """[LOCK-03] Maintain .context/context.md and .context/spec.md as canonical files without root mirrors.
 
-    Sem .context/, a cópia da raiz semeia o destino (repositórios legados). Retorna os arquivos gravados.
+    Migrates legacy root CONTEXT.md/SPEC.md files into .context/ when missing, then removes redundant root copies.
     """
     written: list[str] = []
+    if not repo_dir.is_dir():
+        return written
+    root_entries = [p for p in repo_dir.iterdir() if p.is_file()]
     for root_name, ctx_rel in CONTEXT_MIRRORS:
-        root_f, ctx_f = repo_dir / root_name, repo_dir / ctx_rel
-        if ctx_f.is_file():
-            # Compara ignorando CRLF/LF: com core.autocrlf=true o checkout da raiz vira CRLF sem mudar conteúdo.
-            if not root_f.is_file() or _eol_normalized(root_f) != _eol_normalized(ctx_f):
-                shutil.copy2(ctx_f, root_f)
-                written.append(root_name)
-        elif root_f.is_file():
+        ctx_f = repo_dir / ctx_rel
+        matches = [p for p in root_entries if p.name.lower() == root_name.lower()]
+        if not ctx_f.is_file() and matches:
+            legacy_src = next((p for p in matches if p.name == root_name), matches[0])
             ctx_f.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(root_f, ctx_f)
+            shutil.copy2(legacy_src, ctx_f)
             written.append(ctx_rel.as_posix())
+        if ctx_f.is_file():
+            for dup in matches:
+                dup.unlink(missing_ok=True)
     return written
 
 
@@ -354,13 +361,10 @@ def _sync_local_triad_and_plugin_assets() -> None:
     for repo_dir in REPOS_ROOT.iterdir():
         if not repo_dir.is_dir() or repo_dir.name.startswith("."):
             continue
-        if repo_dir != ROOT_DIR:
-            src_f = repo_dir / "AGENTS.md"
-            dst_f = repo_dir / ".agents" / "AGENTS.md"
-            if src_f.exists() and (not dst_f.exists() or repo_dir.name in MIRRORED_AGENTS_REPOS):
-                dst_f.parent.mkdir(parents=True, exist_ok=True)
-                if not dst_f.is_file() or _eol_normalized(src_f) != _eol_normalized(dst_f):
-                    shutil.copy2(src_f, dst_f)
+        root_agents = repo_dir / "AGENTS.md"
+        nested_agents = repo_dir / ".agents" / "AGENTS.md"
+        if root_agents.is_file() and nested_agents.is_file():
+            nested_agents.unlink(missing_ok=True)
         _mirror_context_to_root(repo_dir)
 
     _sync_rules_and_plugin_bundle()
@@ -373,8 +377,8 @@ def _sync_docs_and_agent_card() -> int:
         ROOT_DIR / "MY_AGENTS.md",
         ROOT_DIR / "MY_SKILLS.md",
         ROOT_DIR / "README.md",
-        ROOT_DIR / "SPEC.md",
-        ROOT_DIR / "CONTEXT.md",
+        ROOT_DIR / ".context" / "spec.md",
+        ROOT_DIR / ".context" / "context.md",
         ROOT_DIR / "CURRENT_STATE.md",
         ROOT_DIR / "skills" / "system-project-auditor" / "references" / "ui_subagent_taxonomy_6_layers.md",
     )
@@ -385,6 +389,9 @@ def _sync_docs_and_agent_card() -> int:
                 if existing_doc.is_file() and existing_doc.name not in allowed_doc_names:
                     existing_doc.unlink(missing_ok=True)
 
+    for doc_dir in (GEMINI_ROOT / "doc", CONFIG_PLUGIN_ROOT / "doc"):
+        for legacy_doc in ("SPEC.md", "CONTEXT.md"):
+            (doc_dir / legacy_doc).unlink(missing_ok=True)
     doc_copied = 0
     for df in doc_files:
         if df.exists():
@@ -454,9 +461,12 @@ def _sync_gemini_cli_agents(src: Path, dst: Path) -> int:
     return count
 
 
-def _sync_antigravity_config_agents(src: Path, dst: Path, allowed_files: tuple[str, ...] = GLOBAL_CORE_SUBAGENTS) -> int:
-    """Sincroniza apenas os subagentes autorizados para o diretório de destino do Antigravity."""
-    if not src.exists():
+def _sync_antigravity_config_agents(
+    src_dirs: Path | list[Path], dst: Path, allowed_files: tuple[str, ...] = GLOBAL_CORE_SUBAGENTS
+) -> int:
+    """Sincroniza apenas os subagentes autorizados a partir de um ou mais diretórios de origem."""
+    roots = [src_dirs] if isinstance(src_dirs, Path) else list(src_dirs)
+    if not any(r.exists() for r in roots):
         return 0
     dst.mkdir(parents=True, exist_ok=True)
     allowed_set = set(allowed_files)
@@ -466,29 +476,55 @@ def _sync_antigravity_config_agents(src: Path, dst: Path, allowed_files: tuple[s
 
     count = 0
     for filename in sorted(allowed_set):
-        item = src / filename
-        if item.is_file():
-            (dst / item.name).write_text(_format_antigravity_agent_markdown(item), encoding="utf-8")
-            count += 1
+        for r in roots:
+            item = r / filename
+            if item.is_file():
+                (dst / item.name).write_text(_format_antigravity_agent_markdown(item), encoding="utf-8")
+                count += 1
+                break
     return count
+
+
+def _sync_shredded_shape_plugin() -> tuple[int, int]:
+    """Sincroniza o repositório separado shredded-shape para plugins/shredded-shape, agents/ e plans/."""
+    shredded_dir = REPOS_ROOT / "shredded-shape"
+    if not shredded_dir.is_dir():
+        return 0, 0
+    plugin_dst = GEMINI_ROOT / "config" / "plugins" / "shredded-shape"
+    if plugin_dst.exists():
+        shutil.rmtree(plugin_dst)
+    copied = 0
+    for sub in ("skills", "rules", "plans", "assets"):
+        copied += _copy_tree(shredded_dir / sub, plugin_dst / sub)
+    for fname in ("plugin.json", "README.md"):
+        src_f = shredded_dir / fname
+        if src_f.is_file():
+            plugin_dst.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src_f, plugin_dst / fname)
+            copied += 1
+    _copy_tree(shredded_dir / "plans", GEMINI_ROOT / "plans")
+    (GEMINI_ROOT / "plans" / "ui_composition_dag.json").unlink(missing_ok=True)
+    for legacy_agent in ("ui-shell-navigator.md", "ui-controls-data.md", "ui-motion-interaction.md", "ui-deterministic-observer.md"):
+        (GEMINI_ROOT / "agents" / legacy_agent).unlink(missing_ok=True)
+    agents_count = _sync_gemini_cli_agents(shredded_dir / "agents", GEMINI_ROOT / "agents")
+    return copied, agents_count
 
 
 def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
     """Retorna o mapa de skills e subagentes específicos de cada repositório em dev/repos."""
-    ui_f = ["design-md", "frontend-code-architect", "frontend-testing-auditor", "frontend-ui-ux-auditor", "plan-uiux", "complex-zero"]
     ui_u = ["vercel-react-best-practices", "web-design-guidelines", "ai-sdk", "live-api-function-auditor"]
     mcp_f = ["agent-server-auditor", "high-level-context-planner", "chained-plan-orchestrator", "refine-prompt", "context-sentinel"]
     mcp_u = ["api-auditor", "build-mcp-server", "build-mcp-app", "build-mcpb", "mcp-use-app-builder", "live-api-function-auditor"]
     adk_local_skills = ["backend-architecture-skill", "backfront-stress", "code-quality-validation", "context-architecture-skill", "estante", "gatekeeper-eval", "temperea"]
-    ui_profile = {"franklin_skills": ui_f, "user_skills": ui_u, "subagents": UI_SUBAGENTS}
+    ui_profile = {"franklin_skills": [], "user_skills": ui_u, "subagents": UI_SUBAGENTS}
     mcp_profile = {"franklin_skills": mcp_f, "user_skills": mcp_u, "subagents": GOV_SUBAGENTS}
     all_franklin = sorted(p.name for p in (ROOT_DIR / "skills").iterdir() if p.is_dir() and (p / "SKILL.md").exists())
 
     profiles: dict[str, dict[str, Any]] = {
-        name: dict(ui_profile) for name in ("frontcraft-studio", "scoreboard", "mytts", "astral-pet-assist", "android-auto-first-app")
+        name: dict(ui_profile) for name in ("frontcraft-studio", "scoreboard", "mytts", "astral-pet-assist", "android-auto-first-app", "shredded-shape")
     }
     profiles["skills-web"] = {
-        "franklin_skills": [*ui_f, "android-agy-projects"],
+        "franklin_skills": ["android-agy-projects"],
         "user_skills": ui_u,
         "subagents": UI_SUBAGENTS,
     }
@@ -497,18 +533,18 @@ def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
 
     profiles.update({
         "GoSTylo": {
-            "franklin_skills": [*ui_f, *mcp_f],
+            "franklin_skills": [*mcp_f],
             "user_skills": [*ui_u, *mcp_u, "developing-genkit-go"],
             "subagents": (*UI_SUBAGENTS, *GOV_SUBAGENTS),
         },
         "PCM": {
-            "franklin_skills": ["clinical-minimalist-ui", "html-pdf-converter", "technical-markdown-writer", *ui_f],
+            "franklin_skills": ["html-pdf-converter", "technical-markdown-writer"],
             "user_skills": ["clinical-change-safety", "ui-pdf-validation", *ui_u],
             "plugin_skills": [("firebase", ["firebase_firestore", "firebase_auth_basics", "firebase_hosting_basics", "firestore_rules_creation", "firebase_security_rules_auditor"])],
             "subagents": (*UI_SUBAGENTS, "review-squad.md"),
         },
         "appmy": {
-            "franklin_skills": ["android-agy-projects", "re-a-ndroid", "design-md", "plan-uiux", "code-quality-audit-3d-physics"],
+            "franklin_skills": ["android-agy-projects", "re-a-ndroid", "code-quality-audit-3d-physics"],
             "user_skills": [
                 "agp-9-upgrade", "android-cli", "android-intent-security", "android-permissions-security", "android-profiler",
                 "android-ui-audit", "anr-audit-and-fix", "appfunctions", "camerax", "edge-to-edge", "glance-appwidget-updates-and-memory",
@@ -520,14 +556,14 @@ def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
             "subagents": (*UI_SUBAGENTS, "review-squad.md"),
         },
         "adk-go-mcp": {
-            "franklin_skills": [*mcp_f, "design-md", "frontend-code-architect", "frontend-testing-auditor", "frontend-ui-ux-auditor"],
+            "franklin_skills": [*mcp_f],
             "user_skills": [*mcp_u, "adk-go-mcp-router", "agent-0meia", "code-analysis-causal-review-team", "google-agents-cli-adk-code", "google-agents-cli-deploy", "google-agents-cli-eval", "google-agents-cli-observability", "google-agents-cli-publish", "google-agents-cli-scaffold", "google-agents-cli-workflow"],
             "plugin_skills": [("data-agent-kit-plugin", ["bigquery-ai-ml", "bigquery-observability", "bigquery-optimization", "bigquery-troubleshooting", "building-data-apps", "enforcing-resource-attribution"])],
             "local_skills": [("skills", adk_local_skills)],
             "subagents": (*UI_SUBAGENTS, *GOV_SUBAGENTS, *GLOBAL_CORE_SUBAGENTS),
         },
         "adk-py-agents": {
-            "franklin_skills": [*mcp_f, "clinical-minimalist-ui", "design-md", "frontend-testing-auditor"],
+            "franklin_skills": [*mcp_f],
             "user_skills": [*mcp_u, "adk-go-mcp-router", "agent-0meia", "google-agents-cli-adk-code", "google-agents-cli-deploy", "google-agents-cli-eval", "google-agents-cli-observability", "google-agents-cli-workflow"],
             "plugin_skills": [("data-agent-kit-plugin", ["bigquery-ai-ml", "bigquery-observability", "building-data-apps", "enforcing-resource-attribution"])],
             "local_skills": [("skills", ["weather-skill"])],
@@ -550,7 +586,7 @@ def _build_project_customization_profiles() -> dict[str, dict[str, Any]]:
     return profiles
 
 
-def _sync_project_scoped_customizations(agents_src: Path) -> int:
+def _sync_project_scoped_customizations(agents_src: Path | list[Path]) -> int:
     """Gera .agents/skills.json e .agents/agents/*.md sob medida sem duplicar skills core globais."""
     profiles = _build_project_customization_profiles()
     franklin_skills_path = (ROOT_DIR / "skills").as_posix()
@@ -593,14 +629,17 @@ def _sync_project_scoped_customizations(agents_src: Path) -> int:
 def sync_ecosystem() -> dict[str, int | str | bool]:
     """Executa a sincronização completa com Global Enxuto e customizações isoladas por projeto."""
     _prepare_and_clean_dirs()
+    shredded_files_synced, shredded_agents_synced = _sync_shredded_shape_plugin()
     skills_plugin_count, deduplicated_config_skills, synced_agents_skills = _sync_and_deduplicate_skills()
 
     agents_src = ROOT_DIR / "agents"
-    agents_gemini_count = _sync_gemini_cli_agents(agents_src, GEMINI_ROOT / "agents")
+    shredded_agents = REPOS_ROOT / "shredded-shape" / "agents"
+    agent_sources = [agents_src, shredded_agents] if shredded_agents.is_dir() else [agents_src]
+    agents_gemini_count = _sync_gemini_cli_agents(agents_src, GEMINI_ROOT / "agents") + shredded_agents_synced
     agents_config_count = _sync_antigravity_config_agents(
         agents_src, GEMINI_ROOT / "config" / "agents", allowed_files=GLOBAL_CORE_SUBAGENTS
     )
-    project_repos_synced = _sync_project_scoped_customizations(agents_src)
+    project_repos_synced = _sync_project_scoped_customizations(agent_sources)
 
     plans_src = ROOT_DIR / "plans"
     _copy_tree(plans_src, CONFIG_PLUGIN_ROOT / "plans")
@@ -610,10 +649,8 @@ def sync_ecosystem() -> dict[str, int | str | bool]:
     lib_gemini_count = _copy_tree(shared_src, GEMINI_ROOT / "lib" / "shared")
     _copy_tree(shared_src, CONFIG_PLUGIN_ROOT / "lib" / "shared")
 
-    loader_src = ROOT_DIR / "shared" / "agent_spec_loader.py"
-    if loader_src.exists():
-        shutil.copy2(loader_src, GEMINI_ROOT / "lib" / "agent_spec_loader.py")
-        shutil.copy2(loader_src, CONFIG_PLUGIN_ROOT / "lib" / "agent_spec_loader.py")
+    for lib_root in (GEMINI_ROOT / "lib", CONFIG_PLUGIN_ROOT / "lib"):
+        (lib_root / "agent_spec_loader.py").unlink(missing_ok=True)
 
     doc_copied = _sync_docs_and_agent_card()
     return {
@@ -621,6 +658,7 @@ def sync_ecosystem() -> dict[str, int | str | bool]:
         "global_core_franklin_skills": len(GLOBAL_CORE_FRANKLIN_SKILLS),
         "global_core_user_skills": len(GLOBAL_CORE_USER_SKILLS),
         "global_core_subagents": agents_config_count,
+        "shredded_shape_plugin_files": shredded_files_synced,
         "project_repos_scoped": project_repos_synced,
         "skills_synced_to_agents": synced_agents_skills,
         "skills_synced_to_plugin": skills_plugin_count,

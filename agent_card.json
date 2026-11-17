@@ -1,6 +1,6 @@
 {
   "name": "Franklin Quebra-Galho (A2A + MCP Orchestrator)",
-  "description": "Orquestrador multiagente e catálogo de 28 Skills canônicas (Python, TS/JS, Go, MCP, Harness e Arquitetura Visual por Propósito) com suporte nativo a Agent2Agent (A2A v1.0) e Model Context Protocol (MCP).",
+  "description": "Multi-agent orchestrator and catalog of 21 canonical Agent Skills (Python, TS/JS, Go, MCP, Harness, and Purpose-Driven Visual Architecture) with native Agent2Agent (A2A v1.0) and Model Context Protocol (MCP) support.",
   "supportedInterfaces": [
     {
       "url": "http://localhost:10999",
@@ -45,7 +45,7 @@
         "agente"
       ],
       "examples": [
-        "Executar a skill agent-server-auditor no contexto atual"
+        "Execute skill agent-server-auditor in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -69,7 +69,7 @@
         "agp9"
       ],
       "examples": [
-        "Executar a skill android-agy-projects no contexto atual"
+        "Execute skill android-agy-projects in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -93,31 +93,7 @@
         "kahn"
       ],
       "examples": [
-        "Executar a skill chained-plan-orchestrator no contexto atual"
-      ],
-      "inputModes": [
-        "text/plain",
-        "application/json"
-      ],
-      "outputModes": [
-        "text/plain",
-        "application/json"
-      ]
-    },
-    {
-      "id": "clinical-minimalist-ui",
-      "name": "clinical-minimalist-ui",
-      "description": "Use this skill when designing or building clinical interfaces, electronic health records (EHR/PEP), A4 vector print sheets (.sus-grid), and medical calculators. Do NOT use for generic SaaS, e-commerce, or non-clinical dashboards.",
-      "tags": [
-        "clinical-minimalist-ui",
-        "clinical-ui",
-        "medtech",
-        "ehr",
-        "pep",
-        "prontuario-eletronico"
-      ],
-      "examples": [
-        "Executar a skill clinical-minimalist-ui no contexto atual"
+        "Execute skill chained-plan-orchestrator in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -141,7 +117,7 @@
         "estaticamente"
       ],
       "examples": [
-        "Executar a skill code-acceptability-auditor no contexto atual"
+        "Execute skill code-acceptability-auditor in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -165,31 +141,7 @@
         "sanitizar"
       ],
       "examples": [
-        "Executar a skill code-quality-audit-3d-physics no contexto atual"
-      ],
-      "inputModes": [
-        "text/plain",
-        "application/json"
-      ],
-      "outputModes": [
-        "text/plain",
-        "application/json"
-      ]
-    },
-    {
-      "id": "complex-zero",
-      "name": "complex-zero",
-      "description": "Use this skill when auditing dense frontend apps via ReAct CDP DevTools and AST for @xyflow/react infinite canvas, 150ms WebSocket/Chokidar telemetry, ghost nodes, fake stubs, and Next.js 15+ async params. Do NOT use for simple pages or backend-only APIs.",
-      "tags": [
-        "complex-zero",
-        "xyflow",
-        "react-flow",
-        "nextjs-15",
-        "async-params",
-        "websocket"
-      ],
-      "examples": [
-        "Executar a skill complex-zero no contexto atual"
+        "Execute skill code-quality-audit-3d-physics in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -213,31 +165,7 @@
         "multi-turn"
       ],
       "examples": [
-        "Executar a skill context-sentinel no contexto atual"
-      ],
-      "inputModes": [
-        "text/plain",
-        "application/json"
-      ],
-      "outputModes": [
-        "text/plain",
-        "application/json"
-      ]
-    },
-    {
-      "id": "design-md",
-      "name": "design-md",
-      "description": "Use this skill when creating or updating a project's DESIGN.md contract with 3-layer OKLCH semantic tokens, modular type scale, spacing, and zenith shadows. Do NOT use for implementing React/Tailwind UI components or backend-only projects.",
-      "tags": [
-        "design-md",
-        "design-system",
-        "oklch",
-        "light-dark",
-        "tokens-semanticos",
-        "escala-tipografica"
-      ],
-      "examples": [
-        "Executar a skill design-md no contexto atual"
+        "Execute skill context-sentinel in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -261,79 +189,7 @@
         "diagramas"
       ],
       "examples": [
-        "Executar a skill flow-filetree-organizer no contexto atual"
-      ],
-      "inputModes": [
-        "text/plain",
-        "application/json"
-      ],
-      "outputModes": [
-        "text/plain",
-        "application/json"
-      ]
-    },
-    {
-      "id": "frontend-code-architect",
-      "name": "frontend-code-architect",
-      "description": "Use this skill when implementing or refactoring React, Next.js, and Tailwind web UI components from DESIGN.md with OKLCH 3-layer tokens, @container, 4 card variants, and Real-State FSM. Do NOT use for authoring DESIGN.md contracts alone or backend-only services.",
-      "tags": [
-        "frontend-code-architect",
-        "react",
-        "nextjs",
-        "tailwind",
-        "oklch",
-        "container-queries"
-      ],
-      "examples": [
-        "Executar a skill frontend-code-architect no contexto atual"
-      ],
-      "inputModes": [
-        "text/plain",
-        "application/json"
-      ],
-      "outputModes": [
-        "text/plain",
-        "application/json"
-      ]
-    },
-    {
-      "id": "frontend-testing-auditor",
-      "name": "frontend-testing-auditor",
-      "description": "Use this skill when auditing web UI quality with audit_tactile_ui.py, Jest, Axe-Core, or Playwright for WAI-ARIA, Real-State FSM, zero emojis, Base64 bloat, OKLCH, and anti-XSS. Do NOT use for implementing UI components or backend-only unit tests.",
-      "tags": [
-        "frontend-testing-auditor",
-        "audit_tactile_ui",
-        "wai-aria",
-        "axe-core",
-        "wcag",
-        "a11y"
-      ],
-      "examples": [
-        "Executar a skill frontend-testing-auditor no contexto atual"
-      ],
-      "inputModes": [
-        "text/plain",
-        "application/json"
-      ],
-      "outputModes": [
-        "text/plain",
-        "application/json"
-      ]
-    },
-    {
-      "id": "frontend-ui-ux-auditor",
-      "name": "frontend-ui-ux-auditor",
-      "description": "Use this skill when mathematically auditing DOM node density, WCAG 2.1 AA contrast, 90-120 zenithal light, 3-layer elevation shadows, spacing, and @layer rules via ui_ux_frontend_auditor.py. Do NOT use for refactoring code, backend audits, or runtime CDP.",
-      "tags": [
-        "frontend-ui-ux-auditor",
-        "ui-ux",
-        "oklch",
-        "wcag",
-        "contraste",
-        "luz-zenital"
-      ],
-      "examples": [
-        "Executar a skill frontend-ui-ux-auditor no contexto atual"
+        "Execute skill flow-filetree-organizer in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -357,7 +213,7 @@
         "convergencia"
       ],
       "examples": [
-        "Executar a skill gap-analyzer-auditor no contexto atual"
+        "Execute skill gap-analyzer-auditor in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -381,7 +237,7 @@
         "duplicatas"
       ],
       "examples": [
-        "Executar a skill gdrive-cleanup-auditor no contexto atual"
+        "Execute skill gdrive-cleanup-auditor in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -405,7 +261,7 @@
         "organizacao"
       ],
       "examples": [
-        "Executar a skill gdrive-taxonomy-organizer no contexto atual"
+        "Execute skill gdrive-taxonomy-organizer in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -429,7 +285,7 @@
         "complexidade"
       ],
       "examples": [
-        "Executar a skill high-level-context-planner no contexto atual"
+        "Execute skill high-level-context-planner in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -453,7 +309,7 @@
         "export"
       ],
       "examples": [
-        "Executar a skill html-pdf-converter no contexto atual"
+        "Execute skill html-pdf-converter in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -477,31 +333,7 @@
         "yaml"
       ],
       "examples": [
-        "Executar a skill obsidian-vault-curator no contexto atual"
-      ],
-      "inputModes": [
-        "text/plain",
-        "application/json"
-      ],
-      "outputModes": [
-        "text/plain",
-        "application/json"
-      ]
-    },
-    {
-      "id": "plan-uiux",
-      "name": "plan-uiux",
-      "description": "Use this skill when performing global UI/UX audits of compiled or live frontends with REA (Reverse Engineer Anything), validating 60-30-10 OKLCH ratio, and emitting Before/After mutation plans. Do NOT use for backend-only servers or open-source static scans.",
-      "tags": [
-        "plan-uiux",
-        "rea-uiux",
-        "reverse-engineer-anything",
-        "oklch",
-        "60-30-10",
-        "container-queries"
-      ],
-      "examples": [
-        "Executar a skill plan-uiux no contexto atual"
+        "Execute skill obsidian-vault-curator in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -525,7 +357,7 @@
         "organizar"
       ],
       "examples": [
-        "Executar a skill project-idea-organizer no contexto atual"
+        "Execute skill project-idea-organizer in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -549,7 +381,7 @@
         "android"
       ],
       "examples": [
-        "Executar a skill re-a-ndroid no contexto atual"
+        "Execute skill re-a-ndroid in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -573,7 +405,7 @@
         "socratica"
       ],
       "examples": [
-        "Executar a skill refine-prompt no contexto atual"
+        "Execute skill refine-prompt in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -597,7 +429,7 @@
         "roadmaps"
       ],
       "examples": [
-        "Executar a skill solution-content-architect no contexto atual"
+        "Execute skill solution-content-architect in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -621,7 +453,7 @@
         "projeto"
       ],
       "examples": [
-        "Executar a skill system-project-auditor no contexto atual"
+        "Execute skill system-project-auditor in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -645,7 +477,7 @@
         "atas"
       ],
       "examples": [
-        "Executar a skill technical-markdown-writer no contexto atual"
+        "Execute skill technical-markdown-writer in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -669,7 +501,7 @@
         "modulos"
       ],
       "examples": [
-        "Executar a skill test-quality-auditor no contexto atual"
+        "Execute skill test-quality-auditor in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -693,7 +525,7 @@
         "desktop"
       ],
       "examples": [
-        "Executar a skill windows-disk-maintenance no contexto atual"
+        "Execute skill windows-disk-maintenance in the current context"
       ],
       "inputModes": [
         "text/plain",
@@ -713,7 +545,7 @@
         "jku": "http://localhost:10999/public_keys.json",
         "typ": "JOSE+JSON"
       },
-      "signature": "c5669e7ccdc6190d4202b9cea3c2fabaca95db2e49c434d28da3e14c97e84eb2"
+      "signature": "caf2e8503056c854a6d53202dbf06df36122304d83b6094bd4cacc00fc68ebfc"
     }
   ]
 }

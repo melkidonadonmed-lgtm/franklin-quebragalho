@@ -1,53 +1,63 @@
-"""[LOCK-03] Espelho .context/ -> raiz (CONTEXT.md/SPEC.md) do sync_gemini_ecosystem."""
-import os
-import sys
+"""Unit tests for canonical .context/ migration and root mirror removal."""
+
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from sync_gemini_ecosystem import _mirror_context_to_root  # noqa: E402
+from scripts.sync_gemini_ecosystem import _mirror_context_to_root
 
 
-def _write(path: Path, text: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8")
+def test_context_removes_divergent_root_mirror_without_overwriting(tmp_path: Path) -> None:
+    ctx_dir = tmp_path / ".context"
+    ctx_dir.mkdir(parents=True)
+    ctx_file = ctx_dir / "context.md"
+    ctx_file.write_text("canonical state\n", encoding="utf-8")
+    root_file = tmp_path / "CONTEXT.md"
+    root_file.write_text("stale root mirror\n", encoding="utf-8")
 
-
-def test_context_sobrescreve_raiz_divergente(tmp_path: Path) -> None:
-    _write(tmp_path / ".context" / "context.md", "estado novo\n")
-    _write(tmp_path / "CONTEXT.md", "estado antigo\n")
-    assert _mirror_context_to_root(tmp_path) == ["CONTEXT.md"]
-    assert (tmp_path / "CONTEXT.md").read_text(encoding="utf-8") == "estado novo\n"
-
-
-def test_raiz_semeia_context_em_repo_legado(tmp_path: Path) -> None:
-    _write(tmp_path / "SPEC.md", "spec legada\n")
-    assert _mirror_context_to_root(tmp_path) == [".context/spec.md"]
-    assert (tmp_path / ".context" / "spec.md").read_text(encoding="utf-8") == "spec legada\n"
-
-
-def test_identicos_nao_regravam(tmp_path: Path) -> None:
-    _write(tmp_path / ".context" / "spec.md", "igual\n")
-    _write(tmp_path / "SPEC.md", "igual\n")
-    os.utime(tmp_path / "SPEC.md", (1_000_000, 1_000_000))
     assert _mirror_context_to_root(tmp_path) == []
-    assert (tmp_path / "SPEC.md").stat().st_mtime == 1_000_000
+    assert not root_file.exists()
+    assert ctx_file.read_text(encoding="utf-8") == "canonical state\n"
 
 
-def test_diferenca_so_de_fim_de_linha_nao_regrava(tmp_path: Path) -> None:
-    (tmp_path / ".context").mkdir()
-    (tmp_path / ".context" / "context.md").write_bytes(b"linha 1\nlinha 2\n")
-    (tmp_path / "CONTEXT.md").write_bytes(b"linha 1\r\nlinha 2\r\n")
+def test_legacy_root_seeds_context_and_unlinks_root(tmp_path: Path) -> None:
+    legacy_ctx = tmp_path / "CONTEXT.md"
+    legacy_spec = tmp_path / "SPEC.md"
+    legacy_ctx.write_text("legacy context\n", encoding="utf-8")
+    legacy_spec.write_text("legacy spec\n", encoding="utf-8")
+
+    migrated = _mirror_context_to_root(tmp_path)
+
+    assert migrated == [".context/context.md", ".context/spec.md"]
+    assert not legacy_ctx.exists()
+    assert not legacy_spec.exists()
+    assert (tmp_path / ".context" / "context.md").read_text(encoding="utf-8") == "legacy context\n"
+    assert (tmp_path / ".context" / "spec.md").read_text(encoding="utf-8") == "legacy spec\n"
+
+
+def test_identical_root_mirror_is_removed(tmp_path: Path) -> None:
+    ctx_dir = tmp_path / ".context"
+    ctx_dir.mkdir(parents=True)
+    (ctx_dir / "spec.md").write_text("# Spec\n", encoding="utf-8")
+    root_spec = tmp_path / "SPEC.md"
+    root_spec.write_text("# Spec\n", encoding="utf-8")
+
     assert _mirror_context_to_root(tmp_path) == []
+    assert not root_spec.exists()
+    assert (ctx_dir / "spec.md").read_text(encoding="utf-8") == "# Spec\n"
 
 
-def test_raiz_nunca_sobrescreve_context(tmp_path: Path) -> None:
-    """Adversarial: uma raiz editada à mão não pode vencer a fonte canônica."""
-    _write(tmp_path / ".context" / "context.md", "canônico\n")
-    _write(tmp_path / "CONTEXT.md", "edição manual na raiz\n")
-    _mirror_context_to_root(tmp_path)
-    assert (tmp_path / ".context" / "context.md").read_text(encoding="utf-8") == "canônico\n"
+def test_canonical_only_repo_is_no_op(tmp_path: Path) -> None:
+    ctx_dir = tmp_path / ".context"
+    ctx_dir.mkdir(parents=True)
+    (ctx_dir / "context.md").write_text("canonical\n", encoding="utf-8")
+    (ctx_dir / "spec.md").write_text("spec\n", encoding="utf-8")
 
-
-def test_sem_arquivos_nao_cria_nada(tmp_path: Path) -> None:
     assert _mirror_context_to_root(tmp_path) == []
-    assert not any(tmp_path.iterdir())
+    assert (ctx_dir / "context.md").read_text(encoding="utf-8") == "canonical\n"
+    assert (ctx_dir / "spec.md").read_text(encoding="utf-8") == "spec\n"
+
+
+def test_empty_repo_creates_nothing(tmp_path: Path) -> None:
+    assert _mirror_context_to_root(tmp_path) == []
+    assert not (tmp_path / ".context").exists()
+    assert not (tmp_path / "CONTEXT.md").exists()
+    assert not (tmp_path / "SPEC.md").exists()

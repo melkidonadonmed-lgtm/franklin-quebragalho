@@ -2,17 +2,17 @@
 
 ## 0. PROJECT CONTEXT (Auto-detected)
 
-- **Project:** `franklin-quebragalho` (**Franklin Quebra-Galho** — Incubator of **28 Canonical Skills**, **10 Declarative Subagents**, **FastMCP Server (`server.py`)**, and **A2A v1.0 JWS Bridge**)
+- **Project:** `franklin-quebragalho` (**Franklin Quebra-Galho** — Incubator of **21 Canonical Skills**, **6 Declarative Subagents**, **FastMCP Server (`server.py`)**, and **A2A v1.0 JWS Bridge**; UI/UX suite federated in `shredded-shape`)
 - **Temporal Baseline & Models:** Use the session's temporal context and consult official docs/MCP (`aistudio.google.com/llms.txt`, `antigravity.google/docs/models.md`, `google-developer-knowledge`, or `gemini_get_doc`; avoid `gemini_search_docs`, which is disabled locally) before assuming APIs or SDKs. Never hardcode or downgrade models in static rules; respect the model configured by the host/project (e.g., Gemini 4 family — `gemini-4-hydrogen` with `xhigh`, `gemini-4-argon`, `gemini-4-carbon` — or `Orchestrator`).
 - **Active Stack:** Python 3.12+ (local 3.15, `uv` / `pyproject.toml`, `FastMCP`, `Pydantic v2`, `a2a-sdk`) + TypeScript 5+ / Node LTS (local 26 — `google-drive-index-app`, `templates/universal-app`) + Go 1.24+ (local 1.27 — standalone ADK/MCP services) + Windows 11 (`pwsh`)
 - **Executable Commands (`Command-First`):**
   - **Unit Tests & MCP Contracts:** `uv run pytest -q`
-  - **Deterministic Catalog Validator (`28/28` skills):** `uv run python scripts/validate_skills.py --strict --ecosystem`
+  - **Deterministic Catalog Validator (`21/21` skills):** `uv run python scripts/validate_skills.py --strict --ecosystem`
   - **Project Structural & AST Audit:** `uv run python skills/system-project-auditor/scripts/project_structure_and_code_auditor.py --self-test`
   - **AST Quality Audit (`Quality Score >= 75`):** `uv run python skills/code-acceptability-auditor/scripts/code_acceptability_auditor.py --file server.py`
   - **Ecosystem Synchronization (`~/.gemini`, `rules/`, `.agents/`, `.context/` & `memories/audit_report.json`):** `uv run python scripts/sync_gemini_ecosystem.py`
 - **Governance State Architecture (Triad v2.0):**
-  - [`AGENTS.md`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/AGENTS.md): Global behavioral rules (root SSOT; `.agents/AGENTS.md` is removed here to prevent duplicate loading and mirrored only in external repositories), 8 Domain Personas, and 10 Declarative Subagents (loaded at boot).
+  - [`AGENTS.md`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/AGENTS.md): Global behavioral rules (root SSOT; `.agents/AGENTS.md` is removed here to prevent duplicate loading and mirrored only in external repositories), 8 Domain Personas, and 6 Declarative Subagents (plus 4 federated UI subagents in `shredded-shape`).
   - [`.context/context.md`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.context/context.md) and [`CONTEXT.md`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/CONTEXT.md): Authoritative project state and handoff ledger (loaded on demand, synchronized with [`CURRENT_STATE.md`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/CURRENT_STATE.md)).
   - [`.context/spec.md`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/.context/spec.md) and [`SPEC.md`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/SPEC.md): Technical implementation contract, `shared/` modules, 13 MCP tools, and A2A v1.0 JWS protocol.
 
@@ -33,12 +33,12 @@
 
 ---
 
-## 2. DOMAIN PERSONAS (8 Specialists) & DECLARATIVE SUBAGENTS (`10` Contracts)
+## 2. DOMAIN PERSONAS (8 Specialists) & DECLARATIVE SUBAGENTS (`6` Local + `4` UI Federated)
 
-| Persona | Real Scope of Action | Core Skills (`skills/`) | Activation Trigger |
+| Persona | Real Scope of Action | Core Skills (`skills/` + `shredded-shape`) | Activation Trigger |
 | :--- | :--- | :--- | :--- |
 | **`Franklin-Main`** | Master Orchestrator, Integrated 3-in-1 Auditor, MVP Architecture, Android & 3D Physics | `system-project-auditor`, `solution-content-architect`, `android-agy-projects`, `project-idea-organizer`, `code-quality-audit-3d-physics`, `context-sentinel`, `refine-prompt` | Direct execution, MVP diagnostics/planning, functional islands & `SGA`, Android, 3D physics, and context governance. |
-| **`UI-Architect`** | UI Architecture, Visual Physics & Real-State (`DESIGN.md` & 9-Axis SSOT) | `design-md`, `frontend-code-architect`, `frontend-testing-auditor`, `frontend-ui-ux-auditor`, `plan-uiux`, `complex-zero`, `clinical-minimalist-ui` | `60-30-10` rule in `OKLCH`, 3-layer `--surface-*` tokens, 3-level shadows (`--shadow-elevation-1..3` + `inset`), `@container`, 4 Cards, and Real-State. |
+| **`UI-Architect`** | UI Architecture, Optical Physics & Actor-Critic QA (Federated in `../shredded-shape`) | `ui-frontend-analyst`, `ui-brand-ux-planner`, `ui-clean-worker`, `ui-quality-judge`, `complex-zero`, `clinical-minimalist-ui` | DevTools inventory, AI Slop, brand/style archetypes, Stitch/Figma/Fonts/3D, Light 3-layer shadows, Dark rim light, and WCAG 2.2 OKLCH Judge. |
 | **`SkillCraft`** | Deterministic AST Quality, 5-Module Test Suites, MCP/A2A Servers & Android REA | `code-acceptability-auditor`, `test-quality-auditor`, `agent-server-auditor`, `re-a-ndroid` | AST gate (`>= 75/100`), test suites (`Pass@k`), MCP `2026-07-28` / A2A JWS compliance, and APK reverse engineering. |
 | **`LoopPlanner`** | Non-Linear Cognitive Planning, DAG Graphs (Kahn) & Closed-Loop RCA | `high-level-context-planner`, `chained-plan-orchestrator`, `gap-analyzer-auditor` | Phase 0 decomposition (`<= 5` rules/node), parallel DAG waves, and root-cause analysis (`[FACT]`/`[INFERENCE]`/`[GAP]`). |
 | **`DriveMaster`** | Google Drive (`G:\Meu Drive`) Cleanup & Taxonomy | `gdrive-cleanup-auditor`, `gdrive-taxonomy-organizer` | Scans for `>100MB` files, SHA-256 duplicates, and ISO (`YYYY-MM-DD`) organization. |
@@ -46,13 +46,13 @@
 | **`VaultMaster`** | Obsidian Vault Curation & MemPalace Maintenance | `obsidian-vault-curator` | Bulk YAML frontmatter, `[[Wikilinks]]`, orphan attachment sweeps, and `wing: notes` sync. |
 | **`DocMaker`** | Technical Markdown Authoring, Mermaid Flows & PDF Export | `technical-markdown-writer`, `html-pdf-converter`, `flow-filetree-organizer` | Technical notes, decision records, file trees, and headless Edge PDF export. |
 
-### Declarative Subagents (`agents/*.md` — 10 Synchronized Contracts)
+### Declarative Subagents (`agents/*.md` — 6 Franklin + 4 `shredded-shape` UI Contracts)
 
-1. **UI `3+1` Topology (`plans/ui_composition_dag.json` via `invoke_subagent` or `franklin_execute_dag("ui")`)**:
-   - **Wave 1**: [`ui-shell-navigator`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/agents/ui-shell-navigator.md) (`layout_contract` + `navigation_contract`)
-   - **Wave 2A**: [`ui-controls-data`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/agents/ui-controls-data.md) (`controls_contract` + `data_feedback_contract`)
-   - **Wave 2B**: [`ui-motion-interaction`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/agents/ui-motion-interaction.md) (`motion_contract` + `interaction_contract`)
-   - **Wave 3 (Gatekeeper)**: [`ui-deterministic-observer`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/agents/ui-deterministic-observer.md) (`audit_tactile_ui.py` + `ui_ux_frontend_auditor.py` + `deterministic_scorer.py` in `system-project-auditor`)
+1. **UI Actor-Critic Pipeline (Federated in `../shredded-shape/plans/ui_actor_critic_dag.json` via `invoke_subagent` or `franklin_execute_dag("ui")`)**:
+   - **Stage 0**: [`ui-analyst`](file:///c:/Users/melki/dev/repos/shredded-shape/agents/ui-analyst.md) (DevTools inventory, AI Slop & `Before vs. After` nav)
+   - **Stage 1**: [`ui-planner`](file:///c:/Users/melki/dev/repos/shredded-shape/agents/ui-planner.md) (Brand, 7 styles, Stitch/Figma/Fonts/3D, `DESIGN.md` & DAG `<= 5` rules/node)
+   - **Stage 2**: [`ui-worker`](file:///c:/Users/melki/dev/repos/shredded-shape/agents/ui-worker.md) (Clean Light/Dark ReAct implementation + RAW SHA-256)
+   - **Stage 3 (Judge)**: [`ui-judge`](file:///c:/Users/melki/dev/repos/shredded-shape/agents/ui-judge.md) (Read-Only WCAG 2.2 OKLCH `FNR < 0.001` & Self-Refine loop)
 2. **Mediation, Review, Memory, and Operations (`agents/*.md`)**:
    - [`intent-hitl-mediator`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/agents/intent-hitl-mediator.md) (Pydantic Triage + HITL Gate + GCP Labels)
    - [`read-after-write-verifier`](file:///c:/Users/melki/dev/repos/franklin-quebragalho/agents/read-after-write-verifier.md) (Post-mutation Physical Verification & Fan-In)
@@ -99,4 +99,4 @@ On persistent file/code mutations, conclude the user-facing response in **Portug
 [def]: file:///C:/Users/melki/dev/notes/Mem%C3%B3ria/Prefer%C3%AAncias%20de%20Trabalho%20com%20Agentes.md
 [def2]: file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_SKILLS.md
 [def3]: file:///c:/Users/melki/dev/repos/franklin-quebragalho/MY_AGENTS.md
-[def4]: file:///c:/Users/melki/dev/repos/franklin-quebragalho/rules/frontend-9-axes-guidelines.md
+[def4]: file:///c:/Users/melki/dev/repos/shredded-shape/rules/frontend-9-axes-guidelines.md

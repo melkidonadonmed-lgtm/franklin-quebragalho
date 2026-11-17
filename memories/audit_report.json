@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-16T22:24:27Z",
+  "timestamp": "2026-11-17T01:50:25Z",
   "audit_version": "1.0.0",
   "target_root": "C:/Users/melki/dev/repos/franklin-quebragalho",
   "summary": {
@@ -9,8 +9,8 @@
       "Python",
       "TypeScript"
     ],
-    "total_agents": 20,
-    "total_skills": 28,
+    "total_agents": 16,
+    "total_skills": 21,
     "total_mcp_servers": 2,
     "total_a2a_cards": 2
   },
@@ -55,8 +55,8 @@
         "missing_elements": []
       },
       {
-        "name": "ui-controls-data",
-        "file": ".agents/agents/ui-controls-data.md",
+        "name": "ui-analyst",
+        "file": ".agents/agents/ui-analyst.md",
         "language": "Markdown",
         "framework": "Antigravity Declarative Subagent",
         "reasoning_pattern": "Wave / Subagent Contract",
@@ -66,8 +66,8 @@
         "missing_elements": []
       },
       {
-        "name": "ui-deterministic-observer",
-        "file": ".agents/agents/ui-deterministic-observer.md",
+        "name": "ui-judge",
+        "file": ".agents/agents/ui-judge.md",
         "language": "Markdown",
         "framework": "Antigravity Declarative Subagent",
         "reasoning_pattern": "Wave / Subagent Contract",
@@ -77,8 +77,8 @@
         "missing_elements": []
       },
       {
-        "name": "ui-motion-interaction",
-        "file": ".agents/agents/ui-motion-interaction.md",
+        "name": "ui-planner",
+        "file": ".agents/agents/ui-planner.md",
         "language": "Markdown",
         "framework": "Antigravity Declarative Subagent",
         "reasoning_pattern": "Wave / Subagent Contract",
@@ -88,8 +88,8 @@
         "missing_elements": []
       },
       {
-        "name": "ui-shell-navigator",
-        "file": ".agents/agents/ui-shell-navigator.md",
+        "name": "ui-worker",
+        "file": ".agents/agents/ui-worker.md",
         "language": "Markdown",
         "framework": "Antigravity Declarative Subagent",
         "reasoning_pattern": "Wave / Subagent Contract",
@@ -145,50 +145,6 @@
       {
         "name": "review-squad",
         "file": "agents/review-squad.md",
-        "language": "Markdown",
-        "framework": "Antigravity Declarative Subagent",
-        "reasoning_pattern": "Wave / Subagent Contract",
-        "has_max_steps": true,
-        "has_stop_condition": true,
-        "type_safety": true,
-        "missing_elements": []
-      },
-      {
-        "name": "ui-controls-data",
-        "file": "agents/ui-controls-data.md",
-        "language": "Markdown",
-        "framework": "Antigravity Declarative Subagent",
-        "reasoning_pattern": "Wave / Subagent Contract",
-        "has_max_steps": true,
-        "has_stop_condition": true,
-        "type_safety": true,
-        "missing_elements": []
-      },
-      {
-        "name": "ui-deterministic-observer",
-        "file": "agents/ui-deterministic-observer.md",
-        "language": "Markdown",
-        "framework": "Antigravity Declarative Subagent",
-        "reasoning_pattern": "Wave / Subagent Contract",
-        "has_max_steps": true,
-        "has_stop_condition": true,
-        "type_safety": true,
-        "missing_elements": []
-      },
-      {
-        "name": "ui-motion-interaction",
-        "file": "agents/ui-motion-interaction.md",
-        "language": "Markdown",
-        "framework": "Antigravity Declarative Subagent",
-        "reasoning_pattern": "Wave / Subagent Contract",
-        "has_max_steps": true,
-        "has_stop_condition": true,
-        "type_safety": true,
-        "missing_elements": []
-      },
-      {
-        "name": "ui-shell-navigator",
-        "file": "agents/ui-shell-navigator.md",
         "language": "Markdown",
         "framework": "Antigravity Declarative Subagent",
         "reasoning_pattern": "Wave / Subagent Contract",
@@ -273,15 +229,6 @@
         "missing_elements": []
       },
       {
-        "name": "clinical-minimalist-ui",
-        "path": "skills/clinical-minimalist-ui",
-        "has_frontmatter": true,
-        "has_scripts": true,
-        "has_references": true,
-        "has_evals": true,
-        "missing_elements": []
-      },
-      {
         "name": "code-acceptability-auditor",
         "path": "skills/code-acceptability-auditor",
         "has_frontmatter": true,
@@ -300,15 +247,6 @@
         "missing_elements": []
       },
       {
-        "name": "complex-zero",
-        "path": "skills/complex-zero",
-        "has_frontmatter": true,
-        "has_scripts": true,
-        "has_references": true,
-        "has_evals": true,
-        "missing_elements": []
-      },
-      {
         "name": "context-sentinel",
         "path": "skills/context-sentinel",
         "has_frontmatter": true,
@@ -318,44 +256,8 @@
         "missing_elements": []
       },
       {
-        "name": "design-md",
-        "path": "skills/design-md",
-        "has_frontmatter": true,
-        "has_scripts": true,
-        "has_references": true,
-        "has_evals": true,
-        "missing_elements": []
-      },
-      {
         "name": "flow-filetree-organizer",
         "path": "skills/flow-filetree-organizer",
-        "has_frontmatter": true,
-        "has_scripts": true,
-        "has_references": true,
-        "has_evals": true,
-        "missing_elements": []
-      },
-      {
-        "name": "frontend-code-architect",
-        "path": "skills/frontend-code-architect",
-        "has_frontmatter": true,
-        "has_scripts": true,
-        "has_references": true,
-        "has_evals": true,
-        "missing_elements": []
-      },
-      {
-        "name": "frontend-testing-auditor",
-        "path": "skills/frontend-testing-auditor",
-        "has_frontmatter": true,
-        "has_scripts": true,
-        "has_references": true,
-        "has_evals": true,
-        "missing_elements": []
-      },
-      {
-        "name": "frontend-ui-ux-auditor",
-        "path": "skills/frontend-ui-ux-auditor",
         "has_frontmatter": true,
         "has_scripts": true,
         "has_references": true,
@@ -410,15 +312,6 @@
       {
         "name": "obsidian-vault-curator",
         "path": "skills/obsidian-vault-curator",
-        "has_frontmatter": true,
-        "has_scripts": true,
-        "has_references": true,
-        "has_evals": true,
-        "missing_elements": []
-      },
-      {
-        "name": "plan-uiux",
-        "path": "skills/plan-uiux",
         "has_frontmatter": true,
         "has_scripts": true,
         "has_references": true,

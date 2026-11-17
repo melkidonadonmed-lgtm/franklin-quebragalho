@@ -1,7 +1,7 @@
 """
 trigger_eval_suite.py
 Deterministic Level 1 Trigger Evaluation Suite (Should-Trigger vs. Near-Misses)
-for all 28 Canonical Agent Skills of Franklin Quebra-Galho (Bilingual PT-BR + EN).
+for all 21 Canonical Agent Skills of Franklin Quebra-Galho (Bilingual PT-BR + EN).
 
 Objective:
 Mathematically validate that Level 1 descriptions (<available_skills>), bilingual tags,
@@ -102,47 +102,6 @@ CANONICAL_TRIGGER_EVAL_CASES: List[TriggerEvalCase] = [
         near_miss_skills=["refine-prompt", "obsidian-vault-curator"],
         rationale="Multi-turn context window integrity sentinel vs. isolated prompt refiner.",
     ),
-    # Cluster 2: Frontend Engineering, UI/UX, DESIGN.md & Clinical UI
-    TriggerEvalCase(
-        case_id="TRG-05",
-        cluster="Frontend & UI",
-        query="criar ou atualizar o contrato DESIGN.md na raiz do projeto definindo tokens semânticos e escala tipográfica modular",
-        expected_skill="design-md",
-        near_miss_skills=["frontend-code-architect", "frontend-ui-ux-auditor"],
-        rationale="Authoring DESIGN.md contract vs. implementing UI components.",
-    ),
-    TriggerEvalCase(
-        case_id="TRG-06",
-        cluster="Frontend & UI",
-        query="implementar e refatorar interfaces web React Next.js Tailwind consumindo o contrato DESIGN.md com estados finitos FSM",
-        expected_skill="frontend-code-architect",
-        near_miss_skills=["design-md", "frontend-testing-auditor", "system-project-auditor"],
-        rationale="Frontend code implementation/refactoring (system-project-auditor excludes code refactoring).",
-    ),
-    TriggerEvalCase(
-        case_id="TRG-07",
-        cluster="Frontend & UI",
-        query="auditar qualidade de interfaces web via audit_tactile_ui.py verificando WAI-ARIA, zero emojis, zero bloat Base64 e anti-XSS",
-        expected_skill="frontend-testing-auditor",
-        near_miss_skills=["frontend-ui-ux-auditor", "frontend-code-architect"],
-        rationale="Deterministic UI gate via audit_tactile_ui.py (Base64, XSS, WAI-ARIA).",
-    ),
-    TriggerEvalCase(
-        case_id="TRG-08",
-        cluster="Frontend & UI",
-        query="auditar com precisão matemática densidade de nós DOM, contraste WCAG 2.1 AA, luz zenital 90-120 e elevação por sombras",
-        expected_skill="frontend-ui-ux-auditor",
-        near_miss_skills=["frontend-testing-auditor", "design-md"],
-        rationale="Optical/mathematical UI/UX audit of DOM density, zenith light 90-120, and elevation shadows.",
-    ),
-    TriggerEvalCase(
-        case_id="TRG-09",
-        cluster="Frontend & UI",
-        query="arquitetura para interfaces clínicas, prontuários eletrônicos PEP, receituários laudos A4 .sus-grid e calculadoras médicas",
-        expected_skill="clinical-minimalist-ui",
-        near_miss_skills=["design-md", "frontend-code-architect"],
-        rationale="Specialist for clinical EHR/PEP interfaces, .sus-grid A4 print, and medical dosing safeguards.",
-    ),
     # Cluster 3: Google Drive, Local Windows Disk & Obsidian Vault
     TriggerEvalCase(
         case_id="TRG-10",
@@ -233,7 +192,7 @@ CANONICAL_TRIGGER_EVAL_CASES: List[TriggerEvalCase] = [
         cluster="Projects, MVP & Architecture",
         query="auditoria integrada 3-em-1 de projetos, sistemas, MVP e navegabilidade com project_structure_and_code_auditor.py e Plano de Evolução em 3 Fases",
         expected_skill="system-project-auditor",
-        near_miss_skills=["project-idea-organizer", "frontend-testing-auditor"],
+        near_miss_skills=["project-idea-organizer", "agent-server-auditor"],
         rationale="MVP diagnostics, AST physical tree, and 3-phase evolution plan in system-project-auditor.",
     ),
     TriggerEvalCase(
@@ -241,7 +200,7 @@ CANONICAL_TRIGGER_EVAL_CASES: List[TriggerEvalCase] = [
         cluster="Projects, MVP & Architecture",
         query="auditar integridade estrutural de repositórios, código órfão e esteira dinâmica via agent-browser @eX com nota de 0 a 100",
         expected_skill="system-project-auditor",
-        near_miss_skills=["project-idea-organizer", "frontend-testing-auditor"],
+        near_miss_skills=["project-idea-organizer", "code-acceptability-auditor"],
         rationale="0-100 structural repo audit combined with agent-browser (@eX) inspection.",
     ),
     TriggerEvalCase(
@@ -257,7 +216,7 @@ CANONICAL_TRIGGER_EVAL_CASES: List[TriggerEvalCase] = [
         cluster="Projects, MVP & Architecture",
         query="auditoria de navegação em 3 camadas, Ilhas Funcionais, Clicar em X ativa Y, Dead Ends, suficiência funcional e score determinístico SGA V1 vs V2 com deterministic_scorer.py",
         expected_skill="system-project-auditor",
-        near_miss_skills=["design-md", "project-idea-organizer"],
+        near_miss_skills=["high-level-context-planner", "project-idea-organizer"],
         rationale="3-layer navigation, functional islands (X activates Y), and SGA V1 vs V2 scoring.",
     ),
     # Cluster 7: Markdown Docs, PDF Conversion & Mermaid Flows
@@ -294,27 +253,11 @@ CANONICAL_TRIGGER_EVAL_CASES: List[TriggerEvalCase] = [
         rationale="Agentic architecture, MCP STDIO, A2A agent-card JWS, and audit_report.json auditing.",
     ),
     TriggerEvalCase(
-        case_id="TRG-28",
-        cluster="Frontend & UI",
-        query="auditar via ciclo ReAct CDP DevTools e AST aplicações frontend complexas com canvas infinito @xyflow/react WebSocket Chokidar, detecção de nós fantasmas funções falsas e Next.js 15 async params",
-        expected_skill="complex-zero",
-        near_miss_skills=["frontend-code-architect", "frontend-testing-auditor", "frontend-ui-ux-auditor"],
-        rationale="ReAct + CDP + AST anti-fake auditing for @xyflow/react, WebSocket/Chokidar, and Next.js 15+.",
-    ),
-    TriggerEvalCase(
-        case_id="TRG-29",
-        cluster="Frontend & UI",
-        query="análise minuciosa e global de frontend UI/UX com REA Reverse Engineer Anything, proporção 60-30-10 OKLCH e propostas de mutação Antes Depois plan-uiux",
-        expected_skill="plan-uiux",
-        near_miss_skills=["frontend-ui-ux-auditor", "design-md", "frontend-code-architect"],
-        rationale="Frontend UI/UX reverse engineering with REA and Before/After mutation plans.",
-    ),
-    TriggerEvalCase(
         case_id="TRG-30",
         cluster="Projects, MVP & Architecture",
         query="criar app Android do zero ou auditar gargalos de build Gradle AGP 9 Built-in Kotlin KSP2 Jetpack Compose Navigation 3 R8 ANR e memory leaks com android-agy-projects",
         expected_skill="android-agy-projects",
-        near_miss_skills=["system-project-auditor", "frontend-code-architect"],
+        near_miss_skills=["system-project-auditor", "re-a-ndroid"],
         rationale="Android app engineering and Gradle/AGP9/Compose/ANR auditing.",
     ),
     TriggerEvalCase(
@@ -322,7 +265,7 @@ CANONICAL_TRIGGER_EVAL_CASES: List[TriggerEvalCase] = [
         cluster="Code, Tests & 3D",
         query="engenharia reversa e auditoria de APKs Android com re-a-ndroid REA e ADB descompilando DEX .so assinaturas v1-v3.1 funções placebo latência de rotas e alvos 48dp",
         expected_skill="re-a-ndroid",
-        near_miss_skills=["android-agy-projects", "plan-uiux"],
+        near_miss_skills=["android-agy-projects", "agent-server-auditor"],
         rationale="Binary/dynamic APK reverse engineering with REA and ADB.",
     ),
     TriggerEvalCase(
@@ -330,9 +273,9 @@ CANONICAL_TRIGGER_EVAL_CASES: List[TriggerEvalCase] = [
         cluster="Bilingual English Verification",
         query="Audit repository AST code health, MVP diagnosis, 3-layer navigation SGA score, and agent-browser DOM without refactoring code",
         expected_skill="system-project-auditor",
-        near_miss_skills=["project-idea-organizer", "frontend-code-architect"],
+        near_miss_skills=["project-idea-organizer", "code-acceptability-auditor"],
         case_type="negative_clause_near_miss",
-        rationale="English query must select system-project-auditor and reject project-idea-organizer / frontend-code-architect.",
+        rationale="English query must select system-project-auditor and reject project-idea-organizer / code-acceptability-auditor.",
     ),
     TriggerEvalCase(
         case_id="TRG-33",

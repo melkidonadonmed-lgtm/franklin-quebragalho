@@ -10,29 +10,45 @@ import re
 from pathlib import Path
 from typing import Callable, Dict, List, Tuple
 
-from shared.catalog_service import AGENTS_MD_PATH, ROOT_DIR, _get_all_skills_data
+from shared.catalog_service import AGENTS_MD_PATH, ROOT_DIR, SHREDDED_SHAPE_ROOT, _get_all_skills_data
 
 UI_SUBAGENT_ALIASES: Dict[str, str] = {
-    "shell": "ui-shell-navigator",
-    "navigator": "ui-shell-navigator",
-    "onda1": "ui-shell-navigator",
-    "wave1": "ui-shell-navigator",
-    "ui_shell_navigator": "ui-shell-navigator",
-    "controls": "ui-controls-data",
-    "data": "ui-controls-data",
-    "onda2a": "ui-controls-data",
-    "wave2a": "ui-controls-data",
-    "ui_controls_data": "ui-controls-data",
-    "motion": "ui-motion-interaction",
-    "interaction": "ui-motion-interaction",
-    "onda2b": "ui-motion-interaction",
-    "wave2b": "ui-motion-interaction",
-    "ui_motion_interaction": "ui-motion-interaction",
-    "observer": "ui-deterministic-observer",
-    "gatekeeper": "ui-deterministic-observer",
-    "onda3": "ui-deterministic-observer",
-    "wave3": "ui-deterministic-observer",
-    "ui_deterministic_observer": "ui-deterministic-observer",
+    "analyst": "ui-analyst",
+    "ui-analyst": "ui-analyst",
+    "ui_analyst": "ui-analyst",
+    "stage0": "ui-analyst",
+    "planner": "ui-planner",
+    "ui-planner": "ui-planner",
+    "ui_planner": "ui-planner",
+    "stage1": "ui-planner",
+    "shell": "ui-planner",
+    "navigator": "ui-planner",
+    "onda1": "ui-planner",
+    "wave1": "ui-planner",
+    "ui_shell_navigator": "ui-planner",
+    "worker": "ui-worker",
+    "ui-worker": "ui-worker",
+    "ui_worker": "ui-worker",
+    "stage2": "ui-worker",
+    "controls": "ui-worker",
+    "data": "ui-worker",
+    "onda2a": "ui-worker",
+    "wave2a": "ui-worker",
+    "ui_controls_data": "ui-worker",
+    "motion": "ui-worker",
+    "interaction": "ui-worker",
+    "onda2b": "ui-worker",
+    "wave2b": "ui-worker",
+    "ui_motion_interaction": "ui-worker",
+    "judge": "ui-judge",
+    "ui-judge": "ui-judge",
+    "ui_judge": "ui-judge",
+    "stage3": "ui-judge",
+    "observer": "ui-judge",
+    "gatekeeper": "ui-judge",
+    "onda3": "ui-judge",
+    "wave3": "ui-judge",
+    "ui_deterministic_observer": "ui-judge",
     "memory": "vault-memory-retriever",
     "retriever": "vault-memory-retriever",
     "vault-retriever": "vault-memory-retriever",
@@ -93,25 +109,26 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
     (
         ("medic", "saude", "clin", "prontuario", "receit", "calculadora", "paciente", "appmy", "scoreboard", "atlas", "hexagonal", "sofa"),
         "🩺 Software Médico, Atlas 3D (`appmy`) & Scoreboard Hexagonal (`clinical_preceptor_orchestrator`)",
-        ["clinical-minimalist-ui", "system-project-auditor", "design-md", "frontend-testing-auditor"],
+        ["clinical-minimalist-ui", "system-project-auditor", "ui-brand-ux-planner", "ui-quality-judge"],
         [
             ("system-project-auditor", "frontiercode_maintainability_guardrail.py", "Auditoria adaptativa FrontierCode (Tipagem, Bare Except, Segurança)"),
             ("system-project-auditor", "ai_ready_data_pipeline.py", "Sanitização e chunking SHA-256 para diretrizes clínicas/RAG"),
         ],
-        "plans/ui_composition_dag.json",
-        "Coordenador clínico unificado (clinical_preceptor_orchestrator em adk-py-agents/py_agent/pipelines/clinical_coordinator.py) com AgentTools separados: anatomy_3d_inspector (appmy) + hexagonal_score_calculator (scoreboard) e replanejamento dinâmico.",
+        "../shredded-shape/plans/ui_actor_critic_dag.json",
+        "Coordenador clínico unificado (clinical_preceptor_orchestrator em adk-py-agents/py_agent/pipelines/clinical_coordinator.py) com AgentTools separados: anatomy_3d_inspector (appmy) + hexagonal_score_calculator (scoreboard) e suíte UI federada em shredded-shape.",
     ),
     (
         ("ui", "ux", "front", "tela", "botao", "menu", "css", "tailwind", "react", "design", "sombra", "tatil", "tactile", "elevacao"),
-        "🎨 Engenharia de Interface, Elevação Tátil, Composição Espacial & Hierarquia Visual (`DESIGN.md` • SSOT)",
-        ["design-md", "frontend-code-architect", "frontend-ui-ux-auditor", "frontend-testing-auditor", "system-project-auditor"],
+        "🎨 Suíte UI/UX Separada (`shredded-shape` • Analista -> Planejador -> Worker <-> Judge)",
+        ["ui-frontend-analyst", "ui-brand-ux-planner", "ui-clean-worker", "ui-quality-judge", "system-project-auditor"],
         [
-            ("frontend-ui-ux-auditor", "ui_ux_frontend_auditor.py", "Auditor determinístico de UI/UX, contraste WCAG, física da luz/sombras táteis e zero-reflow"),
-            ("frontend-testing-auditor", "audit_tactile_ui.py", "Auditor determinístico de composição, A11y, zero emojis, zero bloat Base64 e FSM"),
-            ("system-project-auditor", "frontiercode_maintainability_guardrail.py", "Verificação rápida de código sem engessamento"),
+            ("ui-frontend-analyst", "frontend_inventory_and_slop_scanner.py", "Inventário total de tokens/cores/fontes/menus + Chrome DevTools probe + AI Slop"),
+            ("ui-brand-ux-planner", "ui_dag_compiler.py", "Branding OKLCH, estilos Soft..Clinical, Stitch/Figma/Fonts/3D e DAG <= 5 regras/nó"),
+            ("ui-clean-worker", "verify_raw_frontend.py", "Verificador físico Read-After-Write SHA-256 + tsc --noEmit + anti-stub"),
+            ("ui-quality-judge", "ui_judge_gatekeeper.py", "Juiz Read-Only WCAG 2.2 OKLCH (FNR < 0.001) + Actor-Critic Self-Refine"),
         ],
-        "plans/ui_composition_dag.json",
-        "Tokens semânticos adaptados ao propósito do projeto, elevação óptica em camadas (Oclusão de Contato + Key Light + Specular Rim em references/tactile_elevation_and_shadows.md), hierarquia visual em 3 níveis (Squint Test) e tabular-nums.",
+        "../shredded-shape/plans/ui_actor_critic_dag.json",
+        "Suíte UI federada no repositório dedicado shredded-shape: Analista DevTools -> Planejador Brand/Estilos -> Worker RAW -> Judge WCAG 2.2 OKLCH (zero neon, fosco superior, rim light no escuro).",
     ),
     (
         ("rag", "dado", "chunk", "jsonl", "vetor", "memoria", "obsidian", "nota", "vault"),
@@ -156,7 +173,7 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
             ("system-project-auditor", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (SRP, Tipagem Pydantic, Segurança)"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST pré-commit de segurança e tipagem Python (Score >= 75)"),
         ],
-        "plans/distributed_agent_mediation_dag.json | plans/ui_composition_dag.json",
+        "plans/distributed_agent_mediation_dag.json | ../shredded-shape/plans/ui_actor_critic_dag.json",
         "Fluxo unificado: (1) Ideação/MVP ('project-idea-organizer' Modo 1) -> (2) Auditoria Física AST + Navegação SGA + Plano 3 Fases ('system-project-auditor' v6.0) -> (3) Saneamento & Paridade README/Contratos ('project-idea-organizer' Modo 2).",
     ),
     (
@@ -171,23 +188,28 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
             ("test-quality-auditor", "test_quality_auditor.py", "Portão 2 de qualidade de suítes de testes em 5 módulos (Py/TS/Go/MCP/Harness + PerfKit)"),
             ("workspace", "validate_skills.py", "Validador determinístico das 28 skills canônicas"),
         ],
-        "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json | plans/distributed_agent_mediation_dag.json",
+        "../shredded-shape/plans/ui_actor_critic_dag.json | plans/physics_code_audit_dag.json | plans/distributed_agent_mediation_dag.json",
         "Planejamento Não-Linear ('high-level-context-planner' v3.0 <=5 regras/nó) -> Compilação de Ondas Kahn ('chained-plan-orchestrator' v3.0) -> Esteira em 3 Portões ('code-acceptability-auditor' -> 'test-quality-auditor' -> 'gap-analyzer-auditor').",
     ),
 ]
 
 
-def _resolve_agents_dir() -> Path:
-    """Localiza o diretório de contratos de subagentes (agents/)."""
-    for candidate in (
+def _resolve_agent_dirs() -> List[Path]:
+    """Localiza os diretórios de contratos de subagentes (franklin + shredded-shape federado)."""
+    candidates = [
         ROOT_DIR / "agents",
+        SHREDDED_SHAPE_ROOT / "agents",
         Path(r"C:\Users\melki\.gemini\config\plugins\franklin-skills\agents"),
         Path(r"C:\Users\melki\.gemini\config\agents"),
         Path(r"C:\Users\melki\.gemini\agents"),
-    ):
-        if candidate.exists() and candidate.is_dir():
-            return candidate
-    return ROOT_DIR / "agents"
+    ]
+    return [c for c in candidates if c.exists() and c.is_dir()]
+
+
+def _resolve_agents_dir() -> Path:
+    """Mantém compatibilidade retornando o diretório primário de agentes."""
+    dirs = _resolve_agent_dirs()
+    return dirs[0] if dirs else (ROOT_DIR / "agents")
 
 
 def _render_ecosystem_topology() -> str:
@@ -201,7 +223,7 @@ def _render_ecosystem_topology() -> str:
         "## 1. Camadas de Execução e Custo Cognitivo",
         "- **Camada 0 (Bússola & Heartbeat Zero-LLM — 0 tokens)**: `franklin_smart_compass()`, `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1`, `POST /rpc` (`mesh/heartbeat` em `adk-go-mcp`).",
         "- **Camada 1 (Orquestração & Loop Fechado)**: `Franklin-Main` (Execução Direta) e `LoopPlanner` (`high-level-context-planner` Fase 0 -> `chained-plan-orchestrator` -> `gap-analyzer-auditor`).",
-        "- **Camada 2 (Esquadrão Frontend & Composição Visual por Propósito — Topologia 3+1)**: `UI-Architect` + `ui-shell-navigator` (Onda 1) -> `ui-controls-data` + `ui-motion-interaction` (Onda 2) -> `ui-deterministic-observer` (Onda 3 Gatekeeper `AUDIT-VIS-01 >= 90`).",
+        "- **Camada 2 (Esquadrão Frontend Separado — `shredded-shape` Actor-Critic)**: `UI-Architect` -> `ui-analyst` (DevTools/Slop) -> `ui-planner` (Brand/Estilos/DAG<=5) -> `ui-worker` (ReAct/RAW) <-> `ui-judge` (WCAG 2.2 OKLCH `FNR<0.001`).",
         "- **Camada 3 (Gatekeepers Determinísticos AST/Pass@k — 0 tokens)**: `SkillCraft` (`code-acceptability-auditor` Score >= 75, `test-quality-auditor`), `3D Physics Auditor` (`franklin_execute_dag('physics')`) e `dispatch_skill_deterministic_tests` (Go Eval Harness).",
         "- **Camada 4 (Malha Multiagente Cloud/Web & Clínica)**: `adk-go-mcp` + `adk-py-agents` + `adk-ts-agent` (`mesh_hybrid_orchestrator`, `self_healing_specialist`, `customer_issue_reviewer`, `AgyCalcCluster`, `clinical_preceptor_orchestrator` -> `anatomy_3d_inspector` [`appmy`] + `hexagonal_score_calculator` [`scoreboard`]), `epic-volta` (`DAGEngine` Kahn + `MCPBridgeAgent` + `ContextSentinel`), `mcp-web-agents` (Gateway 4+1 + `watchdogBridge.ts`) e `PCM`/`scoreboard` (`prescmed-clinical-reviewer`).\n",
         "## 2. Personas Especialistas & Skills Vinculadas (`franklin-quebragalho`)",
@@ -242,23 +264,26 @@ def get_agents_impl(agent_name: str = "") -> str:
     if clean in ("ecosystem", "topology", "matrix", "all", "multi-repo", "repos"):
         return _render_ecosystem_topology()
 
-    agents_dir = _resolve_agents_dir()
-    if clean in ("ui", "3+1", "all-ui", "subagentes-ui"):
-        ordered = ("ui-shell-navigator.md", "ui-controls-data.md", "ui-motion-interaction.md", "ui-deterministic-observer.md")
-        parts = ["# Esquadrão de Subagentes de UI (`Topologia 3+1` sob `UI-Architect`)\n"]
+    agent_dirs = _resolve_agent_dirs()
+    if clean in ("ui", "3+1", "all-ui", "subagentes-ui", "shredded-shape"):
+        ordered = ("ui-analyst.md", "ui-planner.md", "ui-worker.md", "ui-judge.md")
+        parts = ["# Esquadrão de Subagentes de UI (`shredded-shape` • Topologia Actor-Critic em 4 Estágios)\n"]
         for fname in ordered:
-            fpath = agents_dir / fname
-            if fpath.exists():
-                parts.extend([fpath.read_text(encoding="utf-8", errors="replace"), "\n" + ("=" * 60) + "\n"])
+            for adir in agent_dirs:
+                fpath = adir / fname
+                if fpath.exists():
+                    parts.extend([fpath.read_text(encoding="utf-8", errors="replace"), "\n" + ("=" * 60) + "\n"])
+                    break
         return "\n".join(parts)
 
     target_stem = UI_SUBAGENT_ALIASES.get(clean, clean.removesuffix(".md"))
-    target_file = agents_dir / f"{target_stem}.md"
-    if target_file.exists():
-        return target_file.read_text(encoding="utf-8", errors="replace")
+    for adir in agent_dirs:
+        target_file = adir / f"{target_stem}.md"
+        if target_file.exists():
+            return target_file.read_text(encoding="utf-8", errors="replace")
     if clean in PERSONA_ALIASES:
         return _extract_persona_details(PERSONA_ALIASES[clean])
-    return f"Erro: Subagente '{agent_name}' não encontrado em {agents_dir}."
+    return f"Erro: Subagente '{agent_name}' não encontrado em {[str(d) for d in agent_dirs]}."
 
 
 def _resolve_compass_profile(q: str) -> Tuple[str, List[str], List[Tuple[str, str, str]], str, str]:
@@ -267,16 +292,16 @@ def _resolve_compass_profile(q: str) -> Tuple[str, List[str], List[Tuple[str, st
         if any(k in q for k in keywords):
             return title, rec_skills, scripts, dag_plan, guardrail
     return (
-        "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 28 Skills)",
-        ["project-idea-organizer", "system-project-auditor", "solution-content-architect", "code-acceptability-auditor", "design-md", "frontend-code-architect"],
+        "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 21 Skills + 6 UI em shredded-shape)",
+        ["project-idea-organizer", "system-project-auditor", "solution-content-architect", "code-acceptability-auditor", "ui-brand-ux-planner", "ui-clean-worker"],
         [
             ("system-project-auditor", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (detecta sozinho se é código Geral ou 3D)"),
             ("code-acceptability-auditor", "code_acceptability_auditor.py", "Portão AST pré-commit de segurança e tipagem Python (Score >= 75)"),
             ("code-quality-audit-3d-physics", "state_checker_observer.py", "Observador Pydantic com filtro anti-alucinação AST e nota Snorm"),
             ("system-project-auditor", "ai_ready_data_pipeline.py", "Pipeline de sanitização e chunking JSONL para RAG"),
-            ("frontend-testing-auditor", "audit_tactile_ui.py", "Auditor determinístico de composição frontend, A11y e FSM"),
+            ("ui-quality-judge", "ui_judge_gatekeeper.py", "Juiz Read-Only WCAG 2.2 OKLCH e FSM em shredded-shape"),
         ],
-        "plans/ui_composition_dag.json | plans/physics_code_audit_dag.json | plans/distributed_agent_mediation_dag.json",
+        "../shredded-shape/plans/ui_actor_critic_dag.json | plans/physics_code_audit_dag.json | plans/distributed_agent_mediation_dag.json",
         "Portão gradual: bloqueia apenas falhas críticas/altas (Hard Gate) e trata estilo/docstrings como sugestões leves (Soft Advisory).",
     )
 
@@ -306,7 +331,8 @@ def smart_compass_impl(
     candidate_path = intent_or_path.strip()
     target_arg = target_dir.strip() or (candidate_path if candidate_path and Path(candidate_path).exists() else "")
     dag_line = f"### 3. Planos DAG Disponíveis: `{dag_plan}`"
-    if target_arg and dag_plan.startswith("plans/"):
+    has_dag_plan = dag_plan.startswith(("plans/", "../shredded-shape/plans/"))
+    if target_arg and has_dag_plan:
         primary_plan = dag_plan.split("|")[0].strip()
         dag_line += f"\n- Disparo com alvo: `franklin_execute_dag(plan_path_or_json=\"{primary_plan}\", target_dir=\"{target_arg}\")`"
 
@@ -318,7 +344,7 @@ def smart_compass_impl(
         "- `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1` (Menu interativo de agentes, portas e repositórios do workspace)",
         "- `franklin_get_agents(agent_name='ecosystem')` (Mapa completo das 5 camadas de agentes)",
     ])
-    if auto_dispatch_dag and dag_plan.startswith("plans/") and dag_executor is not None:
+    if auto_dispatch_dag and has_dag_plan and dag_executor is not None:
         primary_plan = dag_plan.split("|")[0].strip()
         dag_out = dag_executor(primary_plan, target_arg)
         lines.extend(["", "### 6. Execução Automática do DAG Recomendado:", f"```json\n{dag_out}\n```"])

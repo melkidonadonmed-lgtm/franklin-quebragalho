@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["pyyaml>=6.0"]
+# ///
 """
 validate_skills.py
 Validador determinístico de integridade estrutural, contratual e semântica

@@ -131,7 +131,7 @@ def _collect_a2a_skills(skills_dir: Path, kw: str) -> List[Dict[str, Any]]:
                 "name": name,
                 "description": desc,
                 "tags": tags[:6],
-                "examples": [f"Executar a skill {name} no contexto atual"],
+                "examples": [f"Execute skill {name} in the current context"],
                 "inputModes": ["text/plain", "application/json"],
                 "outputModes": ["text/plain", "application/json"],
             }
@@ -145,7 +145,7 @@ def build_franklin_agent_card(
     host_url: str = "http://localhost:10999",
     sign: bool = True,
 ) -> Dict[str, Any]:
-    """Constrói e valida via Protobuf (a2a.types.AgentCard) o AgentCard canônico do Franklin Quebra-Galho."""
+    """Build and validate via Protobuf (a2a.types.AgentCard) the canonical Franklin Quebra-Galho AgentCard."""
     kw = skill_filter.strip().lower()
     skills_list = _collect_a2a_skills(skills_dir, kw)
     total_skills = (
@@ -157,8 +157,8 @@ def build_franklin_agent_card(
     raw_card: Dict[str, Any] = {
         "name": "Franklin Quebra-Galho (A2A + MCP Orchestrator)",
         "description": (
-            f"Orquestrador multiagente e catálogo de {total_skills} Skills canônicas (Python, TS/JS, Go, MCP, Harness e Arquitetura Visual por Propósito) "
-            "com suporte nativo a Agent2Agent (A2A v1.0) e Model Context Protocol (MCP)."
+            f"Multi-agent orchestrator and catalog of {total_skills} canonical Agent Skills (Python, TS/JS, Go, MCP, Harness, and Purpose-Driven Visual Architecture) "
+            "with native Agent2Agent (A2A v1.0) and Model Context Protocol (MCP) support."
         ),
         "version": "1.2.0",
         "defaultInputModes": ["text/plain", "application/json"],
