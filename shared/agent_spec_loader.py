@@ -74,6 +74,13 @@ class DeclarativeAgentSpec(BaseModel):
     mcpServers: List[Any] = Field(default_factory=list)
     covered_modules: List[str] = Field(default_factory=list)
     system_prompt: str = "Atue com rigor técnico, valide evidências no disco e mantenha qualidade linear alta."
+    max_steps: Optional[int] = Field(
+        default=None,
+        description=(
+            "Atalho legado para guardrails.max_steps. Aceito para compatibilidade com manifestos "
+            "de outros repositorios que declaram max_steps no topo do frontmatter."
+        ),
+    )
     guardrails: AgentGuardrailsSpec = Field(default_factory=AgentGuardrailsSpec)
     mcp_servers: List[MCPServerSpec] = Field(
         default_factory=lambda: [
@@ -86,6 +93,26 @@ class DeclarativeAgentSpec(BaseModel):
             ),
         ]
     )
+
+    @model_validator(mode="before")
+    @classmethod
+    def _hoist_legacy_max_steps(cls, data: Any) -> Any:
+        """Encaminha `max_steps` declarado no topo para `guardrails.max_steps`.
+
+        O schema continua fechado (`extra="forbid"`); este e o unico atalho aceito.
+        Quando o manifesto ja traz `guardrails.max_steps`, o valor aninhado tem precedencia.
+        """
+        if not isinstance(data, dict):
+            return data
+        legacy = data.get("max_steps")
+        if legacy is None:
+            return data
+        guardrails = data.get("guardrails")
+        if guardrails is None:
+            return {**data, "guardrails": {"max_steps": legacy}}
+        if isinstance(guardrails, dict) and "max_steps" not in guardrails:
+            return {**data, "guardrails": {**guardrails, "max_steps": legacy}}
+        return data
 
     @model_validator(mode="after")
     def _derive_effective_capabilities(self) -> "DeclarativeAgentSpec":
