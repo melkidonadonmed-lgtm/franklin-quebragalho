@@ -4,6 +4,7 @@ Testes determinísticos para validação do Franklin Skills MCP Server e Harness
 """
 
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -543,6 +544,18 @@ def test_gemini_ecosystem_directories(tmp_path: Path, monkeypatch: pytest.Monkey
     monkeypatch.setattr(sync, "CONFIG_PLUGIN_ROOT", gemini_root / "config" / "plugins" / "franklin-skills")
     monkeypatch.setattr(sync, "CONFIG_SKILLS_ROOT", gemini_root / "config" / "skills")
     monkeypatch.setattr(sync, "REPOS_ROOT", tmp_path / "repos")
+
+    auditor_script_dir = sync.ROOT_DIR / "skills" / "agent-server-auditor" / "scripts"
+    if str(auditor_script_dir) not in sys.path:
+        sys.path.insert(0, str(auditor_script_dir))
+    import agent_server_auditor
+
+    orig_audit_repo = agent_server_auditor.audit_repository
+    monkeypatch.setattr(
+        agent_server_auditor,
+        "audit_repository",
+        lambda root, persist=True: orig_audit_repo(root, persist=False),
+    )
 
     cli_skill = _seed(gemini_root / "skills" / "cli-skill" / "SKILL.md")
     cli_extension = _seed(gemini_root / "extensions" / "wt-agent-hooks" / "gemini-extension.json", "{}\n")
