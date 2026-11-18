@@ -33,9 +33,13 @@ IGNORED_DIRS: frozenset[str] = frozenset({
 })
 ALLOWED_BIN_DIRS: frozenset[str] = frozenset({"bin", "dist", "build"})
 BINARY_EXTENSIONS: frozenset[str] = frozenset({".exe", ".dll", ".so", ".dylib", ".asar", ".bin"})
-MAX_STEPS_RE = re.compile(r"\b(max_steps|max_turns|max_retries|max_iterations|recursion_limit|MaxSteps|MaxTurns|maxSteps)\b")
+MAX_STEPS_RE = re.compile(
+    r"\b(max_steps|max_turns|max_retries|max_iterations|recursion_limit|MaxSteps|MaxTurns|MaxRetries|MaxAgentSteps|DefaultCircuitBreakerMaxSteps|StepCircuitBreaker|maxSteps)\b"
+)
 STOP_COND_RE = re.compile(r"\b(stop_condition|should_continue|END|TASK_STATE_COMPLETED|COMPLETED|APPROVED|Read-After-Write)\b")
-STRICT_SCHEMA_RE = re.compile(r'(extra\s*=\s*["\']forbid["\']|\.strict\(\)|"additionalProperties"\s*:\s*false)')
+STRICT_SCHEMA_RE = re.compile(
+    r'(extra\s*=\s*["\']forbid["\']|\.strict\(\)|"additionalProperties"\s*:\s*false|DisallowUnknownFields\s*\(|RejectUnknownMembers\s*\()'
+)
 STDOUT_POLLUTION_PY_RE = re.compile(r"^\s*print\s*\((?!.*file\s*=\s*sys\.stderr).*\)")
 STDOUT_POLLUTION_TS_RE = re.compile(r"\b(console\.log|process\.stdout\.write)\s*\(")
 STDOUT_POLLUTION_GO_RE = re.compile(r"\bfmt\.Print(ln|f)?\s*\(")
@@ -245,8 +249,15 @@ def _audit_code_agent_file(f: Path, rel: str, suffix: str) -> AgentAuditItem:
         except SyntaxError:
             syntax_ok = False
     has_placebo = bool(re.search(r"\braise\s+NotImplementedError\b", text))
-    has_max = bool(MAX_STEPS_RE.search(text))
-    has_stop = bool(STOP_COND_RE.search(text))
+    is_finite_go_dag = (
+        suffix == ".go"
+        and bool(re.search(r"\b(FastSubAgent|FastCapability|sequentialagent\.New|parallelagent\.New)\b", text))
+        and not bool(re.search(r"\b(llmagent\.New|loopagent\.New)\b", text))
+        and not bool(re.search(r"\bfor\s*\{", text))
+    )
+    has_max = is_finite_go_dag or bool(MAX_STEPS_RE.search(text))
+    has_stop = is_finite_go_dag or bool(STOP_COND_RE.search(text))
+    pattern = "Deterministic FastSubAgent / Finite DAG" if is_finite_go_dag else "ReAct / StateGraph"
     type_safe = syntax_ok and (("Any" not in text and "interface{}" not in text) or bool(STRICT_SCHEMA_RE.search(text)))
     missing = [
         lbl
@@ -263,7 +274,7 @@ def _audit_code_agent_file(f: Path, rel: str, suffix: str) -> AgentAuditItem:
         file=rel,
         language=lang,
         framework=fw,
-        reasoning_pattern="ReAct / StateGraph",
+        reasoning_pattern=pattern,
         has_max_steps=has_max,
         has_stop_condition=has_stop,
         type_safety=type_safe,
@@ -332,16 +343,21 @@ def _audit_mcp_servers(root: Path, files: List[Path], global_strict: bool) -> Li
     has_manifest = any((root / m).is_file() for m in ("pyproject.toml", "package.json", "go.mod"))
     sdk_declared = _has_mcp_sdk_in_manifests(root) if has_manifest else True
     for f in files:
-        if f.suffix.lower() not in {".py", ".ts", ".go"} or "test" in f.name.lower():
-            continue
+        suffix = f.suffix.lower()
         rel = f.relative_to(root).as_posix()
+        if suffix not in {".py", ".ts", ".go"} or "test" in f.name.lower():
+            continue
         if rel.startswith("skills/"):
             continue
         text = f.read_text(encoding="utf-8", errors="replace")
-        is_mcp = "FastMCP" in text or "StdioServerTransport" in text or "mcp.tool" in text or "mcp_servers/" in rel
+        is_go_mcp = suffix == ".go" and (
+            "NewStdioServer" in text or "mcp.NewServer" in text or "StdioTransport" in text
+        )
+        is_mcp = "FastMCP" in text or "StdioServerTransport" in text or "mcp.tool" in text or "mcp_servers/" in rel or is_go_mcp
         if not is_mcp:
             continue
-        polluted = _has_stdout_pollution(f.suffix.lower(), text)
+        is_stdio = (not is_go_mcp) or ("Stdio" in text or "os.Stdin" in text or "--mcp-stdio" in text)
+        polluted = _has_stdout_pollution(suffix, text) if is_stdio else False
         strict = bool(STRICT_SCHEMA_RE.search(text)) or global_strict
         missing: List[str] = []
         if polluted:
@@ -474,7 +490,7 @@ def audit_repository(target_root: Path, persist: bool = False, output_path: Path
     langs = _detect_languages(root, files)
     bin_report, misplaced_bins = _audit_binary_hygiene(root, files)
     global_strict = any(
-        f.suffix.lower() in {".py", ".ts"} and STRICT_SCHEMA_RE.search(f.read_text(encoding="utf-8", errors="replace"))
+        f.suffix.lower() in {".py", ".ts", ".go"} and STRICT_SCHEMA_RE.search(f.read_text(encoding="utf-8", errors="replace"))
         for f in files
         if not f.relative_to(root).as_posix().startswith("skills/")
     )

@@ -550,6 +550,20 @@ def test_agent_server_auditor_enforces_antigravity_policies_and_sdks(tmp_path: P
         sdk_v = scan_code_protocol_violations(bad_sdk_file, bad_sdk_src)
         assert any("AUD-SDK-01" in item for item in sdk_v), f"Esperado AUD-SDK-01 para {bad_sdk_file}: {sdk_v}"
 
+    # Go MCP server detection + http.ListenAndServe guard
+    go_http_v = scan_code_protocol_violations("server/web.go", 'package main\nfunc main(){ _ = http.ListenAndServe(":8080", nil) }\n')
+    assert any("AUD-HTTP-01" in item for item in go_http_v), f"Esperado AUD-HTTP-01: {go_http_v}"
+
+    go_mcp_dir = tmp_path / "mcpserver"
+    go_mcp_dir.mkdir()
+    (go_mcp_dir / "stdio_srv.go").write_text(
+        'package mcpserver\nimport "fmt"\nfunc Run() { srv := mcp.NewServer(nil, nil); _ = srv; _ = StdioTransport{}; dec.DisallowUnknownFields(); fmt.Println("leak") }\n',
+        encoding="utf-8",
+    )
+    go_rep = audit_repository(tmp_path, persist=False)
+    assert go_rep.summary.total_mcp_servers >= 2
+    assert any(s.file.endswith("stdio_srv.go") and s.stdout_hygiene == "POLLUTED" for s in go_rep.audit_details.mcp_servers)
+
     (ag_dir / "bad_agent.md").write_text(
         "---\nname: bad\ndescription: x\nenable_write_tools: true\ntools:\n  - call_mcp_tool\n---\n" + ("Corpo longo. " * 10),
         encoding="utf-8",

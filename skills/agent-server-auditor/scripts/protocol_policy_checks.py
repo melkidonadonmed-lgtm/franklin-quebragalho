@@ -68,14 +68,16 @@ V1BETA_REQUIRED_FEATURE_RE = re.compile(
 V1BETA_CONFIG_RE = re.compile(
     r"(?:v1beta|v1beta1|api_version|apiVersion|APIVersion|GOOGLE_GENAI_API_VERSION)"
 )
-REGEX_DEF_LINE_RE = re.compile(r"\b(re\.compile|regexp\.MustCompile|new\s+RegExp)\s*\(")
+REGEX_DEF_LINE_RE = re.compile(
+    r"(?:\b(re\.compile|regexp\.MustCompile|new\s+RegExp)\s*\(|^\s*(?:RETIRED_MODELS|retiredModels)\b)"
+)
 SKIP_SCAN_PREFIXES: Tuple[str, ...] = ("skills/", "tests/", "rules/", "references/", "memories/", "docs/")
 
 
 def _paren_delta(line: str) -> int:
-    """Calcula saldo líquido de parênteses ignorando escapes e classes regex."""
+    """Calcula saldo líquido de delimitadores de bloco ignorando escapes e classes regex."""
     cleaned = re.sub(r"\\.|\[[^\]]*\]", "", line)
-    return cleaned.count("(") - cleaned.count(")")
+    return (cleaned.count("(") + cleaned.count("{")) - (cleaned.count(")") + cleaned.count("}"))
 
 
 def _strip_non_executable_lines(text: str) -> str:
@@ -211,6 +213,10 @@ def scan_code_protocol_violations(rel: str, text: str) -> List[str]:
     ):
         violations.append(
             f"AUD-API-01: Uso de interactions/decisions/antigravity-preview-09-2026 sem api_version='v1beta' em '{rel}'."
+        )
+    if rel.endswith(".go") and re.search(r"\bhttp\.ListenAndServe\s*\(", active):
+        violations.append(
+            f"AUD-HTTP-01: Uso direto de http.ListenAndServe sem http.Server com timeouts explícitos em '{rel}'."
         )
     return violations
 
