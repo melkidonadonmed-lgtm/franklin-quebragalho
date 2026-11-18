@@ -2,12 +2,13 @@
 name: windows-disk-maintenance
 description: "Maintain local Windows 11 files across Downloads, Desktop, and C:\\Users\\melki\\dev\\ by triaging old installers and temporary clutter with PowerShell -WhatIf dry-runs. Use for local disk hygiene; do NOT use for Google Drive (G:\\Meu Drive), Obsidian vault curation (obsidian-vault-curator), or protected Windows OS directories."
 compatibility: "Windows 11, pwsh 7+, Python 3.12+"
+allowed-tools: read_file write_file edit_file run_command
 metadata:
   author: "Franklin"
   version: "1.2.0"
   updated_at: "2026-11-16"
   category: "Local OS & Disk Maintenance"
-  tags: ["windows", "windows-11", "powershell", "pwsh", "downloads", "desktop", "disco", "manutencao", "locais", "instaladores", "temporarios", "residuos", "dev-workspace", "whatif"]
+  tags: "windows, windows-11, powershell, pwsh, downloads, desktop, disco, manutencao, locais, instaladores, temporarios, residuos, dev-workspace, whatif"
 ---
 
 # Windows 11 Local Disk Maintenance (`windows-disk-maintenance`)

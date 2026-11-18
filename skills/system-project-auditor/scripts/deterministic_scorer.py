@@ -23,6 +23,12 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")
 
+_SCORER_DIR = Path(__file__).resolve().parent
+if str(_SCORER_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCORER_DIR))
+
+from _resolution_html_renderer import _render_tbody_rows, generate_resolution_html  # noqa: E402, F401
+
 IGNORED_DIRS = frozenset({
     ".git", "node_modules", ".venv", "venv", "__pycache__", "dist", "build",
     ".next", ".pytest_cache", ".mypy_cache", ".ruff_cache", "htmlcov", "coverage",
@@ -133,12 +139,19 @@ def _is_whitelisted_url(raw_url: str) -> bool:
     return any(host == dom or host.endswith(f".{dom}") for dom in ALLOWED_URL_DOMAINS)
 
 
+def _is_abstractmethod_fn(node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
+    """Returns True when the function is decorated with @abstractmethod."""
+    for dec in node.decorator_list:
+        dec_name = dec.id if isinstance(dec, ast.Name) else getattr(dec, "attr", "")
+        if dec_name == "abstractmethod":
+            return True
+    return False
+
+
 def _is_non_abstract_stub(node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
     """Detects empty or placeholder Python function bodies, excluding @abstractmethod."""
-    for dec in node.decorator_list:
-        dec_name = dec.id if isinstance(dec, ast.Name) else (dec.attr if isinstance(dec, ast.Attribute) else "")
-        if dec_name == "abstractmethod":
-            return False
+    if _is_abstractmethod_fn(node):
+        return False
     stmts = [
         s for s in node.body
         if not (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant) and isinstance(s.value.value, str))
@@ -150,31 +163,34 @@ def _is_non_abstract_stub(node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
     stmt = stmts[0]
     if isinstance(stmt, ast.Pass):
         return True
-    if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant) and stmt.value.value is Ellipsis:
-        return True
-    if isinstance(stmt, ast.Raise) and isinstance(stmt.exc, ast.Call):
-        exc_fn = stmt.exc.func
-        return isinstance(exc_fn, ast.Name) and exc_fn.id == "NotImplementedError"
-    return isinstance(stmt, ast.Raise) and isinstance(stmt.exc, ast.Name) and stmt.exc.id == "NotImplementedError"
+    if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant):
+        return stmt.value.value is Ellipsis
+    if isinstance(stmt, ast.Raise) and stmt.exc is not None:
+        exc_node = stmt.exc.func if isinstance(stmt.exc, ast.Call) else stmt.exc
+        return isinstance(exc_node, ast.Name) and exc_node.id == "NotImplementedError"
+    return False
+
+
+def _analyze_py_fn_metrics(fn: ast.FunctionDef | ast.AsyncFunctionDef, content: str) -> Tuple[bool, bool, bool]:
+    """Returns (is_stub, is_long, is_coupled) for a single Python AST function node."""
+    is_stub = _is_non_abstract_stub(fn)
+    span = (getattr(fn, "end_lineno", fn.lineno) or fn.lineno) - fn.lineno + 1
+    fn_src = ast.get_source_segment(content, fn) or ""
+    has_ui = any(t in fn_src for t in ("render", "innerHTML", "tsx", "jsx", "<div", "st.write", "QWidget"))
+    has_io = any(t in fn_src for t in ("sqlite3.connect", "SELECT ", "INSERT INTO", "requests.get", "urllib.request"))
+    return is_stub, (span > 60), (has_ui and has_io)
 
 
 def _collect_python_fn_stats(tree: ast.AST, content: str) -> Tuple[int, int, int, int, int, int]:
     """Collects function cohesion, coupling, stubs, long-function, and bare-except counts."""
     funcs = [n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
-    cohesive, coupled, stubs, long_fns = 0, 0, 0, 0
+    cohesive = coupled = stubs = long_fns = 0
     for fn in funcs:
-        is_stub = _is_non_abstract_stub(fn)
-        stubs += 1 if is_stub else 0
-        span = (getattr(fn, "end_lineno", fn.lineno) or fn.lineno) - fn.lineno + 1
-        if span > 60:
-            long_fns += 1
-        elif not is_stub:
-            cohesive += 1
-        fn_src = ast.get_source_segment(content, fn) or ""
-        has_ui = any(t in fn_src for t in ("render", "innerHTML", "tsx", "jsx", "<div", "st.write", "QWidget"))
-        has_io = any(t in fn_src for t in ("sqlite3.connect", "SELECT ", "INSERT INTO", "requests.get", "urllib.request"))
-        if has_ui and has_io:
-            coupled += 1
+        is_stub, is_long, is_coupled = _analyze_py_fn_metrics(fn, content)
+        stubs += int(is_stub)
+        long_fns += int(is_long)
+        coupled += int(is_coupled)
+        cohesive += int(not is_stub and not is_long)
     bare_excepts = sum(1 for n in ast.walk(tree) if isinstance(n, ast.ExceptHandler) and n.type is None)
     return len(funcs), cohesive, coupled, stubs, long_fns, bare_excepts
 
@@ -232,35 +248,32 @@ def _scan_ts_js_file(file_path: Path, clean_text: str) -> Tuple[int, int, int, i
     return fn_cnt, fn_cnt, (1 if has_coupled else 0), hardcodes
 
 
+_UI_FLAG_ANY_TOKENS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("has_clamp", ("clamp(",)),
+    ("has_tabular", ("tabular-nums",)),
+    ("has_cmd_k", ("ctrl+k", "cmd+k", "⌘k", "meta+k", "commandpalette", 'aria-current="page"')),
+    ("has_breadcrumbs", ('aria-current="page"', "breadcrumb")),
+    ("has_container_queries", ("@container", "container-type", "subgrid")),
+    ("has_oklch_tokens", ("oklch(", "light-dark(", "--surface-canvas", "--bg-canvas")),
+    ("has_logical_box", ("inline-size", "padding-inline", "flow-root", "--space-")),
+)
+
+
 def _update_ui_feature_flags(low: str, acc: Dict[str, Any]) -> None:
     """Updates CSS/typography/navigation accumulators for UI layers."""
-    acc["has_clamp"] = acc["has_clamp"] or ("clamp(" in low)
-    acc["has_tabular"] = acc["has_tabular"] or ("tabular-nums" in low)
-    acc["has_65ch"] = acc["has_65ch"] or (("65ch" in low or "60ch" in low) and "line-height" in low)
-    acc["has_anti_squish"] = acc["has_anti_squish"] or ("flex-shrink: 0" in low and "white-space: nowrap" in low)
-    acc["has_cmd_k"] = acc["has_cmd_k"] or any(
-        k in low for k in ("ctrl+k", "cmd+k", "⌘k", "meta+k", "commandpalette", 'aria-current="page"')
-    )
-    acc["has_breadcrumbs"] = acc["has_breadcrumbs"] or ('aria-current="page"' in low or "breadcrumb" in low)
-    acc["has_container_queries"] = acc["has_container_queries"] or ("@container" in low or "container-type" in low or "subgrid" in low)
-    acc["has_oklch_tokens"] = acc["has_oklch_tokens"] or ("oklch(" in low or "light-dark(" in low or "--surface-canvas" in low or "--bg-canvas" in low)
-    acc["has_logical_box"] = acc["has_logical_box"] or ("inline-size" in low or "padding-inline" in low or "flow-root" in low or "--space-" in low)
+    for key, tokens in _UI_FLAG_ANY_TOKENS:
+        if not acc[key]:
+            acc[key] = any(tok in low for tok in tokens)
+    if not acc["has_65ch"]:
+        acc["has_65ch"] = ("line-height" in low) and (("65ch" in low) or ("60ch" in low))
+    if not acc["has_anti_squish"]:
+        acc["has_anti_squish"] = ("flex-shrink: 0" in low) and ("white-space: nowrap" in low)
     if "row-reverse" in low:
         acc["reverse_tab_order"] += 1
 
 
-def _scan_single_file(f: Path, text: str, acc: Dict[str, Any], has_ui_layer: bool) -> None:
-    """Updates architectural and code metrics for a single scanned file."""
-    ext = f.suffix.lower()
-    clean_text = re.sub(r"//.*?$", "", re.sub(r"/\*.*?\*/", "", text, flags=re.DOTALL), flags=re.MULTILINE)
-    low = clean_text.lower()
-    if has_ui_layer:
-        _update_ui_feature_flags(low, acc)
-
-    if ext in {".ts", ".tsx", ".js", ".jsx", ".html"}:
-        acc["native_alerts"] += len(re.findall(r"(?<!<code>)\b(?:window\.)?(?:alert|confirm)\s*\(\s*[^)\s]", clean_text))
-        acc["inert_placeholders"] += len(re.findall(r"onClick=\{\(\)\s*=>\s*\{\s*\}\}|href=['\"]#['\"]", clean_text))
-
+def _accumulate_code_metrics(f: Path, text: str, clean_text: str, ext: str, acc: Dict[str, Any]) -> None:
+    """Dispatches AST/regex code scanning into accumulator counters by file extension."""
     if ext == ".py":
         py_st = _scan_python_ast(f, text)
         acc["total_fn"] += py_st["functions"]
@@ -271,31 +284,55 @@ def _scan_single_file(f: Path, text: str, acc: Dict[str, Any], has_ui_layer: boo
         acc["syntax_errors"] += py_st["syntax_errors"]
         acc["bare_except"] += py_st["bare_except"]
         acc["long_functions"] += py_st["long_functions"]
-    elif ext == ".go":
+        return
+    if ext == ".go":
         go_st = _scan_go_file(f, text)
         acc["total_fn"] += go_st["functions"]
         acc["cohesive_fn"] += go_st["cohesive_functions"]
         acc["inert_placeholders"] += go_st["stubs"]
         acc["hardcodes"] += go_st["hardcodes"]
-    elif ext in {".ts", ".tsx", ".js", ".jsx"}:
+        return
+    if ext in {".ts", ".tsx", ".js", ".jsx"}:
         fn_cnt, coh_cnt, cpl, hcd = _scan_ts_js_file(f, clean_text)
         acc["total_fn"] += fn_cnt
         acc["cohesive_fn"] += coh_cnt
         acc["coupled"] += cpl
         acc["hardcodes"] += hcd
 
-    is_ui_screen = ext in {".tsx", ".jsx", ".html"} or (ext in {".ts", ".js"} and bool(UI_SCREEN_STEM_RE.search(f.stem.lower())))
-    if has_ui_layer and is_ui_screen:
-        acc["screens_total"] += 1
-        gaming = bool(re.search(r"//.*?\bempty\s*\|\s*loading\s*\|\s*success\s*\|\s*error\b", text, re.IGNORECASE))
-        groups = (
-            ("empty", "vazio", "nenhum", "idle"),
-            ("loading", "carregando", "skeleton", "spinner", "aria-busy"),
-            ("success", "sucesso", "resolved", "pressed", "data-state"),
-            ("error", "erro", "falha", 'role="alert"', "role='alert'"),
-        )
-        if sum(1 for g in groups if any(t in low for t in g)) >= 3 and not gaming:
-            acc["screens_4_states"] += 1
+
+def _track_ui_screen_states(f: Path, text: str, low: str, ext: str, acc: Dict[str, Any]) -> None:
+    """Counts UI screen modules implementing at least 3 interactive states without comment gaming."""
+    is_screen = (ext in {".tsx", ".jsx", ".html"}) or (
+        ext in {".ts", ".js"} and bool(UI_SCREEN_STEM_RE.search(f.stem.lower()))
+    )
+    if not is_screen:
+        return
+    acc["screens_total"] += 1
+    if re.search(r"//.*?\bempty\s*\|\s*loading\s*\|\s*success\s*\|\s*error\b", text, re.IGNORECASE):
+        return
+    groups = (
+        ("empty", "vazio", "nenhum", "idle"),
+        ("loading", "carregando", "skeleton", "spinner", "aria-busy"),
+        ("success", "sucesso", "resolved", "pressed", "data-state"),
+        ("error", "erro", "falha", 'role="alert"', "role='alert'"),
+    )
+    if sum(1 for g in groups if any(t in low for t in g)) >= 3:
+        acc["screens_4_states"] += 1
+
+
+def _scan_single_file(f: Path, text: str, acc: Dict[str, Any], has_ui_layer: bool) -> None:
+    """Updates architectural and code metrics for a single scanned file."""
+    ext = f.suffix.lower()
+    clean_text = re.sub(r"//.*?$", "", re.sub(r"/\*.*?\*/", "", text, flags=re.DOTALL), flags=re.MULTILINE)
+    low = clean_text.lower()
+    if has_ui_layer:
+        _update_ui_feature_flags(low, acc)
+    if ext in {".ts", ".tsx", ".js", ".jsx", ".html"}:
+        acc["native_alerts"] += len(re.findall(r"(?<!<code>)\b(?:window\.)?(?:alert|confirm)\s*\(\s*[^)\s]", clean_text))
+        acc["inert_placeholders"] += len(re.findall(r"onClick=\{\(\)\s*=>\s*\{\s*\}\}|href=['\"]#['\"]", clean_text))
+    _accumulate_code_metrics(f, text, clean_text, ext, acc)
+    if has_ui_layer:
+        _track_ui_screen_states(f, text, low, ext, acc)
 
 
 def _resolve_complex_zero_scripts_dir() -> Optional[Path]:
@@ -366,23 +403,25 @@ def _build_ui_evidence(acc: Dict[str, Any], visual_flags: Tuple[bool, bool, bool
     total_fn = max(1, acc["total_fn"])
     total_nodes = max(3, screens_total + 2)
     base_orphans = 0 if acc["has_cmd_k"] else min(2, max(0, screens_total - acc["screens_4_states"]))
-    orphan_nodes = min(total_nodes, base_orphans + (2 if has_sprawl else 0) + (1 if has_cramped_menus else 0))
+    orphan_nodes = min(total_nodes, base_orphans + int(has_sprawl) * 2 + int(has_cramped_menus))
     essential = max(1, min(total_fn, 6))
-    bloat = (0 if (acc["hardcodes"] == 0 and acc["coupled"] == 0) else min(3, acc["hardcodes"])) + (2 if has_sprawl else 0)
+    clean_code = (acc["hardcodes"] == 0) and (acc["coupled"] == 0)
+    bloat = (0 if clean_code else min(3, acc["hardcodes"])) + (int(has_sprawl) * 2)
     cohesive_fn = max(1, int(min(total_fn, acc["cohesive_fn"]) * (0.55 if has_sprawl else 1.0)))
+    max_depth = 4 if has_sprawl else (2 if acc["has_cmd_k"] else 4)
     return ArchitecturalEvidence(
         total_nodes=total_nodes, orphan_or_deadend_nodes=orphan_nodes,
         total_screens=screens_total, screens_with_4_states=acc["screens_4_states"],
-        max_click_depth=(4 if has_sprawl else (2 if acc["has_cmd_k"] else 4)),
-        total_mapped_functions=total_fn, functions_in_cohesive_islands=cohesive_fn,
-        hardcode_occurrences=acc["hardcodes"] + (2 if has_flat_hierarchy else 0),
-        coupled_data_ui_functions=acc["coupled"],
-        total_mvp_features_kept=(essential + bloat), verifiable_essential_features=essential,
-        unnecessary_bloat_features_kept=bloat, has_fluid_clamp_scale=(acc["has_clamp"] and not has_flat_hierarchy),
-        has_3_tier_font_pairing_tabular=(acc["has_tabular"] and not has_flat_hierarchy),
-        has_65ch_and_line_height_rhythm=acc["has_65ch"],
-        has_anti_squish_protection=(acc["has_anti_squish"] and not has_cramped_menus),
-        has_cmd_k_and_zero_native_alerts=(acc["has_cmd_k"] and acc["native_alerts"] == 0 and not has_sprawl),
+        max_click_depth=max_depth, total_mapped_functions=total_fn,
+        functions_in_cohesive_islands=cohesive_fn,
+        hardcode_occurrences=acc["hardcodes"] + (int(has_flat_hierarchy) * 2),
+        coupled_data_ui_functions=acc["coupled"], total_mvp_features_kept=(essential + bloat),
+        verifiable_essential_features=essential, unnecessary_bloat_features_kept=bloat,
+        has_fluid_clamp_scale=bool(acc["has_clamp"] and not has_flat_hierarchy),
+        has_3_tier_font_pairing_tabular=bool(acc["has_tabular"] and not has_flat_hierarchy),
+        has_65ch_and_line_height_rhythm=bool(acc["has_65ch"]),
+        has_anti_squish_protection=bool(acc["has_anti_squish"] and not has_cramped_menus),
+        has_cmd_k_and_zero_native_alerts=bool(acc["has_cmd_k"] and acc["native_alerts"] == 0 and not has_sprawl),
         has_ui_layer=True,
     )
 
@@ -422,17 +461,20 @@ def _build_backend_evidence(acc: Dict[str, Any], code_files_count: int) -> Archi
     )
 
 
-def scan_project_tree(project_path: Path) -> Tuple[ArchitecturalEvidence, Dict[str, Any]]:
-    """Scans a target file or directory and produces stack-adaptive ArchitecturalEvidence + diagnostics."""
-    target = project_path.resolve()
-    files = [target] if target.is_file() else [
-        p for p in sorted(target.rglob("*"))
-        if p.is_file()
-        and (p.suffix.lower() in CODE_EXTENSIONS or p.name == "DESIGN.md")
-        and not any(part in IGNORED_DIRS for part in p.parts)
-    ]
-    has_ui_layer = _detect_ui_layer(target, files)
-    acc: Dict[str, Any] = {
+def _collect_scannable_files(target: Path) -> List[Path]:
+    """Collects non-ignored source files and DESIGN.md markers under target."""
+    if target.is_file():
+        return [target]
+    out: List[Path] = []
+    for p in sorted(target.rglob("*")):
+        is_relevant = p.suffix.lower() in CODE_EXTENSIONS or p.name == "DESIGN.md"
+        if p.is_file() and is_relevant and not any(part in IGNORED_DIRS for part in p.parts):
+            out.append(p)
+    return out
+
+
+def _new_scan_accumulator() -> Dict[str, Any]:
+    return {
         "total_fn": 0, "cohesive_fn": 0, "hardcodes": 0, "coupled": 0,
         "screens_total": 0, "screens_4_states": 0, "native_alerts": 0, "inert_placeholders": 0,
         "syntax_errors": 0, "bare_except": 0, "long_functions": 0,
@@ -441,6 +483,14 @@ def scan_project_tree(project_path: Path) -> Tuple[ArchitecturalEvidence, Dict[s
         "has_container_queries": False, "has_oklch_tokens": False, "has_logical_box": False,
         "reverse_tab_order": 0,
     }
+
+
+def scan_project_tree(project_path: Path) -> Tuple[ArchitecturalEvidence, Dict[str, Any]]:
+    """Scans a target file or directory and produces stack-adaptive ArchitecturalEvidence + diagnostics."""
+    target = project_path.resolve()
+    files = _collect_scannable_files(target)
+    has_ui_layer = _detect_ui_layer(target, files)
+    acc = _new_scan_accumulator()
     scanned_files, read_errors, combined_chunks = [], [], []
     for f in files:
         if f.suffix.lower() not in CODE_EXTENSIONS:
@@ -450,8 +500,7 @@ def scan_project_tree(project_path: Path) -> Tuple[ArchitecturalEvidence, Dict[s
         except OSError as exc:
             read_errors.append(f"{f.name}: {exc}")
             continue
-        rel_str = str(f.relative_to(target) if target.is_dir() else f.name)
-        scanned_files.append(rel_str)
+        scanned_files.append(str(f.relative_to(target) if target.is_dir() else f.name))
         if has_ui_layer and (f.suffix.lower() in UI_FILE_EXTENSIONS or f.name.startswith("mcp_apps_ui_")):
             combined_chunks.append(text)
         _scan_single_file(f, text, acc, has_ui_layer)
@@ -469,68 +518,6 @@ def scan_project_tree(project_path: Path) -> Tuple[ArchitecturalEvidence, Dict[s
         "read_errors": read_errors,
     }
     return ev, diag
-
-
-def _render_tbody_rows(r1: DeterministicScoreReport, r2: DeterministicScoreReport) -> str:
-    """Renders HTML <tbody> rows comparing V1 vs V2 deterministic metrics."""
-    rows_spec = [
-        ("INE (Navegabilidade &amp; 4 Estados)", "25%", r1.ine_navigation, r2.ine_navigation),
-        ("ICI (Coesão por Ilhas SRP)", "20%", r1.ici_island_cohesion, r2.ici_island_cohesion),
-        ("IPC (Code Quality &amp; Zero Hardcode)", "25%", r1.ipc_code_purity, r2.ipc_code_purity),
-        ("IRM (Crítica Severa de MVP)", "15%", r1.irm_mvp_rigor, r2.irm_mvp_rigor),
-        ("ICTE (Tipografia Linear &amp; Anti-Squish)", "15%", r1.icte_typography_structure, r2.icte_typography_structure),
-    ]
-    lines = ["        <tbody>"]
-    for label, weight, v1_val, v2_val in rows_spec:
-        d_val = round(v2_val - v1_val, 2)
-        d_str = f"+{d_val:.2f}" if d_val >= 0 else f"{d_val:.2f}"
-        cls = "diff-added" if d_val >= 0 else "diff-removed"
-        lines.append(
-            f"          <tr><td>{label}</td><td>{weight}</td><td>{v1_val:.2f}</td>"
-            f'<td>{v2_val:.2f}</td><td><span class="{cls}">{d_str}</span></td></tr>'
-        )
-    lines.append("        </tbody>")
-    return "\n".join(lines)
-
-
-def generate_resolution_html(
-    r1: DeterministicScoreReport,
-    r2: DeterministicScoreReport,
-    ev1: ArchitecturalEvidence,
-    ev2: ArchitecturalEvidence,
-    output_path: Path,
-    template_path: Optional[Path] = None,
-) -> Path:
-    """Fills the V1 vs V2 HTML template with computed deterministic scores."""
-    del ev1, ev2
-    if template_path is None:
-        candidate = Path(__file__).resolve().parent.parent / "templates" / "resolution_diff_v1_v2.html"
-        if candidate.exists():
-            template_path = candidate
-
-    delta_sga = round(r2.sga_global_score - r1.sga_global_score, 2)
-    delta_sign = f"+{delta_sga:.2f}" if delta_sga >= 0 else f"{delta_sga:.2f}"
-
-    if template_path and template_path.exists():
-        html = template_path.read_text(encoding="utf-8")
-        replacements = [
-            (r'(<meta name="score-v1-baseline" content=")[^"]*(")', rf"\g<1>{r1.sga_global_score:.2f}\g<2>"),
-            (r'(<meta name="score-v2-resolved" content=")[^"]*(")', rf"\g<1>{r2.sga_global_score:.2f}\g<2>"),
-            (r'(<meta name="score-delta" content=")[^"]*(")', rf"\g<1>{delta_sign}\g<2>"),
-            (r'(<meta name="audit-timestamp" content=")[^"]*(")', rf"\g<1>{r2.timestamp}\g<2>"),
-            (r"V1 Baseline:\s*[0-9.]+/100", f"V1 Baseline: {r1.sga_global_score:.2f}/100"),
-            (r"V2 Resolvida:\s*[0-9.]+/100", f"V2 Resolvida: {r2.sga_global_score:.2f}/100"),
-            (r"Delta:\s*[+\-0-9.]+\s*pts", f"Delta: {delta_sign} pts"),
-        ]
-        for pat, rep in replacements:
-            html = re.sub(pat, rep, html)
-        html = re.sub(r"<tbody>.*?</tbody>", _render_tbody_rows(r1, r2), html, count=1, flags=re.DOTALL)
-    else:
-        html = f"<html><body><h1>V1 ({r1.sga_global_score}) -> V2 ({r2.sga_global_score}) | Delta: {delta_sign}</h1></body></html>"
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(html, encoding="utf-8")
-    return output_path
 
 
 def run_self_test(html_out: Optional[str] = None) -> int:

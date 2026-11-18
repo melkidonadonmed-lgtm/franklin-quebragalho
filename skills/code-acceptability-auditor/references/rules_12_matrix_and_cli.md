@@ -43,4 +43,5 @@ uv run python skills/code-acceptability-auditor/scripts/install_pre_commit_hook.
 
 # 7. Combined Gate (AST + Pytest)
 uv run python skills/code-acceptability-auditor/scripts/code_acceptability_auditor.py --dir shared; uv run pytest -q
+uv run pytest skills/code-acceptability-auditor/scripts/test_code_acceptability_auditor.py -q
 ```

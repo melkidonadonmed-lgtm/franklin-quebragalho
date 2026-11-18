@@ -380,6 +380,30 @@ def tactile_frontend_audit_prompt(component_or_url: str) -> str:
     )
 
 
+__all__ = [
+    "AGENTS_MD_PATH",
+    "AgentOrchestrator",
+    "CANONICAL_PERSONA_MAPPING",
+    "COMPASS_PROFILE_RULES",
+    "CheckpointStore",
+    "EPIC_VOLTA_DIR",
+    "MY_SKILLS_MD_PATH",
+    "PERSONA_ALIASES",
+    "ProgressiveSkillRegistry",
+    "QUICK_SKILL_ALIASES",
+    "SKILLS_ROOT",
+    "UI_SUBAGENT_ALIASES",
+    "_find_skill_dir",
+    "_get_all_skills_data",
+    "_load_agents_map",
+    "dispatch_harness2_action",
+    "execute_with_idempotency",
+    "get_progressive_registry",
+    "mcp",
+    "run",
+]
+
+
 def run() -> None:
     """Ponto de entrada para execução STDIO do servidor MCP."""
     mcp.run(transport="stdio")

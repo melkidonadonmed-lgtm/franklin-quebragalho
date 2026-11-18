@@ -2,12 +2,13 @@
 name: re-a-ndroid
 description: "Reverse engineer and audit Android APKs using REA and ADB by decompiling DEX/.so binaries, inspecting v1-v3.1 signatures, detecting placebo security checks, measuring route latency, and verifying 48dp targets. Use to audit compiled APKs. Do NOT use to scaffold Android MVPs (android-agy-projects) or audit web apps (ui-frontend-analyst)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: read_file run_command
 metadata:
   version: "2.2.0"
   updated_at: "2026-11-16"
   author: "Franklin"
   category: "Android APK Reverse Engineering & Security/Performance Auditing"
-  tags: ["re-a-ndroid", "engenharia-reversa", "auditoria", "apk", "apks", "android", "rea", "adb", "dex", "assinaturas", "placebo", "latencia", "rotas", "48dp", "android-reverse-engineering", "apk-signature", "dex-audit", "a11y-48dp"]
+  tags: "re-a-ndroid, engenharia-reversa, auditoria, apk, apks, android, rea, adb, dex, assinaturas, placebo, latencia, rotas, 48dp, android-reverse-engineering, apk-signature, dex-audit, a11y-48dp"
 ---
 
 # `re-a-ndroid` (`v2.2.0`) — Android APK Reverse Engineering & Audit

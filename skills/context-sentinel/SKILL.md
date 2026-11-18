@@ -2,12 +2,13 @@
 name: context-sentinel
 description: "Audit multi-turn context window integrity, mitigate context rot, and extract structured session checkpoints ([FACT], [PENDING], [GAP]) to SQLite or JSON. Use across multi-turn cycles or >60% token usage; do NOT use for planning DAGs, writing code, single-turn Q&A, prompt refining, or Obsidian vault curation."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: read_file run_command
 metadata:
   author: "Franklin"
   version: "1.1.0"
   updated_at: "2026-11-16"
   category: "Context Integrity & State Checkpointing"
-  tags: ["context-rot", "contexto", "rot", "integridade", "janela", "multi-turn", "sessao", "checkpoint", "snapshots", "sqlite", "json", "pydantic", "estado"]
+  tags: "context-rot, contexto, rot, integridade, janela, multi-turn, sessao, checkpoint, snapshots, sqlite, json, pydantic, estado"
 ---
 
 # Context Sentinel & Automated State Checkpointer (`context-sentinel`)

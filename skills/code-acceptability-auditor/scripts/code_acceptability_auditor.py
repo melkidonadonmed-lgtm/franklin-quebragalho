@@ -9,11 +9,10 @@ e complexidade ciclomática (ARCH003).
 
 import argparse
 import ast
-import json
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Literal, Optional, Set, Tuple
+from typing import Dict, List, Literal, Optional, Set
 from pydantic import BaseModel, ConfigDict, Field
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -318,7 +317,7 @@ class _ASTCodeVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_Dict(self, node: ast.Dict) -> None:
-        for k, v in zip(node.keys, node.values):
+        for k, v in zip(node.keys, node.values, strict=False):
             if isinstance(k, ast.Constant) and isinstance(k.value, str):
                 self._check_secret_target_and_value(k.value, v, k.lineno)
         self.generic_visit(node)

@@ -2,12 +2,13 @@
 name: technical-markdown-writer
 description: "Author executive reports, technical notes, ADRs, roadmaps, and installation guides in Markdown (GFM) using GitHub alert callouts, the Blank-Line Law, and Google Style Guides. Use for structured technical writing; do NOT use for PDF rendering/export (html-pdf-converter), bulk Obsidian vault curation (obsidian-vault-curator), or Mermaid directory tree mapping (flow-filetree-organizer)."
 compatibility: "Antigravity 2.0, CommonMark/GFM, Obsidian"
+allowed-tools: read_file write_file edit_file run_command
 metadata:
   author: "Franklin"
   version: "1.3.0"
   updated_at: "2026-11-16"
   category: "Technical Documentation & Structured Authoring"
-  tags: ["markdown", "gfm", "relatorio", "relatorios", "ata", "atas", "notas", "tecnicas", "adr", "documentacao", "alerta", "google-styleguides", "blank-line-law"]
+  tags: "markdown, gfm, relatorio, relatorios, ata, atas, notas, tecnicas, adr, documentacao, alerta, google-styleguides, blank-line-law"
 ---
 
 # Structured Technical Markdown Authoring (`technical-markdown-writer`)
@@ -36,7 +37,7 @@ Author executive reports, technical notes, ADRs, roadmaps, and installation guid
 ## 4. Gotchas & Edge Cases
 
 - **Zero Fabrication**: Label unproven metrics or unconfirmed decisions `[UNVERIFIED]`; never invent data.
-- **Parser & XSS Safety**: Quote Mermaid labels with parentheses/brackets (`id["Label (Info)"]`); never embed raw `<script>` tags or real secrets.
+- **Parser & Zero-Trust XSS Guardrail**: Quote Mermaid labels with parentheses/brackets (`id["Label (Info)"]`); never embed raw `<script>` tags or real secrets.
 - **No Binary Coupling**: Do not run headless PDF rendering here; hand off `.md` files to `html-pdf-converter`.
 
 ## 5. Output Schema & Validation Criteria

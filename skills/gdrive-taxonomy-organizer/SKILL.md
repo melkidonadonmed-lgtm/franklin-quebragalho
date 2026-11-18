@@ -2,12 +2,13 @@
 name: gdrive-taxonomy-organizer
 description: "Organize and classify Google Drive (G:\\Meu Drive) files into canonical numbered folders (01_*..99_*) and standardize filenames with ISO YYYY-MM-DD prefixes. Use for Drive folder taxonomy and naming; do NOT use for >100MB or SHA-256 duplicate cleanup (gdrive-cleanup-auditor), Obsidian vault curation, local Windows disk maintenance, or Mermaid file trees."
 compatibility: "Windows 11, pwsh 7+, Google Drive for Desktop or workspace-mcp"
+allowed-tools: read_file write_file edit_file run_command
 metadata:
   author: "Franklin"
   version: "1.2.0"
   updated_at: "2026-11-16"
   category: "Cloud Storage & Document Taxonomy"
-  tags: ["google-drive", "gdrive", "drive", "taxonomia", "taxonomy", "organizacao", "organizar", "categorizar", "estruturar", "pastas", "numerada", "iso", "yyyy-mm-dd", "padronizacao"]
+  tags: "google-drive, gdrive, drive, taxonomia, taxonomy, organizacao, organizar, categorizar, estruturar, pastas, numerada, iso, yyyy-mm-dd, padronizacao"
 ---
 
 # Google Drive Numbered Taxonomy & ISO Dates (`gdrive-taxonomy-organizer`)

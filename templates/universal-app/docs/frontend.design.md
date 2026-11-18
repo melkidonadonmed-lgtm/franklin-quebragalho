@@ -33,7 +33,7 @@ A arquitetura visual rejeita fundos pretos absolutos (`#000000`) e azuis saturad
 
 ## 2. PROPOSTAS DE PALETAS ALTERNATIVAS
 
-### 2.1 Proposta de Paleta 1 (Design Moderno & Alto Contraste - WCAG 2.1 AAA)
+### 2.1 Proposta de Paleta 1 (Design Moderno & Alto Contraste - WCAG 2.2 AAA)
 
 Ideal para painéis com leitura contínua de relatórios técnicos e dados críticos:
 
@@ -256,7 +256,7 @@ A otimização de renderização exige manter o DOM limpo e enxuto:
 
 **Diagnóstico Determinístico:**
 
-- `[FAIL]` **Semântica:** Div interativa sem `role="button"`, sem `tabindex="0"` e inacessível por teclado (violação WCAG 2.1 Critério 2.1.1).
+- `[FAIL]` **Semântica:** Div interativa sem `role="button"`, sem `tabindex="0"` e inacessível por teclado (violação WCAG 2.2 Critério 2.1.1).
 - `[FAIL]` **Cromia:** Uso de azul cobalto agressivo `#0044ff` banido pelas diretrizes do desenvolvedor.
 - `[FAIL]` **Ergonomia:** Alvo de clique com padding reduzido (`5px`), inferior à altura mínima recomendada de 44px.
 - `[FAIL]` **Estilização:** CSS inline com valores hardcoded não adaptativos.

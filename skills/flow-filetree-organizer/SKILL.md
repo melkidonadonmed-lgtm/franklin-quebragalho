@@ -2,12 +2,13 @@
 name: flow-filetree-organizer
 description: "Transform raw app ideas and operational requirements into valid Mermaid flowcharts and commented ASCII directory trees with literal prompt preservation, MVP scope isolation, and .md/.pdf export options. Use when mapping visual workflows and folder structures. Do NOT use for AST audits (code-acceptability-auditor), repo scaffolding (project-idea-organizer), or standalone PDF conversion (html-pdf-converter)."
 compatibility: "Antigravity 2.0, Markdown GFM, Mermaid, Edge Headless"
+allowed-tools: read_file run_command
 metadata:
   author: "Franklin"
   version: "1.2.0"
   updated_at: "2026-11-16"
   category: "Visual Planning & Directory Tree Diagramming"
-  tags: ["flow-filetree-organizer", "fluxo", "fluxos", "arvore", "mermaid", "diagramas", "diretorios", "ideias", "flowchart", "filetree", "markdown"]
+  tags: "flow-filetree-organizer, fluxo, fluxos, arvore, mermaid, diagramas, diretorios, ideias, flowchart, filetree, markdown"
 ---
 
 # `flow-filetree-organizer` (`v1.2.0`) — Mermaid Flowcharts & File Trees

@@ -13,7 +13,7 @@ description: "Load when writing or debugging code calling Google Gemini APIs/SDK
   - `trigger: glob` requires `globs:` as a single comma-separated string with `**/` relative prefixes (e.g., `"**/*.ts, **/src/**/*.tsx"`).
   - `trigger: model_decision` requires a clear `description:` for on-demand loading without polluting unrelated turns.
 - **Anti-Duplication:** Never mirror the same rule in both `~/.gemini/config/rules/` and `~/.gemini/config/plugins/<name>/rules/`; plugin modular rules live exclusively in the plugin `rules/` folder, keeping `always_on` SSOT in the single global rules directory.
-- **Strict Caps:** Max **`24,000` bytes (`24 KB`)** per file (after expanding `@[label](path)` — truncated on line boundaries above the cap) and **`20,000` tokens (`defaultRulesBudget`)** aggregate across global/always-on rules (excess is demoted to file path pointers).
+- **Strict Caps:** Max **`24,000` bytes (`24 KB`)** per file (after expanding file-include `@` directives, i.e. `@` + `[label](relative.md)` — truncated on line boundaries above the cap) and **`20,000` tokens (`defaultRulesBudget`)** aggregate across global/always-on rules (excess is demoted to file path pointers).
 
 ## 2. Active Google APIs, SDKs & Models
 

@@ -4,11 +4,11 @@
 
 ---
 
-## 1. Current State Snapshot (`2026-11-16`)
+## 1. Current State Snapshot (`2026-11-18`)
 
 | Dimension | Canonical State Verified on Disk | Source of Truth / Validator |
 | :--- | :--- | :--- |
-| **Governance Triad v2.0** | `AGENTS.md` (root SSOT; `.agents/AGENTS.md` mirrored only in external repositories), `CONTEXT.md` $\leftrightarrow$ `.context/context.md`, `SPEC.md` $\leftrightarrow$ `.context/spec.md` | Automatically synchronized by `scripts/sync_gemini_ecosystem.py` |
+| **Governance Triad v2.1** | `AGENTS.md` (delta-only root SSOT), `.context/context.md`, and `.context/spec.md` (without root `CONTEXT.md`/`SPEC.md` or `.agents/AGENTS.md` mirrors per `[LOCK-03]`) | Automatically synchronized by `scripts/sync_gemini_ecosystem.py` |
 | **Canonical Skills** | **`21 Skills`** in `skills/` (after extracting the 7 legacy UI skills into [`shredded-shape`](file:///C:/Users/melki/dev/repos/shredded-shape) with 6 modernized Actor-Critic & domain UI skills) | `uv run python scripts/validate_skills.py --strict --ecosystem` (`21/21 PASS`) |
 | **Declarative Subagents** | **`5 Local Subagents`** in `agents/*.md` (`adk-go-operator`, `dev-workspace-publisher`, `intent-hitl-mediator`, `read-after-write-verifier`, `vault-memory-retriever`) + **`4 Federated UI Subagents`** in `../shredded-shape/agents/*.md` (`ui-analyst`, `ui-planner`, `ui-worker`, `ui-judge`) with explicit Antigravity 2.0 `tools:` (legacy `review-squad` replaced by official `egm` plugin) | `scripts/sync_gemini_ecosystem.py` $\to$ `~/.gemini/config/agents/` and `.agents/agents/` |
 | **Ecosystem Rules (`rules/`)** | **`1 Core/Global Rule`** (`quality-efficiency-guidelines.md`) + **`5 Conditional Rules`** (`authoring-*.md`); `frontend-9-axes-guidelines.md` migrated to `../shredded-shape/rules/` | Synced 1:1 with `C:\Users\melki\.gemini\config\rules\` and `plugins\franklin-skills\rules\` |
@@ -36,6 +36,11 @@
 ---
 
 ## 3. Evolution History (Consolidated Changelog)
+
+### `[2026-11-18]` — Phase 36: Wave 2 Forensic Audit, ADK Go v2 Scalar `metadata:` Parity & `<=600`L Modularization
+
+- **21/21 ADK Go v2 & `--strict` Skill Parity:** Flattened `metadata.tags` to comma-separated scalars with top-level `allowed-tools` across all `21` skills, hardened `scripts/validate_skills.py --strict` against non-scalar `metadata:` and `>1,000`-token L2 bodies, refined `solution-content-architect` (`v2.6.1`), `code-acceptability-auditor` (`v1.1.1`), `agent-server-auditor` (`v1.2.1`), `test-quality-auditor` (`v1.3.1`), and passed `estante_cli.go` `21/21 APPROVED` (`adk_v2_loaded: 21`).
+- **Modularization (`<=600`L / `<=60`L) & `WCAG 2.2`:** Fixed all Ruff `F/B/E9` defects, eliminated `70.0 REJECTED` AST complexity in `deterministic_scorer.py`, modularized all `>600`L Python modules cleanly (`_sync_project_profiles.py`, `_catalog_scoring.py`, `_harness_idempotency.py`, `_progressive_registry.py`, `_observer_markdown.py`, `_physics_ast_rules.py`, `_resolution_html_renderer.py`), and upgraded template/eval references to `WCAG 2.2`.
 
 ### `[2026-11-16]` — Phase 35: UI/UX Decoupling into `shredded-shape` (`21` Canonical Skills, `6 + 4` Federated Subagents)
 

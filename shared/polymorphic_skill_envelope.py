@@ -413,7 +413,7 @@ class DynamicSchemaRegistry:
         if err_resp is not None or envelope is None or validated_payload is None:
             return err_resp or self._error_response("trace-err", start_time, -32602, "Falha de validação.")
 
-        action_name = str( getattr(validated_payload, "action") )
+        action_name = str(validated_payload.action)
         requires_idemp = bool(self._action_metadata[action_name]["requires_idempotency"])
         idemp_key = str(getattr(validated_payload, "idempotency_key", "")) if requires_idemp else ""
         digest = self._ledger.compute_payload_digest(validated_payload) if requires_idemp else ""

@@ -21,7 +21,7 @@ from typing import Any, Dict, List, Set, Tuple
 
 SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 SEMVER_RE = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
-DUPLICATE_META_TOP_KEYS = ("version", "updated_at", "allowed-tools")
+DUPLICATE_META_TOP_KEYS = ("version", "updated_at")
 NEGATIVE_TRIGGER_RE = re.compile(r"\b(n[aã]o use|do not use|don't use|skip when)\b", re.IGNORECASE)
 POSITIVE_TRIGGER_RE = re.compile(r"\b(use|activate|invoke|when to use|ative|acion[ea])\b", re.IGNORECASE)
 MAX_DESC_RECOMMENDED = 420
@@ -99,12 +99,12 @@ def _validate_description_field(
         errors.append("[FAIL] Descrição deve declarar fronteira negativa ('Não use para...' / 'Don't use for...')")
 
 
-def _extract_raw_top_level_keys(content: str) -> Tuple[Set[str], bool]:
-    """Extrai chaves raiz reais do frontmatter YAML sem achatamento de metadata."""
+def _extract_raw_frontmatter_info(content: str) -> Tuple[Set[str], bool, Dict[str, Any]]:
+    """Extrai chaves raiz reais, presença de metadata e bloco metadata bruto sem achatamento."""
     cleaned = content.lstrip("\ufeff")
     match = re.match(r"^---\s*\r?\n(.*?)\r?\n---\s*\r?\n", cleaned, re.DOTALL)
     if not match:
-        return set(), False
+        return set(), False, {}
     raw_yaml = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]", "", match.group(1))
     try:
         import yaml
@@ -114,11 +114,19 @@ def _extract_raw_top_level_keys(content: str) -> Tuple[Set[str], bool]:
         try:
             loaded = yaml.safe_load(raw_yaml)
             if isinstance(loaded, dict):
-                return {str(k) for k in loaded.keys()}, isinstance(loaded.get("metadata"), dict)
+                raw_meta = loaded.get("metadata")
+                is_meta_dict = isinstance(raw_meta, dict)
+                return {str(k) for k in loaded.keys()}, is_meta_dict, (raw_meta if is_meta_dict else {})
         except (yaml.YAMLError, ValueError, TypeError, AttributeError) as exc:
             _ = exc
     top_keys = {m.group(1) for m in re.finditer(r"^([A-Za-z0-9_-]+):", raw_yaml, re.MULTILINE)}
-    return top_keys, "metadata" in top_keys
+    return top_keys, "metadata" in top_keys, {}
+
+
+def _extract_raw_top_level_keys(content: str) -> Tuple[Set[str], bool]:
+    """Extrai chaves raiz reais do frontmatter YAML sem achatamento de metadata."""
+    top_keys, has_meta, _ = _extract_raw_frontmatter_info(content)
+    return top_keys, has_meta
 
 
 def _check_top_keys_and_semver(
@@ -129,8 +137,9 @@ def _check_top_keys_and_semver(
     strict_mode: bool,
     raw_top_keys: Set[str] | None,
     has_metadata_dict: bool,
+    raw_metadata: Dict[str, Any] | None = None,
 ) -> None:
-    """Valida ausência de chaves órfãs no topo e conformidade SemVer em modo estrito."""
+    """Valida ausência de chaves órfãs no topo, metadata escalar e SemVer em modo estrito."""
     orphan_keys = [k for k in DUPLICATE_META_TOP_KEYS if k in (raw_top_keys or set())] if has_metadata_dict else []
     if orphan_keys:
         errors.append(f"[FAIL] Chaves duplicadas/órfãs no topo com 'metadata:' presente: {orphan_keys}")
@@ -138,6 +147,12 @@ def _check_top_keys_and_semver(
         return
     if not external_mode and not has_metadata_dict:
         errors.append("[FAIL] Modo --strict exige bloco 'metadata:' para version/updated_at")
+    if not external_mode and raw_metadata:
+        for meta_key, meta_val in raw_metadata.items():
+            if isinstance(meta_val, (list, dict)):
+                errors.append(
+                    f"[FAIL] metadata.{meta_key} em --strict deve ser escalar plano (map[string]string compatível com ADK Go v2 skill.Parse)"
+                )
     ver_val = str(meta.get("version", "")).strip()
     if ver_val and not SEMVER_RE.match(ver_val):
         errors.append(f"[FAIL] metadata.version inválido em --strict (exige SemVer X.Y.Z): '{ver_val}'")
@@ -162,6 +177,7 @@ def _validate_frontmatter_fields(
     strict_mode: bool = False,
     raw_top_keys: Set[str] | None = None,
     has_metadata_dict: bool = False,
+    raw_metadata: Dict[str, Any] | None = None,
 ) -> None:
     """Valida campos obrigatórios, chaves órfãs no topo, SemVer, regex kebab-case e gatilhos."""
     if not meta:
@@ -171,6 +187,7 @@ def _validate_frontmatter_fields(
     _check_top_keys_and_semver(
         meta, errors, external_mode=external_mode, strict_mode=strict_mode,
         raw_top_keys=raw_top_keys, has_metadata_dict=has_metadata_dict,
+        raw_metadata=raw_metadata,
     )
     name_val = str(meta.get("name", "")).strip()
     is_template = dir_name == "_template" and name_val == "template-skill"
@@ -302,7 +319,7 @@ def validate_skill_dir(
 
     errors: List[str] = []
     meta, body = parse_frontmatter(content)
-    raw_top_keys, has_metadata_dict = _extract_raw_top_level_keys(content)
+    raw_top_keys, has_metadata_dict, raw_metadata = _extract_raw_frontmatter_info(content)
     _validate_frontmatter_fields(
         meta,
         skill_dir.name,
@@ -311,11 +328,15 @@ def validate_skill_dir(
         strict_mode=strict_mode,
         raw_top_keys=raw_top_keys,
         has_metadata_dict=has_metadata_dict,
+        raw_metadata=raw_metadata,
     )
 
     body_lines = len(body.splitlines())
     if body_lines > 500:
         errors.append(f"[FAIL] Corpo L2 do SKILL.md excede o limite de 500 linhas ({body_lines} linhas)")
+    body_tokens = len(body) // 4
+    if strict_mode and not external_mode and body_tokens > 1000:
+        errors.append(f"[FAIL] Corpo L2 do SKILL.md excede orçamento --strict de 1000 tokens (~{body_tokens} tokens)")
 
     if not external_mode:
         for sec_pattern, sec_name in REQUIRED_SECTIONS:

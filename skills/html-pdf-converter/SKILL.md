@@ -2,12 +2,13 @@
 name: html-pdf-converter
 description: "Convert Markdown and HTML reports into A4 PDF files via headless Microsoft Edge or Chrome with print CSS. Use when exporting existing documents to PDF; do NOT use for authoring content from scratch (technical-markdown-writer) or bulk Obsidian vault curation (obsidian-vault-curator)."
 compatibility: "Windows 11, pwsh 7+, Microsoft Edge or Google Chrome Headless"
+allowed-tools: read_file write_file edit_file run_command
 metadata:
   author: "Franklin"
   version: "1.2.0"
   updated_at: "2026-11-16"
   category: "Document Publishing & PDF Conversion"
-  tags: ["pdf", "html", "md-to-pdf", "converter", "conversao", "export", "edge", "chrome", "headless", "imprimir", "impressao", "print-css", "a4"]
+  tags: "pdf, html, md-to-pdf, converter, conversao, export, edge, chrome, headless, imprimir, impressao, print-css, a4"
 ---
 
 # Markdown/HTML to PDF Conversion Pipeline (`html-pdf-converter`)
@@ -34,7 +35,7 @@ Convert existing Markdown (`.md`) or HTML (`.html`) documents into print-ready A
 
 ## 4. Gotchas & Edge Cases
 
-- **Local-First Privacy**: Never upload local documents to external cloud PDF APIs, and never require Pandoc or `wkhtmltopdf` when local Edge/Chrome headless is available.
+- **Local-First Privacy Guardrail:** Never upload untrusted local documents to external cloud PDF APIs, and never require Pandoc or `wkhtmltopdf` when local Edge/Chrome headless is available.
 - **Source File Protection**: Never delete or overwrite the source `.md` or `.html` file.
 - **Spaces & Brackets in Paths**: Always use `-LiteralPath` in PowerShell and convert local paths into `file:///` URIs with forward slashes before passing to Chromium.
 

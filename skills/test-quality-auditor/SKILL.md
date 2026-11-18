@@ -2,17 +2,18 @@
 name: test-quality-auditor
 description: "Audit test suites across 5 modules (Python, TS/JS, Go, MCP, and Harness) to detect Green Build Illusion, AAA pattern defects, and weak assertions, emitting grading.json and benchmark.json. Use for auditing test suites and evals. Do NOT use for production Python AST checks (code-acceptability-auditor) or 3D physics (code-quality-audit-3d-physics)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: read_file run_command
 metadata:
-  version: "1.3.0"
-  updated_at: "2026-11-16"
+  version: "1.3.1"
+  updated_at: "2026-11-18"
   author: "Franklin"
   category: "Test Suite Quality Auditing & Eval Harness Engineering"
-  tags: ["test-quality-auditor", "test-quality", "auditoria", "suites", "testes", "modulos", "python", "ts", "go", "mcp", "harness", "green", "build", "illusion", "falhas", "aaa", "aaa-pattern", "qualidade", "ast-auditor", "go-testing", "mcp-testing", "harness-testing", "mirrored-evals", "mutation-score", "evals", "grading-json", "benchmark-json"]
+  tags: "test-quality-auditor, test-quality, auditoria, suites, testes, modulos, python, ts, go, mcp, harness, green, build, illusion, falhas, aaa, aaa-pattern, qualidade, ast-auditor, go-testing, mcp-testing, harness-testing, mirrored-evals, mutation-score, evals, grading-json, benchmark-json"
 ---
 
-# `test-quality-auditor` (`v1.3.0`) — Deterministic Test & Eval Auditor
+# `test-quality-auditor` (`v1.3.1`) — Deterministic Test & Eval Auditor
 
-Modular engine (`< 300` lines/module) with 1:1 mirrored evals (`evals/modules/*_evals.json`) for **5 domains**: Python (`python_ast_auditor.py`), TS/JS (`ts_js_auditor.py`), Go (`go_test_auditor.py`), MCP (`mcp_test_auditor.py`), and Harness (`harness_test_auditor.py` + `perfkit_stats.py`).
+Modular engine (`< 300` lines/module, typed domain models in [`scripts/models.py`](scripts/models.py)) with 1:1 mirrored evals (`evals/modules/*_evals.json`) for **5 domains**: Python (`python_ast_auditor.py`), TS/JS (`ts_js_auditor.py`), Go (`go_test_auditor.py`), MCP (`mcp_test_auditor.py`), and Harness (`harness_test_auditor.py` + `perfkit_stats.py`).
 
 ## 1. Overview & Scope
 
@@ -39,7 +40,7 @@ uv run python skills/test-quality-auditor/scripts/test_quality_auditor.py --run-
 
 ## 4. Gotchas & Edge Cases
 
-- Never pass suites by line coverage or `Exit Code 0` alone without checking assertion falsifiability and adversarial boundaries.
+- **Zero-Trust & Guardrail Gate:** Never pass suites by line coverage or `Exit Code 0` alone without checking assertion falsifiability and adversarial boundaries (`pytest.raises`, negative tests).
 - **3-Gate Pipeline:** Gate 1 (`code-acceptability-auditor`), **Gate 2 (`test-quality-auditor` — requires Level 4 `81–100 pts`)**, Gate 3 (`gap-analyzer-auditor`).
 
 ## 5. Output Schema & Validation Criteria

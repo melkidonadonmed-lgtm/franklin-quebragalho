@@ -116,11 +116,12 @@ def _collect_a2a_skills(skills_dir: Path, kw: str) -> List[Dict[str, Any]]:
         category = str(fm.get("category", "Produtividade & Engenharia Agêntica"))
         meta_block = fm.get("metadata") if isinstance(fm.get("metadata"), dict) else {}
         tags_raw = fm.get("tags") or meta_block.get("tags") or []
-        tags = (
-            [str(t).strip() for t in tags_raw if str(t).strip()]
-            if isinstance(tags_raw, list) and tags_raw
-            else [folder.name, category, "franklin-skills"]
-        )
+        if isinstance(tags_raw, list) and tags_raw:
+            tags = [str(t).strip() for t in tags_raw if str(t).strip()]
+        elif isinstance(tags_raw, str) and tags_raw.strip():
+            tags = [t.strip() for t in tags_raw.split(",") if t.strip()]
+        else:
+            tags = [folder.name, category, "franklin-skills"]
         if not tags:
             tags = [folder.name, category, "franklin-skills"]
         pos_desc = re.split(
@@ -154,13 +155,13 @@ def build_franklin_agent_card(
     total_skills = (
         sum(1 for f in skills_dir.iterdir() if f.is_dir() and (f / "SKILL.md").exists())
         if skills_dir.exists()
-        else 25
-    ) or 25
+        else 21
+    ) or 21
 
     raw_card: Dict[str, Any] = {
         "name": "Franklin Quebra-Galho (A2A + MCP Orchestrator)",
         "description": (
-            f"Multi-agent orchestrator and catalog of {total_skills} canonical Agent Skills (Python, TS/JS, Go, MCP, Harness, and Purpose-Driven Visual Architecture) "
+            f"Multi-agent orchestrator and catalog of {total_skills} canonical Agent Skills (Python, TS/JS, Go, MCP, Harness, and Governance, Auditing, Orchestration, and Federated UI Routing) "
             "with native Agent2Agent (A2A v1.0) and Model Context Protocol (MCP) support."
         ),
         "version": "1.2.0",

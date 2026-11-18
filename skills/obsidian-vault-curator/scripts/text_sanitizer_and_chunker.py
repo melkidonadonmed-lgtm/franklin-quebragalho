@@ -237,6 +237,48 @@ class TextChunker:
         # Fallback para a posição ideal se não houver quebra natural
         return ideal_pos
 
+    def _make_chunk(
+        self, chunk_text: str, source_doc: str, category: str, parent_hash: str,
+        chunk_index: int, total_chunks: int, start_char: int, end_char: int,
+        extra_tags: dict[str, Any],
+    ) -> TextChunk:
+        """Builds a SHA-256 verified TextChunk and its ChunkMetadata."""
+        content_h = hashlib.sha256(chunk_text.encode("utf-8")).hexdigest()
+        chunk_id = hashlib.sha256(f"{source_doc}:{chunk_index}:{content_h}".encode("utf-8")).hexdigest()[:16]
+        meta = ChunkMetadata(
+            source_doc=source_doc, category=category, chunk_index=chunk_index, total_chunks=total_chunks,
+            char_count=len(chunk_text), token_count_est=max(1, len(chunk_text) // 4),
+            start_char=start_char, end_char=end_char, overlap_ratio=self.overlap_ratio,
+            has_overlap_prev=(chunk_index > 0), has_overlap_next=(chunk_index < total_chunks - 1),
+            extra_tags=extra_tags,
+        )
+        return TextChunk(
+            chunk_id=chunk_id, content_hash=content_h, parent_doc_hash=parent_hash,
+            text=chunk_text, metadata=meta,
+        )
+
+    def _slice_raw_chunks(self, cleaned_text: str) -> list[dict[str, Any]]:
+        """Slices cleaned_text into naturally bounded windows with 10-15% overlap."""
+        text_len = len(cleaned_text)
+        raw_chunks: list[dict[str, Any]] = []
+        cursor = 0
+        while cursor < text_len:
+            actual_end = self._find_natural_break(cleaned_text, cursor + self.target_chunk_size)
+            chunk_slice = cleaned_text[cursor:actual_end].strip()
+            if chunk_slice:
+                raw_chunks.append({"start": cursor, "end": actual_end, "text": chunk_slice})
+            if actual_end >= text_len:
+                break
+            step = (actual_end - cursor) - self.overlap_size
+            cursor += step if step > 0 else max(1, self.target_chunk_size // 2)
+
+        if len(raw_chunks) > 1 and len(raw_chunks[-1]["text"]) < self.min_chunk_size:
+            last = raw_chunks.pop()
+            prev = raw_chunks[-1]
+            m_start, m_end = prev["start"], max(prev["end"], last["end"])
+            raw_chunks[-1] = {"start": m_start, "end": m_end, "text": cleaned_text[m_start:m_end].strip()}
+        return raw_chunks
+
     def split_into_chunks(
         self,
         cleaned_text: str,
@@ -248,138 +290,21 @@ class TextChunker:
         extra_tags = extra_tags or {}
         parent_hash = hashlib.sha256(cleaned_text.encode("utf-8")).hexdigest()
         text_len = len(cleaned_text)
-
+        stats = SanitizationStats(original_char_count=text_len, cleaned_char_count=text_len)
         if text_len == 0:
-            return ChunkingResult(
-                source_doc=source_doc,
-                category=category,
-                parent_doc_hash=parent_hash,
-                stats=SanitizationStats(original_char_count=0, cleaned_char_count=0),
-                total_chunks=0,
-                chunks=[]
-            )
+            return ChunkingResult(source_doc=source_doc, category=category, parent_doc_hash=parent_hash, stats=stats, total_chunks=0, chunks=[])
 
-        # Se o texto for menor ou próximo ao tamanho alvo, gera um chunk único
         if text_len <= (self.target_chunk_size + self.overlap_size):
-            chunk_text = cleaned_text
-            content_h = hashlib.sha256(chunk_text.encode("utf-8")).hexdigest()
-            chunk_id = hashlib.sha256(f"{source_doc}:0:{content_h}".encode("utf-8")).hexdigest()[:16]
+            single = self._make_chunk(cleaned_text, source_doc, category, parent_hash, 0, 1, 0, text_len, extra_tags)
+            return ChunkingResult(source_doc=source_doc, category=category, parent_doc_hash=parent_hash, stats=stats, total_chunks=1, chunks=[single])
 
-            meta = ChunkMetadata(
-                source_doc=source_doc,
-                category=category,
-                chunk_index=0,
-                total_chunks=1,
-                char_count=len(chunk_text),
-                token_count_est=max(1, len(chunk_text) // 4),
-                start_char=0,
-                end_char=len(chunk_text),
-                overlap_ratio=self.overlap_ratio,
-                has_overlap_prev=False,
-                has_overlap_next=False,
-                extra_tags=extra_tags
-            )
-
-            chunk = TextChunk(
-                chunk_id=chunk_id,
-                content_hash=content_h,
-                parent_doc_hash=parent_hash,
-                text=chunk_text,
-                metadata=meta
-            )
-
-            return ChunkingResult(
-                source_doc=source_doc,
-                category=category,
-                parent_doc_hash=parent_hash,
-                stats=SanitizationStats(original_char_count=text_len, cleaned_char_count=text_len),
-                total_chunks=1,
-                chunks=[chunk]
-            )
-
-        # Particionamento iterativo com sobreposição proporcional
-        raw_chunks: list[dict[str, Any]] = []
-        cursor = 0
-
-        while cursor < text_len:
-            # Ponto final proposto antes do ajuste natural
-            ideal_end = cursor + self.target_chunk_size
-            actual_end = self._find_natural_break(cleaned_text, ideal_end)
-
-            chunk_slice = cleaned_text[cursor:actual_end].strip()
-
-            if chunk_slice:
-                raw_chunks.append({
-                    "start": cursor,
-                    "end": actual_end,
-                    "text": chunk_slice
-                })
-
-            if actual_end >= text_len:
-                break
-
-            # Avança o cursor aplicando o recuo de sobreposição (overlap entre 10% e 15%)
-            step = (actual_end - cursor) - self.overlap_size
-            # Garante avanço mínimo para evitar loops infinitos
-            if step <= 0:
-                step = max(1, self.target_chunk_size // 2)
-
-            cursor += step
-
-        # Refinamento final: se o último chunk for muito diminuto, mescla com o anterior
-        if len(raw_chunks) > 1 and len(raw_chunks[-1]["text"]) < self.min_chunk_size:
-            last = raw_chunks.pop()
-            prev = raw_chunks[-1]
-            merged_start = prev["start"]
-            merged_end = max(prev["end"], last["end"])
-            raw_chunks[-1] = {
-                "start": merged_start,
-                "end": merged_end,
-                "text": cleaned_text[merged_start:merged_end].strip()
-            }
-
+        raw_chunks = self._slice_raw_chunks(cleaned_text)
         total = len(raw_chunks)
-        final_chunks: list[TextChunk] = []
-
-        for idx, item in enumerate(raw_chunks):
-            c_text = item["text"]
-            content_h = hashlib.sha256(c_text.encode("utf-8")).hexdigest()
-            # ID determinístico combinando documento, índice sequencial e hash de conteúdo
-            chunk_id = hashlib.sha256(f"{source_doc}:{idx}:{content_h}".encode("utf-8")).hexdigest()[:16]
-
-            meta = ChunkMetadata(
-                source_doc=source_doc,
-                category=category,
-                chunk_index=idx,
-                total_chunks=total,
-                char_count=len(c_text),
-                token_count_est=max(1, len(c_text) // 4),
-                start_char=item["start"],
-                end_char=item["end"],
-                overlap_ratio=self.overlap_ratio,
-                has_overlap_prev=(idx > 0),
-                has_overlap_next=(idx < total - 1),
-                extra_tags=extra_tags
-            )
-
-            final_chunks.append(
-                TextChunk(
-                    chunk_id=chunk_id,
-                    content_hash=content_h,
-                    parent_doc_hash=parent_hash,
-                    text=c_text,
-                    metadata=meta
-                )
-            )
-
-        return ChunkingResult(
-            source_doc=source_doc,
-            category=category,
-            parent_doc_hash=parent_hash,
-            stats=SanitizationStats(original_char_count=text_len, cleaned_char_count=text_len),
-            total_chunks=total,
-            chunks=final_chunks
-        )
+        final_chunks = [
+            self._make_chunk(item["text"], source_doc, category, parent_hash, idx, total, item["start"], item["end"], extra_tags)
+            for idx, item in enumerate(raw_chunks)
+        ]
+        return ChunkingResult(source_doc=source_doc, category=category, parent_doc_hash=parent_hash, stats=stats, total_chunks=total, chunks=final_chunks)
 
 
 # =============================================================================
@@ -411,22 +336,35 @@ def process_document(
 # EXECUÇÃO CLI E AUTOTESTE
 # =============================================================================
 
-def run_self_test():
+def _print_self_test_summary(result: ChunkingResult) -> None:
+    """Prints self-test sanitization and chunking telemetry."""
+    print("\n📊 Estatísticas de Higienização:")
+    print(f"  • Caracteres invisíveis removidos: {result.stats.invisible_chars_removed}")
+    print(f"  • Espaços irregulares normalizados: {result.stats.spaces_normalized}")
+    print(f"  • Linhas duplicadas eliminadas:     {result.stats.duplicate_lines_removed}")
+    print(f"  • Tamanho original -> higienizado:  {result.stats.original_char_count} -> {result.stats.cleaned_char_count} chars (-{result.stats.reduction_percentage}%)")
+    print(f"  • Hash do documento pai (SHA-256):  {result.parent_doc_hash[:16]}...")
+    print(f"\n🧩 Fragmentos Gerados (Total: {result.total_chunks}):")
+    for chunk in result.chunks:
+        m = chunk.metadata
+        print(f"\n  ▶ Chunk [{m.chunk_index + 1}/{m.total_chunks}] ID: {chunk.chunk_id} | Hash: {chunk.content_hash[:12]}...")
+        print(f"    - Faixa: chars {m.start_char}..{m.end_char} ({m.char_count} chars, ~{m.token_count_est} tokens)")
+        print(f"    - Overlap: {int(m.overlap_ratio * 100)}% (Prev: {m.has_overlap_prev}, Next: {m.has_overlap_next})")
+        print(f"    - Metadados Híbridos: categoria='{m.category}', doc='{m.source_doc}', tags={m.extra_tags}")
+        print(f"    - Amostra do texto:\n      \"{chunk.text[:90]}...\"")
+
+
+def run_self_test() -> None:
     """Valida todos os requisitos solicitados pelo usuário em um cenário sintético rigoroso."""
     print("\n" + "=" * 70)
     print("🧪 EXECUTANDO AUTOTESTE DO HIGIENIZADOR E CHUNKER PROPORCIONAL")
     print("=" * 70)
 
-    # Texto de teste propositalmente corrompido com:
-    # 1. Caracteres invisíveis (Zero Width Space \u200B, BOM \uFEFF, Control \x00)
-    # 2. Espaços unicode não-quebráveis (\u00A0)
-    # 3. Espaços múltiplos irregulares
-    # 4. Linhas duplicadas consecutivas
     corrupted_sample = (
         "Artigo 1. Do Objeto e Finalidades.\u200b\ufeff\n"
-        "Artigo 1. Do Objeto e Finalidades.\n"  # Linha duplicada proposital
+        "Artigo 1. Do Objeto e Finalidades.\n"
         "Esta cláusula regula    os procedimentos   de   auditoria contábil.\u00a0\u00a0\n"
-        "Esta cláusula regula    os procedimentos   de   auditoria contábil.\n"  # Duplicada
+        "Esta cláusula regula    os procedimentos   de   auditoria contábil.\n"
         "\n\n\n"
         "Parágrafo Único. Os relatórios fiscais deverão conter todos os cálculos detalhados.\x00\n"
         "O auditor independente analisará as divergências tributárias entre a contabilidade "
@@ -437,42 +375,22 @@ def run_self_test():
         "Todas as transações deverão ser acompanhadas de assinatura criptográfica e selo temporal "
         "para assegurar a tempestividade, a integridade da base e a rastreabilidade das operações.\n"
     )
-
     result = process_document(
         raw_text=corrupted_sample,
         source_doc="contrato_auditoria_fiscal_2026.txt",
         category="tributario_auditoria",
         target_chunk_size=300,
-        overlap_ratio=0.12,  # 12% de overlap (dentro de 10-15%)
-        extra_tags={"jurisdicao": "BR", "versao": "2.0"}
+        overlap_ratio=0.12,
+        extra_tags={"jurisdicao": "BR", "versao": "2.0"},
     )
+    _print_self_test_summary(result)
 
-    print(f"\n📊 Estatísticas de Higienização:")
-    print(f"  • Caracteres invisíveis removidos: {result.stats.invisible_chars_removed}")
-    print(f"  • Espaços irregulares normalizados: {result.stats.spaces_normalized}")
-    print(f"  • Linhas duplicadas eliminadas:     {result.stats.duplicate_lines_removed}")
-    print(f"  • Tamanho original -> higienizado:  {result.stats.original_char_count} -> {result.stats.cleaned_char_count} chars (-{result.stats.reduction_percentage}%)")
-    print(f"  • Hash do documento pai (SHA-256):  {result.parent_doc_hash[:16]}...")
-
-    print(f"\n🧩 Fragmentos Gerados (Total: {result.total_chunks}):")
-    for chunk in result.chunks:
-        m = chunk.metadata
-        print(f"\n  ▶ Chunk [{m.chunk_index + 1}/{m.total_chunks}] ID: {chunk.chunk_id} | Hash: {chunk.content_hash[:12]}...")
-        print(f"    - Faixa: chars {m.start_char}..{m.end_char} ({m.char_count} chars, ~{m.token_count_est} tokens)")
-        print(f"    - Overlap: {int(m.overlap_ratio * 100)}% (Prev: {m.has_overlap_prev}, Next: {m.has_overlap_next})")
-        print(f"    - Metadados Híbridos: categoria='{m.category}', doc='{m.source_doc}', tags={m.extra_tags}")
-        print(f"    - Amostra do texto:\n      \"{chunk.text[:90]}...\"")
-
-    # Asserções de conformidade
     assert result.stats.invisible_chars_removed >= 2, "Deveria remover caracteres invisíveis"
     assert result.stats.duplicate_lines_removed >= 1, "Deveria remover linhas duplicadas"
     assert result.total_chunks >= 2, "Deveria gerar pelo menos 2 chunks para testar overlap"
     assert result.chunks[0].chunk_id != result.chunks[1].chunk_id, "Chunk IDs devem ser únicos"
     assert result.chunks[1].metadata.has_overlap_prev is True, "Chunk 1 deve ter overlap anterior"
-
-    print("\n" + "=" * 70)
-    print("✅ AUTOTESTE CONCLUÍDO COM 100% DE SUCESSO!")
-    print("=" * 70 + "\n")
+    print("\n" + "=" * 70 + "\n✅ AUTOTESTE CONCLUÍDO COM 100% DE SUCESSO!\n" + "=" * 70 + "\n")
 
 
 if __name__ == "__main__":

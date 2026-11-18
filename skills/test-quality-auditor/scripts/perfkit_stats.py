@@ -150,7 +150,7 @@ def _compute_single_metric(sorted_values: Sequence[float], metric: MetricSpec) -
     raise ValueError(f"Métrica de agregação inválida ou não suportada: {metric!r}")
 
 
-DEFAULT_BENCHMARK_METRICS: Tuple[MetricSpec, ...] = (
+DEFAULT_BENCHMARK_METRICS: tuple[MetricSpec, ...] = (
     Aggregation.MEAN,
     Aggregation.STDDEV,
     Aggregation.MIN,

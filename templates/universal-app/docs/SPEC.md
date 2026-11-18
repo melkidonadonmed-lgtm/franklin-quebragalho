@@ -13,7 +13,7 @@
 - [ ] Configuração do tema mineral escuro (*Tactile Matte / Luxury Obsidian*) em `src/styles/globals.css`.
 - [ ] Barra lateral de navegação com espaçamento nobre e ergonomia de toque (`AppSidebar`).
 - [ ] Integração do motor multi-sombra em Canvas 2D (`src/canvas/elevationRenderer.ts`) para renderização gráfica de alta definição.
-- [ ] Cobertura de acessibilidade visual com conformidade WCAG 2.1 nível AA/AAA.
+- [ ] Cobertura de acessibilidade visual com conformidade WCAG 2.2 nível AA/AAA.
 
 ---
 

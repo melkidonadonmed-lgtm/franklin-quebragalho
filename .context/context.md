@@ -1,6 +1,6 @@
 # CONTEXT.MD — Authoritative Project State (`franklin-quebragalho` / Franklin Quebra-Galho)
 >
-> **Last Updated:** 2026-11-17 | **Status:** `ACTIVE`
+> **Last Updated:** 2026-11-18 | **Status:** `ACTIVE`
 
 ## 1. Overview & Current Architecture
 
@@ -21,6 +21,12 @@
 - **I/O Boundaries & Real-State:** Strictly typed schemas (`Pydantic v2` `extra="forbid"`), `STDIO` hygiene (`stdout` exclusively for JSON-RPC 2.0), Least Privilege + explicit Antigravity 2.0 native `tools:` in `agents/*.md`, Zero Tolerance for Fake Functions (*Real-State*), and *Read-After-Write* verification.
 
 ## 3. Recent Changes (Changelog)
+
+- `[2026-11-18]` **Wave 2 Forensic Remediation & Hardening (`franklin-quebragalho` — 21 Canonical Skills, ADK Go v2 Parity, `<=600`L Modularization & `WCAG 2.2`)**:
+  - **Skill Frontmatter & ADK Go v2 `skill.Parse` Parity:** Converted `metadata.tags` across all **21 Skills** into comma-separated scalar strings (`map[string]string` safe for Go `skill.Parse`), added top-level `allowed-tools`, split CSV `tags` in `shared/catalog_service.py` and `shared/a2a_bridge.py` (`build_franklin_agent_card` fallback updated to `21`), aligned `rules/authoring-skills.md`, and hardened `scripts/validate_skills.py --strict` to reject non-scalar `metadata:` entries and `>1,000`-token L2 bodies (covered in `tests/test_ecosystem_contracts.py`).
+  - **Skill Body & Script Governance Refinement:** Trimmed `solution-content-architect` (`v2.6.1`, `<940` tokens), merged bullets in `code-acceptability-auditor` (`v1.1.1`) and linked `scripts/test_code_acceptability_auditor.py`, replaced retired model IDs in `agent-server-auditor` (`v1.2.1`) with generic guidance linking `scripts/protocol_policy_checks.py`, linked `scripts/models.py` in `test-quality-auditor` (`v1.3.1`), and ensured explicit Zero-Trust/HITL/Read-After-Write guardrails across all 21 skills (`adk-go-mcp` `estante_cli.go` `adk_v2_loaded: 21`, `21/21 APPROVED`).
+  - **Code Quality, Ruff Defects (`F/B/E9`) & `<=600`L Modularization:** Resolved `F821` (`perfkit_stats.py`), `B033` (`static_ast_parser.py`), `B009` (`polymorphic_skill_envelope.py`), `B905` (`code_acceptability_auditor.py`), and `F401` (`server.py` `__all__`, `shared/mcp_2026_advisor.py`, `frontiercode_maintainability_guardrail.py`); refactored `deterministic_scorer.py` (`70.0 REJECTED -> APPROVED`) and oversized functions in `text_sanitizer_and_chunker.py` / `shared/harness2_engine.py`; modularized all oversized `.py` modules (`scripts/_sync_project_profiles.py`, `shared/_catalog_scoring.py`, `shared/_harness_idempotency.py`, `shared/_progressive_registry.py`, `_observer_markdown.py`, `_physics_ast_rules.py`, `_resolution_html_renderer.py`) with 0 files `>600`L, 0 functions `>60`L, and 0 `REJECTED` AST files.
+  - **Template & Eval Modernization:** Scoped `text-rendering: optimizeLegibility` off `body` onto headings (`h1..h4`) in `resolution_diff_v1_v2.html` and `templates/universal-app/src/styles/globals.css`, and upgraded `WCAG 2.1` to `WCAG 2.2` in `frontend.design.md`, `SPEC.md`, `agent-server-auditor/evals/evals.json`, and `code-quality-audit-3d-physics/evals/evals.json`.
 
 - `[2026-11-17]` **Global 4-Component Ecosystem Audit, `/learn` Rule Persistence, `scoreboard` Archival into `PCM`, and CoT/ToT/ReAct/RAW Standardization (`franklin-quebragalho`, `shredded-shape`, `adk-go-mcp`, `~/.agents/skills`, `skill-catalog/user-skills`, and 20 Active `AGENTS.md`)**:
   - **Rule Evolution (`/learn`) & `scoreboard` Archival:** Added Slot #5 (`Discovery Budget, Hook Hygiene & Sync Idempotency f(x) == x`) to `rules/quality-efficiency-guidelines.md`, documented single-line JSON-quoted `description` + top-level `max_steps`/`stop_condition` + cognitive loop (`CoT`/`ToT`/`ReAct + RAW`/`Actor-Critic + Self-Refine`) in `rules/authoring-subagents.md`, and formalized 4-phase `CoT -> ToT -> ReAct -> RAW` + `references/*.md` zero-`../` link rules + cross-tier threshold parity in `rules/authoring-skills.md`. Archived `scoreboard` on GitHub (`melkidonadonmed-lgtm/scoreboard`) and moved local copy to `dev/sandbox/_archived_repos/scoreboard` after incorporation into `PCM`.

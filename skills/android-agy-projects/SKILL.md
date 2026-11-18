@@ -2,12 +2,13 @@
 name: android-agy-projects
 description: "Design, scaffold MVPs, and audit Android projects (Kotlin 2.4+, AGP 9 Built-in Kotlin, KSP2, Jetpack Compose, Navigation 3, R8 Full Mode, ANR, and memory leaks). Use to build or audit Android/Gradle apps. Do NOT use for iOS, web Next.js (ui-clean-worker), or APK reverse engineering (re-a-ndroid)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: read_file write_file edit_file run_command
 metadata:
   version: "2.1.0"
   updated_at: "2026-11-16"
   author: "Franklin"
   category: "Android Architecture, Performance Audit & Dependency Lifecycle"
-  tags: ["android-agy-projects", "android", "app", "gradle", "agp", "agp9", "agp-9", "kotlin", "kotlin-k2", "ksp2", "compose", "jetpack", "jetpack-compose", "navigation", "navigation-3", "r8", "anr", "memory", "leaks", "auditar", "criar"]
+  tags: "android-agy-projects, android, app, gradle, agp, agp9, agp-9, kotlin, kotlin-k2, ksp2, compose, jetpack, jetpack-compose, navigation, navigation-3, r8, anr, memory, leaks, auditar, criar"
 ---
 
 # `android-agy-projects` (`v2.1.0`) — Android Engineering & Audit (2026)

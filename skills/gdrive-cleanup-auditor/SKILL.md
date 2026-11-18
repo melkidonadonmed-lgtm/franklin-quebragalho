@@ -2,12 +2,13 @@
 name: gdrive-cleanup-auditor
 description: "Audit and clean up Google Drive (G:\\Meu Drive) by detecting heavy files >100MB, SHA-256 hash duplicates, residual archives, and orphan empty folders with non-destructive _Quarentena_Descarte dry-run. Use for Drive cleanup; do NOT use for numbered folder taxonomy or ISO dates (gdrive-taxonomy-organizer) or local Windows disk maintenance."
 compatibility: "Windows 11, pwsh 7+, Google Drive for Desktop or workspace-mcp"
+allowed-tools: read_file run_command
 metadata:
   author: "Franklin"
   version: "1.2.0"
   updated_at: "2026-11-16"
   category: "Cloud Storage & Deduplication Auditing"
-  tags: ["google-drive", "gdrive", "drive", "limpeza", "higienizar", "duplicatas", "duplicados", "hash", "sha256", "100mb", "orfas", "vazias", "quarentena", "dry-run"]
+  tags: "google-drive, gdrive, drive, limpeza, higienizar, duplicatas, duplicados, hash, sha256, 100mb, orfas, vazias, quarentena, dry-run"
 ---
 
 # Google Drive Storage Audit & Non-Destructive Quarantine (`gdrive-cleanup-auditor`)

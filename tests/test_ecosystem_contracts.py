@@ -715,4 +715,44 @@ def test_code_acceptability_auditor_stub001_detection_and_exemptions() -> None:
     assert test_rep.status == "APPROVED"
 
 
+def test_validate_skills_strict_enforces_scalar_metadata_and_token_budget(tmp_path: Path) -> None:
+    """Strict mode rejects list/dict inside metadata: and >1000-token SKILL.md bodies while accepting scalar tags."""
+    import scripts.validate_skills as vs
+
+    def _write_skill(slug: str, meta_extra: str, body_extra: str = "") -> Path:
+        sdir = tmp_path / slug
+        sdir.mkdir()
+        (sdir / "SKILL.md").write_text(
+            f"---\nname: {slug}\n"
+            'description: "Use when testing strict metadata validation. Do NOT use for production tasks."\n'
+            "allowed-tools: read_file run_command\n"
+            "metadata:\n"
+            '  version: "1.0.0"\n'
+            '  updated_at: "2026-11-18"\n'
+            f"{meta_extra}"
+            "---\n"
+            f"# {slug}\n"
+            "## 1. Overview & Scope\nScope details.\n"
+            "## 2. Inputs & Prerequisites\nInputs.\n"
+            "## 3. Step-by-Step Procedure\nRun steps.\n"
+            "## 4. Gotchas & Edge Cases\nEdge cases.\n"
+            "## 5. Output Schema & Validation Criteria\nOutputs.\n"
+            f"{body_extra}",
+            encoding="utf-8",
+        )
+        return sdir
+
+    ok_dir = _write_skill("valid-scalar-skill", '  tags: "alpha, beta, gamma"\n')
+    assert vs.validate_skill_dir(ok_dir, strict_mode=True) == []
+
+    list_dir = _write_skill("list-meta-skill", '  tags: ["alpha", "beta"]\n')
+    list_errs = vs.validate_skill_dir(list_dir, strict_mode=True)
+    assert any("metadata.tags" in err and "escalar plano" in err for err in list_errs), list_errs
+
+    bloated_dir = _write_skill("bloated-body-skill", '  tags: "alpha"\n', body_extra=("token_word " * 450) + "\n")
+    bloated_errs = vs.validate_skill_dir(bloated_dir, strict_mode=True)
+    assert any("1000 tokens" in err for err in bloated_errs), bloated_errs
+
+
+
 

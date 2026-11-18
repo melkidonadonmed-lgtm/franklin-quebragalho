@@ -2,12 +2,13 @@
 name: system-project-auditor
 description: "Audit existing repositories (0-100 score + SGA) across real AST code health, Docs-vs-Disk parity, causal MVP blockers, and, for UI targets, 3-layer navigation (X activates Y), 60-30-10 OKLCH physics, and live agent-browser @eX DOM. Use for repository, MVP, and navigation audits. Do NOT use for coding (solution-content-architect), scaffolding (project-idea-organizer), or APKs (re-a-ndroid)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: read_file run_command
 metadata:
   version: "6.1.0"
   updated_at: "2026-11-17"
   author: "Franklin"
   category: "Unified Project, Real-Code AST, MVP, SGA & 60-30-10 OKLCH Auditing"
-  tags: ["system-project-auditor", "auditoria-projetos-sistema", "antigravity-project-auditor", "nav-x-func", "auditoria", "projeto", "projetos", "sistemas", "mvp", "ilhas", "ilhas-funcionais", "navegacao", "navegabilidade", "sga", "tif", "ast", "orfao", "agent-browser", "estrutural", "repositorios", "camadas", "dead-ends", "evolucao", "60-30-10-oklch", "3-layer-navigation", "deterministic-scorer"]
+  tags: "system-project-auditor, auditoria-projetos-sistema, antigravity-project-auditor, nav-x-func, auditoria, projeto, projetos, sistemas, mvp, ilhas, ilhas-funcionais, navegacao, navegabilidade, sga, tif, ast, orfao, agent-browser, estrutural, repositorios, camadas, dead-ends, evolucao, 60-30-10-oklch, 3-layer-navigation, deterministic-scorer"
 ---
 
 # `system-project-auditor` (`v6.1.0`) — Stack-Adaptive Code, MVP & `SGA`
@@ -45,7 +46,7 @@ uv run python skills/system-project-auditor/scripts/frontiercode_maintainability
 
 ## 5. Output Schema & Validation Criteria
 
-Emit `[PASS]`, `[FAIL]`, `[PASS: N/A_BACKEND_ONLY]`, or `[UNVERIFIED]` per [`rules/audit_criteria.md`](rules/audit_criteria.md): Score `XX/100`, `SGA`, `TIF`, causal MVP diagnosis, AST parity table, 5 Pillars Matrix, and a **Defect-Driven Action Plan** (1:1 traced to real findings; output `No structural remediation required` when clean).
+Emit `Read-After-Write`-verified verdicts (`[PASS]`, `[FAIL]`, `[PASS: N/A_BACKEND_ONLY]`, `[UNVERIFIED]`) per [`rules/audit_criteria.md`](rules/audit_criteria.md): Score `XX/100`, `SGA`, `TIF`, causal MVP diagnosis, AST parity table, 5 Pillars Matrix, and a **Defect-Driven Action Plan** (1:1 traced to real findings; output `No structural remediation required` when clean).
 
 ## 6. User Communication Rule
 

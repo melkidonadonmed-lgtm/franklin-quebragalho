@@ -230,6 +230,52 @@ def _record_winner_experience(
     return str(exp_path)
 
 
+def _run_agg_stages(
+    base_tree: Tree, k: int, surface: SurfaceSpec,
+    prop: Callable[[str, str, Tree], Tuple[Tree, str]],
+    ledger: RecursionLedger, trees: Dict[str, Tree], stages: List[Dict[str, Any]],
+    probe_evaluator_fn: Optional[Callable[[Tree], Tuple[bool, str]]],
+) -> List[str]:
+    """Runs parallel INV/DOM/AGG contrastive stages across k rollouts."""
+    finals: List[str] = []
+    for i in range(1, k + 1):
+        for d in ("INV", "DOM"):
+            lbl = f"{d.lower()}{i}"
+            _execute_recursion_step(lbl, d, base_tree, surface, prop, ledger, trees, stages, probe_evaluator_fn)
+            ledger.rollout(lbl)
+    for i in range(1, k + 1):
+        lbl = f"agg{i}"
+        _execute_recursion_step(
+            lbl, "AGG", trees.get(f"inv{i}", base_tree), surface, prop, ledger, trees, stages, probe_evaluator_fn
+        )
+        ledger.rollout(lbl)
+        finals.append(lbl)
+    return finals
+
+
+def _run_seq_stages(
+    base_tree: Tree, k: int, surface: SurfaceSpec,
+    prop: Callable[[str, str, Tree], Tuple[Tree, str]],
+    ledger: RecursionLedger, trees: Dict[str, Tree], stages: List[Dict[str, Any]],
+    probe_evaluator_fn: Optional[Callable[[Tree], Tuple[bool, str]]],
+) -> List[str]:
+    """Runs sequential INV/DOM/COMPOSE contrastive stages across k turns."""
+    finals: List[str] = []
+    cur = dict(base_tree)
+    for t in range(1, k + 1):
+        for d in ("INV", "DOM"):
+            lbl = f"{d.lower()}{t}"
+            _execute_recursion_step(lbl, d, cur, surface, prop, ledger, trees, stages, probe_evaluator_fn)
+            ledger.rollout(lbl)
+        ck = f"c{t}"
+        cur = _execute_recursion_step(
+            ck, "COMPOSE", trees.get(f"inv{t}", cur), surface, prop, ledger, trees, stages, probe_evaluator_fn
+        )
+        ledger.rollout(ck)
+        finals.append(ck)
+    return finals
+
+
 def simulate_propose_probe_compose(
     task_id: str,
     base_tree: Tree,
@@ -252,34 +298,8 @@ def simulate_propose_probe_compose(
     trees: Dict[str, Tree] = {}
     prop = proposer_fn or _build_default_proposer(surface, trees)
     stages: List[Dict[str, Any]] = []
-    finals: List[str] = []
-
-    if mode == "agg":
-        for i in range(1, k + 1):
-            for d in ("INV", "DOM"):
-                lbl = f"{d.lower()}{i}"
-                _execute_recursion_step(lbl, d, base_tree, surface, prop, ledger, trees, stages, probe_evaluator_fn)
-                ledger.rollout(lbl)
-        for i in range(1, k + 1):
-            lbl = f"agg{i}"
-            _execute_recursion_step(
-                lbl, "AGG", trees.get(f"inv{i}", base_tree), surface, prop, ledger, trees, stages, probe_evaluator_fn
-            )
-            ledger.rollout(lbl)
-            finals.append(lbl)
-    else:
-        cur = dict(base_tree)
-        for t in range(1, k + 1):
-            for d in ("INV", "DOM"):
-                lbl = f"{d.lower()}{t}"
-                _execute_recursion_step(lbl, d, cur, surface, prop, ledger, trees, stages, probe_evaluator_fn)
-                ledger.rollout(lbl)
-            ck = f"c{t}"
-            cur = _execute_recursion_step(
-                ck, "COMPOSE", trees.get(f"inv{t}", cur), surface, prop, ledger, trees, stages, probe_evaluator_fn
-            )
-            ledger.rollout(ck)
-            finals.append(ck)
+    stage_runner = _run_agg_stages if mode == "agg" else _run_seq_stages
+    finals = stage_runner(base_tree, k, surface, prop, ledger, trees, stages, probe_evaluator_fn)
 
     ledger.assert_identity()
     recorded_experience_dir = _record_winner_experience(

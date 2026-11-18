@@ -8,7 +8,7 @@ Mantido abaixo de 300 linhas conforme diretrizes de arquitetura modular.
 
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 
 MCP_APP_MIME_TYPE = "text/html;profile=mcp-app"

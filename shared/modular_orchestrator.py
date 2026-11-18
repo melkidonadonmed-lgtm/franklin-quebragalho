@@ -17,28 +17,30 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-import re
 import sys
 import uuid
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from shared._progressive_registry import (
+    BUNDLED_SUBDIRS,
+    LoadedSkill,
+    ProgressiveSkillRegistry,
+    SkillMetadata,
+)
 from shared.harness import (
     CheckpointStore,
     RefinementTelemetryRecord,
     RefinementTelemetryStore,
     RiskLevel,
     RootCauseCategory,
-    SecurityViolationError,
     SemanticGuard,
     classify_failure_root_cause,
     evaluate_action_risk,
 )
-from shared.tools.frontmatter_parser import parse_frontmatter
 
 logging.basicConfig(
     level=logging.INFO,
@@ -46,164 +48,6 @@ logging.basicConfig(
     stream=sys.stderr,
 )
 logger = logging.getLogger("AgentArchitecture")
-
-BUNDLED_SUBDIRS: tuple[str, ...] = ("references", "scripts", "assets", "rules", "evals")
-
-
-@dataclass(frozen=True)
-class SkillMetadata:
-    """Metadados do Nível 1 extraídos exclusivamente do frontmatter YAML."""
-
-    name: str
-    description: str
-    location: Path
-    base_dir: Path
-    version: str = "1.0.0"
-    persona: str = "Franklin-Main"
-    compatibility: Optional[str] = None
-
-
-@dataclass
-class LoadedSkill:
-    """Instruções do Nível 2 e catálogo de recursos do Nível 3."""
-
-    metadata: SkillMetadata
-    instructions_body: str
-    available_resources: List[str] = field(default_factory=list)
-
-
-class ProgressiveSkillRegistry:
-    """Gerenciador de descoberta, ativação e isolamento progressivo de Skills em 3 níveis."""
-
-    def __init__(self, search_paths: List[Path], persona_map: Optional[Dict[str, str]] = None) -> None:
-        self.search_paths = search_paths
-        self.persona_map = persona_map or {}
-        self._skills_catalog: Dict[str, SkillMetadata] = {}
-        self._active_skills: Dict[str, LoadedSkill] = {}
-
-    @property
-    def catalog(self) -> Dict[str, SkillMetadata]:
-        return dict(self._skills_catalog)
-
-    def discover_skills(self) -> None:
-        """NÍVEL 1: Varre os diretórios com regra de precedência e compila o catálogo enxuto."""
-        self._skills_catalog.clear()
-        for base_path in self.search_paths:
-            if not base_path.exists() or not base_path.is_dir():
-                continue
-            for item in sorted(base_path.iterdir()):
-                skill_file = item / "SKILL.md"
-                if item.is_dir() and skill_file.is_file():
-                    self._parse_and_register_metadata(skill_file)
-
-    def _parse_and_register_metadata(self, skill_file: Path) -> None:
-        """Extrai apenas o frontmatter YAML entre delimitadores '---'."""
-        try:
-            content = skill_file.read_text(encoding="utf-8", errors="replace")
-            parsed_meta, _ = parse_frontmatter(content)
-            name = str(parsed_meta.get("name", "")).strip()
-            description = str(parsed_meta.get("description", "")).strip()
-            if not name or not description or name in self._skills_catalog:
-                return
-            folder_name = skill_file.parent.name
-            persona = self.persona_map.get(folder_name, self.persona_map.get(name, "Franklin-Main"))
-            self._skills_catalog[name] = SkillMetadata(
-                name=name,
-                description=description,
-                location=skill_file.resolve(),
-                base_dir=skill_file.parent.resolve(),
-                version=str(parsed_meta.get("version", "1.0.0")),
-                persona=persona,
-                compatibility=str(parsed_meta["compatibility"]) if parsed_meta.get("compatibility") else None,
-            )
-        except OSError as exc:
-            logger.error("Erro ao processar %s: %s", skill_file, exc)
-
-    def render_catalog_prompt(self) -> str:
-        """Gera a representação XML concisa do NÍVEL 1 (~60 tokens/skill)."""
-        if not self._skills_catalog:
-            self.discover_skills()
-        if not self._skills_catalog:
-            return ""
-        xml_parts = ["<available_skills>"]
-        for meta in self._skills_catalog.values():
-            xml_parts.extend([
-                f'  <skill name="{meta.name}" persona="{meta.persona}" version="{meta.version}">',
-                f"    <description>{meta.description}</description>",
-                f"    <location>{meta.location.as_posix()}</location>",
-                "  </skill>",
-            ])
-        xml_parts.append("</available_skills>")
-        return "\n".join(xml_parts)
-
-    def _collect_bundled_files(self, base_dir: Path) -> List[str]:
-        """Lista arquivos disponíveis nas subpastas sem carregar seu conteúdo."""
-        bundled: List[str] = []
-        valid_dirs = [base_dir / s for s in BUNDLED_SUBDIRS if (base_dir / s).is_dir()]
-        for target_dir in valid_dirs:
-            files = [f for f in sorted(target_dir.rglob("*")) if f.is_file() and "__pycache__" not in f.parts]
-            bundled.extend(f.relative_to(base_dir).as_posix() for f in files)
-        return bundled
-
-    def activate_skill(self, skill_name: str) -> str:
-        """NÍVEL 2: Carrega o corpo instrucional de SKILL.md sem frontmatter e enumera recursos."""
-        if not self._skills_catalog:
-            self.discover_skills()
-        if skill_name not in self._skills_catalog:
-            return f"Erro: Skill '{skill_name}' não encontrada no catálogo disponível."
-
-        meta = self._skills_catalog[skill_name]
-        try:
-            raw_content = meta.location.read_text(encoding="utf-8", errors="replace")
-            _, body_content = parse_frontmatter(raw_content)
-            clean_body = body_content.strip() or re.sub(r"^---\s*\n.*?\n---\s*\n", "", raw_content, flags=re.DOTALL).strip()
-            bundled_files = self._collect_bundled_files(meta.base_dir)
-            self._active_skills[skill_name] = LoadedSkill(
-                metadata=meta,
-                instructions_body=clean_body,
-                available_resources=bundled_files,
-            )
-            resources_xml = "\n".join(f"    <resource_file>{f}</resource_file>" for f in bundled_files)
-            return (
-                f'<skill_content name="{meta.name}" version="{meta.version}" persona="{meta.persona}">\n'
-                f"{clean_body}\n\n"
-                f"Diretório base: {meta.base_dir}\n"
-                f"<available_resources>\n"
-                f"{resources_xml}\n"
-                f"</available_resources>\n"
-                f"</skill_content>"
-            )
-        except OSError as exc:
-            logger.error("Falha ao ativar skill %s: %s", skill_name, exc)
-            return f"Erro interno ao carregar a skill: {exc}"
-
-    def read_skill_resource(self, skill_name: str, relative_path: str) -> str:
-        """NÍVEL 3: Lê sob demanda um recurso específico com proteção contra Path Traversal."""
-        if not self._skills_catalog:
-            self.discover_skills()
-        if skill_name not in self._active_skills and skill_name in self._skills_catalog:
-            self.activate_skill(skill_name)
-        if skill_name not in self._active_skills:
-            return f"Erro: A skill '{skill_name}' deve ser ativada antes de ler seus recursos."
-
-        skill = self._active_skills[skill_name]
-        clean_rel = relative_path.strip().lstrip("/\\")
-        if not clean_rel or ".." in Path(clean_rel).parts:
-            return f"Erro de segurança: Acesso negado ao caminho externo '{relative_path}'."
-
-        target_path = (skill.metadata.base_dir / clean_rel).resolve()
-        if not target_path.is_relative_to(skill.metadata.base_dir):
-            return f"Erro de segurança: Acesso negado ao caminho externo '{relative_path}'."
-        if not target_path.exists() or not target_path.is_file():
-            return f"Erro: O recurso '{relative_path}' não existe na pasta da skill."
-
-        try:
-            content = target_path.read_text(encoding="utf-8")
-            return f'<resource_content skill="{skill_name}" file="{clean_rel}">\n{content}\n</resource_content>'
-        except UnicodeDecodeError:
-            return f"Erro: O recurso '{relative_path}' é um binário e não pode ser lido como texto."
-        except OSError as exc:
-            return f"Erro ao ler recurso: {exc}"
 
 
 # ==============================================================================
@@ -385,6 +229,29 @@ class MCPWorkerAgent(BaseSubAgent):
         super().__init__(name)
         self.tool_dispatcher = tool_dispatcher
 
+    def _execute_default_inspection(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Performs default read-only filesystem verification when no tool dispatcher is wired."""
+        target_str = str(params.get("target_dir", "")).strip()
+        skill_name = str(params.get("skill_name", "system-project-auditor")).strip()
+        repo_skills_dir = Path(__file__).resolve().parent.parent / "skills" / skill_name
+        if target_str and Path(target_str).exists():
+            t_path = Path(target_str)
+            files_count = sum(1 for _ in t_path.iterdir()) if t_path.is_dir() else 1
+            return {
+                "records_analyzed": max(1, files_count),
+                "skill_activated": skill_name,
+                "target_dir": target_str,
+                "output": f"[PASS] Inspeção determinística de {files_count} item(ns) em {target_str}.",
+            }
+        if not target_str and repo_skills_dir.exists():
+            return {
+                "records_analyzed": 1,
+                "skill_activated": skill_name,
+                "target_dir": str(repo_skills_dir),
+                "output": f"[PASS] Contrato da skill '{skill_name}' verificado no disco.",
+            }
+        return {}
+
     async def process(self, context_payload: Dict[str, Any]) -> TaskExecutionResult:
         params = dict(context_payload.get("action_parameters", {}))
         plan: Optional[PlanDecompositionResult] = context_payload.get("plan")
@@ -393,36 +260,15 @@ class MCPWorkerAgent(BaseSubAgent):
             params["retry_feedback"] = feedback
 
         try:
-            if self.tool_dispatcher is not None:
-                execution_data = dict(self.tool_dispatcher(params) or {})
-            else:
-                target_str = str(params.get("target_dir", "")).strip()
-                skill_name = str(params.get("skill_name", "system-project-auditor")).strip()
-                repo_skills_dir = Path(__file__).resolve().parent.parent / "skills" / skill_name
-                if target_str and Path(target_str).exists():
-                    t_path = Path(target_str)
-                    files_count = sum(1 for _ in t_path.iterdir()) if t_path.is_dir() else 1
-                    execution_data = {
-                        "records_analyzed": max(1, files_count),
-                        "skill_activated": skill_name,
-                        "target_dir": target_str,
-                        "output": f"[PASS] Inspeção determinística de {files_count} item(ns) em {target_str}.",
-                    }
-                elif not target_str and repo_skills_dir.exists():
-                    execution_data = {
-                        "records_analyzed": 1,
-                        "skill_activated": skill_name,
-                        "target_dir": str(repo_skills_dir),
-                        "output": f"[PASS] Contrato da skill '{skill_name}' verificado no disco.",
-                    }
-                else:
-                    execution_data = {}
-
+            execution_data = (
+                dict(self.tool_dispatcher(params) or {})
+                if self.tool_dispatcher is not None
+                else self._execute_default_inspection(params)
+            )
             if execution_data and plan is not None:
                 execution_data.setdefault("plan_id_executed", plan.plan_id)
                 execution_data.setdefault("execution_mode", plan.execution_mode)
                 execution_data.setdefault("steps_completed", len(plan.steps))
-
             return TaskExecutionResult(worker_id=self.name, status="SUCCESS", data_payload=execution_data)
         except (OSError, ValueError, RuntimeError, KeyError) as exc:
             logger.error("[%s] Erro na execução isolada da tool MCP: %s", self.name, exc)
@@ -432,6 +278,23 @@ class MCPWorkerAgent(BaseSubAgent):
 class CriticAuditorAgent(BaseSubAgent):
     """5. Subagente Crítico / Observador Read-After-Write Determinístico (0 tokens LLM)."""
 
+    @staticmethod
+    def _reject(score: float, feedback: str, cause: str) -> QualityAuditResult:
+        return QualityAuditResult(
+            approved=False, score=score, critique_feedback=feedback,
+            should_retry=True, root_cause_category=cause, post_condition_verified=False,
+        )
+
+    @staticmethod
+    def _check_written_files(written_files: Any) -> Optional[QualityAuditResult]:
+        if not isinstance(written_files, list):
+            return None
+        missing = [f for f in written_files if not Path(str(f)).is_file() or Path(str(f)).stat().st_size == 0]
+        if not missing:
+            return None
+        cause = RootCauseCategory.POST_CONDITION_FAILED.value
+        return CriticAuditorAgent._reject(0.25, f"[FAIL:{cause}] Read-After-Write falhou para arquivos: {missing}", cause)
+
     async def process(self, context_payload: Dict[str, Any]) -> QualityAuditResult:
         task_result: TaskExecutionResult = context_payload["task_result"]
         plan: Optional[PlanDecompositionResult] = context_payload.get("plan")
@@ -439,57 +302,32 @@ class CriticAuditorAgent(BaseSubAgent):
 
         if task_result.status != "SUCCESS":
             cat, why = classify_failure_root_cause(task_result.error_message or "FAILED", payload)
-            return QualityAuditResult(
-                approved=False, score=0.0,
-                critique_feedback=f"[FAIL:{cat.value}] Falha de execução no worker '{task_result.worker_id}': {why}",
-                should_retry=True, root_cause_category=cat.value, post_condition_verified=False,
-            )
+            return self._reject(0.0, f"[FAIL:{cat.value}] Falha de execução no worker '{task_result.worker_id}': {why}", cat.value)
 
         job_status = str(payload.get("job_status", "")).upper()
         if job_status in ("PENDING", "RUNNING", "IN_PROGRESS"):
-            return QualityAuditResult(
-                approved=False, score=0.20,
-                critique_feedback=f"[FAIL:{RootCauseCategory.PREMATURE_RETURN_NO_WAIT.value}] O worker retornou antes da conclusão do job ({job_status}).",
-                should_retry=True, root_cause_category=RootCauseCategory.PREMATURE_RETURN_NO_WAIT.value,
-                post_condition_verified=False,
-            )
+            cause = RootCauseCategory.PREMATURE_RETURN_NO_WAIT.value
+            return self._reject(0.20, f"[FAIL:{cause}] O worker retornou antes da conclusão do job ({job_status}).", cause)
 
         target_dir = str(payload.get("target_dir", "")).strip()
         if target_dir and not Path(target_dir).exists():
-            return QualityAuditResult(
-                approved=False, score=0.10,
-                critique_feedback=f"[FAIL:{RootCauseCategory.POST_CONDITION_FAILED.value}] Read-After-Write falhou: target_dir '{target_dir}' não existe no disco.",
-                should_retry=True, root_cause_category=RootCauseCategory.POST_CONDITION_FAILED.value,
-                post_condition_verified=False,
-            )
+            cause = RootCauseCategory.POST_CONDITION_FAILED.value
+            return self._reject(0.10, f"[FAIL:{cause}] Read-After-Write falhou: target_dir '{target_dir}' não existe no disco.", cause)
 
-        written_files = payload.get("written_files")
-        if isinstance(written_files, list):
-            missing_or_empty = [f for f in written_files if not Path(str(f)).is_file() or Path(str(f)).stat().st_size == 0]
-            if missing_or_empty:
-                return QualityAuditResult(
-                    approved=False, score=0.25,
-                    critique_feedback=f"[FAIL:{RootCauseCategory.POST_CONDITION_FAILED.value}] Read-After-Write falhou para arquivos: {missing_or_empty}",
-                    should_retry=True, root_cause_category=RootCauseCategory.POST_CONDITION_FAILED.value,
-                    post_condition_verified=False,
-                )
+        file_err = self._check_written_files(payload.get("written_files"))
+        if file_err is not None:
+            return file_err
 
-        has_evidence = "records_analyzed" in payload or "output" in payload
-        if has_evidence:
+        if "records_analyzed" in payload or "output" in payload:
             plan_verified = bool(plan is None or payload.get("plan_id_executed") == plan.plan_id)
-            score = 0.98 if plan_verified else 0.90
             return QualityAuditResult(
-                approved=True, score=score,
+                approved=True, score=0.98 if plan_verified else 0.90,
                 critique_feedback="[PASS] Pós-condição Read-After-Write e vínculo Planejador-Executor verificados.",
                 should_retry=False, root_cause_category=None, post_condition_verified=True,
             )
 
         cat, why = classify_failure_root_cause("[FAIL] Saída vazia ou sem marcadores verificáveis.", payload)
-        return QualityAuditResult(
-            approved=False, score=0.40,
-            critique_feedback=f"[FAIL:{cat.value}] {why}",
-            should_retry=True, root_cause_category=cat.value, post_condition_verified=False,
-        )
+        return self._reject(0.40, f"[FAIL:{cat.value}] {why}", cat.value)
 
 
 class ReporterAgent(BaseSubAgent):
@@ -585,6 +423,49 @@ class AgentOrchestrator:
         )
         return self.telemetry_store.record_refinement(rec, user_query=user_query)
 
+    async def _run_worker_critic_loop(
+        self,
+        user_query: str,
+        intent: IntentAnalysisResult,
+        plan: PlanDecompositionResult,
+        worker: BaseSubAgent,
+    ) -> str:
+        """Executes worker retries under CriticAuditorAgent RAW validation and telemetry capture."""
+        attempts, current_feedback, first_fail_cause, first_fail_why = 0, "", "", ""
+        while attempts < self.max_retries:
+            attempts += 1
+            task_result = await worker.process({"action_parameters": intent.action_parameters, "plan": plan, "feedback": current_feedback})
+            audit = await self.critic_agent.process({"task_result": task_result, "plan": plan})
+            if audit.approved:
+                telemetry_info = self._record_turn_telemetry(
+                    plan.plan_id, intent, attempts,
+                    first_fail_cause or RootCauseCategory.POST_CONDITION_FAILED.value,
+                    first_fail_why or current_feedback,
+                    f"Refined execution with deterministic critic feedback on attempt {attempts}",
+                    True, user_query,
+                ) if attempts > 1 else None
+                return await self.reporter_agent.process({
+                    "intent": intent, "plan": plan, "task_result": task_result,
+                    "audit": audit, "telemetry_info": telemetry_info,
+                })
+            if attempts == 1:
+                first_fail_cause = audit.root_cause_category or RootCauseCategory.POST_CONDITION_FAILED.value
+                first_fail_why = audit.critique_feedback
+            current_feedback = audit.critique_feedback
+            if not audit.should_retry:
+                break
+
+        exhaust_cause = RootCauseCategory.STUCK_IN_LOOP.value if attempts >= self.max_retries else (first_fail_cause or RootCauseCategory.POST_CONDITION_FAILED.value)
+        self._record_turn_telemetry(
+            plan.plan_id, intent, attempts, exhaust_cause, first_fail_why or current_feedback,
+            "Exhausted retries without satisfying deterministic post-condition", False, user_query,
+        )
+        return json.dumps({
+            "status": "FAILED", "attempts": attempts, "critique": current_feedback,
+            "rootCause": first_fail_cause or RootCauseCategory.STUCK_IN_LOOP.value,
+            "message": f"Falha na entrega após {attempts} tentativa(s).",
+        }, indent=2, ensure_ascii=False)
+
     async def execute_turn(
         self,
         user_query: str,
@@ -601,58 +482,31 @@ class AgentOrchestrator:
         plan = await self.planner_agent.process({"intent_result": intent})
         if intent.requires_hitl:
             return self._create_hitl_approval_response(user_query, intent, session_id)
-
         worker = self.workers.get(intent.recommended_worker)
         if not worker:
             return json.dumps({"status": "ERROR", "error": f"Worker '{intent.recommended_worker}' não registrado."}, ensure_ascii=False)
-
-        attempts, current_feedback, first_fail_cause, first_fail_why = 0, "", "", ""
-        while attempts < self.max_retries:
-            attempts += 1
-            task_result = await worker.process({
-                "action_parameters": intent.action_parameters, "plan": plan, "feedback": current_feedback,
-            })
-            audit = await self.critic_agent.process({"task_result": task_result, "plan": plan})
-            if audit.approved:
-                telemetry_info = (
-                    self._record_turn_telemetry(
-                        plan.plan_id, intent, attempts,
-                        first_fail_cause or RootCauseCategory.POST_CONDITION_FAILED.value,
-                        first_fail_why or current_feedback,
-                        f"Refined execution with deterministic critic feedback on attempt {attempts}",
-                        True, user_query,
-                    )
-                    if attempts > 1
-                    else None
-                )
-                return await self.reporter_agent.process({
-                    "intent": intent, "plan": plan, "task_result": task_result,
-                    "audit": audit, "telemetry_info": telemetry_info,
-                })
-            if attempts == 1:
-                first_fail_cause = audit.root_cause_category or RootCauseCategory.POST_CONDITION_FAILED.value
-                first_fail_why = audit.critique_feedback
-            current_feedback = audit.critique_feedback
-            if not audit.should_retry:
-                break
-
-        exhaust_cause = (
-            RootCauseCategory.STUCK_IN_LOOP.value
-            if attempts >= self.max_retries
-            else (first_fail_cause or RootCauseCategory.POST_CONDITION_FAILED.value)
-        )
-        self._record_turn_telemetry(
-            plan.plan_id, intent, attempts, exhaust_cause,
-            first_fail_why or current_feedback,
-            "Exhausted retries without satisfying deterministic post-condition",
-            False, user_query,
-        )
-        return json.dumps({
-            "status": "FAILED", "attempts": attempts, "critique": current_feedback,
-            "rootCause": first_fail_cause or RootCauseCategory.STUCK_IN_LOOP.value,
-            "message": f"Falha na entrega após {attempts} tentativa(s).",
-        }, indent=2, ensure_ascii=False)
+        return await self._run_worker_critic_loop(user_query, intent, plan, worker)
 
     def execute_turn_sync(self, user_query: str, **kwargs: Any) -> str:
         """Wrapper síncrono seguro para invocação a partir de tools MCP síncronas."""
         return asyncio.run(self.execute_turn(user_query, **kwargs))
+
+
+__all__ = [
+    "AgentOrchestrator",
+    "BUNDLED_SUBDIRS",
+    "BaseSubAgent",
+    "CriticAuditorAgent",
+    "IntentAnalysisAgent",
+    "IntentAnalysisResult",
+    "LoadedSkill",
+    "MCPWorkerAgent",
+    "MasterSkillInvocation",
+    "PlanDecompositionResult",
+    "PlannerAgent",
+    "ProgressiveSkillRegistry",
+    "QualityAuditResult",
+    "ReporterAgent",
+    "SkillMetadata",
+    "TaskExecutionResult",
+]

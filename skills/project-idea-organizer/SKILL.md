@@ -2,12 +2,13 @@
 name: project-idea-organizer
 description: "Bootstrap raw ideas into right-sized runnable v1.0.0 MVPs or sync repositories across Triad v2.1 docs, 1:1 disk-accurate README.md, active MCP/FastAPI/RPC contracts, and dry-run root hygiene. Use when starting an idea or aligning repo structure. Do NOT use for 0-100 AST audits (system-project-auditor), single-module coding (solution-content-architect), or Mermaid trees (flow-filetree-organizer)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, TypeScript 5+, Go 1.24+"
+allowed-tools: read_file write_file edit_file run_command
 metadata:
   author: "Franklin"
   version: "1.3.0"
   updated_at: "2026-11-17"
   category: "Project Architecture & Repository Hygiene"
-  tags: ["project-idea-organizer", "ideia", "ideias", "mvp", "sincronizar", "organizar", "organizador", "estruturar", "do-zero", "bootstrap", "scaffold", "readme", "contratos", "mcp", "fastapi", "rpc", "dry-run"]
+  tags: "project-idea-organizer, ideia, ideias, mvp, sincronizar, organizar, organizador, estruturar, do-zero, bootstrap, scaffold, readme, contratos, mcp, fastapi, rpc, dry-run"
 ---
 
 # `project-idea-organizer` (`v1.3.0`) — Right-Sized Idea-to-MVP & Repo Sync

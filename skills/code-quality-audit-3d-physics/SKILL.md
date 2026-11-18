@@ -2,12 +2,13 @@
 name: code-quality-audit-3d-physics
 description: "Audit and sanitize 3D physics engines, WebGL, Three.js, Babylon.js, shaders, collision stability, and Snorm Pass@10 scores in 3+1+1 envelope topology. Use to review 3D graphics and numerical simulation loops. Do NOT use for web CRUD (system-project-auditor), CSS styling (ui-quality-judge), or unit-test AAA audits (test-quality-auditor)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: read_file run_command
 metadata:
   version: "1.0.0"
   updated_at: "2026-11-16"
   author: "Franklin"
   category: "3D Physics, WebGL Graphics & Numerical Simulation Auditing"
-  tags: ["code-quality-audit-3d-physics", "3d", "fisica", "fisica-3d", "auditar", "sanitizar", "codigo", "computacao", "grafica", "webgl", "three", "threejs", "babylon", "babylonjs", "shaders", "colisoes", "snorm", "pass", "pass-at-k", "ast-parser", "auditoria-codigo", "testes-deterministicos"]
+  tags: "code-quality-audit-3d-physics, 3d, fisica, fisica-3d, auditar, sanitizar, codigo, computacao, grafica, webgl, three, threejs, babylon, babylonjs, shaders, colisoes, snorm, pass, pass-at-k, ast-parser, auditoria-codigo, testes-deterministicos"
 ---
 
 # `code-quality-audit-3d-physics` (`v1.0.0`) — 3D/WebGL & Numerical Physics Audit
@@ -29,7 +30,7 @@ Orchestrates static and dynamic auditing of 3D physics engines, WebGL/Three.js/B
 
 Consult [`references/3d_waves_and_penalties.md`](references/3d_waves_and_penalties.md), [`references/subskill_modules_spec.md`](references/subskill_modules_spec.md), [`references/3d_code_quality_audit_dossier.md`](references/3d_code_quality_audit_dossier.md), [`references/3d_physics_scoring_structure.md`](references/3d_physics_scoring_structure.md), and [`references/observer_agent_spec.yaml`](references/observer_agent_spec.yaml):
 
-1. **Wave 1 (`CoT` Static AST) -> Wave 2 (`ReAct` Pass@10 Runtime) -> Wave 3 (`RAW` Observer Consolidation):**
+1. **Wave 1 (`CoT` AST) -> Wave 2 (`ReAct` Pass@10 Runtime) -> Wave 3 (`Read-After-Write` Observer):**
 ```powershell
 uv run python skills/code-quality-audit-3d-physics/scripts/static_ast_parser.py <file.py>
 node skills/code-quality-audit-3d-physics/scripts/js_ts_ast_parser.js <file.ts>
@@ -44,7 +45,7 @@ $$S_{\text{norm}} = 0.20 \cdot s_1 + 0.15 \cdot s_2 + 0.25 \cdot s_3 + 0.20 \cdo
 ## 4. Gotchas & Edge Cases
 
 - `state-checker-observer` MUST inspect real lines to filter false positives (e.g., `.normalize()` guarded by `length > EPSILON`, or constructor allocations).
-- Never apply destructive refactoring without first presenting the Observer report and getting human approval.
+- Zero-Trust & HITL guardrail: never apply destructive refactoring before presenting the Observer report and receiving human approval.
 
 ## 5. Output Schema & Validation Criteria
 

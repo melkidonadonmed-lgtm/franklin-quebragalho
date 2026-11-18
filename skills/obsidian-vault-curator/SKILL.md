@@ -2,12 +2,13 @@
 name: obsidian-vault-curator
 description: "Audit and curate the Obsidian vault (C:\\Users\\melki\\dev\\notes) for broken Wikilinks, YAML frontmatter repair, orphaned attachments, repo parity, and MemPalace batch indexing (wing notes). Use for bulk vault hygiene; do NOT use for single-note CRUD (obsidian-vault), authoring docs from scratch (technical-markdown-writer), or Windows/Drive cleanup (windows-disk-maintenance, gdrive-cleanup-auditor)."
 compatibility: "Windows 11, Python 3.12+, pwsh 7+, MemPalace MCP"
+allowed-tools: read_file write_file edit_file run_command
 metadata:
   author: "Franklin"
   version: "1.3.0"
   updated_at: "2026-11-16"
   category: "Knowledge Management & Obsidian PKM"
-  tags: ["obsidian", "vault", "cofre", "wikilinks", "frontmatter", "yaml", "mempalace", "curadoria", "higienizar", "anexos-orfaos", "notes", "bidirecionais", "hybrid-search"]
+  tags: "obsidian, vault, cofre, wikilinks, frontmatter, yaml, mempalace, curadoria, higienizar, anexos-orfaos, notes, bidirecionais, hybrid-search"
 ---
 
 # Obsidian Vault Curation & Governance (`obsidian-vault-curator`)

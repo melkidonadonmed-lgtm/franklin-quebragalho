@@ -1,6 +1,6 @@
 {
   "name": "Franklin Quebra-Galho (A2A + MCP Orchestrator)",
-  "description": "Multi-agent orchestrator and catalog of 21 canonical Agent Skills (Python, TS/JS, Go, MCP, Harness, and Purpose-Driven Visual Architecture) with native Agent2Agent (A2A v1.0) and Model Context Protocol (MCP) support.",
+  "description": "Multi-agent orchestrator and catalog of 21 canonical Agent Skills (Python, TS/JS, Go, MCP, Harness, and Governance, Auditing, Orchestration, and Federated UI Routing) with native Agent2Agent (A2A v1.0) and Model Context Protocol (MCP) support.",
   "supportedInterfaces": [
     {
       "url": "http://localhost:10999",
@@ -545,7 +545,7 @@
         "jku": "http://localhost:10999/public_keys.json",
         "typ": "JOSE+JSON"
       },
-      "signature": "848beeff3dd1734adf753cb479e4bd75d3512925b3e2a5093b2c2d8db8aafeef"
+      "signature": "2a72772a4bd2833f36c6bbd8584af3429b6884de39604b675df6a110ac29a1d2"
     }
   ]
 }

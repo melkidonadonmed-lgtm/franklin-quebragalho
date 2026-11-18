@@ -2,12 +2,13 @@
 name: high-level-context-planner
 description: "Decompose complex goals into cognitive Phase 0 plans with 4-quadrant intent triage, parallelizable [ID] [P?] [US#] tasks, Go/No-Go matrices, and Complexity Tracking (<= 5 rules per node). Use when planning multi-phase epics or consuming RCA hand-offs. Do NOT use for single-turn tasks, raw log RCA (gap-analyzer-auditor), or executing Kahn DAG waves (chained-plan-orchestrator)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: read_file run_command
 metadata:
   author: "Franklin"
   version: "3.0.0"
   updated_at: "2026-11-16"
   category: "Intent Triage & Cognitive Planning"
-  tags: ["high-level-context-planner", "planejamento", "planejador", "fase", "fase-0", "complexidade", "complexity-tracking", "intent-triage", "cot-tot", "react", "append-only", "convergencia", "go-no-go", "dag"]
+  tags: "high-level-context-planner, planejamento, planejador, fase, fase-0, complexidade, complexity-tracking, intent-triage, cot-tot, react, append-only, convergencia, go-no-go, dag"
 ---
 
 # `high-level-context-planner` (`v3.0.0`) — Phase 0 & Complexity Shield

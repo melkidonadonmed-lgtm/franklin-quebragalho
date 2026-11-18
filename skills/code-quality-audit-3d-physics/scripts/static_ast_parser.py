@@ -29,6 +29,22 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")
 
+_SCRIPT_DIR = Path(__file__).resolve().parent
+if str(_SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPT_DIR))
+
+from _physics_ast_rules import (  # noqa: E402
+    build_alloc_in_loop_issue,
+    build_euler_gimbal_lock_issue,
+    build_missing_damping_issue,
+    build_missing_delta_time_issue,
+    build_render_coupling_issue,
+    build_rigid_constructor_issue,
+    build_unchecked_normalize_issue,
+    compute_module_scores,
+    make_issue,
+)
+
 
 class LocalIdentifierNormalizer(ast.NodeTransformer):
     """Normaliza identificadores de variáveis locais e argumentos para detecção estrutural
@@ -156,25 +172,11 @@ class PhysicsCodeASTVisitor(ast.NodeVisitor):
         subdimension_penalty: int = 0,
     ) -> None:
         self.issues.append(
-            {
-                "id": issue_id,
-                "title": title,
-                "category": category,
-                "subskill": subskill,
-                "severity": severity,
-                "penalty": penalty,
-                "physics_subdimension": physics_subdimension,
-                "subdimension_penalty": subdimension_penalty,
-                "file": self.filename,
-                "line": line,
-                "col": col,
-                "description": description,
-                "recommendation": recommendation,
-                "root_cause": root_cause or description,
-                "best_fix_code": best_fix_code,
-                "why_best_fix": why_best_fix or recommendation,
-                "expected_result": expected_result,
-            }
+            make_issue(
+                issue_id, title, category, subskill, severity, penalty, self.filename,
+                line, col, description, recommendation, root_cause, best_fix_code,
+                why_best_fix, expected_result, physics_subdimension, subdimension_penalty,
+            )
         )
 
     def _has_nearby_guardrail(self, lineno: int) -> bool:
@@ -227,36 +229,10 @@ class PhysicsCodeASTVisitor(ast.NodeVisitor):
 
                 if hardcoded_attrs:
                     attr_list = ", ".join(a[0] for a in hardcoded_attrs)
-                    first_line, first_col = hardcoded_attrs[0][1], hardcoded_attrs[0][2]
-                    self.add_issue(
-                        issue_id="RIGID_CONSTRUCTOR",
-                        title="Entidade Física com Construtor Rígido (Sem Injeção de Configuração)",
-                        category="Modularidade & Ausência de Hardcoded",
-                        subskill="architecture-hardcoded-auditor",
-                        severity="Média",
-                        penalty=15,
-                        line=first_line,
-                        col=first_col,
-                        description=(
-                            f"A classe '{class_node.name}' define propriedades físicas rígidas ({attr_list}) "
-                            "no '__init__' sem permitir injeção via parâmetros ou objeto de configuração."
-                        ),
-                        recommendation=(
-                            "Injete os coeficientes físicos ('damping', 'gravity', 'restitution') no construtor "
-                            "ou receba um objeto tipado 'PhysicsConfig'."
-                        ),
-                        root_cause=(
-                            f"Atributos físicos ({attr_list}) estão chumbados no construtor de '{class_node.name}', "
-                            "impedindo parametrização por cena ou testes de estresse sob gravidades/atritos distintos."
-                        ),
-                        best_fix_code=(
-                            "def __init__(self, mass: float = 1.0, damping: float = 0.99, gravity: Vector3 | None = None):\n"
-                            "    self.mass = mass\n"
-                            "    self.damping = damping\n"
-                            "    self.gravity = gravity if gravity is not None else Vector3(0.0, -9.81, 0.0)"
-                        ),
-                        why_best_fix="Habilita Inversão de Controle (IoC) e testes parametrizados sem alterar a classe de domínio.",
-                        expected_result="100% dos parâmetros físicos configuráveis por injeção no construtor.",
+                    self.issues.append(
+                        build_rigid_constructor_issue(
+                            self.filename, class_node.name, attr_list, hardcoded_attrs[0][1], hardcoded_attrs[0][2]
+                        )
                     )
 
     def _check_duplicate_function(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
@@ -359,39 +335,7 @@ class PhysicsCodeASTVisitor(ast.NodeVisitor):
         updates_motion = any(tok in fn_dump for tok in ("velocity", "position", "vel", "pos"))
         has_damping = any(tok in fn_dump for tok in ("damping", "drag", "friction", "air_resistance"))
         if updates_motion and not has_damping:
-            self.add_issue(
-                issue_id="MISSING_DAMPING",
-                title="Ausência de Amortecimento Físico (Drag / Damping) no Integrador",
-                category="Física 3D & Matemática Numérica",
-                subskill="physics-3d-math-auditor",
-                severity="Média",
-                penalty=15,
-                physics_subdimension="S3_conservation_stability",
-                subdimension_penalty=30,
-                line=fn_node.lineno,
-                col=fn_node.col_offset,
-                description=(
-                    f"O integrador físico '{fn_node.name}' atualiza movimento sem aplicar coeficiente "
-                    "de amortecimento ('damping' ou 'drag')."
-                ),
-                recommendation=(
-                    "Aplique amortecimento exponencial ou linear (ex: body.velocity *= body.damping ** dt "
-                    "ou F -= c_drag * v) para dissipar energia numérica residual."
-                ),
-                root_cause=(
-                    "Integradores explícitos/semi-implícitos acumulam erro de truncamento ao longo do tempo; "
-                    "sem fator de amortecimento, corpos rígidos podem ganhar energia fantasma e nunca estabilizar em repouso."
-                ),
-                best_fix_code=(
-                    "# Aplicação de amortecimento físico independente de framerate\n"
-                    "damping_factor = math.pow(body.damping, dt * 60.0)\n"
-                    "body.velocity.x *= damping_factor\n"
-                    "body.velocity.y *= damping_factor\n"
-                    "body.velocity.z *= damping_factor"
-                ),
-                why_best_fix="Garante conservação/dissipação realista de energia mecânica (E_final <= E_inicial) e convergência de repouso (sleeping).",
-                expected_result="Energia mecânica total estritamente limitada (E_final <= E_inicial) em 100% dos passos.",
-            )
+            self.issues.append(build_missing_damping_issue(self.filename, fn_node.name, fn_node.lineno, fn_node.col_offset))
 
     def visit_If(self, node: ast.If) -> None:
         test_dump = ast.dump(node.test).lower()
@@ -418,31 +362,10 @@ class PhysicsCodeASTVisitor(ast.NodeVisitor):
         is_test_fn = bool(self.current_function and self.current_function.lower().startswith("test_"))
         if (self.in_loop or self.loop_depth > 0) and not is_test_fn:
             if fn_name in self.ALLOC_INDICATORS or any(fn_name.endswith(alloc) for alloc in self.ALLOC_INDICATORS):
-                self.add_issue(
-                    issue_id="ALLOC_IN_LOOP",
-                    title="Alocação de Memória dentro de Laço Crítico",
-                    category="Sanitização Estática & Memory Cleanup",
-                    subskill="static-sanitization-auditor",
-                    severity="Crítica",
-                    penalty=30,
-                    line=node.lineno,
-                    col=node.col_offset,
-                    description=f"Instanciação/alocação de objeto '{fn_name}' dentro de um laço de atualização/renderização ('{self.current_function or 'loop'}').",
-                    recommendation="Pré-aloque o objeto no escopo do módulo/classe (Scratchpad) e mutacione seus componentes in-place para evitar acionar o Garbage Collector.",
-                    root_cause=(
-                        f"A chamada '{fn_name}(...)' aloca um novo objeto na Heap a cada frame/iteração. "
-                        "A 60–120Hz com múltiplos corpos, isso gera milhares de objetos descartáveis por segundo e pausas de GC."
-                    ),
-                    best_fix_code=(
-                        f"#Fora do laço (Scratchpad pré-alocado):\n"
-                        f"_TEMP_{fn_name.upper()} = {fn_name}(0.0, 0.0, 0.0)\n\n"
-                        f"# Dentro do laço:\n"
-                        f"body.position.x = next_x\n"
-                        f"body.position.y = next_y\n"
-                        f"body.position.z = next_z"
-                    ),
-                    why_best_fix="Zera as alocações dinâmicas no hot-loop, mantendo a latência de frame determinística.",
-                    expected_result="0 B/s de alocação de objetos temporários no laço de simulação.",
+                self.issues.append(
+                    build_alloc_in_loop_issue(
+                        self.filename, fn_name, self.current_function or "loop", node.lineno, node.col_offset
+                    )
                 )
 
     def _check_physics_render_coupling(self, node: ast.Call) -> None:
@@ -451,26 +374,10 @@ class PhysicsCodeASTVisitor(ast.NodeVisitor):
             if any(k in ctx_name for k in ("physics", "rigidbody", "integrat", "solver", "collider")):
                 call_dump = ast.dump(node.func).lower()
                 if any(sym in call_dump for sym in self.RENDER_COUPLED_SYMBOLS):
-                    self.add_issue(
-                        issue_id="PHYSICS_RENDER_COUPLING",
-                        title="Acoplamento Direto entre Motor de Física e Camada de Renderização",
-                        category="Modularidade & Ausência de Hardcoded",
-                        subskill="architecture-hardcoded-auditor",
-                        severity="Crítica",
-                        penalty=35,
-                        line=node.lineno,
-                        col=node.col_offset,
-                        description=f"Rotina de física '{self.current_function or self.current_class}' invoca diretamente primitiva gráfica/DOM.",
-                        recommendation="Separe o estado físico (RigidBody3D) da malha visual (Mesh/Canvas), sincronizando via barramento de estado ou adapter na camada de apresentação.",
-                        root_cause="Violação de separação de preocupações: o motor numérico depende de objetos de UI/WebGL, impedindo execução headless em testes determinísticos ou Web Workers.",
-                        best_fix_code=(
-                            "# Camada de Física (Pura/Headless):\n"
-                            "physics_world.step(dt)\n\n"
-                            "# Camada de Renderização (Sincronização desacoplada):\n"
-                            "mesh.position.copy(rigid_body.position)"
-                        ),
-                        why_best_fix="Permite rodar a física em frequência fixa (ex: 120Hz headless) desacoplada da taxa de renderização da tela.",
-                        expected_result="Desacoplamento 100% entre domínio físico e engine visual.",
+                    self.issues.append(
+                        build_render_coupling_issue(
+                            self.filename, self.current_function or self.current_class or "", node.lineno, node.col_offset
+                        )
                     )
 
     def visit_Call(self, node: ast.Call) -> None:
@@ -486,28 +393,7 @@ class PhysicsCodeASTVisitor(ast.NodeVisitor):
         self._check_alloc_in_loop(node, fn_name)
 
         if fn_name in ("normalize", "normalized") and not self._has_nearby_guardrail(node.lineno):
-            self.add_issue(
-                issue_id="UNCHECKED_NORMALIZE",
-                title="Normalização de Vetor Sem Validação de Magnitude Zero",
-                category="Física 3D & Matemática Numérica",
-                subskill="physics-3d-math-auditor",
-                severity="Alta",
-                penalty=25,
-                physics_subdimension="S2_vector_algebra_rotations",
-                subdimension_penalty=40,
-                line=node.lineno,
-                col=node.col_offset,
-                description=f"Chamada de '{fn_name}()' detectada sem verificação prévia de magnitude > EPSILON.",
-                recommendation="Garanta que ||v|| > EPSILON (ex: if v.length_sq() > 1e-12:) antes de normalizar para prevenir divisão por zero e contaminação por NaN/Inf.",
-                root_cause="A normalização divide cada componente pela norma Euclidiana ||v||. Se o vetor for nulo (0,0,0), ocorre divisão 0/0 = NaN, contaminando toda a cena 3D.",
-                best_fix_code=(
-                    "EPSILON_SQ = 1e-12\n"
-                    "if velocity.length_sq() > EPSILON_SQ:\n"
-                    "    direction = velocity.normalize()"
-                ),
-                why_best_fix="Usa length_sq() (evitando sqrt desnecessário quando nulo) e blinda o pipeline contra propagação de NaN.",
-                expected_result="100% de imunidade a NaN/Inf ao processar forças ou velocidades nulas.",
-            )
+            self.issues.append(build_unchecked_normalize_issue(self.filename, fn_name, node.lineno, node.col_offset))
 
         self._check_physics_render_coupling(node)
         self.generic_visit(node)
@@ -544,48 +430,11 @@ class PhysicsCodeASTVisitor(ast.NodeVisitor):
         if any(p in lower_name for p in ("pos", "position", "vel", "velocity")):
             right_text = ast.dump(node.value).lower()
             if not any(tok in right_text for tok in ("dt", "delta", "time", "step", "damping")):
-                self.add_issue(
-                    issue_id="MISSING_DELTA_TIME",
-                    title="Atualização Física Sem Delta Time (dt)",
-                    category="Física 3D & Matemática Numérica",
-                    subskill="physics-3d-math-auditor",
-                    severity="Crítica",
-                    penalty=40,
-                    physics_subdimension="S1_temporal_integration",
-                    subdimension_penalty=100,
-                    line=node.lineno,
-                    col=node.col_offset,
-                    description=f"A propriedade física '{full_name}' é incrementada sem multiplicação pelo fator de tempo ('dt' ou 'delta_time').",
-                    recommendation="Multiplique a taxa de variação pelo delta time (ex: position += velocity * dt) para assegurar independência de framerate.",
-                    root_cause=f"A integração de '{full_name}' assume 1 frame = 1 unidade de tempo. Em 120Hz o objeto se moverá com o dobro da velocidade de 60Hz.",
-                    best_fix_code=f"{full_name} += velocity * dt",
-                    why_best_fix="Implementa integração de Euler Semi-Implícito parametrizada por dt, garantindo invariância temporal em qualquer monitor.",
-                    expected_result="Diferença de posição final < 0.01m entre simulações a 60Hz e 120Hz.",
-                )
+                self.issues.append(build_missing_delta_time_issue(self.filename, full_name, node.lineno, node.col_offset))
 
         # Check (Módulo 3 / S2): EULER_GIMBAL_LOCK
         if any(r in lower_name for r in ("rotation.", "euler", "pitch", "yaw", "roll")):
-            self.add_issue(
-                issue_id="EULER_GIMBAL_LOCK",
-                title="Acúmulo Contínuo de Rotação 3D via Ângulos de Euler (Risco de Gimbal Lock)",
-                category="Física 3D & Matemática Numérica",
-                subskill="physics-3d-math-auditor",
-                severity="Alta",
-                penalty=20,
-                physics_subdimension="S2_vector_algebra_rotations",
-                subdimension_penalty=50,
-                line=node.lineno,
-                col=node.col_offset,
-                description=f"Incremento direto em ângulo de Euler ('{full_name}') detectado.",
-                recommendation="Represente rotações acumuladas usando Quaternions (q = q * dq normalizado) ou matrizes ortonormalizadas.",
-                root_cause="A composição sequencial de ângulos de Euler (X-Y-Z) sofre perda de um grau de liberdade rotacional quando o eixo intermediário atinge +-90 graus (Gimbal Lock).",
-                best_fix_code=(
-                    "delta_q = Quaternion.from_axis_angle(angular_axis, angular_speed * dt)\n"
-                    "body.orientation = (body.orientation * delta_q).normalize()"
-                ),
-                why_best_fix="Quaternions unitários interpolam suavemente em SO(3) sem singularidades topológicas.",
-                expected_result="Eliminação total de Gimbal Lock e deriva rotacional em 360 graus.",
-            )
+            self.issues.append(build_euler_gimbal_lock_issue(self.filename, full_name, node.lineno, node.col_offset))
 
         self.generic_visit(node)
 
@@ -629,7 +478,7 @@ class PhysicsCodeASTVisitor(ast.NodeVisitor):
 
         if isinstance(node.value, (int, float)) and not isinstance(node.value, bool):
             val = node.value
-            allowed_literals = {0, 1, -1, 0.0, 1.0, -1.0, 2, 2.0, 0.5, -0.5, 100.0, 1e-6, 1e-12}
+            allowed_literals = {0, 1, -1, 2, 0.5, -0.5, 100.0, 1e-6, 1e-12}
             if val not in allowed_literals:
                 self.add_issue(
                     issue_id="HARDCODED_MAGIC_NUMBER",
@@ -647,58 +496,6 @@ class PhysicsCodeASTVisitor(ast.NodeVisitor):
                     why_best_fix="Documenta o significado físico da constante e centraliza ajustes de simulação em um único ponto.",
                     expected_result="Zero constantes mágicas não documentadas em equações de movimento.",
                 )
-
-
-def compute_module_scores(issues: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """Calcula os escores s1, s2, s3 e as 5 sub-dimensões internas S1..S5 de Física 3D."""
-    penalties_by_subskill = {
-        "static-sanitization-auditor": 0,
-        "architecture-hardcoded-auditor": 0,
-        "physics-3d-math-auditor": 0,
-    }
-    subdim_penalties = {
-        "S1_temporal_integration": 0,
-        "S2_vector_algebra_rotations": 0,
-        "S3_conservation_stability": 0,
-        "S4_collision_ccd": 0,
-        "S5_numerical_robustness": 0,
-    }
-
-    for issue in issues:
-        sub = issue.get("subskill", "")
-        if sub in penalties_by_subskill:
-            penalties_by_subskill[sub] += int(issue.get("penalty", 0))
-        p_sub = issue.get("physics_subdimension")
-        if p_sub in subdim_penalties:
-            subdim_penalties[p_sub] += int(issue.get("subdimension_penalty", 0))
-
-    s1 = max(0.0, 100.0 - penalties_by_subskill["static-sanitization-auditor"])
-    s2 = max(0.0, 100.0 - penalties_by_subskill["architecture-hardcoded-auditor"])
-    s3_direct = max(0.0, 100.0 - penalties_by_subskill["physics-3d-math-auditor"])
-
-    subdim_scores = {k: max(0.0, 100.0 - v) for k, v in subdim_penalties.items()}
-    subdim_weights = {
-        "S1_temporal_integration": 0.25,
-        "S2_vector_algebra_rotations": 0.25,
-        "S3_conservation_stability": 0.20,
-        "S4_collision_ccd": 0.15,
-        "S5_numerical_robustness": 0.15,
-    }
-    s3_subdim_weighted = sum(subdim_scores[k] * subdim_weights[k] for k in subdim_weights)
-
-    return {
-        "s1_static_sanitization": round(s1, 2),
-        "s2_architecture_hardcoded": round(s2, 2),
-        "s3_physics_3d_math": round(s3_direct, 2),
-        "s3_subdimensions_weighted": round(s3_subdim_weighted, 2),
-        "physics_3d_subdimensions": {
-            "S1_integracao_temporal_dt": {"score": subdim_scores["S1_temporal_integration"], "weight": 0.25},
-            "S2_algebra_vetorial_rotacoes": {"score": subdim_scores["S2_vector_algebra_rotations"], "weight": 0.25},
-            "S3_conservacao_estabilidade": {"score": subdim_scores["S3_conservation_stability"], "weight": 0.20},
-            "S4_colisao_ccd": {"score": subdim_scores["S4_collision_ccd"], "weight": 0.15},
-            "S5_robustez_numerica_float": {"score": subdim_scores["S5_numerical_robustness"], "weight": 0.15},
-        },
-    }
 
 
 def analyze_code(code_str: str, filename: str = "script.py") -> Dict[str, Any]:
@@ -775,6 +572,14 @@ def main() -> None:
     result = analyze_code(code_str, filename=str(filepath))
     print(json.dumps(result, indent=2, ensure_ascii=False))
 
+
+__all__ = [
+    "LocalIdentifierNormalizer",
+    "PhysicsCodeASTVisitor",
+    "analyze_code",
+    "compute_module_scores",
+    "main",
+]
 
 if __name__ == "__main__":
     main()

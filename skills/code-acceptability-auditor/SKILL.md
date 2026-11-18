@@ -2,28 +2,27 @@
 name: code-acceptability-auditor
 description: "Audit Python modules statically via AST against eval/exec, shell=True, hardcoded secrets, missing type hints, silenced exceptions, stubs, and functions >60 lines. Use to compute the Quality Score (>=75) before commits. Do NOT use for theoretical Q&A, test suites (test-quality-auditor), or 3D physics (code-quality-audit-3d-physics)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
+allowed-tools: read_file run_command
 metadata:
-  version: "1.1.0"
-  updated_at: "2026-11-16"
+  version: "1.1.1"
+  updated_at: "2026-11-18"
   author: "Franklin"
   category: "Python AST Code Quality & Security Gatekeeping"
-  tags: ["code-acceptability-auditor", "ast", "python", "python-audit", "auditar", "estaticamente", "arquivos", "eval", "exec", "shell", "type", "hints", "type-hints", "funcoes", "longas", "linhas", "qualidade", "acceptability", "security", "pre-commit", "quality-gate", "cyclomatic-complexity"]
+  tags: "code-acceptability-auditor, ast, python, python-audit, auditar, estaticamente, arquivos, eval, exec, shell, type, hints, type-hints, funcoes, longas, linhas, qualidade, acceptability, security, pre-commit, quality-gate, cyclomatic-complexity"
 ---
 
-# `code-acceptability-auditor` (`v1.1.0`) — Python AST Quality Gate
+# `code-acceptability-auditor` (`v1.1.1`) — Python AST Quality Gate
 
 ## 1. Overview & Scope
 
-Performs static Python **AST** (*Abstract Syntax Tree*) auditing as **Gate 1** of the quality pipeline without executing untrusted code:
-- Validates Python files/directories prior to `git commit` or PR against `eval`/`exec`, `shell=True`, hardcoded secrets, missing type hints, functions `> 60` lines, nesting `> 3`, and McCabe $M > 10$.
-- Computes the **Quality Score** (`0.0–100.0`) requiring `APPROVED` status (`score >= 75.0`, `critical_count == 0`, `passed_syntax == True`).
+Performs static Python **AST** auditing as **Gate 1** of the quality pipeline without executing untrusted code:
+- Validates Python files/directories prior to `git commit` against `eval`/`exec`, `shell=True`, hardcoded secrets, missing type hints, functions `> 60` lines, nesting `> 3`, and McCabe $M > 10$, computing the **Quality Score** (`0.0–100.0`, requiring `score >= 75.0`, `critical_count == 0`, and `passed_syntax == True`).
 - **When NOT to Use:** Do NOT use for theoretical Python Q&A, greenfield scaffolding, test-suite AAA grading (`test-quality-auditor`), runtime RCA (`gap-analyzer-auditor`), or 3D/WebGL physics (`code-quality-audit-3d-physics`).
 
 ## 2. Inputs & Prerequisites
 
 - **`--file` / `--dir` (required):** Target Python file or directory root under audit.
-- **`min_quality_score` (`75.0` default) & `max_critical_violations` (`0`).**
-- **Runtime:** Python `3.12+` with `pydantic>=2.0`.
+- **`min_quality_score` (`75.0` default) & `max_critical_violations` (`0`)** on Python `3.12+` with `pydantic>=2.0`.
 
 ## 3. Step-by-Step Procedure
 
@@ -36,14 +35,13 @@ uv run python skills/code-acceptability-auditor/scripts/code_acceptability_audit
 ```
 2. **Wave 2 (`Score`):** Compute the deterministic score:
 $$\text{Quality Score} = \max\left(0.0, 100.0 - \sum \text{Penalties}\right)$$
-3. **Wave 3 (`RAW Gate`):** Enforce the pre-commit gate: reject any artifact where `not passed_syntax`, `critical_count > 0`, or `quality_score < 75.0`, and re-run the scanner (`Read-After-Write`) after refactoring violations.
+3. **Wave 3 (`RAW Gate`):** Enforce pre-commit checks: reject any artifact where `not passed_syntax`, `critical_count > 0`, or `quality_score < 75.0`, re-run the scanner (`Read-After-Write`) after refactoring, and run [`scripts/test_code_acceptability_auditor.py`](scripts/test_code_acceptability_auditor.py) when modifying rules.
 
 ## 4. Gotchas & Edge Cases
 
-- Bare `except:` (`ERR001`, `-10`) differs from `except Exception:` (`except BaseException:`, `ERR002`, `-5`); both escalate to `ERR003` (`-25`) when the handler body contains only `pass`, `...`, or `continue`.
-- `SEC003` exempts `os.getenv`/`os.environ.get` and documentation placeholders (`YOUR_API_KEY`); `self`/`cls` are exempt in `TYP001`, and `__init__` is exempt in `TYP002`.
-- Enforce Google Python Style Guide (`pyguide.md`, `[tool.ruff.lint.pydocstyle] convention = "google"`) for docstrings (`Args:`, `Returns:`, `Raises:`).
-- Keep [`references/trigger_matrix_queries.json`](references/trigger_matrix_queries.json), [`references/trigger_eval_report_baseline.json`](references/trigger_eval_report_baseline.json), and CI workflow [`assets/.github/workflows/ci.yml`](assets/.github/workflows/ci.yml) intact for `trigger_eval_runner.py` and GitHub Actions gates.
+- Bare `except:` (`ERR001`, `-10`) differs from `except Exception:` (`ERR002`, `-5`); both escalate to `ERR003` (`-25`) when the handler contains only `pass`, `...`, or `continue`.
+- `SEC003` exempts `os.getenv`/`os.environ.get` and doc placeholders (`YOUR_API_KEY`); `TYP001` exempts `self`/`cls`, `TYP002` exempts `__init__`. Enforce Google Python Style Guide (`pyguide.md`, `[tool.ruff.lint.pydocstyle] convention = "google"`).
+- Keep [`references/trigger_matrix_queries.json`](references/trigger_matrix_queries.json), [`references/trigger_eval_report_baseline.json`](references/trigger_eval_report_baseline.json), and [`assets/.github/workflows/ci.yml`](assets/.github/workflows/ci.yml) intact for `trigger_eval_runner.py` and CI gates.
 
 ## 5. Output Schema & Validation Criteria
 

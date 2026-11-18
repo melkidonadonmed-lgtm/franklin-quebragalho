@@ -2,15 +2,16 @@
 name: agent-server-auditor
 description: "Audit agentic architectures, MCP 2026-07-28 STDIO stdout hygiene, A2A v1.0 JWS agent-cards, binary hygiene, max_steps loop guards, and persist memories/audit_report.json. Use for auditing agents, MCP/A2A servers, and WebSockets/JSON-RPC. Do NOT use for UI (ui-quality-judge), test suites (test-quality-auditor), or single-file Python AST (code-acceptability-auditor)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, TypeScript 5+, Go 1.24+"
+allowed-tools: read_file run_command
 metadata:
-  version: "1.2.0"
-  updated_at: "2026-11-16"
+  version: "1.2.1"
+  updated_at: "2026-11-18"
   author: "Franklin"
   category: "Agent Architecture, MCP/A2A Protocol & Static Auditing"
-  tags: ["agent-server-auditor", "auditar", "sistemas", "agenticos", "servidores", "agente", "skills", "mcp", "mcp-2026-07-28", "stdio", "stdout", "stdio-hygiene", "a2a", "a2a-protocol", "agent-card", "agent-card-jws", "jws", "binarios", "max_steps", "max-steps", "least-privilege", "audit_report", "audit-report"]
+  tags: "agent-server-auditor, auditar, sistemas, agenticos, servidores, agente, skills, mcp, mcp-2026-07-28, stdio, stdout, stdio-hygiene, a2a, a2a-protocol, agent-card, agent-card-jws, jws, binarios, max_steps, max-steps, least-privilege, audit_report, audit-report"
 ---
 
-# `agent-server-auditor` (`v1.2.0`) — Agent, MCP, WS/JSON-RPC & A2A Auditor
+# `agent-server-auditor` (`v1.2.1`) — Agent, MCP, WS/JSON-RPC & A2A Auditor
 
 ## 1. Overview & Scope
 
@@ -27,9 +28,9 @@ Runs deterministic static and contractual audits across **Python, TypeScript, an
 
 Consult [`references/agentic_project_structure.md`](references/agentic_project_structure.md) and [`references/protocol_matrix.md`](references/protocol_matrix.md):
 1. **D1 — Binaries (`AUD-BIN-01`):** Check `.gitignore`, clean `.env.example`, and isolate binaries in `bin/`/`dist/`/`build/`.
-2. **D2 — Agents & Skills (`AUD-AGT-01` / `AUD-SKL-01`, CoT):** Verify valid syntax, zero placebos, active SDKs (`google-genai>=3.3.0`, `@google/genai>=3.3.0`, `google.golang.org/genai>=1.77.0`, `api_version='v1beta'` for `decisions`/`interactions`), Gemini 4 (`hydrogen` w/ `xhigh`, `argon`, `carbon`, `max_output_tokens` on `generateContent`/`interactions.create`), block retired `gemini-2.5-flash`/`2.5-pro`/`3.1-flash-live-preview`/`antigravity-preview-05-2026`, enforce `max_steps`, Least Privilege (`commandExecutionPolicy: sandbox | "off"`, no `tools: ["*"]`/`call_mcp_tool`), and L3 disclosure (`L2 <= 1,000` tokens).
+2. **D2 — Agents & Skills (`AUD-AGT-01` / `AUD-SKL-01`, CoT):** Verify valid syntax, zero placebos, active SDKs (`google-genai>=3.3.0`, `@google/genai>=3.3.0`, `google.golang.org/genai>=1.77.0`, `api_version='v1beta'` for `decisions`/`interactions`), Gemini 4 (`hydrogen` w/ `xhigh`, `argon`, `carbon`, `max_output_tokens` on `generateContent`/`interactions.create`), zero retired 2.5/3.1 or May-2026 preview model IDs — enforce active Gemini 4, 3.8, and Decisions API per [`scripts/protocol_policy_checks.py`](scripts/protocol_policy_checks.py), enforce `max_steps`, Least Privilege (`commandExecutionPolicy: sandbox | "off"`, no `tools: ["*"]`/`call_mcp_tool`), and L3 disclosure (`L2 <= 1,000` tokens).
 3. **D3 — MCP & A2A (`AUD-MCP-01` / `AUD-A2A-01`):** Verify MCP SDK, clean STDIO `stdout`, strict schemas (`extra="forbid"` / `.strict()`), unique `skills[].id`, and JWS signatures.
-4. **D4 — ReAct Execution & RAW Verification (`AUD-CNT-01` / `AUD-MEM-01`):** Run the scanner and verify `memories/audit_report.json` on disk:
+4. **D4 — `ReAct` Execution & `Read-After-Write` Verification (`AUD-CNT-01` / `AUD-MEM-01`):** Run the scanner and verify `memories/audit_report.json` on disk:
 ```powershell
 uv run python skills/agent-server-auditor/scripts/agent_server_auditor.py --root . --persist --json
 uv run python skills/agent-server-auditor/scripts/agent_server_auditor.py --self-test
@@ -37,7 +38,7 @@ uv run python skills/agent-server-auditor/scripts/agent_server_auditor.py --self
 
 ## 4. Gotchas & Edge Cases
 
-- `agent_server_auditor.py` is static; live WebSocket latency ($RTT_{\text{avg}} < 150\text{ ms}$) requires a live endpoint.
+- `agent_server_auditor.py` is read-only static analysis (Zero-Trust & HITL guardrails forbid mutating audited servers; live WebSocket $RTT_{\text{avg}} < 150\text{ ms}$ needs a running endpoint).
 - STDIO `stdout` pollution (`AUD-MCP-01`), loose binaries (`AUD-BIN-01`), or missing `max_steps` (`AUD-AGT-01`) yields `REJECTED`.
 
 ## 5. Output Schema & Validation Criteria
