@@ -745,6 +745,15 @@ def test_validate_skills_strict_enforces_scalar_metadata_and_token_budget(tmp_pa
     ok_dir = _write_skill("valid-scalar-skill", '  tags: "alpha, beta, gamma"\n')
     assert vs.validate_skill_dir(ok_dir, strict_mode=True) == []
 
+    adk_ok_dir = _write_skill("valid-adk-tools-skill", '  tags: "weather, adk"\n  adk_additional_tools:\n    - get_weather\n')
+    assert vs.validate_skill_dir(adk_ok_dir, strict_mode=True) == []
+
+    adk_bad_str = _write_skill("bad-adk-str-skill", '  tags: "weather"\n  adk_additional_tools: "get_weather"\n')
+    assert any("metadata.adk_additional_tools" in err for err in vs.validate_skill_dir(adk_bad_str, strict_mode=True))
+
+    adk_bad_int = _write_skill("bad-adk-int-skill", '  tags: "weather"\n  adk_additional_tools:\n    - 123\n')
+    assert any("metadata.adk_additional_tools" in err for err in vs.validate_skill_dir(adk_bad_int, strict_mode=True))
+
     list_dir = _write_skill("list-meta-skill", '  tags: ["alpha", "beta"]\n')
     list_errs = vs.validate_skill_dir(list_dir, strict_mode=True)
     assert any("metadata.tags" in err and "escalar plano" in err for err in list_errs), list_errs

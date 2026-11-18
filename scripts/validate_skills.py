@@ -129,6 +129,21 @@ def _extract_raw_top_level_keys(content: str) -> Tuple[Set[str], bool]:
     return top_keys, has_meta
 
 
+def _validate_strict_metadata_values(raw_metadata: Dict[str, Any] | None, errors: List[str]) -> None:
+    """Garante valores escalares em metadata (Go skill.Parse), permitindo apenas lista de strings em adk_additional_tools."""
+    if not raw_metadata:
+        return
+    for meta_key, meta_val in raw_metadata.items():
+        if meta_key == "adk_additional_tools":
+            if not (isinstance(meta_val, list) and len(meta_val) > 0 and all(isinstance(i, str) and i.strip() for i in meta_val)):
+                errors.append("[FAIL] metadata.adk_additional_tools em --strict deve ser lista não vazia de strings (ex.: ['get_weather'])")
+            continue
+        if isinstance(meta_val, (list, dict)):
+            errors.append(
+                f"[FAIL] metadata.{meta_key} em --strict deve ser escalar plano (map[string]string compatível com ADK Go v2 skill.Parse)"
+            )
+
+
 def _check_top_keys_and_semver(
     meta: Dict[str, Any],
     errors: List[str],
@@ -147,12 +162,8 @@ def _check_top_keys_and_semver(
         return
     if not external_mode and not has_metadata_dict:
         errors.append("[FAIL] Modo --strict exige bloco 'metadata:' para version/updated_at")
-    if not external_mode and raw_metadata:
-        for meta_key, meta_val in raw_metadata.items():
-            if isinstance(meta_val, (list, dict)):
-                errors.append(
-                    f"[FAIL] metadata.{meta_key} em --strict deve ser escalar plano (map[string]string compatível com ADK Go v2 skill.Parse)"
-                )
+    if not external_mode:
+        _validate_strict_metadata_values(raw_metadata, errors)
     ver_val = str(meta.get("version", "")).strip()
     if ver_val and not SEMVER_RE.match(ver_val):
         errors.append(f"[FAIL] metadata.version inválido em --strict (exige SemVer X.Y.Z): '{ver_val}'")
