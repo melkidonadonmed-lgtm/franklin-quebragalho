@@ -30,11 +30,11 @@ Cognitive planner for 4-quadrant intent triage, **Complexity Wall Shielding** (`
 
 ## 3. Step-by-Step Procedure
 
-Consult [`planner_frameworks_and_quadrants.md`](references/planner_frameworks_and_quadrants.md) and [`go_no_go_decision_matrix.md`](references/go_no_go_decision_matrix.md):
+Consult [`planner_frameworks_and_quadrants.md`](references/planner_frameworks_and_quadrants.md), [`plan_mode_checklist_and_tool_allowlist.md`](references/plan_mode_checklist_and_tool_allowlist.md), and [`go_no_go_decision_matrix.md`](references/go_no_go_decision_matrix.md):
 
-1. **Intent Triage:** Classify as `direta`, `estruturada`, `ambigua` (resolve `[GAP]`s first), or `mutacao_critica_hitl` (`requer_hitl: true`).
+1. **Intent Triage & Plan Mode Allowlist:** Classify as `direta` (bypass), `estruturada`, `ambigua`, or `mutacao_critica_hitl`; lock the request-matched read-only tool allowlist (`Idea`, `Visual`, `Code`, or `HITL`).
 2. **Framework Synthesis:** Pair structural (`CLAREZA`, `CREATE`, `RTF`, `TAG`, `TASS`) + cognitive (`CoT`, `ReAct`, `ToT`, `Self-Refine`).
-3. **Complexity Wall & Phase 0:** Cap `regras_ativas_count <= 5` (split overloaded nodes), anchor on `step_00_fase_zero` + `ramo_fallback`, keep `[P]` files disjoint, and apply `/speckit-converge` append-only.
+3. **Complexity Wall, Phase 0 & Minimum Checklist:** Cap `regras_ativas_count <= 5` (split overloaded nodes), anchor on `step_00_fase_zero` + `ramo_fallback`, keep `[P]` files disjoint, verify the **6-item Pre-Execution Checklist** (Read-Only Lock, Scope & Non-Goals, Verified Disk Targets, Tool Allowlist, `<= 5` Rules, Acceptance + HITL), and apply `/speckit-converge` append-only.
 4. **CLI Verification:** Validate deterministically against [`rules/audit_criteria.md`](rules/audit_criteria.md):
 
 ```powershell
