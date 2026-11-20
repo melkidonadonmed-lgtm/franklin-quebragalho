@@ -34,4 +34,4 @@
 
 ## 4. Active Backlog
 - [ ] Run periodic `scripts/sync_official_docs_specs.py` checks when Google publishes new Gemini / ADK releases.
-- [ ] Clean legacy `3+1` / `WCAG 2.1` references in `epic-volta` and compact `PCM/.context/context.md` (`38 KB`) in a dedicated follow-up session.
+- [x] Clean legacy `3+1` / `WCAG 2.1` references in `epic-volta` (`92cbe05`) and compact `PCM/.context/context.md` (`082abad9`, `38 KB -> 4.9 KB`).
