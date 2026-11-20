@@ -32,15 +32,20 @@ When obsolete, verbose, or contradictory notes remain active inside high-priorit
 
 ## 3. Temporal Invalidation & Conflict Resolution
 
-- **Mandatory Metadata**: Every note under `Memória/` and `Projetos/` must include YAML frontmatter with `title`, `date: YYYY-MM-DD`, `status: ativo | arquivado | desatualizado`, and `tags`.
-- **Soft Delete Invalidation**:
+- **Mandatory Metadata & 4-Tier SOTA Ranking**: Every note under `Memória/` and `Projetos/` must include YAML frontmatter with `title`, `date: YYYY-MM-DD`, `status: ativo | arquivado | desatualizado`, and `tags`; architectural, idea, example, and triaged notes also carry `veredito: recomendado | casos-especificos | nao-recomendado | contraindicacao-total`, `funcao:`, and `#sota/<tier>`.
+- **Dual-Engine Invalidation (`vault_palace_search.py` v2.2 + Upstream MemPalace)**:
   - Superseded notes receive `type: historico` or `type: arquivo` and `status: desatualizado` or `status: arquivado`.
-  - The JIT search engine (`scripts/vault_palace_search.py`) automatically demotes notes with `type in ("historico", "arquivo")` or `status in ("desatualizado", "obsoleto", "arquivado")` to the `"arquivo"` room (`0.55x`–`0.60x` multiplier instead of `1.35x`–`1.40x`).
+  - `scripts/vault_palace_search.py` (`INDEX_SCHEMA_VERSION = "2.2"`) applies `VEREDITO_PRIORITY` (`recomendado 1.10x`, `casos-especificos 1.00x`, `nao-recomendado 0.75x -> arquivo`, `contraindicacao-total 0.50x -> arquivo`) alongside `type`/`status` demotion (`0.55x`–`0.60x`).
+  - Because upstream MemPalace `miner.py` `detect_room()` ignores YAML and classifies solely by folder path, `contraindicacao-total` notes MUST be physically isolated in `Arquivo/Contraindicados/` to keep `mempalace_search(room="projetos")` clean.
+- **Closet-First Authoring (`MemPalace v3.12.0`)**:
+  - Keep `H1`–`H3` headings within `5..60` characters inside the first `5,000` chars (`CLOSET_EXTRACT_WINDOW`) and place one `"15..150"`-char double-quoted verdict near the top so Closet extraction reaches up to `+0.40` `closet_boost`.
 - **SQLite Graph Hygiene (`scripts/vault_kg_hydrator.py`)**:
   - Ignore `[[Wikilinks]]` inside code blocks/inline code and generic placeholders (`wikilinks`, `nome da nota`, `projeto`).
-  - Purge stale triples (`DELETE FROM triples; DELETE FROM entities;`) before rehydrating the 4 `knowledge_graph.sqlite3` mirrors.
-- **Lock-Safe Windows Synchronization**:
-  - When `mempalace-mcp.exe` is active in the session, use MCP tools `mempalace_mine(source="C:\\Users\\melki\\dev\\notes", wing="notes")`, `mempalace_sync(apply=true, project_dir="C:\\Users\\melki\\dev\\notes", wing="notes")`, and `mempalace_delete_drawer` rather than spawning a competing CLI `mempalace mine` subprocess.
+  - Invoke `vault_kg_hydrator.py` without `--vault` (only `[--self-test]` is accepted). It hydrates the unified `~/.config/mempalace/palace/knowledge_graph.sqlite3` via scoped replacement (`WHERE adapter_name = 'vault_kg_hydrator_v1'`), preserving MCP-authored temporal facts (`adapter_name IS NULL`).
+  - Record architectural replacements/retirements atomically with MCP `mempalace_kg_supersede` and `mempalace_kg_invalidate` so point-in-time queries reflect historical boundaries (`expired_facts > 0`).
+- **Lock-Safe Windows Synchronization & `exclude_patterns` Purge Trap**:
+  - When `mempalace-mcp.exe` is active in the session, use MCP tools `mempalace_mine(source="C:\\Users\\melki\\dev\\notes", wing="notes")`, `mempalace_sync(apply=true, project_dir="C:\\Users\\melki\\dev\\notes", wing="notes")`, and `mempalace_delete_drawers` rather than spawning a competing CLI `mempalace mine` subprocess.
+  - **Gotcha (`exclude_patterns`):** `mempalace_sync` only prunes deleted or `.gitignore`d files—it does NOT remove pre-existing drawers matching newly added `mempalace.yaml` `exclude_patterns`. Moreover, `mempalace_list_drawers` previews basename-only `source_file` (causing `mempalace_delete_by_source("<basename>")` to delete `0` rows). Always list `room="general"` with `mempalace_list_drawers(wing="notes", room="general", limit=100)`, delete leaked IDs in bulk with `mempalace_delete_drawers(drawer_ids=[...])`, and confirm `generic_drawers: 0` via `mempalace audit --json`.
 
 ---
 

@@ -1,12 +1,12 @@
 ---
 name: obsidian-vault-curator
-description: "Audit and curate the Obsidian vault (C:\\Users\\melki\\dev\\notes) for broken Wikilinks, YAML frontmatter repair, orphaned attachments, repo parity, and MemPalace batch indexing (wing notes). Use for bulk vault hygiene; do NOT use for single-note CRUD (obsidian-vault), authoring docs from scratch (technical-markdown-writer), or Windows/Drive cleanup (windows-disk-maintenance, gdrive-cleanup-auditor)."
+description: "Audit and curate the Obsidian vault (C:\\Users\\melki\\dev\\notes) for broken Wikilinks, YAML/SOTA veredito repair, orphaned attachments, repo parity, and MemPalace sync (wing notes). Use for bulk vault hygiene; do NOT use for single-note CRUD (obsidian-vault), writing docs (technical-markdown-writer), or disk/Drive cleanup."
 compatibility: "Windows 11, Python 3.12+, pwsh 7+, MemPalace MCP"
 allowed-tools: read_file write_file edit_file run_command
 metadata:
   author: "Franklin"
-  version: "1.3.0"
-  updated_at: "2026-11-16"
+  version: "1.4.0"
+  updated_at: "2026-11-20"
   category: "Knowledge Management & Obsidian PKM"
   tags: "obsidian, vault, cofre, wikilinks, frontmatter, yaml, mempalace, curadoria, higienizar, anexos-orfaos, notes, bidirecionais, hybrid-search"
 ---
@@ -30,7 +30,7 @@ Audit bulk structural hygiene of `C:\Users\melki\dev\notes\`: broken `[[Wikilink
 
 1. **Hygiene Scan & Parity**: Set `$env:PYTHONUTF8 = "1"`, run [`scripts/vault_hygiene_scanner.py`](scripts/vault_hygiene_scanner.py) (`--json`), and execute `pwsh "C:\Users\melki\dev\tools\check-vault-projects.ps1"`. Use [`scripts/text_sanitizer_and_chunker.py`](scripts/text_sanitizer_and_chunker.py) for chunking.
 2. **Frontmatter, Links & Orphans**: Require `title`, `date: YYYY-MM-DD`, and `tags` (plus `type`, `status`, `repo`, `github`, `stack` in `Projetos/Ativos/`). Prove zero `![[...]]` / `![](...)` links before proposing dry-run quarantine to `Arquivo/_anexos_orfaos/`. Apply temporal invalidation (`< 25 KB` split) per [`references/memory_governance_protocol_2026.md`](references/memory_governance_protocol_2026.md).
-3. **Reindex & MemPalace Sync**: Rebuild index via [`scripts/vault_palace_search.py`](scripts/vault_palace_search.py) (`--rebuild-index`) and hydrate SQLite via [`scripts/vault_kg_hydrator.py`](scripts/vault_kg_hydrator.py). Call MCP `mempalace_sync` / `mempalace_mine` (`wing="notes"`) instead of a concurrent CLI subprocess.
+3. **Reindex, Room Purge & Temporal KG**: Rebuild index via [`scripts/vault_palace_search.py`](scripts/vault_palace_search.py) (`--rebuild-index`), hydrate SQLite via [`scripts/vault_kg_hydrator.py`](scripts/vault_kg_hydrator.py) (takes only `[--self-test]`, no `--vault` flag), and sync via MCP `mempalace_mine` + `mempalace_sync` (`wing="notes"`). After adding `mempalace.yaml` `exclude_patterns`, purge pre-existing leaked `room="general"` drawers with `mempalace_list_drawers` + `mempalace_delete_drawers`, record architectural deprecations via `mempalace_kg_supersede` / `mempalace_kg_invalidate`, and verify `generic_drawers: 0` via `mempalace audit --json`.
 4. **ReAct Verification (`Read-After-Write`)**: Re-run `vault_hygiene_scanner.py --json` and `check-vault-projects.ps1` after edits to prove zero YAML regressions or broken `[[Wikilinks]]`.
 
 ## 4. Gotchas & Edge Cases

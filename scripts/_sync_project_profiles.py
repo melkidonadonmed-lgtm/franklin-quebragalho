@@ -169,7 +169,7 @@ def build_project_customization_profiles(
             "user_skills": [*mcp_u, "google-agents-cli-adk-code", "google-agents-cli-deploy", "google-agents-cli-eval", "google-agents-cli-observability", "google-agents-cli-workflow"],
             "plugin_skills": [("data-agent-kit-plugin", ["bigquery-ai-ml", "bigquery-observability", "building-data-apps", "enforcing-resource-attribution"])],
             "local_skills": [("skills", ["weather-skill"])],
-            "subagents": (*ui_subagents, *gov_subagents),
+            "subagents": (*gov_subagents,),
         },
         "adk-ts-agent": {
             "franklin_skills": mcp_f,

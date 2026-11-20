@@ -117,6 +117,15 @@ def run_skill_script_impl(
         return f"Erro ao executar script: {e}"
 
 
+_DAG_PLAN_METADATA_KEYS: Tuple[str, ...] = ("version", "routing_modes", "max_discovery_hops")
+
+
+def _strip_known_plan_metadata(plan_dict: Dict[str, Any]) -> Tuple[Dict[str, Any], bool]:
+    """Remove metadados de versão/roteamento de plano (v1.6+) mantendo extra='forbid' para chaves desconhecidas."""
+    cleaned = {k: v for k, v in plan_dict.items() if k not in _DAG_PLAN_METADATA_KEYS}
+    return cleaned, len(cleaned) != len(plan_dict)
+
+
 def _apply_target_dir_to_task(t_item: Any, clean_target: str) -> None:
     """Injeta target_dir no payload e input_data de um item de task do DAG."""
     if not isinstance(t_item, dict):
@@ -130,15 +139,16 @@ def _apply_target_dir_to_task(t_item: Any, clean_target: str) -> None:
 
 
 def _inject_target_dir_into_plan(plan_dict: Dict[str, Any], target_dir: str) -> Tuple[Path, Path]:
-    """Injeta target_dir nos payloads das tasks do DAG e persiste em arquivo temporário."""
+    """Normaliza metadados conhecidos, injeta target_dir e persiste em arquivo temporário."""
+    normalized, _ = _strip_known_plan_metadata(plan_dict)
     clean_target = target_dir.strip()
-    if clean_target and isinstance(plan_dict.get("tasks"), list):
-        for t_item in plan_dict["tasks"]:
+    if clean_target and isinstance(normalized.get("tasks"), list):
+        for t_item in normalized["tasks"]:
             _apply_target_dir_to_task(t_item, clean_target)
     temp_dir = ROOT_DIR / ".sessions" / "temp_plans"
     temp_dir.mkdir(parents=True, exist_ok=True)
     temp_file = temp_dir / f"plan_{uuid.uuid4().hex[:8]}.json"
-    temp_file.write_text(json.dumps(plan_dict, indent=2, ensure_ascii=False), encoding="utf-8")
+    temp_file.write_text(json.dumps(normalized, indent=2, ensure_ascii=False), encoding="utf-8")
     return temp_file.resolve(), temp_file
 
 
@@ -152,7 +162,6 @@ def _resolve_dag_plan_file(plan_str: str, target_dir: str = "") -> Tuple[Optiona
         "ui_actor_critic": ui_dag_path,
         "ui_actor_critic_dag": ui_dag_path,
         "ui_actor_critic_dag.json": ui_dag_path,
-        "3+1": ui_dag_path,
         "ui_composition": ui_dag_path,
         "ui_composition_dag": ui_dag_path,
         "ui_composition_dag.json": ui_dag_path,
@@ -185,8 +194,9 @@ def _resolve_dag_plan_file(plan_str: str, target_dir: str = "") -> Tuple[Optiona
                 break
 
     if matched_file is not None:
-        if target_dir.strip():
-            parsed_file = json.loads(matched_file.read_text(encoding="utf-8"))
+        parsed_file = json.loads(matched_file.read_text(encoding="utf-8"))
+        _, had_meta = _strip_known_plan_metadata(parsed_file) if isinstance(parsed_file, dict) else ({}, False)
+        if target_dir.strip() or had_meta:
             resolved, tmp = _inject_target_dir_into_plan(parsed_file, target_dir)
             return resolved, tmp, None
         return matched_file, None, None

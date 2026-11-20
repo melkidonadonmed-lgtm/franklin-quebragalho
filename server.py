@@ -2,8 +2,8 @@
 
 Registra de forma concisa as 13 ferramentas (`@mcp.tool`), os recursos passivos (`@mcp.resource`)
 e os 2 prompts (`@mcp.prompt`), delegando toda a lógica de domínio aos módulos em `shared/`:
-- `shared.catalog_service`: Discovery, search, 3-Tier loading, and validation of the 21 Canonical Agent Skills (+ 6 Federated UI Skills).
-- `shared.compass_topology`: Bússola Zero-LLM (`franklin_smart_compass`), 8 Personas, 5 Local Subagents, and 4 Federated UI Subagents.
+- `shared.catalog_service`: Discovery, search, 3-Tier loading, and validation of the 21 Canonical Agent Skills (+ 7 Federated UI Skills).
+- `shared.compass_topology`: Bússola Zero-LLM (`franklin_smart_compass`), 6 Functional Domains, 5 Local Subagents, and 4 Federated UI Subagents.
 - `shared.execution_orchestrator`: Execução confinada de scripts, motor DAG Kahn, Harness HITL e A2A v1.0.
 """
 
@@ -37,7 +37,6 @@ from shared.catalog_service import (
     AGENTS_MD_PATH,
     CANONICAL_PERSONA_MAPPING,
     EPIC_VOLTA_DIR,
-    MY_SKILLS_MD_PATH,
     QUICK_SKILL_ALIASES,
     SKILLS_ROOT,
     _find_skill_dir,
@@ -332,8 +331,8 @@ def get_catalog_xml_resource() -> str:
 
 @mcp.resource("skills://manifest")
 def get_manifest_resource() -> str:
-    """Complete skills lifecycle manifest (`MY_SKILLS.md`)."""
-    return MY_SKILLS_MD_PATH.read_text(encoding="utf-8", errors="replace") if MY_SKILLS_MD_PATH.exists() else "MY_SKILLS.md not found."
+    """Dynamic skills lifecycle manifest rendered directly from disk (`skills/*/SKILL.md`)."""
+    return skills_list_impl(format="markdown")
 
 
 @mcp.resource("skills://agents")
@@ -370,13 +369,13 @@ def activate_skill_prompt(skill_name: str, user_intent: str) -> str:
 
 @mcp.prompt("tactile_frontend_audit")
 def tactile_frontend_audit_prompt(component_or_url: str) -> str:
-    """Concise UI-Architect frontend audit prompt bound to the 9-axis SSOT (`rules/frontend-9-axes-guidelines.md`)."""
+    """Concise UI Judge frontend audit prompt bound to the 9-axis SSOT (`../shredded-shape/rules/frontend-9-axes-guidelines.md`)."""
     return (
-        f"Act as UI-Architect and audit `{component_or_url}` against `DESIGN.md` and the 9-Axis SSOT:\n"
-        "1. 60-30-10 rule in `OKLCH` + `light-dark()` and 3-layer tokens (`--bg-canvas`, `--surface-card`, `--surface-elevated`, `--surface-sunken`).\n"
-        "2. 3-level multi-layer shadows (`--shadow-elevation-1..3` + `--shadow-inset`: Contact Umbra + Penumbra + Zenith Catch-Light `inset 0 1px 0 0`).\n"
-        "3. 3-layer navigation, `@container`, 4 Card variants, `tabular-nums`/`font-synthesis: none`, and Real-State Engineering.\n"
-        "Run `audit_tactile_ui.py`, `ui_ux_frontend_auditor.py`, and `deterministic_scorer.py` (`system-project-auditor`).\n"
+        f"Act as `ui-judge` (`shredded-shape`) and audit `{component_or_url}` against `DESIGN.md` and the 9-Axis SSOT:\n"
+        "1. 60-30-10 rule in `OKLCH` + `light-dark()` (`C <= 0.20` target, hard cap `0.22`, red `<= 0.24`) and 5-plane tokens (`--bg-well..--bg-key`).\n"
+        "2. Polarity-aware depth (Light 3-layer shadows + Dark `--light-zenith` + top specular rim, zero neon glows).\n"
+        "3. Single-DOM adaptive nav, `@container`, `44/48px` targets (`<40px` blocker), WCAG 2.2 OKLab contrast, and Real-State FSM.\n"
+        "Run `ui_judge_gatekeeper.py --composite --json` (`shredded-shape`) and `deterministic_scorer.py` (`system-project-auditor`).\n"
     )
 
 
@@ -387,7 +386,6 @@ __all__ = [
     "COMPASS_PROFILE_RULES",
     "CheckpointStore",
     "EPIC_VOLTA_DIR",
-    "MY_SKILLS_MD_PATH",
     "PERSONA_ALIASES",
     "ProgressiveSkillRegistry",
     "QUICK_SKILL_ALIASES",

@@ -51,13 +51,12 @@ else:
     SKILLS_ROOT = CANONICAL_SKILLS_DIR
 
 AGENTS_MD_PATH = ROOT_DIR / "AGENTS.md"
-MY_SKILLS_MD_PATH = ROOT_DIR / "MY_SKILLS.md"
 EPIC_VOLTA_DIR = ROOT_DIR.parent / "epic-volta"
 if not EPIC_VOLTA_DIR.exists():
     EPIC_VOLTA_DIR = Path(r"C:\Users\melki\dev\repos\epic-volta")
 
 def _parse_agent_table_line(line: str, mapping: Dict[str, str]) -> None:
-    """Extrai persona e skills de uma linha de tabela Markdown de AGENTS.md."""
+    """Extrai domínio e skills de uma linha de tabela Markdown de AGENTS.md."""
     if "|" not in line or "`" not in line:
         return
     parts = [p.strip() for p in line.split("|")]
@@ -73,7 +72,7 @@ def _parse_agent_table_line(line: str, mapping: Dict[str, str]) -> None:
 
 
 def _load_agents_map() -> Dict[str, str]:
-    """Mapeia cada skill à sua persona especialista correspondente via AGENTS.md."""
+    """Mapeia cada skill ao seu domínio funcional correspondente via AGENTS.md."""
     mapping = dict(CANONICAL_PERSONA_MAPPING)
     if not AGENTS_MD_PATH.exists():
         return mapping
@@ -87,20 +86,8 @@ def _load_agents_map() -> Dict[str, str]:
 
 
 def _load_status_map() -> Dict[str, str]:
-    """Carrega o status do ciclo de vida das skills a partir de MY_SKILLS.md."""
-    status_map: Dict[str, str] = {}
-    if not MY_SKILLS_MD_PATH.exists():
-        return status_map
-    try:
-        content = MY_SKILLS_MD_PATH.read_text(encoding="utf-8", errors="replace")
-        for line in content.splitlines():
-            parts = [p.strip() for p in line.split("|")] if ("|" in line and "**`" in line) else []
-            skill_match = re.search(r"\*\*`([a-zA-Z0-9_\-]+)`\*\*", parts[1]) if len(parts) >= 5 else None
-            if skill_match:
-                status_map[skill_match.group(1)] = parts[3].strip()
-    except OSError as exc:
-        _ = exc
-    return status_map
+    """Status do ciclo de vida derivado diretamente dos SKILL.md (sem scrape estático de MY_SKILLS.md)."""
+    return {}
 
 
 def _list_dir_filenames(folder: Path) -> List[str]:
@@ -134,8 +121,8 @@ def _collect_skill_data(
         active_status_map = status_map if status_map is not None else _load_status_map()
         return {
             "name": name, "directory": skill_dir.name, "version": version,
-            "status": active_status_map.get(skill_dir.name, active_status_map.get(name, "✅ Validada")),
-            "persona": active_agents_map.get(skill_dir.name, active_agents_map.get(name, "Franklin-Main")),
+            "status": meta.get("status", active_status_map.get(skill_dir.name, "Production")),
+            "persona": active_agents_map.get(skill_dir.name, active_agents_map.get(name, "core-engineering")),
             "description": description, "path": str(skill_file),
             "has_rules": rules_file.exists(), "has_evals": evals_file.exists(),
             "has_references": bool(ref_list), "references": ref_list,

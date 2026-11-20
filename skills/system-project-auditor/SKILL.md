@@ -1,6 +1,6 @@
 ---
 name: system-project-auditor
-description: "Audit existing repositories (0-100 score + SGA) across real AST code health, Docs-vs-Disk parity, causal MVP blockers, and, for UI targets, 3-layer navigation (X activates Y), 60-30-10 OKLCH physics, and live agent-browser @eX DOM. Use for repository, MVP, and navigation audits. Do NOT use for coding (solution-content-architect), scaffolding (project-idea-organizer), or APKs (re-a-ndroid)."
+description: "Audit existing repositories (0-100 score + SGA) across real AST code health, Docs-vs-Disk parity, causal MVP blockers, and conditional UI navigation/OKLCH/DOM checks. Use for repo, MVP, and navigation audits. Do NOT use for coding (solution-content-architect), scaffolding (project-idea-organizer), or APKs (re-a-ndroid)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 allowed-tools: read_file run_command
 metadata:
@@ -37,7 +37,7 @@ uv run python skills/system-project-auditor/scripts/frontiercode_maintainability
 
 1. **Step 0 — Composable Stack Capability Gating:** Detect `has_ui_layer`, `has_agent_or_mcp_layer`, and `has_python_files` from scanner output. If `has_ui_layer == False`, mark UI/OKLCH/Mode 3 `@eX` as `[PASS: N/A_BACKEND_ONLY]`, reallocate those `20` UI points to AST/Contract/Parity health, and forbid any UI action items.
 2. **Governance, Parity & AST (`75 pts` headless / `65 pts` UI; ReAct + CoT):** Audit `README.md`, `AGENTS.md`, `.context/spec.md`, `.context/context.md` (optional on `1–4` file standalone micro-repos), `.env.example`, `.gitignore`; classify real modules (`[IMPLEMENTED_FUNCTIONAL | SUPERFICIAL_MOCK | DOCUMENTED_MISSING | GHOST_CODE]`); if `has_agent_or_mcp_layer == True`, apply `agent-server-auditor` and query `google-developer-knowledge`/`gemini_get_doc`.
-3. **Conditional UI `60-30-10 OKLCH` & `SGA` (`20 pts` when UI exists + `15 pts` Contracts/HITL):** Verify via [report axes](references/audit_report_and_oklch_axes.md), [5 pillars](references/pillars_5_matrix_and_handoff_2026.md), [rubric](references/audit_rubric_and_agent_browser.md), [UI taxonomy](references/ui_subagent_taxonomy_6_layers.md), and [V1 vs V2 diff template](templates/resolution_diff_v1_v2.html).
+3. **Conditional UI `60-30-10 OKLCH` & `SGA` (`20 pts` when UI exists + `15 pts` Contracts/HITL):** Verify via [report axes](references/audit_report_and_oklch_axes.md), [5 pillars](references/pillars_5_matrix_and_handoff_2026.md), [rubric](references/audit_rubric_and_agent_browser.md), and [V1 vs V2 diff template](templates/resolution_diff_v1_v2.html) (delegate deep UI optics and 4-Stage Actor-Critic QA to `shredded-shape`).
 
 ## 4. Gotchas & Edge Cases
 

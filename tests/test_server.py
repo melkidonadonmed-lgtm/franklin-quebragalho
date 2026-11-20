@@ -45,13 +45,13 @@ def test_skills_list_all() -> None:
 
 
 def test_skills_list_filters() -> None:
-    """Valida os filtros por persona e status."""
-    skill_res = server.franklin_skills_list(persona="SkillCraft")
+    """Valida os filtros por domínio e status."""
+    skill_res = server.franklin_skills_list(persona="quality-engineering")
     assert "code-acceptability-auditor" in skill_res
     assert "test-quality-auditor" in skill_res
     assert "gdrive-cleanup-auditor" not in skill_res
 
-    drive_res = server.franklin_skills_list(persona="DriveMaster")
+    drive_res = server.franklin_skills_list(persona="workspace-ops")
     assert "gdrive-cleanup-auditor" in drive_res
     assert "code-acceptability-auditor" not in drive_res
 
@@ -93,12 +93,12 @@ def test_skills_validate_deterministic() -> None:
 
 
 def test_get_agents() -> None:
-    """Valida a extração do catálogo de subagentes, Topologia Multi-Repo (5 Camadas) e Topologia 3+1 de UI."""
+    """Valida a extração do catálogo de subagentes, Topologia Multi-Repo (5 Camadas) e 4-Stage Actor-Critic de UI."""
     res = server.franklin_get_agents()
-    assert "UI-Architect" in res
-    assert "DriveMaster" in res
-    assert "DocMaker" in res
-    assert "LoopPlanner" in res
+    assert "ui-suite" in res
+    assert "workspace-ops" in res
+    assert "knowledge-docs" in res
+    assert "planning-orchestration" in res
     assert "ui-analyst" in res
     assert "ui-planner" in res
     assert "ui-worker" in res
@@ -110,17 +110,18 @@ def test_get_agents() -> None:
     assert "code-acceptability-auditor" in eco_res
     assert "agent-hub.ps1" in eco_res
 
-    persona_res = server.franklin_get_agents(agent_name="skillcraft")
-    assert "SkillCraft" in persona_res
-    assert "code-acceptability-auditor" in persona_res
-    assert "DriveMaster (Curador Cloud)" not in persona_res
+    domain_res = server.franklin_get_agents(agent_name="quality-engineering")
+    assert "quality-engineering" in domain_res
+    assert "code-acceptability-auditor" in domain_res
+    assert "gdrive-cleanup-auditor" not in domain_res
 
     missing_res = server.franklin_get_agents(agent_name="subagente_inexistente_xyz")
     assert "Erro: Subagente 'subagente_inexistente_xyz' não encontrado" in missing_res
 
     agents_map = server._load_agents_map()
-    assert agents_map.get("EcosystemMatrix") == "Franklin-Main"
-    assert agents_map.get("code-acceptability-auditor") == "SkillCraft"
+    assert "EcosystemMatrix" not in agents_map
+    assert agents_map.get("stitch-canvas") == "ui-suite"
+    assert agents_map.get("code-acceptability-auditor") == "quality-engineering"
     assert "2" not in agents_map.values()
     assert "3" not in agents_map.values()
     assert "4" not in agents_map.values()
@@ -129,10 +130,12 @@ def test_get_agents() -> None:
     design_dir = server._find_skill_dir("design")
     architect_dir = server._find_skill_dir("code-architect")
     ui_testing_dir = server._find_skill_dir("ui-testing")
+    stitch_dir = server._find_skill_dir("stitch")
     assert getattr(code_auditor_dir, "name", "") == "code-acceptability-auditor"
     assert getattr(design_dir, "name", "") == "ui-brand-ux-planner"
     assert getattr(architect_dir, "name", "") == "ui-clean-worker"
     assert getattr(ui_testing_dir, "name", "") == "ui-quality-judge"
+    assert getattr(stitch_dir, "name", "") == "stitch-canvas"
 
     self_test_out = server.franklin_run_skill_script(
         skill_name="code-auditor",
@@ -208,7 +211,8 @@ def test_resources() -> None:
     assert "solution-content-architect" in catalog
 
     manifest = server.get_manifest_resource()
-    assert "My Skills" in manifest or "Minhas Skills" in manifest
+    assert "Catálogo de Skills do Franklin Quebra-Galho" in manifest
+    assert "obsidian-vault-curator" in manifest
 
     agents = server.get_agents_resource()
     assert "Franklin Quebra-Galho" in agents
@@ -221,7 +225,7 @@ def test_prompts() -> None:
     assert "technical-markdown-writer" in p_act
 
     p_front = server.tactile_frontend_audit_prompt("https://meuapp.com")
-    assert "UI-Architect" in p_front
+    assert "ui-judge" in p_front
     assert "DESIGN.md" in p_front
 
 
@@ -430,7 +434,9 @@ def test_frontend_skills_and_ui_subagents_integration() -> None:
     assert "ui-judge" in all_ui_agents
 
     planner_contract = server.franklin_get_agents(agent_name="planner")
-    assert "Stitch" in planner_contract
+    assert "DESIGN.md" in planner_contract and "OKLCH" in planner_contract
+    stitch_contract = server.franklin_skills_get("stitch-canvas", section="contract")
+    assert "Stitch" in stitch_contract
     judge_contract = server.get_agent_contract_resource("judge")
     assert "FNR" in judge_contract
 
@@ -644,7 +650,7 @@ def test_gemini_ecosystem_directories(tmp_path: Path, monkeypatch: pytest.Monkey
 
 
 def test_docs_and_catalog_truth_parity() -> None:
-    """Valida a paridade de verdade (Zero Doc Drift) entre README.md, SPEC.md, CONTEXT.md, MY_SKILLS.md e o disco."""
+    """Valida a paridade de verdade (Zero Doc Drift) entre README.md, Triad v2.1 (.context/, AGENTS.md) e o disco."""
     expected_skills = sorted(
         d.name for d in server.SKILLS_ROOT.iterdir() if d.is_dir() and (d / "SKILL.md").exists()
     )
@@ -652,18 +658,17 @@ def test_docs_and_catalog_truth_parity() -> None:
     readme_text = (server.ROOT_DIR / "README.md").read_text(encoding="utf-8")
     spec_text = (server.ROOT_DIR / ".context" / "spec.md").read_text(encoding="utf-8")
     context_text = (server.ROOT_DIR / ".context" / "context.md").read_text(encoding="utf-8")
-    my_skills_text = (server.ROOT_DIR / "MY_SKILLS.md").read_text(encoding="utf-8")
     agents_text = (server.ROOT_DIR / "AGENTS.md").read_text(encoding="utf-8")
 
     assert f"{count} Canonical Skills" in readme_text
     assert f"{count} Agent Skills" in spec_text
     assert f"{count} Skills" in context_text
-    assert f"{count} Canonical Skills" in my_skills_text
     assert f"`{count}/{count}` skills" in agents_text
+    assert not (server.ROOT_DIR / "MY_SKILLS.md").exists()
+    assert not (server.ROOT_DIR / "CURRENT_STATE.md").exists()
     assert (server.ROOT_DIR / ".env.example").exists()
 
     for skill_slug in expected_skills:
-        assert skill_slug in my_skills_text, f"Skill '{skill_slug}' ausente em MY_SKILLS.md"
         assert skill_slug in readme_text, f"Skill '{skill_slug}' ausente em README.md"
 
 

@@ -1,6 +1,6 @@
 # Agentic Project Structure & 4 Audit Dimensions — `agent-server-auditor`
 
-Operational directory and requirement reference used by `SKILL.md`, complementing [`protocol_matrix.md`](protocol_matrix.md), [`audit-websocket-jsonrpc.md`](audit-websocket-jsonrpc.md), and [`audit_report_schema.md`](audit_report_schema.md).
+Operational directory and requirement reference used by `SKILL.md`, complementing [`protocol_matrix.md`](protocol_matrix.md), [`audit_websocket_jsonrpc.md`](audit_websocket_jsonrpc.md), and [`audit_report_schema.md`](audit_report_schema.md).
 
 ## Canonical Antigravity / ADK Project Layout
 

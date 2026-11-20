@@ -83,7 +83,7 @@
     {
       "id": "chained-plan-orchestrator",
       "name": "chained-plan-orchestrator",
-      "description": "Compile execution plans into topological DAG waves using Kahn's algorithm, prevent parallel file-write collisions, isolate worker state via Context Fork (<= 5 rules), and dispatch sequential waves with HITL checkpoints. Use when orchestrating multi-skill DAG pipelines. Do NOT use for single-turn tasks, Phase 0 planning (high-level-context-planner), or trace RCA (gap-analyzer-auditor).",
+      "description": "Compile execution plans into parallel DAG waves via Kahn's algorithm, prevent file-write collisions, isolate workers via Context Fork (<= 5 rules), and dispatch sequential waves with HITL checkpoints. Use for multi-skill DAG orchestration. Do NOT use for single-turn tasks, Phase 0 planning, or trace RCA (gap-analyzer-auditor).",
       "tags": [
         "chained-plan-orchestrator",
         "orquestracao",
@@ -179,7 +179,7 @@
     {
       "id": "flow-filetree-organizer",
       "name": "flow-filetree-organizer",
-      "description": "Transform raw app ideas and operational requirements into valid Mermaid flowcharts and commented ASCII directory trees with literal prompt preservation, MVP scope isolation, and .md/.pdf export options. Use when mapping visual workflows and folder structures. Do NOT use for AST audits (code-acceptability-auditor), repo scaffolding (project-idea-organizer), or standalone PDF conversion (html-pdf-converter).",
+      "description": "Transform raw app ideas into valid Mermaid flowcharts and commented ASCII directory trees with MVP scope isolation and .md/.pdf export. Use when mapping visual workflows or folder trees. Do NOT use for AST audits (code-acceptability-auditor), repo scaffolding (project-idea-organizer), or standalone PDF export (html-pdf-converter).",
       "tags": [
         "flow-filetree-organizer",
         "fluxo",
@@ -203,7 +203,7 @@
     {
       "id": "gap-analyzer-auditor",
       "name": "gap-analyzer-auditor",
-      "description": "Perform stateless 4-vector Root Cause Analysis (RCA) and Spec-to-Code convergence audits over logs, traces, and artifacts, separating [FACT]/[INFERENCE]/[GAP] and emitting YAML Hand-off Payloads. Use when diagnosing pipeline failures or Spec drift. Do NOT use for Phase 0 planning (high-level-context-planner), Python AST scans (code-acceptability-auditor), or test grading (test-quality-auditor).",
+      "description": "Run stateless 4-vector Root Cause Analysis (RCA) and Spec-to-Code convergence audits over logs and traces, separating [FACT]/[INFERENCE]/[GAP] into YAML hand-off payloads. Use when diagnosing pipeline failures or Spec drift. Do NOT use for Phase 0 planning (high-level-context-planner), Python AST scans, or test grading.",
       "tags": [
         "gap-analyzer-auditor",
         "brechas",
@@ -323,7 +323,7 @@
     {
       "id": "obsidian-vault-curator",
       "name": "obsidian-vault-curator",
-      "description": "Audit and curate the Obsidian vault (C:\\Users\\melki\\dev\\notes) for broken Wikilinks, YAML frontmatter repair, orphaned attachments, repo parity, and MemPalace batch indexing (wing notes). Use for bulk vault hygiene; do NOT use for single-note CRUD (obsidian-vault), authoring docs from scratch (technical-markdown-writer), or Windows/Drive cleanup (windows-disk-maintenance, gdrive-cleanup-auditor).",
+      "description": "Audit and curate the Obsidian vault (C:\\Users\\melki\\dev\\notes) for broken Wikilinks, YAML/SOTA veredito repair, orphaned attachments, repo parity, and MemPalace sync (wing notes). Use for bulk vault hygiene; do NOT use for single-note CRUD (obsidian-vault), writing docs (technical-markdown-writer), or disk/Drive cleanup.",
       "tags": [
         "obsidian",
         "vault",
@@ -347,7 +347,7 @@
     {
       "id": "project-idea-organizer",
       "name": "project-idea-organizer",
-      "description": "Bootstrap raw ideas into right-sized runnable v1.0.0 MVPs or sync repositories across Triad v2.1 docs, 1:1 disk-accurate README.md, active MCP/FastAPI/RPC contracts, and dry-run root hygiene. Use when starting an idea or aligning repo structure. Do NOT use for 0-100 AST audits (system-project-auditor), single-module coding (solution-content-architect), or Mermaid trees (flow-filetree-organizer).",
+      "description": "Bootstrap raw ideas into runnable v1.0.0 MVPs or sync repositories across Triad v2.1 docs, disk-accurate README.md, active MCP/RPC contracts, and dry-run hygiene. Use to start an idea or align repo structure. Do NOT use for AST audits (system-project-auditor), module coding (solution-content-architect), or Mermaid trees.",
       "tags": [
         "project-idea-organizer",
         "ideia",
@@ -419,7 +419,7 @@
     {
       "id": "solution-content-architect",
       "name": "solution-content-architect",
-      "description": "Design and implement minimal, strictly typed production code, OpenAPI/JSON-RPC contracts, SQL optimizations, and trade-off blueprints. Use for concrete engineering solutions and enterprise prompts. Do NOT use for standalone prompt audits (refine-prompt), repo AST scoring (system-project-auditor), greenfield scaffolding (project-idea-organizer), or DAG waves (chained-plan-orchestrator).",
+      "description": "Design and implement minimal, strictly typed production code, OpenAPI/JSON-RPC contracts, SQL optimizations, and trade-off blueprints. Use for concrete engineering solutions and enterprise prompts. Do NOT use for standalone prompt audits (refine-prompt), repo AST audits (system-project-auditor), scaffolding, or DAG waves.",
       "tags": [
         "solution-content-architect",
         "solucao",
@@ -443,7 +443,7 @@
     {
       "id": "system-project-auditor",
       "name": "system-project-auditor",
-      "description": "Audit existing repositories (0-100 score + SGA) across real AST code health, Docs-vs-Disk parity, causal MVP blockers, and, for UI targets, 3-layer navigation (X activates Y), 60-30-10 OKLCH physics, and live agent-browser @eX DOM. Use for repository, MVP, and navigation audits. Do NOT use for coding (solution-content-architect), scaffolding (project-idea-organizer), or APKs (re-a-ndroid).",
+      "description": "Audit existing repositories (0-100 score + SGA) across real AST code health, Docs-vs-Disk parity, causal MVP blockers, and conditional UI navigation/OKLCH/DOM checks. Use for repo, MVP, and navigation audits. Do NOT use for coding (solution-content-architect), scaffolding (project-idea-organizer), or APKs (re-a-ndroid).",
       "tags": [
         "system-project-auditor",
         "auditoria-projetos-sistema",
@@ -467,7 +467,7 @@
     {
       "id": "technical-markdown-writer",
       "name": "technical-markdown-writer",
-      "description": "Author executive reports, technical notes, ADRs, roadmaps, and installation guides in Markdown (GFM) using GitHub alert callouts, the Blank-Line Law, and Google Style Guides. Use for structured technical writing; do NOT use for PDF rendering/export (html-pdf-converter), bulk Obsidian vault curation (obsidian-vault-curator), or Mermaid directory tree mapping (flow-filetree-organizer).",
+      "description": "Author executive reports, technical notes, ADRs, roadmaps, and guides in Markdown (GFM) using GitHub callouts, the Blank-Line Law, and Google Style Guides. Use for structured technical writing; do NOT use for PDF rendering (html-pdf-converter), bulk Obsidian curation (obsidian-vault-curator), or Mermaid trees.",
       "tags": [
         "markdown",
         "gfm",
@@ -545,7 +545,7 @@
         "jku": "http://localhost:10999/public_keys.json",
         "typ": "JOSE+JSON"
       },
-      "signature": "2a72772a4bd2833f36c6bbd8584af3429b6884de39604b675df6a110ac29a1d2"
+      "signature": "5271be72a8ee27920502c04adc0d5eee1bdb3bba12dbadd435de6a1612e655df"
     }
   ]
 }

@@ -1,17 +1,15 @@
-# Stack-Adaptive Rubric, OKLCH Visual Criteria & Output Template (`system-project-auditor` v6.1.0)
+# Stack-Adaptive Rubric, Federated UI Criteria & Output Template (`system-project-auditor` v6.1.0)
 
-Detailed Level 3 reference complementing [`pillars_5_matrix_and_handoff_2026.md`](pillars_5_matrix_and_handoff_2026.md), [`audit_rubric_and_agent_browser.md`](audit_rubric_and_agent_browser.md), and [`ui_subagent_taxonomy_6_layers.md`](ui_subagent_taxonomy_6_layers.md).
+Level 3 reference complementing [`pillars_5_matrix_and_handoff_2026.md`](pillars_5_matrix_and_handoff_2026.md) and [`audit_rubric_and_agent_browser.md`](audit_rubric_and_agent_browser.md).
 
 ## 1. Conditional Criteria for UI Targets (`has_ui_layer == True`)
 
-If `has_ui_layer == False`, skip this section completely, emit **`[PASS: N/A_BACKEND_ONLY]`**, and reallocate the `20` UI points to AST, Contract, and Docs-vs-Disk Parity health:
+If `has_ui_layer == False`, skip this section completely, emit **`[PASS: N/A_BACKEND_ONLY]`**, and reallocate the `20` UI points to AST, Contract, and Docs-vs-Disk Parity health.
 
-- **60-30-10 Ratio (`OKLCH` + `light-dark()`):**
-  - **60% Canvas** (`--surface-canvas`, Dark Mode $L = 0.16$, zero `#000000`).
-  - **30% Cards & Surfaces** (`--surface-card` $L = 0.22$, `--surface-elevated` $L = 0.27$, 4 variants + `@container`).
-  - **10% Surgical Accent** (`--brand-primary` via `oklch(from ...)` / `color-mix(in oklab, ...)`), focus rings, and `6px`/`2px` status indicators.
-- **3-Level Shadows:** Primitives (`--shadow-layer-sm/md/lg`) + Semantics (`--shadow-elevation-1..3`, `--shadow-inset`) combining Contact Umbra + negative-spread Penumbra (`-1px..-8px`) + Top Specular Rim (`inset 0 1px 0 0` / `--catch-light`) + Ambient Brand Glow in dark theme.
-- **Navigation & Typography:** `<= 3` `<nav>` landmarks (*Global* Bottom Bar with `env(safe-area-inset-bottom)` $\leftrightarrow$ `240px` `100dvh` Sidebar at `>= 48em`; *Local*; *Breadcrumbs* `<ol role="list">` + silent `::before` + `aria-current="page"` only at `>= 3` levels), DOM order = visual order, unpacked menus (`>= 13px`, `gap >= 8px`, touch targets `>= 44px` / `48px` coarse), `--space-*` scale, Concentric Radii ($R_{\text{in}} = \max(4\text{px}, R_{\text{out}} - P)$), `subgrid` + `.card:has(> img)`, `clamp()`, `60ch–65ch`, `tabular-nums`, `antialiased`, and `font-synthesis: none`.
+When UI exists, enforce the **single canonical UI SSOT** in `shredded-shape/rules/frontend-9-axes-guidelines.md` (never duplicate divergent Dark Mode `L` or glow values here):
+- **Perceptual 5-Plane `OKLCH 60-30-10`:** `oklch()` + `light-dark()`, `color-mix(in oklab, ...)`, zero `#000000`, `C <= 0.20` target (hard cap `0.22`, semantic red `15°..40° <= 0.24`), Dark Mode `well < canvas < card < card-lit` with zenithal sheen + top specular rim (zero neon card glows).
+- **Navigation, Ergonomics & WCAG 2.2:** `<= 3` `<nav>` landmarks (`<= 6` items/nav, `gap >= 8px`, `>= 13px` labels), `44/48px` targets (`<40px` hard blocker), silent CSS breadcrumbs (`::before`), `@container`, `DOM == Tab Order`, and executable 5-state FSM.
+- **Federated Deep UI Pipeline (`shredded-shape`):** Escalate deep visual refactors or judging to the **4-Stage Actor-Critic pipeline** (`ui-analyst -> ui-planner -> ui-worker <-> ui-judge`, plus `stitch-canvas` for Google Stitch CLI/MCP).
 
 ## 2. Unified `0–100 pts` Output Format (Defect-Driven Remediation)
 
@@ -32,14 +30,14 @@ If `has_ui_layer == False`, skip this section completely, emit **`[PASS: N/A_BAC
 ## 2. 5 TECHNICAL PILLARS MATRIX (60 pts UI / 50 pts Headless)
 | Pillar | Verdict (`[PASS | FAIL | PASS: N/A_BACKEND_ONLY]`) | Priority | Action & Evidence (`file:line`) |
 | :--- | :--- | :--- | :--- |
-| **1. Design 60-30-10 OKLCH & 3-Level Shadows (UI Only)** | ... | `[PRIORITY | MODERATE | N/A]` | ... |
-| **2. Navigation (`X activates Y` / CLI & Entrypoint Coherence)** | ... | ... | ... |
+| **1. Design 60-30-10 OKLCH & Optics (UI Only)** | ... | `[PRIORITY | MODERATE | N/A]` | ... |
+| **2. Navigation (`X activates Y` / CLI Entrypoint)** | ... | ... | ... |
 | **3. AST Code Quality, Stubs & Orphans** | ... | ... | ... |
 | **4. Security, `.gitignore`/`.env` & MCP/RPC Contracts** | ... | ... | ... |
 | **5. Temporal Baseline & Physical Tree** | ... | ... | ... |
 
 ## 3. DEFECT-DRIVEN REMEDIATION LIST (1:1 Evidence-Traced; 0 items if clean)
 - If `verdict == [PASS]` and zero blockers exist, output: `No structural remediation required.`
-- Otherwise, list concrete tasks strictly referencing `[file:line]` or scanner findings:
+- Otherwise, list concrete tasks referencing `[file:line]` or scanner findings:
   - [ ] **[Priority]:** [Concrete fix + exact file:line]
 ```

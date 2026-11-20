@@ -34,9 +34,9 @@ CACHE_PATH = MEMPALACE_CONFIG_DIR / "vault_sections_index.json"
 CHROMA_DB_PATH = MEMPALACE_CONFIG_DIR / "palace" / "chroma.sqlite3"
 MIN_CHUNK_BYTES = 160
 MAX_CHUNK_CHARS = 1800
-INDEX_SCHEMA_VERSION = "2.1"
+INDEX_SCHEMA_VERSION = "2.2"
 
-SKIP_DIRS = {".obsidian", ".git", "node_modules", ".trash"}
+SKIP_DIRS = {".obsidian", ".git", "node_modules", ".trash", "Excalidraw", "copilot", ".smart-env", ".makemd", ".claudian", ".copilot", ".space", ".agents", ".claude"}
 WIKILINK_RX = re.compile(r"\[\[([^\]|#]+)(?:[|#][^\]]*)?\]\]")
 CANONICAL_ID_RX = re.compile(r"\[((?:PRJ|SYS)-\d{3}[A-Z]?)\s*\|\s*([a-z0-9\-]+)\]", re.IGNORECASE)
 
@@ -50,6 +50,10 @@ FOLDER_TO_ROOM: Dict[str, str] = {
 ROOM_PRIORITY: Dict[str, float] = {
     "memoria": 1.40, "projetos": 1.35, "medicina": 1.35, "pessoal": 1.25,
     "interesses": 1.20, "diario": 1.15, "inbox": 1.10, "arquivo": 0.55, "templates": 0.50,
+}
+
+VEREDITO_PRIORITY: Dict[str, float] = {
+    "recomendado": 1.10, "casos-especificos": 1.00, "nao-recomendado": 0.75, "contraindicacao-total": 0.50,
 }
 
 INTENT_ROOM_HINTS: Tuple[Tuple[str, Tuple[str, ...]], ...] = (
@@ -70,6 +74,7 @@ class SectionHit:
     line_range: List[int]
     byte_range: List[int]
     score: float
+    veredito: str = ""
     tags: List[str] = field(default_factory=list)
     wikilinks: List[str] = field(default_factory=list)
     snippet: str = ""
@@ -286,9 +291,11 @@ def _split_markdown_sections(rel_id: str, abs_path: Path, room: str, md_text: st
     meta, tags, body_start_line = _parse_frontmatter(md_text)
     if _is_private_note(meta, tags):
         return []
+    veredito = _norm(meta.get("veredito", ""))
     if (
         meta.get("type", "").lower() in ("historico", "arquivo")
         or meta.get("status", "").lower() in ("desatualizado", "obsoleto", "arquivado")
+        or veredito in ("nao-recomendado", "contraindicacao-total")
     ):
         room = "arquivo"
     title = meta.get("title") or abs_path.stem
@@ -303,14 +310,14 @@ def _split_markdown_sections(rel_id: str, abs_path: Path, room: str, md_text: st
             if body_txt:
                 sections.append(_build_sec_dict(
                     rel_id, room, title, sub["heading"], tags, body_txt,
-                    sub["l_start"], sub["l_end"], sub["b_start"], sub["b_end"],
+                    sub["l_start"], sub["l_end"], sub["b_start"], sub["b_end"], veredito,
                 ))
     return sections
 
 
 def _build_sec_dict(
     rel_id: str, room: str, title: str, heading: str, tags: List[str],
-    body_txt: str, l_start: int, l_end: int, b_start: int, b_end: int,
+    body_txt: str, l_start: int, l_end: int, b_start: int, b_end: int, veredito: str = "",
 ) -> Dict[str, Any]:
     links = sorted({m.strip() for m in WIKILINK_RX.findall(body_txt) if m.strip()})
     cid, header = _resolve_canonical_header(rel_id, room, title, heading, body_txt)
@@ -318,22 +325,12 @@ def _build_sec_dict(
     if len(enriched_snippet.encode("utf-8")) < MIN_CHUNK_BYTES:
         enriched_snippet = f"{enriched_snippet}\n[Fonte: {rel_id} | Título: {title} | Tags: {', '.join(tags) or room}]"
     return {
-        "source_id": rel_id,
-        "canonical_id": cid,
-        "room": room,
-        "title": title,
-        "heading": heading,
-        "tags": tags,
-        "wikilinks": links,
-        "line_range": [max(1, l_start), max(l_start, l_end)],
-        "byte_range": [b_start, b_end],
+        "source_id": rel_id, "canonical_id": cid, "room": room, "veredito": veredito,
+        "title": title, "heading": heading, "tags": tags, "wikilinks": links,
+        "line_range": [max(1, l_start), max(l_start, l_end)], "byte_range": [b_start, b_end],
         "snippet": enriched_snippet,
         "norm_cache": [
-            _norm(title),
-            _norm(heading),
-            _norm(" ".join(tags)),
-            _norm(" ".join(links)),
-            _norm(enriched_snippet),
+            _norm(title), _norm(heading), _norm(" ".join(tags)), _norm(" ".join(links)), _norm(enriched_snippet),
         ],
     }
 
@@ -442,7 +439,8 @@ def _score_section(
     coverage_boost = 1.0 + (0.25 * (matched_terms / max(1, len(terms))))
     room_mult = 1.0 if explicit_room else ROOM_PRIORITY.get(sec_room, 1.0)
     intent_mult = 1.25 if (not explicit_room and sec_room in inferred_rooms) else 1.0
-    return round(raw_score * coverage_boost * room_mult * intent_mult, 3)
+    sota_mult = VEREDITO_PRIORITY.get(str(sec.get("veredito", "")), 1.0)
+    return round(raw_score * coverage_boost * room_mult * intent_mult * sota_mult, 3)
 
 
 def _query_chroma_fts_direct(terms: Sequence[str], room: str, limit: int) -> Dict[str, float]:
@@ -535,7 +533,8 @@ def search_vault_and_palace(
             source_id=sec["source_id"], file_uri=abs_uri, room=sec["room"],
             title=sec["title"], heading=sec["heading"],
             line_range=sec["line_range"], byte_range=sec["byte_range"],
-            score=sc, tags=sec["tags"], wikilinks=sec["wikilinks"], snippet=sec["snippet"],
+            score=sc, veredito=str(sec.get("veredito", "")),
+            tags=sec["tags"], wikilinks=sec["wikilinks"], snippet=sec["snippet"],
         ))
         for wl in sec.get("wikilinks", []):
             target_rel = note_map.get(_norm(wl))

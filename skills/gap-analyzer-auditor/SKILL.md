@@ -1,6 +1,6 @@
 ---
 name: gap-analyzer-auditor
-description: "Perform stateless 4-vector Root Cause Analysis (RCA) and Spec-to-Code convergence audits over logs, traces, and artifacts, separating [FACT]/[INFERENCE]/[GAP] and emitting YAML Hand-off Payloads. Use when diagnosing pipeline failures or Spec drift. Do NOT use for Phase 0 planning (high-level-context-planner), Python AST scans (code-acceptability-auditor), or test grading (test-quality-auditor)."
+description: "Run stateless 4-vector Root Cause Analysis (RCA) and Spec-to-Code convergence audits over logs and traces, separating [FACT]/[INFERENCE]/[GAP] into YAML hand-off payloads. Use when diagnosing pipeline failures or Spec drift. Do NOT use for Phase 0 planning (high-level-context-planner), Python AST scans, or test grading."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 allowed-tools: read_file run_command
 metadata:

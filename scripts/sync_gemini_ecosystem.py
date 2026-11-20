@@ -336,16 +336,12 @@ def _clean_doc_dir(doc_dir: Path, allowed_doc_names: set[str]) -> None:
 
 
 def _sync_docs_and_agent_card() -> int:
-    """Sincroniza documentação Markdown, rules/, regenera o AgentCard assinado e atualiza audit_report.json."""
+    """Sincroniza documentação canônica Triad v2.1, regenera o AgentCard assinado e atualiza audit_report.json."""
     doc_files = (
         ROOT_DIR / "AGENTS.md",
-        ROOT_DIR / "MY_AGENTS.md",
-        ROOT_DIR / "MY_SKILLS.md",
         ROOT_DIR / "README.md",
         ROOT_DIR / ".context" / "spec.md",
         ROOT_DIR / ".context" / "context.md",
-        ROOT_DIR / "CURRENT_STATE.md",
-        ROOT_DIR / "skills" / "system-project-auditor" / "references" / "ui_subagent_taxonomy_6_layers.md",
     )
     allowed_doc_names = {df.name for df in doc_files} | {"agent_card.json"}
     for doc_dir in (GEMINI_ROOT / "doc", CONFIG_PLUGIN_ROOT / "doc"):

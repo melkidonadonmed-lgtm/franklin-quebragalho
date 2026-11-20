@@ -1,0 +1,11 @@
+# Historical Changelog Archive (`franklin-quebragalho`, Phases 28–35, `<= 2026-11-17`)
+
+> Compact archive partitioned from [`.context/context.md`](context.md) to keep active governance state under `10 KB`.
+
+- **`[2026-11-17]` Global 4-Component Ecosystem Audit & CoT/ToT/ReAct/RAW Standardization:** Standardized `franklin-quebragalho` (21 skills, 5 subagents, `<= 420c` L1, zero `../` escapes), `shredded-shape` (`v1.4.0`), `adk-go-mcp` (7 Go skills), satellite skills, and 21 repo `AGENTS.md` files; archived `scoreboard` into `PCM`.
+- **`[2026-11-17]` EGM `.gemini` Optimization & `STUB001` PreToolUse Gates:** Disabled per-turn shell hooks, moved 67 non-core skills out of `~/.agents/skills/` to `~/.gemini/skill-catalog/user-skills/` (capping global discovery at 6 core skills), enabled `franklin-semantic-guard` + `STUB001` AST anti-stub gate, and eliminated 3-way agent drift.
+- **`[2026-11-17]` Right-Sizing & Stack-Adaptive Optimization:** Upgraded `solution-content-architect` (`v2.6.0`), `project-idea-organizer` (`v1.3.0`), `system-project-auditor` (`v6.1.0`), and `shared/catalog_service.py` scoring (`F1 = 1.0`, `30/30`).
+- **`[2026-11-16]` Phase 35 — UI/UX Decoupling (`shredded-shape`):** Extracted UI skills, subagents, `frontend-9-axes-guidelines.md`, and UI DAG into sibling repo/plugin `shredded-shape`, leaving 21 canonical non-UI skills in `franklin-quebragalho`.
+- **`[2026-11-16]` Phase 34 — Technical English Internals + `pt-BR` Bridge (`[LOCK-04]`):** Retired `audit-skills-antigravity` (`29 -> 28`), standardized 45 owned skills and 10 subagents to Technical English internals with native Antigravity 2.0 `tools:`.
+- **`[2026-11-13]` Phases 32–33 — Gemini 4 / Decisions API / `googleapis` `v1` vs `v1beta` & Modern Web Refs:** Aligned rules and `agent-server-auditor` to Gemini 4 (`hydrogen`/`argon`/`carbon`), `gemini-decision-1`, `antigravity-preview-09-2026`, `v1`/`v1beta` split, and Tailwind v4 `@theme` / React 19 patterns.
+- **`[2026-11-03..12]` Phases 28–31 — 3-in-1 Audit Fusion (`[LOCK-01]`), Triad v2.0 & A2A JWS:** Consolidated `system-project-auditor` (`v6.0.0`), introduced Triad `.context/{context,spec}.md`, added HMAC-SHA256 JWS `agent-card.json`, and enforced Level-4 adversarial testing.

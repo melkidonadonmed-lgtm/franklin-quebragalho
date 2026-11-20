@@ -521,7 +521,18 @@ def audit_repository(target_root: Path, persist: bool = False, output_path: Path
     if persist or output_path is not None:
         dest = output_path if output_path is not None else (root / "memories" / "audit_report.json")
         dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_text(json.dumps(report.model_dump(), indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        new_payload = report.model_dump()
+        should_write = True
+        if dest.is_file():
+            try:
+                old_payload = json.loads(dest.read_text(encoding="utf-8"))
+                old_cmp = {k: v for k, v in old_payload.items() if k != "timestamp"}
+                new_cmp = {k: v for k, v in new_payload.items() if k != "timestamp"}
+                should_write = old_cmp != new_cmp
+            except (OSError, ValueError):
+                should_write = True
+        if should_write:
+            dest.write_text(json.dumps(new_payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return report
 
 

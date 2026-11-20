@@ -1,6 +1,6 @@
 ---
 name: flow-filetree-organizer
-description: "Transform raw app ideas and operational requirements into valid Mermaid flowcharts and commented ASCII directory trees with literal prompt preservation, MVP scope isolation, and .md/.pdf export options. Use when mapping visual workflows and folder structures. Do NOT use for AST audits (code-acceptability-auditor), repo scaffolding (project-idea-organizer), or standalone PDF conversion (html-pdf-converter)."
+description: "Transform raw app ideas into valid Mermaid flowcharts and commented ASCII directory trees with MVP scope isolation and .md/.pdf export. Use when mapping visual workflows or folder trees. Do NOT use for AST audits (code-acceptability-auditor), repo scaffolding (project-idea-organizer), or standalone PDF export (html-pdf-converter)."
 compatibility: "Antigravity 2.0, Markdown GFM, Mermaid, Edge Headless"
 allowed-tools: read_file run_command
 metadata:

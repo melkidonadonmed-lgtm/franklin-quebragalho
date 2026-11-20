@@ -1,6 +1,6 @@
 ---
 name: chained-plan-orchestrator
-description: "Compile execution plans into topological DAG waves using Kahn's algorithm, prevent parallel file-write collisions, isolate worker state via Context Fork (<= 5 rules), and dispatch sequential waves with HITL checkpoints. Use when orchestrating multi-skill DAG pipelines. Do NOT use for single-turn tasks, Phase 0 planning (high-level-context-planner), or trace RCA (gap-analyzer-auditor)."
+description: "Compile execution plans into parallel DAG waves via Kahn's algorithm, prevent file-write collisions, isolate workers via Context Fork (<= 5 rules), and dispatch sequential waves with HITL checkpoints. Use for multi-skill DAG orchestration. Do NOT use for single-turn tasks, Phase 0 planning, or trace RCA (gap-analyzer-auditor)."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, Go 1.24+"
 allowed-tools: read_file write_file edit_file run_command
 metadata:

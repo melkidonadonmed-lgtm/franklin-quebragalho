@@ -1,12 +1,11 @@
 """
 compass_topology.py
-Serviço de Topologia Multi-Repo (5 Camadas), Subagentes de UI (Topologia 3+1)
+Serviço de Topologia Multi-Repo (5 Camadas), Subagentes de UI (4-Stage Actor-Critic)
 e Bússola Cognitiva (franklin_smart_compass) do Franklin Quebra-Galho.
 """
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
 from typing import Callable, Dict, List, Tuple
 
@@ -21,41 +20,19 @@ UI_SUBAGENT_ALIASES: Dict[str, str] = {
     "ui-planner": "ui-planner",
     "ui_planner": "ui-planner",
     "stage1": "ui-planner",
-    "shell": "ui-planner",
-    "navigator": "ui-planner",
-    "onda1": "ui-planner",
-    "wave1": "ui-planner",
-    "ui_shell_navigator": "ui-planner",
     "worker": "ui-worker",
     "ui-worker": "ui-worker",
     "ui_worker": "ui-worker",
     "stage2": "ui-worker",
-    "controls": "ui-worker",
-    "data": "ui-worker",
-    "onda2a": "ui-worker",
-    "wave2a": "ui-worker",
-    "ui_controls_data": "ui-worker",
-    "motion": "ui-worker",
-    "interaction": "ui-worker",
-    "onda2b": "ui-worker",
-    "wave2b": "ui-worker",
-    "ui_motion_interaction": "ui-worker",
     "judge": "ui-judge",
     "ui-judge": "ui-judge",
     "ui_judge": "ui-judge",
     "stage3": "ui-judge",
-    "observer": "ui-judge",
-    "gatekeeper": "ui-judge",
-    "onda3": "ui-judge",
-    "wave3": "ui-judge",
-    "ui_deterministic_observer": "ui-judge",
     "memory": "vault-memory-retriever",
     "retriever": "vault-memory-retriever",
     "vault-retriever": "vault-memory-retriever",
     "vault_memory_retriever": "vault-memory-retriever",
     "palace": "vault-memory-retriever",
-    "onda0": "vault-memory-retriever",
-    "wave0": "vault-memory-retriever",
     "mediator": "intent-hitl-mediator",
     "hitl-mediator": "intent-hitl-mediator",
     "intent_hitl_mediator": "intent-hitl-mediator",
@@ -74,26 +51,19 @@ UI_SUBAGENT_ALIASES: Dict[str, str] = {
 }
 
 PERSONA_ALIASES: Dict[str, str] = {
-    "franklin": "Franklin-Main",
-    "franklin-main": "Franklin-Main",
-    "main": "Franklin-Main",
-    "drivemaster": "DriveMaster",
-    "drive": "DriveMaster",
-    "subagent-drive-master": "DriveMaster",
-    "fileopslocal": "FileOpsLocal",
-    "fileops": "FileOpsLocal",
-    "subagent-file-ops-local": "FileOpsLocal",
-    "docmaker": "DocMaker",
-    "subagent-doc-maker": "DocMaker",
-    "skillcraft": "SkillCraft",
-    "subagent-skill-craft": "SkillCraft",
-    "ui-architect": "UI-Architect",
-    "uiarchitect": "UI-Architect",
-    "subagent-ui-architect": "UI-Architect",
-    "vaultmaster": "VaultMaster",
-    "subagent-vault-master": "VaultMaster",
-    "loopplanner": "LoopPlanner",
-    "subagent-loop-planner": "LoopPlanner",
+    "core": "core-engineering",
+    "core-engineering": "core-engineering",
+    "franklin": "core-engineering",
+    "quality": "quality-engineering",
+    "quality-engineering": "quality-engineering",
+    "planning": "planning-orchestration",
+    "planning-orchestration": "planning-orchestration",
+    "ui-suite": "ui-suite",
+    "shredded": "ui-suite",
+    "knowledge": "knowledge-docs",
+    "knowledge-docs": "knowledge-docs",
+    "workspace-ops": "workspace-ops",
+    "drive": "workspace-ops",
 }
 
 COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[str, str, str]], str, str]] = [
@@ -121,17 +91,18 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
         "Coordenador clínico unificado (clinical_preceptor_orchestrator em adk-py-agents/py_agent/pipelines/clinical_coordinator.py) com AgentTools separados: anatomy_3d_inspector (appmy) + hexagonal_score_calculator (incorporado ao PCM) e suíte UI federada em shredded-shape.",
     ),
     (
-        ("ui", "ux", "front", "tela", "botao", "menu", "css", "tailwind", "react", "design", "sombra", "tatil", "tactile", "elevacao"),
-        "🎨 Suíte UI/UX Separada (`shredded-shape` • Analista -> Planejador -> Worker <-> Judge)",
-        ["ui-frontend-analyst", "ui-brand-ux-planner", "ui-clean-worker", "ui-quality-judge", "system-project-auditor"],
+        ("ui", "ux", "front", "tela", "botao", "menu", "css", "tailwind", "react", "design", "sombra", "tatil", "tactile", "elevacao", "stitch"),
+        "🎨 Suíte UI/UX Federada (`shredded-shape` • 7 Skills • 4-Stage Actor-Critic)",
+        ["ui-frontend-analyst", "ui-brand-ux-planner", "ui-clean-worker", "ui-quality-judge", "stitch-canvas", "system-project-auditor"],
         [
-            ("ui-frontend-analyst", "frontend_inventory_and_slop_scanner.py", "Inventário total de tokens/cores/fontes/menus + Chrome DevTools probe + AI Slop"),
-            ("ui-brand-ux-planner", "ui_dag_compiler.py", "Branding OKLCH, estilos Soft..Clinical, Stitch/Figma/Fonts/3D e DAG <= 5 regras/nó"),
+            ("ui-frontend-analyst", "frontend_inventory_and_slop_scanner.py", "Inventário de tokens/cores/fontes/menus + Chrome DevTools probe + AI Slop"),
+            ("ui-brand-ux-planner", "ui_dag_compiler.py", "Branding OKLCH, estilos Soft..Clinical, Figma/Fonts/3D e DAG <= 5 regras/nó"),
+            ("stitch-canvas", "stitch_asset_bridge.py", "Bridge Google Stitch CLI/MCP -> OKLCH 60-30-10 com verificação SHA-256"),
             ("ui-clean-worker", "verify_raw_frontend.py", "Verificador físico Read-After-Write SHA-256 + tsc --noEmit + anti-stub"),
-            ("ui-quality-judge", "ui_judge_gatekeeper.py", "Juiz Read-Only WCAG 2.2 OKLCH (FNR < 0.001) + Actor-Critic Self-Refine"),
+            ("ui-quality-judge", "ui_judge_gatekeeper.py", "Juiz Read-Only 3-Axis WCAG 2.2 OKLab (FNR < 0.001) + Self-Refine"),
         ],
         "../shredded-shape/plans/ui_actor_critic_dag.json",
-        "Suíte UI federada no repositório dedicado shredded-shape: Analista DevTools -> Planejador Brand/Estilos -> Worker RAW -> Judge WCAG 2.2 OKLCH (zero neon, fosco superior, rim light no escuro).",
+        "Suíte UI federada em shredded-shape (7 skills + 4 subagentes Actor-Critic): Analista -> Planejador -> Worker RAW -> Judge 3-Axis WCAG 2.2 OKLab + bridge stitch-canvas.",
     ),
     (
         ("rag", "dado", "chunk", "jsonl", "vetor", "memoria", "obsidian", "nota", "vault"),
@@ -180,7 +151,7 @@ COMPASS_PROFILE_RULES: List[Tuple[Tuple[str, ...], str, List[str], List[Tuple[st
     ),
     (
         ("agente", "skill", "yaml", "mcp", "plano", "dag", "orquestra", "test", "auditor", "rca", "converge", "gap", "intencao", "cognitiv", "kahn", "a2a", "stdio"),
-        "🤖 Esteira de Qualidade (AST • Testes/Evals • Servidores MCP/A2A • RCA/Convergência), Planejamento Cognitivo Não-Linear & Orquestração DAG (21 Skills Canônicas + 6 UI em shredded-shape)",
+        "🤖 Esteira de Qualidade (AST • Testes/Evals • Servidores MCP/A2A • RCA/Convergência), Planejamento Cognitivo Não-Linear & Orquestração DAG (21 Skills Canônicas + 7 UI em shredded-shape)",
         ["agent-server-auditor", "code-acceptability-auditor", "test-quality-auditor", "gap-analyzer-auditor", "high-level-context-planner", "chained-plan-orchestrator"],
         [
             ("agent-server-auditor", "agent_server_auditor.py", "Auditor arquitetural poliglota (Go/TS/Py) de agentes, higiene STDIO MCP, A2A JWS, binários e max_steps"),
@@ -215,51 +186,42 @@ def _resolve_agents_dir() -> Path:
 
 
 def _render_ecosystem_topology() -> str:
-    """Renderiza a topologia interativa de agentes em 5 camadas e 21 skills (+ 6 UI em shredded-shape)."""
+    """Renderiza a topologia interativa de agentes em 5 camadas e 21 skills (+ 7 UI em shredded-shape)."""
     skills = _get_all_skills_data()
-    by_persona: Dict[str, List[str]] = {}
+    by_domain: Dict[str, List[str]] = {}
     for s in skills:
-        by_persona.setdefault(s["persona"], []).append(s["name"])
+        by_domain.setdefault(s["persona"], []).append(s["name"])
     lines = [
         "# ⚡ Topologia Interativa de Agentes Multi-Repo (5 Camadas • Workspace Multi-Repo)\n",
         "## 1. Camadas de Execução e Custo Cognitivo",
         "- **Camada 0 (Bússola & Heartbeat Zero-LLM — 0 tokens)**: `franklin_smart_compass()`, `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1`, `POST /rpc` (`mesh/heartbeat` em `adk-go-mcp`).",
-        "- **Camada 1 (Orquestração & Loop Fechado)**: `Franklin-Main` (Execução Direta) e `LoopPlanner` (`high-level-context-planner` Fase 0 -> `chained-plan-orchestrator` -> `gap-analyzer-auditor`).",
-        "- **Camada 2 (Esquadrão Frontend Separado — `shredded-shape` Actor-Critic)**: `UI-Architect` -> `ui-analyst` (DevTools/Slop) -> `ui-planner` (Brand/Estilos/DAG<=5) -> `ui-worker` (ReAct/RAW) <-> `ui-judge` (WCAG 2.2 OKLCH `FNR<0.001`).",
-        "- **Camada 3 (Gatekeepers Determinísticos AST/Pass@k — 0 tokens)**: `SkillCraft` (`code-acceptability-auditor` Score >= 75, `test-quality-auditor`), `3D Physics Auditor` (`franklin_execute_dag('physics')`) e `dispatch_skill_deterministic_tests` (Go Eval Harness).",
-        "- **Camada 4 (Malha Multiagente Cloud/Web & Clínica)**: `adk-go-mcp` + `adk-py-agents` + `adk-ts-agent` (`mesh_hybrid_orchestrator`, `self_healing_specialist`, `customer_issue_reviewer`, `AgyCalcCluster`, `clinical_preceptor_orchestrator` -> `anatomy_3d_inspector` [`appmy`] + `hexagonal_score_calculator` [`PCM`]), `epic-volta` (`DAGEngine` Kahn + `MCPBridgeAgent` + `ContextSentinel`), `mcp-web-agents` (Gateway 4+1 + `watchdogBridge.ts`) e `PCM` (`prescmed-clinical-reviewer`).\n",
-        "## 2. Personas Especialistas & Skills Vinculadas (`franklin-quebragalho`)",
+        "- **Camada 1 (Orquestração & Loop Fechado)**: `intent-hitl-mediator` + `read-after-write-verifier` (`high-level-context-planner` Fase 0 -> `chained-plan-orchestrator` -> `gap-analyzer-auditor`).",
+        "- **Camada 2 (Esquadrão Frontend Federado — `shredded-shape` 4-Stage Actor-Critic + `stitch-canvas`)**: `ui-analyst` (DevTools/Slop) -> `ui-planner` (Brand/Estilos/DAG<=5) -> `ui-worker` (ReAct/RAW) <-> `ui-judge` (3-Axis WCAG 2.2 OKLab `FNR<0.001`).",
+        "- **Camada 3 (Gatekeepers Determinísticos AST/Pass@k — 0 tokens)**: `code-acceptability-auditor` (Score >= 75), `test-quality-auditor`, `franklin_execute_dag('physics')` e `dispatch_skill_deterministic_tests` (Go Eval Harness).",
+        "- **Camada 4 (Malha Multiagente Cloud/Web & Clínica)**: `adk-go-mcp` + `adk-py-agents` + `adk-ts-agent` (`clinical_preceptor_orchestrator` -> `anatomy_3d_inspector` [`appmy`] + `hexagonal_score_calculator` [`PCM`]), `epic-volta` (`DAGEngine` Kahn), `mcp-web-agents` e `PCM` (`prescmed-clinical-reviewer`).\n",
+        "## 2. Domínios & Skills Vinculadas (`franklin-quebragalho`)",
     ]
-    for p_name, s_list in sorted(by_persona.items()):
-        lines.append(f"- **`{p_name}`** ({len(s_list)} skills): `{', '.join(sorted(s_list))}`")
+    for d_name, s_list in sorted(by_domain.items()):
+        lines.append(f"- **`{d_name}`** ({len(s_list)} skills): `{', '.join(sorted(s_list))}`")
     lines.extend([
         "\n## 3. Comandos Interativos de 1 Clique",
         "- **Terminal Hub Interativo**: `pwsh C:\\Users\\melki\\dev\\tools\\agent-hub.ps1`",
-        "- **Executar DAG UI (3 Ondas)**: `franklin_execute_dag(plan_path_or_json='ui')`",
+        "- **Executar DAG UI (4 Estágios)**: `franklin_execute_dag(plan_path_or_json='ui')`",
         "- **Executar DAG Física 3D (3 Ondas)**: `franklin_execute_dag(plan_path_or_json='physics')`",
         "- **Auditar Código Python (AST)**: `franklin_run_skill_script(skill_name='code-auditor', script_name='code_acceptability_auditor.py', args=['--self-test'])`",
     ])
     return "\n".join(lines)
 
 
-def _extract_persona_details(canonical_persona: str) -> str:
-    """Extrai a seção dedicada de uma persona de MY_AGENTS.md e anexa suas skills ativas."""
-    my_agents_path = ROOT_DIR / "MY_AGENTS.md"
-    section_text = ""
-    if my_agents_path.exists():
-        raw = my_agents_path.read_text(encoding="utf-8", errors="replace")
-        header_term = "Franklin Quebra-Galho" if canonical_persona == "Franklin-Main" else canonical_persona
-        for ch in re.split(r"\n---\n", raw):
-            if header_term.lower() in ch.lower() and "## " in ch:
-                section_text = ch.strip()
-                break
-    skills = [s["name"] for s in _get_all_skills_data() if s["persona"].lower() == canonical_persona.lower()]
-    skills_block = f"\n\n### Skills Vinculadas a `{canonical_persona}` ({len(skills)}):\n- `" + "`, `".join(sorted(skills)) + "`" if skills else ""
-    return (section_text or f"## Persona: {canonical_persona}") + skills_block
+def _extract_persona_details(canonical_domain: str) -> str:
+    """Retorna a lista de skills vinculadas a um domínio funcional sem depender de MY_AGENTS.md."""
+    skills = [s["name"] for s in _get_all_skills_data() if s["persona"].lower() == canonical_domain.lower()]
+    skills_block = f"\n\n### Skills Vinculadas a `{canonical_domain}` ({len(skills)}):\n- `" + "`, `".join(sorted(skills)) + "`" if skills else ""
+    return f"## Domain: {canonical_domain}" + skills_block
 
 
 def get_agents_impl(agent_name: str = "") -> str:
-    """Implementação da recuperação de topologia de agentes, personas e contratos de subagentes de UI."""
+    """Implementação da recuperação de topologia de agentes, domínios e contratos de subagentes."""
     clean = agent_name.strip().lower()
     if not clean:
         return AGENTS_MD_PATH.read_text(encoding="utf-8", errors="replace") if AGENTS_MD_PATH.exists() else "Arquivo AGENTS.md não encontrado na raiz do workspace."
@@ -267,7 +229,7 @@ def get_agents_impl(agent_name: str = "") -> str:
         return _render_ecosystem_topology()
 
     agent_dirs = _resolve_agent_dirs()
-    if clean in ("ui", "3+1", "all-ui", "subagentes-ui", "shredded-shape"):
+    if clean in ("ui", "4-stage", "all-ui", "subagentes-ui", "shredded-shape"):
         ordered = ("ui-analyst.md", "ui-planner.md", "ui-worker.md", "ui-judge.md")
         parts = ["# Esquadrão de Subagentes de UI (`shredded-shape` • Topologia Actor-Critic em 4 Estágios)\n"]
         for fname in ordered:
@@ -294,7 +256,7 @@ def _resolve_compass_profile(q: str) -> Tuple[str, List[str], List[Tuple[str, st
         if any(k in q for k in keywords):
             return title, rec_skills, scripts, dag_plan, guardrail
     return (
-        "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 21 Skills + 6 UI em shredded-shape)",
+        "🧭 Visão Geral Rápida do Ecossistema Franklin (Multi-Projeto • 21 Skills + 7 UI em shredded-shape)",
         ["project-idea-organizer", "system-project-auditor", "solution-content-architect", "code-acceptability-auditor", "ui-brand-ux-planner", "ui-clean-worker"],
         [
             ("system-project-auditor", "frontiercode_maintainability_guardrail.py", "Auditoria Python adaptativa (detecta sozinho se é código Geral ou 3D)"),

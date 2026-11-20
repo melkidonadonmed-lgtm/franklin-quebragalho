@@ -1,6 +1,6 @@
 ---
 name: technical-markdown-writer
-description: "Author executive reports, technical notes, ADRs, roadmaps, and installation guides in Markdown (GFM) using GitHub alert callouts, the Blank-Line Law, and Google Style Guides. Use for structured technical writing; do NOT use for PDF rendering/export (html-pdf-converter), bulk Obsidian vault curation (obsidian-vault-curator), or Mermaid directory tree mapping (flow-filetree-organizer)."
+description: "Author executive reports, technical notes, ADRs, roadmaps, and guides in Markdown (GFM) using GitHub callouts, the Blank-Line Law, and Google Style Guides. Use for structured technical writing; do NOT use for PDF rendering (html-pdf-converter), bulk Obsidian curation (obsidian-vault-curator), or Mermaid trees."
 compatibility: "Antigravity 2.0, CommonMark/GFM, Obsidian"
 allowed-tools: read_file write_file edit_file run_command
 metadata:

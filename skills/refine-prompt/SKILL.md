@@ -30,7 +30,7 @@ Standalone prompt auditor (`SKILL_REFINE_PROMPT_V3_MASTER`) applying feasibility
 
 ## 3. Step-by-Step Procedure
 
-See [`workflow_4_steps_architecture.md`](references/workflow_4_steps_architecture.md), [`zero_trust_owasp_guidelines.md`](references/zero_trust_owasp_guidelines.md), [`epistemic_taxonomy.md`](references/epistemic_taxonomy.md), [`fluidity_and_low_entropy_engineering.md`](references/fluidity_and_low_entropy_engineering.md), [`modules_io_contracts.md`](references/modules_io_contracts.md), and [`master_system_prompt.md`](references/master_system_prompt.md):
+See [`zero_trust_epistemic_and_master_prompt.md`](references/zero_trust_epistemic_and_master_prompt.md) and [`fluidity_and_low_entropy_engineering.md`](references/fluidity_and_low_entropy_engineering.md):
 
 1. **Zero-Trust & Feasibility:** Wrap input in `<untrusted_user_input>`, enforce `OWASP LLM01..08:2026` + KV-Cache Sandwiching, and emit `[VERDICT]` + Root Cause + Alternative on flaws.
 2. **Epistemic & Entropy Routing:** Tag `[FACT]`, `[INFERENCE]`, `[GAP]` (high-risk opens `Module 3`).

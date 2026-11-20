@@ -1,6 +1,6 @@
 ---
 name: solution-content-architect
-description: "Design and implement minimal, strictly typed production code, OpenAPI/JSON-RPC contracts, SQL optimizations, and trade-off blueprints. Use for concrete engineering solutions and enterprise prompts. Do NOT use for standalone prompt audits (refine-prompt), repo AST scoring (system-project-auditor), greenfield scaffolding (project-idea-organizer), or DAG waves (chained-plan-orchestrator)."
+description: "Design and implement minimal, strictly typed production code, OpenAPI/JSON-RPC contracts, SQL optimizations, and trade-off blueprints. Use for concrete engineering solutions and enterprise prompts. Do NOT use for standalone prompt audits (refine-prompt), repo AST audits (system-project-auditor), scaffolding, or DAG waves."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, TypeScript 5+, Go 1.24+"
 allowed-tools: read_file write_file edit_file run_command
 metadata:

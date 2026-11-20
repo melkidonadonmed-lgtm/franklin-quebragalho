@@ -1,6 +1,6 @@
 ---
 name: project-idea-organizer
-description: "Bootstrap raw ideas into right-sized runnable v1.0.0 MVPs or sync repositories across Triad v2.1 docs, 1:1 disk-accurate README.md, active MCP/FastAPI/RPC contracts, and dry-run root hygiene. Use when starting an idea or aligning repo structure. Do NOT use for 0-100 AST audits (system-project-auditor), single-module coding (solution-content-architect), or Mermaid trees (flow-filetree-organizer)."
+description: "Bootstrap raw ideas into runnable v1.0.0 MVPs or sync repositories across Triad v2.1 docs, disk-accurate README.md, active MCP/RPC contracts, and dry-run hygiene. Use to start an idea or align repo structure. Do NOT use for AST audits (system-project-auditor), module coding (solution-content-architect), or Mermaid trees."
 compatibility: "Antigravity 2.0, FastMCP, Python 3.12+, TypeScript 5+, Go 1.24+"
 allowed-tools: read_file write_file edit_file run_command
 metadata:

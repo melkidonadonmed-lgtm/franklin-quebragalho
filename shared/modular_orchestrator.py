@@ -147,7 +147,7 @@ class IntentAnalysisAgent(BaseSubAgent):
     RESEARCH_KEYWORDS: tuple[str, ...] = (
         "pesquisar", "buscar", "analisar", "explicar", "auditar", "listar", "verificar", "inspecionar",
     )
-    DAG_KEYWORDS: tuple[str, ...] = ("dag", "topologia 3+1", "ondas", "multiagente", "pipeline ui", "pipeline fisica")
+    DAG_KEYWORDS: tuple[str, ...] = ("dag", "4-stage", "actor-critic", "ondas", "multiagente", "pipeline ui", "pipeline fisica")
 
     async def process(self, context_payload: Dict[str, Any]) -> IntentAnalysisResult:
         raw_query = str(context_payload.get("user_query", "")).strip()

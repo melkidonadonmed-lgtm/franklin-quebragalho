@@ -17,7 +17,7 @@ metadata:
 
 Runs deterministic static and contractual audits across **Python, TypeScript, and Go** agentic projects, serving also as the architectural auditor for **MCP/A2A agent tooling** (legacy `audit-skills-antigravity` retired into `scripts/validate_skills.py`):
 - Audits **MCP (`2026-07-28`)** servers, subagents (`agents/*.md`), **A2A v1.0 JWS** (`/.well-known/agent-card.json`), and binaries.
-- **Pre-Flight:** Ground Gemini/ADK checks via `google-developer-knowledge`, `gemini_get_doc` (`chunk_id`), `aistudio.google.com/llms.txt`, or [`references/protocol_matrix.md`](references/protocol_matrix.md) (never disabled aliases); apply [`references/audit-websocket-jsonrpc.md`](references/audit-websocket-jsonrpc.md) for `ws://`/`wss://` or JSON-RPC 2.0.
+- **Pre-Flight:** Ground Gemini/ADK checks via `google-developer-knowledge`, `gemini_get_doc` (`chunk_id`), `aistudio.google.com/llms.txt`, or [`references/protocol_matrix.md`](references/protocol_matrix.md) (never disabled aliases); apply [`references/audit_websocket_jsonrpc.md`](references/audit_websocket_jsonrpc.md) for `ws://`/`wss://` or JSON-RPC 2.0.
 - **When NOT to Use:** Do NOT use for UI/OKLCH (`ui-quality-judge`, `complex-zero`), test AAA grading (`test-quality-auditor`), or Python AST gates (`code-acceptability-auditor`).
 
 ## 2. Inputs & Prerequisites

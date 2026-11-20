@@ -13,7 +13,7 @@ Before auditing any API client/server, model ID, or protocol layer, consult offi
 - **Gemini API / Google AI Studio Full Corpus (`llms-full.txt`):** [`https://aistudio.google.com/llms-full.txt`](https://aistudio.google.com/llms-full.txt)
 - **Google Gemini Cookbook (GitHub):** [`https://github.com/google-gemini/cookbook`](https://github.com/google-gemini/cookbook)
 - **Google ADK Docs (`llms.txt` & `llms-full.txt`):** [`https://adk.dev/llms.txt`](https://adk.dev/llms.txt) | [`https://adk.dev/llms-full.txt`](https://adk.dev/llms-full.txt)
-- **WebSockets & JSON-RPC 2.0 Sub-Spec:** [`audit-websocket-jsonrpc.md`](audit-websocket-jsonrpc.md)
+- **WebSockets & JSON-RPC 2.0 Sub-Spec:** [`audit_websocket_jsonrpc.md`](audit_websocket_jsonrpc.md)
 
 ---
 
@@ -64,7 +64,7 @@ Valid state transitions enforced in A2A task managers:
 
 ---
 
-## 3. WebSockets (`ws://` / `wss://`) & JSON-RPC 2.0 Contracts ([`audit-websocket-jsonrpc.md`](audit-websocket-jsonrpc.md))
+## 3. WebSockets (`ws://` / `wss://`) & JSON-RPC 2.0 Contracts ([`audit_websocket_jsonrpc.md`](audit_websocket_jsonrpc.md))
 
 - **Transport & Authentication:** Mandatory `wss://` (TLS 1.3) in production; credentials via `Authorization: Bearer <token>` header or Ephemeral Tokens (permanent API keys in query strings are forbidden).
 - **Resilience & Reconnection:** `ping`/`pong` heartbeat (15–30s), Exponential Backoff with Jitter ($t_{\text{wait}} = \min(t_{\text{max}}, t_{\text{base}} \times 2^{\text{attempt}}) + \text{jitter}$), and bounded queue for pending outbound frames.
@@ -91,13 +91,9 @@ Valid state transitions enforced in A2A task managers:
 
 ---
 
-## 6. Active Baseline — Gemini 4 Models, Decisions API, Live API & Official SDKs (`https://github.com/googleapis`)
+## 6. Active Models & Official SDK Baseline (`SSOT Pointer`)
 
-- **Canonical Sources (never invoke disabled doc-search aliases):** `google-developer-knowledge` (`search_documents`/`get_documents`), `gemini_get_doc` (`chunk_id`), [`https://aistudio.google.com/llms.txt`](https://aistudio.google.com/llms.txt), [`https://aistudio.google.com/docs/models.md`](https://aistudio.google.com/docs/models.md), [`https://aistudio.google.com/docs/deprecations.md`](https://aistudio.google.com/docs/deprecations.md), [`https://aistudio.google.com/docs/libraries.md`](https://aistudio.google.com/docs/libraries.md), [`https://aistudio.google.com/docs/decisions-api.md`](https://aistudio.google.com/docs/decisions-api.md), [`https://antigravity.google/docs/models.md`](https://antigravity.google/docs/models.md), and [`https://antigravity.google/docs/sdk/overview.md`](https://antigravity.google/docs/sdk/overview.md).
-- **Gemini 4 (1M unified context, implicit caching >= 4,096 tokens, no `cachedContents`, `temperature`/`top_p`/`top_k` ignored, 64K default `max_output_tokens` or 1M long decode with `background=True`; note Managed Antigravity Agent `antigravity-preview-09-2026` rejects `generation_config` sampling & `max_output_tokens` with HTTP 400 while standard `generateContent`/`interactions.create` supports `max_output_tokens`):**
-  - `gemini-4-carbon`: maximum reasoning (`thinking_level`: `low`, `medium` default, `high`).
-  - `gemini-4-argon`: efficient frontier (`thinking_level`: `low`, `medium` default, `high`).
-  - `gemini-4-hydrogen`: fast coding/agent default and default model of `antigravity-preview-09-2026` (`thinking_level`: `low`, `medium`, `high` default, **`xhigh`**; `minimal` unsupported).
-- **Decisions, Live & Audio/Media:** `gemini-decision-1` (`client.decisions.create` / `POST /v1beta/decisions`, `noul` `0.01-0.99`, `choice`/`score`, 0 output tokens); Live `gemini-3.8-live`, `gemini-3.8-live-extended-thinking` (`NON_BLOCKING`, `interaction_status=="IDLE"`, `proactive_video`, `send_context_update`), `gemini-3.5-transcribe-live`, `gemini-3.5-live-translate-preview`; TTS `gemini-3.8-flash-tts` / `gemini-3.8-flash-lite-tts`; Video `gemini-omni-1.2-flash`.
-- **Mandatory Blocklist (Retired / Non-Existent):** `gemini-1.0-*`/`1.5-*`, `gemini-2.0-*`, `gemini-2.5-flash`/`2.5-pro` (shutdown `2026-12-01`; **`gemini-2.5-flash-lite` is NOT deprecated**), `2.5-*-preview-tts` / `gemini-3.1-flash-tts-preview` (`2026-12-18`), `2.5-flash-native-audio*` (`2027-03-31`), `2.5-flash-image` (`2027-03-15`), `gemini-3.1-flash-live-preview` (legacy preview without shutdown -> `gemini-3.8-live`), `gemini-live-2.5-*`, `gemini-omni-1.1-flash` (`2026-12-03`), `antigravity-preview-05-2026` (`2026-10-05`), closed previews (`gemini-3-pro-preview`, `3.1-flash-lite-preview`, `3-pro-image-preview`, `3.1-flash-image-preview`, `2.0-flash-preview-image-generation`, `embedding-2-preview`, `omni-flash-preview`, `deep-research-pro-preview-12-2025`, `2.5-computer-use-preview-10-2025`, `robotics-er-1.[56]-preview`, `text-embedding-004`/`embedding-*`, `imagen-[34].0-*`, `veo-[23].*`), and `gemini-3.8-flash-lite` (non-existent).
-- **Official SDKs (`googleapis`), Antigravity SDK & ADK v2:** `google-genai>=3.3.0` (`httpx2`, `--flavor=interactions-eap`), `@google/genai>=3.3.0`, `com.google.genai:google-genai>=2.3.0`, `googleapis/kotlin-genai>=2.1.0`, `google.golang.org/genai>=1.77.0` (`main`: `gemini-4-hydrogen`/`XHIGH`/Decisions/BYOS/`AutomaticContinuation`/`send_context_update`), `Google.GenAI>=2.1.0`, `google-antigravity>=0.1.23` (`from google.antigravity import Agent, LocalAgentConfig`, `vertex=True`), and `gemini-api` CLI (`beta`); block legacy SDKs (`google-generativeai`, `@google/generativeai`, `@google/generative-ai`, `@google-cloud/vertexai`, `google.golang.org/generative-ai`). Since `python/js-genai>=3.0.0` and `java/kotlin/dotnet-genai>=2.0.0`, Developer API default changed to **`v1`** (`vertexai=True`/`enterprise=True` stays `v1beta1`), requiring `HttpOptions(api_version='v1beta')` or `GOOGLE_GENAI_API_VERSION=v1beta` for `decisions`/`interactions`/`antigravity-preview-09-2026`/`*-latest`; `google-adk>=2.14.1` (still pins `google-genai<3`), `google.golang.org/adk/v2>=2.7.1`, `@google/adk>=2.5.0` (pins `@google/genai ^2.29.1`), `google/adk-java>=1.14.0`, `google/adk-kotlin>=1.5.0`, `google/agents-cli>=1.14.0`; `Api-Revision: 2026-05-20`; BYOS environments (`system_instruction`, `custom_config`, `environment_key`).
+Do not duplicate model/SDK blocklists here; enforce the single authoritative baseline in:
+- **Global Model & SDK SSOT:** `rules/authoring-rules-and-google-apis.md` (Gemini 4 `carbon`/`argon`/`hydrogen` + `xhigh`, `gemini-decision-1`, `gemini-3.8-live*`/`tts`, `antigravity-preview-09-2026` Managed Agent `generation_config` split, `v1` vs `v1beta` `HttpOptions`, and active `googleapis` / ADK v2 SDK minimums).
+- **Executable Scanner Blocklist:** `scripts/protocol_policy_checks.py` (deterministic regexes blocking retired 1.x/2.0/2.5/3.1 previews, legacy `google-generativeai` SDKs, and disabled doc-search aliases).
+- **Primary Docs:** `google-developer-knowledge`, `gemini_get_doc`, `https://aistudio.google.com/llms.txt`, and `https://antigravity.google/docs/models.md`.
